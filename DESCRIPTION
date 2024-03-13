@@ -36,11 +36,12 @@ Imports:
     Rcpp,
     RPostgres,
     scales,
-    sf,
     terra
 Suggests:
+    aws.s3,
     bcdata,
     bcmaps,
+    gdalUtilities,
     readxl,
     sf,
     usethis
