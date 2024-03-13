@@ -19,15 +19,15 @@
 #' @export
 makePointCoords <- function(bgc_poly, elev, gridSize = 2000, crs = "EPSG:4326") {
   if (!is(bgc_poly, "SpatVector")) {
-    bgc_poly <- try(vect(bgc_poly), error = function(e) e)
+    bgc_poly <- try(vect(bgc_poly))
     if (is(bgc_poly, "simple-error")) {
       stop("Can't coherce bgc_poly to SpatVector. Please pass a SpatVector or another cohercible object class.")
     }
   }
   
   if (!is(elev, "SpatRaster")) {
-    elev <- tryCatch(rast(elev), error = function(e) e)
-    if (is(elev, "error")) {
+    elev <- try(rast(elev))
+    if (is(elev, "simple-error")) {
       stop("Can't coherce elev to a SpatRaster. Please pass SpatRaster or RasterLayer.")
     }
   }
