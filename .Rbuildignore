@@ -1,2 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.git
+^\.github$
+^\.httr-oauth$
+^data-raw$
