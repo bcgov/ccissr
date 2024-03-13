@@ -47,7 +47,8 @@ Suggests:
     usethis
 Remotes:
     bcgov/bcdata,
-    bcgov/bcmaps
+    bcgov/bcmaps,
+    bcgov/climr@development
 LinkingTo: Rcpp
 LazyData: true
 Roxygen: list(markdown = TRUE)
