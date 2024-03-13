@@ -24,6 +24,10 @@
 #' @export
 dbPointInfo <- function(con, points) {
   
+  if (!requireNamespace("sf")) {
+    stop("Please install 'sf' package or provide a data.table or SpatVector to coords.")
+  }
+  
   # It is more efficient for the query optimizer to do
   # each join in a separate sql, better use of index and caching
   # geometry have been optimized (split polygons) for the

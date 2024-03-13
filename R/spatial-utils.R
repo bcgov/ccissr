@@ -13,7 +13,6 @@
 #'   elevation and BGCs.
 #'   
 #' @importFrom terra extract vect geom
-#' @importFrom sf st_make_grid st_transform
 #' @importFrom data.table setDT
 #' @importFrom methods is
 #'

@@ -32,7 +32,7 @@ getClimate <- function(coords, ...) {
         setnames(old = c("x", "y"), c("lon", "lat"))
     } else if (inherits(coords, "sf")) {
       if (requireNamespace("sf")) {
-        if (sf::st_crs(coords) != st_crs("EPSG:4326")) {
+        if (sf::st_crs(coords) != sf::st_crs("EPSG:4326")) {
           stop("coords must be in EPSG:4326 projection")
         }
         
