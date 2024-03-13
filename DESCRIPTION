@@ -16,6 +16,7 @@ Depends:
     R (>= 3.5.0)
 Imports: 
     analogsea,
+    climr,
     dplyr,
     DT,
     foreach,
@@ -25,15 +26,18 @@ Imports:
     leaflet,
     leaflet.extras,
     magrittr,
+    methods,
     nloptr,
     pagedown,
     plotly,
     pool,
     prettydoc,
     prompter,
-    Rcpp
+    Rcpp,
     RPostgres,
-    scales
+    scales,
+    sf,
+    terra
 Suggests:
     bcdata,
     bcmaps,
