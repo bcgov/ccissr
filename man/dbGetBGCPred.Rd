@@ -8,7 +8,7 @@ dbGetBGCPred(
   con,
   siteno,
   scenario = c("ssp126", "ssp245", "ssp370"),
-  period = c("2021", "2041", "2061", "2081")
+  period = c("2001", "2021", "2041", "2061", "2081")
 )
 }
 \arguments{
