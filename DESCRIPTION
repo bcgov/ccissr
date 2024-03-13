@@ -37,9 +37,9 @@ Imports:
 Suggests:
     bcdata,
     bcmaps,
-    usethis,
+    readxl,
     sf,
-    readxl
+    usethis
 Remotes:
     bcgov/bcdata,
     bcgov/bcmaps
