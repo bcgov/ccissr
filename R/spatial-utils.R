@@ -147,6 +147,10 @@ makeGapExtents <- function(studyarea = ext(c(-123, -118, 49, 52)), ngaps = 5L) {
 #' @return a cropped SpatVector that corresponds to `filename2`.
 #' @export
 GDALcrop <- function(filename, filename2, destinationPath = NULL, studyArea = NULL) {
+  if (!requireNamespace("gdalUtilities")) {
+    stop("Please install 'gdalUtilities' to use this function")
+  }
+  
   if (!is.null(studyArea)) {
     if (is.null(destinationPath))
       destinationPath <- "./"
