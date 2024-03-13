@@ -33,7 +33,7 @@ Imports:
     prompter,
     Rcpp
     RPostgres,
-    scales,
+    scales
 Suggests:
     bcdata,
     bcmaps,
