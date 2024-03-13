@@ -12,7 +12,7 @@
 #' @return a `data.table` of point coordinates with associated IDs,
 #'   elevation and BGCs.
 #'   
-#' @importFrom terra extract vect geom
+#' @importFrom terra extract vect geom rast
 #' @importFrom data.table setDT
 #' @importFrom methods is
 #'
