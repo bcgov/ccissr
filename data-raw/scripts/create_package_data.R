@@ -12,7 +12,7 @@ N1[,SiteSeriesLongName := gsub("\x96","-",SiteSeriesLongName)]
 use_data(N1,overwrite = T)
 SS <- fread("./data-raw/data_tables/WNA_SSeries_v12_12.csv")
 
-load("app/Feas_CovMat.rda")
+covMat <- read.csv("data-raw/Feas_CovMat.csv", header = TRUE, row.names = 1)
 use_data(covMat,overwrite = T)
 
 S1[,Confirmed := NULL]
@@ -43,9 +43,7 @@ setnames(SIBEC,c("SS_NoSpace","TreeSpp","MeanPlotSiteIndex"))
 SIBEC <- unique(SIBEC)
 use_data(SIBEC, overwrite = T)
 
-TreeCols <- fread("~/PortfolioKiri/InputsGit/PortfolioSppColours.csv") ##in package data
-TreeCols <- TreeCols[HexColour != "",]
-save(TreeCols, file = "./data/TreeCols.rda")
+TreeCols <- fread("data-raw/PortfolioSppColours.csv", header = TRUE) ##in package data
 
 
 SS <- SS[,.(Source, BGC, SS_NoSpace,SpecialCode)]
@@ -138,7 +136,7 @@ stocking_standards <- rbind(stocking_standards,temp)
 stocking_standards[Species %in% c("Se","Sx","Sxw","Sw","Sxs"),Species := "Sx"]
 stocking_standards[Species %in% c("Act","Acb","Aca"),Species := "Ac"]
 
-use_data(stocking_standards,overwrite = T)
+cfrg_rules <- fread("data-raw/PreferredAcceptibleRules.csv")
 
 cfrg_rules <- fread("./PreferredAcceptibleRules.csv")
 cfrg_rules <- melt(cfrg_rules,id.vars = "Spp",variable.name = "Feasible",value.name = "PrefAcc")
