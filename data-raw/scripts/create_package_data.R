@@ -9,11 +9,10 @@ E1 <- fread("./data-raw/data_tables/Edatopic_v12_12.csv")
 S1 <- fread("./data-raw/data_tables/Feasibility_v12_14_w_OHR.csv")
 N1 <- fread("./data-raw/data_tables/SiteSeries_names_v12_10.csv")
 N1[,SiteSeriesLongName := gsub("\x96","-",SiteSeriesLongName)]
-use_data(N1,overwrite = T)
+
 SS <- fread("./data-raw/data_tables/WNA_SSeries_v12_12.csv")
 
 covMat <- read.csv("data-raw/Feas_CovMat.csv", header = TRUE, row.names = 1)
-use_data(covMat,overwrite = T)
 
 S1[,Confirmed := NULL]
 S1 <- S1[!is.na(Feasible),]
@@ -24,8 +23,6 @@ S1[Spp %in% c("Sw","Se","Sxw"),Spp := "Sx"]
 S1[Spp %in% c("Ss", "Sxl","Sxs"),Spp := "Ss"]
 S1[Spp %in% c("Pyi","Pyc"),Spp := "Py"]
 S1[Spp %in% c("Acb","Act"),Spp := "Ac"]
-use_data(S1, overwrite = T)
-use_data(N1,overwrite = T)
 
 SIBEC <- fread("~/SIBEC_Modelled/PredSI_Sept2021_2.csv") 
 setnames(SIBEC,old = "SppVar", new = "Spp")
@@ -41,10 +38,8 @@ SIBEC <- rbind(SIBEC, SIBECnew)
 setcolorder(SIBEC,c("SS_NoSpace","Spp","SIPred"))
 setnames(SIBEC,c("SS_NoSpace","TreeSpp","MeanPlotSiteIndex"))
 SIBEC <- unique(SIBEC)
-use_data(SIBEC, overwrite = T)
 
 TreeCols <- fread("data-raw/PortfolioSppColours.csv", header = TRUE) ##in package data
-
 
 SS <- SS[,.(Source, BGC, SS_NoSpace,SpecialCode)]
 SS <- SS[SpecialCode != "",]
@@ -57,18 +52,15 @@ E1 <- E1[!grepl("\\.1$|\\.2$|\\.3$",SS_NoSpace),]
 E1_Phase <- rbind(phases,vars)
 E1_Phase[,MainUnit := gsub("[a-z]$","",SS_NoSpace)]
 E1_Phase[,MainUnit := gsub("\\.[1-9]$","",MainUnit)]
-use_data(E1_Phase,E1,overwrite = T)
-use_data(S1,E1,N1,overwrite = T)
-use_data(SS, overwrite = T)
 
 R1 <- fread("./data-raw/data_tables/RuleTable.csv")
 F1 <- fread("./data-raw/data_tables/FeasibilityLabels.csv", key = "SuitDiff")
 T1 <- fread("./data-raw/data_tables/Tree speciesand codes_2.0_25Aug2021.csv", key = "TreeCode")
-use_data(T1,overwrite = T)
+
 V1 <- fread("./data-raw/data_tables/Variables_ClimateBC.csv", key = "Code")
 zones_colours_ref <- fread("./data-raw/data_tables/WNAv11_Zone_Colours.csv", key = "classification")
 subzones_colours_ref <- fread("./data-raw/data_tables/WNAv12_3_SubzoneCols.csv", key = "classification")
-save(subzones_colours_ref, file = "./data/subzones_colours_ref.rda")
+
 # StockingStds
 stocking_standards_v12 <- fread("./data-raw/data_tables/StockingStds/StockStands_v12_2.csv", key = c("Region", "ZoneSubzone","SiteSeries", "Species"), colClasses = c("Standard" = "numeric"))
 stocking_info_v12 <- fread("./data-raw/data_tables/StockingStds/StockingInfo_v12.csv", key = "Standard", colClasses = c("Standard" = "numeric"))
@@ -137,11 +129,9 @@ stocking_standards[Species %in% c("Se","Sx","Sxw","Sw","Sxs"),Species := "Sx"]
 stocking_standards[Species %in% c("Act","Acb","Aca"),Species := "Ac"]
 
 cfrg_rules <- fread("data-raw/PreferredAcceptibleRules.csv")
-
-cfrg_rules <- fread("./PreferredAcceptibleRules.csv")
 cfrg_rules <- melt(cfrg_rules,id.vars = "Spp",variable.name = "Feasible",value.name = "PrefAcc")
 cfrg_rules[,Feasible := as.character(gsub("E","",Feasible))]
-use_data(cfrg_rules)
+
 # Stocking height formatting
 stocking_height <- copy(stocking_height_v12[,.(Standard, Species, Height)])
 # add-in species instead of others by merging with stock standards and removing dups as
@@ -196,17 +186,17 @@ names(stocking_info) <- tools::toTitleCase(names(stocking_info))
 names(stocking_height) <- tools::toTitleCase(names(stocking_height))
 
 stocking_info <- stocking_info[!is.na(StockingTarget),]
-use_data(stocking_standards, stocking_info, stocking_height, footnotes,
-         silvics_tol, silvics_regen, silvics_mature, silvics_resist, overwrite = T)
+
 # models informations
 models_info <- fread("./data-raw/data_tables/CCISS_DataTable_Versions.csv")
 models_info[, Date := as.character(Date, format = "%Y/%m/%d")]
 
-use_data(E1, S1, N1, R1, F1, T1, V1,
+use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
+         cfrg_rules, SIBEC, covMat,
          zones_colours_ref, subzones_colours_ref,
          stocking_standards, stocking_info, stocking_height, footnotes,
          silvics_tol, silvics_regen, silvics_mature, silvics_resist,
-         models_info,
+         models_info, TreeCols,
          overwrite = TRUE)
 # see version in ?usethis::use_data, if you all use R 3.5 and up. You should bump to version 3
 # use_data(E1, S1, R1, F1, zones_colours_ref, subzones_colours_ref, overwrite = TRUE, version = 3)
