@@ -14,6 +14,7 @@
 ^.*\.o$
 ^.*\.dll$
 ^.*\.html$
+^.*\CONTRIBUTING.md$
 
 ^\.httr-oauth$
 
