@@ -69,14 +69,44 @@ getClimate <- function(coords, ...) {
 #' table of point coordinates.
 #'
 #' @inheritParams getClimate 
-#'
-#' @return climate normals as a `data.table`.
+#' @param byCombo logical. If TRUE, `climr_downscale` is iterated by 
+#'   combinations of GCM models, periods and scenarios.
+#' @param outFormat character. Should outputs be in the form of a 
+#'  `data.table` ("data.table"), list of `data.tables` ("list") or 
+#'  written directly to disk ("disk")?
+#' @param filename character. Passed to `write.csv(..., file)` if
+#'   `outFormat == "disk"`. Defaults to `tempfile(fileext = ".csv")`.
+#'   
+#' @details
+#'   If `outFormat == "disk"` and `byCombo == TRUE`, `climr_downscale` 
+#'   is iterated for combinations of GCMs, runs, periods and scenarios,
+#'   and output `data.tables` are saved to a .csv file with
+#'   `write.csv(..., file = filename, append = TRUE)`.
+#' 
+#' @return climate normals returned as a `data.table`, list of `data.tables`.
+#'   If `outFormat == "disk"`, `filename` is returned instead.
 #' 
 #' @importFrom climr climr_downscale
 #' @importFrom data.table setDT
-.getClimVars <- function(coords, ...) {
-  clim_vars <- climr_downscale(coords, ...) |>
-    Cache()
+.getClimVars <- function(coords, coords_bgc, byCombo = FALSE, outFormat = "data.table",
+                         filename = tempfile(fileext = ".csv"), ...) {
+  browser()
+  dots <- list(...)
+  if (byCombo) {
+    dots <- as.data.table(expand.grid(dots, stringsAsFactors = FALSE))
+    
+    for (i in 1:nrow(dots)) {
+      x <- dots[i]
+      out <- do.call(climr_downscale, append(list(xyz = coords), x))
+    }
+  } else {
+    
+  }
+  
+  if (outFormat == "data.table") {
+    
+  }
+  
   ##test: 
   # clim_vars <- climr_downscale(coords[1003050:1003085,], ...)
   clim_vars <- clim_vars[!is.nan(PPT05),] ##lots of points in the ocean
@@ -86,6 +116,10 @@ getClimate <- function(coords, ...) {
   
   ## join all columns back
   clim_vars <- coords[clim_vars, on = "id"]
+  
+  if (saveToDisk) {
+    
+  }
   
   return(clim_vars)
 }
