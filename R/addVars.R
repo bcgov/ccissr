@@ -8,7 +8,7 @@
 #'    * DD_0_at (autumn degree-days below 0 deg), DD_0_wt (winter degree-days below 0 deg)
 #'    
 #' @details This function calculates more climate variables derived from those
-#'   output by `climr_downscale`. Presently it adds the following:
+#'   output by `[climr::downscale()]`. Presently it adds the following:
 #'   -   May to June precip.: \eqn{PPT_MJ = PPT05 + PPT06}
 #'   -   July to September precip \eqn{PPT_JAS = PPT07 + PPT08 + PPT09}
 #'   -   Precipitation during vegetation dormant period: \eqn{PPT.dormant = PPT_at + PPT_wt}

@@ -1,15 +1,15 @@
 #' Prepares coordinates and obtains climate normals
-#'  using `climr_downscale`
+#'  using `climr::downscale`
 #'
 #' @param coords a `data.table`, or spatial points (`SpatVector` or `sf`) 
 #'   with point coordinates ("lon" = longitude, "lat" = latitude), elevation ("elev") and point IDs ("id").
-#' @param ... further arguments passed to [climr_downscale()].
+#' @param ... further arguments passed to [climr::downscale()].
 #' 
 #' @details
 #' If `bgcs` is provided, the BGC field will be appended to
 #' the output `data.table`.
 #' 
-#' @seealso [climr_downscale()]
+#' @seealso [climr::downscale()]
 #'
 #' @return climate normals as a `data.table`
 #'  
@@ -65,11 +65,11 @@ getClimate <- function(coords, ...) {
 }
 
 
-#' Wrapper for `climr_downscale` that keeps extra columns in
+#' Wrapper for `climr::downscale` that keeps extra columns in
 #' table of point coordinates.
 #'
 #' @inheritParams getClimate 
-#' @param byCombo logical. If TRUE, `climr_downscale` is iterated by 
+#' @param byCombo logical. If TRUE, `climr::downscale` is iterated by 
 #'   combinations of GCM models, periods and scenarios.
 #' @param outFormat character. Should outputs be in the form of a 
 #'  `data.table` ("data.table"), list of `data.tables` ("list") or 
@@ -78,7 +78,7 @@ getClimate <- function(coords, ...) {
 #'   `outFormat == "disk"`. Defaults to `tempfile(fileext = ".csv")`.
 #'   
 #' @details
-#'   If `outFormat == "disk"` and `byCombo == TRUE`, `climr_downscale` 
+#'   If `outFormat == "disk"` and `byCombo == TRUE`, `climr::downscale` 
 #'   is iterated for combinations of GCMs, runs, periods and scenarios,
 #'   and output `data.tables` are saved to a .csv file with
 #'   `write.csv(..., file = filename, append = TRUE)`.
@@ -86,7 +86,7 @@ getClimate <- function(coords, ...) {
 #' @return climate normals returned as a `data.table`, list of `data.tables`.
 #'   If `outFormat == "disk"`, `filename` is returned instead.
 #' 
-#' @importFrom climr climr_downscale
+#' @importFrom climr downscale
 #' @importFrom data.table setDT
 .getClimVars <- function(coords, coords_bgc, byCombo = FALSE, outFormat = "data.table",
                          filename = tempfile(fileext = ".csv"), ...) {
@@ -97,7 +97,7 @@ getClimate <- function(coords, ...) {
     
     for (i in 1:nrow(dots)) {
       x <- dots[i]
-      out <- do.call(climr_downscale, append(list(xyz = coords), x))
+      out <- do.call(downscale, append(list(xyz = coords), x))
     }
   } else {
     
@@ -108,7 +108,7 @@ getClimate <- function(coords, ...) {
   }
   
   ##test: 
-  # clim_vars <- climr_downscale(coords[1003050:1003085,], ...)
+  # clim_vars <- downscale(coords[1003050:1003085,], ...)
   clim_vars <- clim_vars[!is.nan(PPT05),] ##lots of points in the ocean
   clim_vars[, PERIOD := NULL]
   
