@@ -1,9 +1,7 @@
 #' Prepares coordinates and obtains climate normals
 #'  using `climr::downscale`
 #'
-#' @param coords a `data.table`, or spatial points (`SpatVector` or `sf`) 
-#'   with point coordinates ("lon" = longitude, "lat" = latitude), elevation ("elev") and point IDs ("id").
-#' @param ... further arguments passed to [climr::downscale()].
+#' @inheritParams .getClimate 
 #' 
 #' @details
 #' If `bgcs` is provided, the BGC field will be appended to
@@ -17,7 +15,8 @@
 #' @importFrom data.table data.table as.data.table setnames
 #' @importFrom methods is
 #' @export
-getClimate <- function(coords, ...) {
+getClimate <- function(coords, byCombo = FALSE, outFormat = "data.table",
+                       filename = tempfile(fileext = ".rds"), ...) {
   dots <- list(...)
   
   if (!is(coords, "data.table")) {
@@ -58,68 +57,109 @@ getClimate <- function(coords, ...) {
          "\n  If providing a SpatVector/sf object, ensure it has 'elev' and 'id' attributes")
   }
   
-  args <- append(list(coords = coords), dots)
+  args <- append(list(coords = coords,
+                      byCombo = byCombo, 
+                      outFormat = outFormat,
+                      filename = filename), 
+                 dots)
   out <- do.call(.getClimVars, args)
-  
+
   return(out)
 }
 
 
 #' Wrapper for `climr::downscale` that keeps extra columns in
 #' table of point coordinates.
-#'
-#' @inheritParams getClimate 
+#' 
+#' @param coords a `data.table`, or spatial points (`SpatVector` or `sf`) 
+#'   with point coordinates ("lon" = longitude, "lat" = latitude), elevation ("elev") and point IDs ("id").
 #' @param byCombo logical. If TRUE, `climr::downscale` is iterated by 
-#'   combinations of GCM models, periods and scenarios.
+#'   combinations of any arguments passed to `downscale` via  `...` 
+#'   (e.g., `vars`, `gcms`, `ssps`).
 #' @param outFormat character. Should outputs be in the form of a 
 #'  `data.table` ("data.table"), list of `data.tables` ("list") or 
-#'  written directly to disk ("disk")?
-#' @param filename character. Passed to `write.csv(..., file)` if
+#'  written directly to disk ("disk")? If `byCombo == FALSE`, only 
+#'  "data.table" and "disk" will work.
+#' @param filename character. Passed to `saveRDS(..., file)` if
 #'   `outFormat == "disk"`. Defaults to `tempfile(fileext = ".csv")`.
+#' @param ... further arguments passed to [climr::downscale()].
 #'   
 #' @details
 #'   If `outFormat == "disk"` and `byCombo == TRUE`, `climr::downscale` 
 #'   is iterated for combinations of GCMs, runs, periods and scenarios,
-#'   and output `data.tables` are saved to a .csv file with
-#'   `write.csv(..., file = filename, append = TRUE)`.
+#'   and each output `data.table` is saved to an `.rds` file with
+#'   `saveRDS(..., file = filename2, append = TRUE)`, where `basename(filename2)`
+#'   is the `basename(filename)` with appended values of the arguments that were iterated
+#'   through -- excluding the arguments "cache", "xyz", "nthread", "max_run", 
+#'   "return_refperiod", "ppt_lr", "out_spatial", and "plot".
 #' 
-#' @return climate normals returned as a `data.table`, list of `data.tables`.
-#'   If `outFormat == "disk"`, `filename` is returned instead.
+#' @return climate normals returned as a `data.table` or list of `data.tables`.
+#'   If `outFormat == "disk"`, the file name(s) are returned instead.
 #' 
 #' @importFrom climr downscale
 #' @importFrom data.table setDT
-.getClimVars <- function(coords, coords_bgc, byCombo = FALSE, outFormat = "data.table",
-                         filename = tempfile(fileext = ".csv"), ...) {
-  browser()
+.getClimVars <- function(coords, byCombo = FALSE, outFormat = "data.table",
+                         filename = tempfile(fileext = ".rds"), ...) {
+  ## checks
+  if (outFormat == "list" & isFALSE(byCombo)) {
+    stop("byCombo is FALSE, please set outFormat to 'data.table' or 'disk'")
+  }
+  
+  filename <- normPath(filename)
+  
   dots <- list(...)
   if (byCombo) {
     dots <- as.data.table(expand.grid(dots, stringsAsFactors = FALSE))
-    
+    out <- list()
     for (i in 1:nrow(dots)) {
       x <- dots[i]
-      out <- do.call(downscale, append(list(xyz = coords), x))
+      outTemp <- do.call(downscale, append(list(xyz = coords), x))
+      
+      outTemp <- outTemp[!is.nan(get(x$vars)),] ## remove missing data (e.g. ocean)
+      setDT(outTemp)
+      
+      ## join all columns back
+      outTemp <- coords[outTemp, on = "id"]
+      
+      if (outFormat == "disk") {
+        ## exclude certain downscale/downscale_core arguments from the file naming
+        argsForFile <- setdiff(colnames(dots),
+                               c("cache", "xyz", "nthread", "max_run", "return_refperiod",
+                                 "ppt_lr", "out_spatial", "plot"))
+        filename2 <- sub("\\.rds", "", basename(filename))
+        filename2 <- paste0(filename2, "_", paste(x[, ..argsForFile], collapse = "_"), ".rds")
+        filename2 <- file.path(dirname(filename), filename2)
+        saveRDS(outTemp, file = filename2)
+        
+        out[[i]] <- filename2
+      } else {
+        out[[i]] <- outTemp
+      }
+    }
+    
+    if (outFormat == "data.table") {
+      sharedCols <- lapply(out, names) |>
+        Reduce(intersect, x = _)
+      out <- lapply(out, setkeyv, cols = sharedCols)
+      
+      out <- Reduce(merge, out)
     }
   } else {
+    out <- do.call(downscale, append(list(xyz = coords), dots))
     
+    out <- out[!is.nan(get(dots$vars[1])),] ## remove missing data (e.g. ocean)
+    out[, PERIOD := NULL]
+    
+    setDT(out)
+    
+    ## join all columns back
+    out <- coords[out, on = "id"]
+    
+    if (outFormat == "disk") {
+      saveRDS(out, file = filename)
+      out <- filename
+    }
   }
   
-  if (outFormat == "data.table") {
-    
-  }
-  
-  ##test: 
-  # clim_vars <- downscale(coords[1003050:1003085,], ...)
-  clim_vars <- clim_vars[!is.nan(PPT05),] ##lots of points in the ocean
-  clim_vars[, PERIOD := NULL]
-  
-  setDT(clim_vars)
-  
-  ## join all columns back
-  clim_vars <- coords[clim_vars, on = "id"]
-  
-  if (saveToDisk) {
-    
-  }
-  
-  return(clim_vars)
+  return(out)
 }
