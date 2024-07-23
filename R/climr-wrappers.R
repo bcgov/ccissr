@@ -1,7 +1,7 @@
 #' Prepares coordinates and obtains climate normals
 #'  using `climr::downscale`
 #'
-#' @inheritParams .getClimate 
+#' @inheritParams .getClimVars 
 #' 
 #' @details
 #' If `bgcs` is provided, the BGC field will be appended to
