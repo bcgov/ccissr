@@ -142,7 +142,13 @@ getClimate <- function(coords, byCombo = FALSE, outFormat = "data.table",
         Reduce(intersect, x = _)
       out <- lapply(out, setkeyv, cols = sharedCols)
       
-      out <- Reduce(merge, out)
+      ## give a common name to climate var col (the one that is not shared across all tables)
+      out <- lapply(out, .renameUniqueCol, otherCols = sharedCols)
+      
+      out <- rbindlist(out, use.names = TRUE)
+      
+      ## back to wide format
+      out <- dcast.data.table(out, ... ~ var, value.var = "value")
     }
   } else {
     out <- do.call(downscale, append(list(xyz = coords), dots))
@@ -162,4 +168,25 @@ getClimate <- function(coords, byCombo = FALSE, outFormat = "data.table",
   }
   
   return(out)
+}
+
+
+#' Rename a column 
+#'
+#' @param x a `data.table`.
+#' @param otherCols character. Columns not to be renamed
+#'
+#' @return x with target column renamed as "value" and a 
+#'   new column "var" containing the original name of the 
+#'   target column
+#'
+#' @importFrom data.table setnames
+.renameUniqueCol <- function(x, otherCols) {
+  targetCol <- setdiff(names(x), otherCols)
+  
+  if (length(targetCol) > 1) stop("There should only be one column to rename.")
+  
+  setnames(x, targetCol, "value")
+  x[, var := targetCol]
+  x
 }
