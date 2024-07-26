@@ -16,7 +16,7 @@
 #' @importFrom methods is
 #' @export
 getClimate <- function(coords, byCombo = FALSE, outFormat = "data.table",
-                       filename = tempfile(fileext = ".rds"), ...) {
+                       filename = NULL, ...) {
   dots <- list(...)
   
   if (!is(coords, "data.table")) {
@@ -101,11 +101,16 @@ getClimate <- function(coords, byCombo = FALSE, outFormat = "data.table",
 .getClimVars <- function(coords, byCombo = FALSE, outFormat = "data.table",
                          filename = tempfile(fileext = ".rds"), ...) {
   ## checks
+  if (is.null(filename)) {
+    filename <- tempfile(fileext = ".rds")
+  }
+  
+  filename <- normPath(filename)
+  
   if (outFormat == "list" & isFALSE(byCombo)) {
     stop("byCombo is FALSE, please set outFormat to 'data.table' or 'disk'")
   }
   
-  filename <- normPath(filename)
   
   dots <- list(...)
   if (byCombo) {
