@@ -12584,12 +12584,12 @@ SBSdk,SBSdk/04,Lw,2,Lw,2,"",t
 SBSdk,SBSdk/05,Lw,2,Lw,2,"",t
 BWBSmk,BWBSmk/102,Sw,,Sw,3,KSD,
 SBSdk,SBSdk/06,Lw,2,Lw,2,"",t
-SBSdk,SBSdk/01,Fdi,3,Fd,3,C4,t
-SBSdk,SBSdk/01a,Fdi,3,Fd,3,C4,t
-SBSdk,SBSdk/01b,Fdi,3,Fd,3,C4,t
 SBSdk,SBSdk/03,Fdi,3,Fd,3,B2,t
-SBSdk,SBSdk/04,Fdi,2,Fd,2,"",t
-SBSdk,SBSdk/05,Fdi,3,Fd,3,"",t
 SBSdk,SBSdk/06,Fdi,3,Fd,3,"",t
 CWHxm1,CWHxm1/03,Lw,3,Lw,3,WHM,f
 CWHxm1,CWHxm1/04,Lw,3,Lw,3,WHM,f
+SBSdk,SBSdk/01,Fdi,3,Fd,3,C4,t
+SBSdk,SBSdk/01a,Fdi,3,Fd,3,C4,t
+SBSdk,SBSdk/01b,Fdi,3,Fd,2,KSD,t
+SBSdk,SBSdk/04,Fdi,2,Fd,2,"",t
+SBSdk,SBSdk/05,Fdi,3,Fd,3,"",t
