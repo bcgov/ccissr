@@ -1,120 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/GDALcrop.html</loc>
-  </url>
-  <url>
-    <loc>/reference/GDALintersect.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ModelDir.html</loc>
-  </url>
-  <url>
-    <loc>/reference/addVars.html</loc>
-  </url>
-  <url>
-    <loc>/reference/bccciss-data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ccissOutput.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cleanData.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dbBbox.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dbGetBGC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dbGetBGCPred.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dbGetCCISS.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dbGetCCISSRaw.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dbGetClimSum.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dbGetSppLimits.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dbPointInfo.html</loc>
-  </url>
-  <url>
-    <loc>/reference/do_helpers.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-gc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-getClimVars.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dwnldFromObjSto.html</loc>
-  </url>
-  <url>
-    <loc>/reference/edatopicOverlap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/edatopicSubset.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ef_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getClimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/logVars.html</loc>
-  </url>
-  <url>
-    <loc>/reference/makeGapExtents.html</loc>
-  </url>
-  <url>
-    <loc>/reference/makePointCoords.html</loc>
-  </url>
-  <url>
-    <loc>/reference/optimise_portfolio.html</loc>
-  </url>
-  <url>
-    <loc>/reference/removeOutlier.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rmLowSampleBGCs.html</loc>
-  </url>
-  <url>
-    <loc>/reference/run_portfolio.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simulateClimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/subsetByExtent.html</loc>
-  </url>
-  <url>
-    <loc>/reference/trainModel.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/CONTRIBUTING.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/GDALcrop.html</loc></url>
+<url><loc>/reference/GDALintersect.html</loc></url>
+<url><loc>/reference/ModelDir.html</loc></url>
+<url><loc>/reference/addVars.html</loc></url>
+<url><loc>/reference/bccciss-data.html</loc></url>
+<url><loc>/reference/ccissOutput.html</loc></url>
+<url><loc>/reference/cleanData.html</loc></url>
+<url><loc>/reference/dbBbox.html</loc></url>
+<url><loc>/reference/dbGetBGC.html</loc></url>
+<url><loc>/reference/dbGetBGCPred.html</loc></url>
+<url><loc>/reference/dbGetCCISS.html</loc></url>
+<url><loc>/reference/dbGetCCISSRaw.html</loc></url>
+<url><loc>/reference/dbGetClimSum.html</loc></url>
+<url><loc>/reference/dbGetSppLimits.html</loc></url>
+<url><loc>/reference/dbPointInfo.html</loc></url>
+<url><loc>/reference/do_helpers.html</loc></url>
+<url><loc>/reference/dot-gc.html</loc></url>
+<url><loc>/reference/dot-getClimVars.html</loc></url>
+<url><loc>/reference/dwnldFromObjSto.html</loc></url>
+<url><loc>/reference/edatopicOverlap.html</loc></url>
+<url><loc>/reference/edatopicSubset.html</loc></url>
+<url><loc>/reference/ef_plot.html</loc></url>
+<url><loc>/reference/getClimate.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/logVars.html</loc></url>
+<url><loc>/reference/makeGapExtents.html</loc></url>
+<url><loc>/reference/makePointCoords.html</loc></url>
+<url><loc>/reference/optimise_portfolio.html</loc></url>
+<url><loc>/reference/removeOutlier.html</loc></url>
+<url><loc>/reference/rmLowSampleBGCs.html</loc></url>
+<url><loc>/reference/run_portfolio.html</loc></url>
+<url><loc>/reference/simulateClimate.html</loc></url>
+<url><loc>/reference/subsetByExtent.html</loc></url>
+<url><loc>/reference/trainModel.html</loc></url>
 </urlset>
+
