@@ -22,15 +22,15 @@ PPT_at (autumn precip), PPT_wt (winter precip)
 Add extra climate variables
 }
 \details{
-This function calculates more climate variables derived from those
-output by \code{climr_downscale}. Presently it adds the following:
+This function calculates additional climate variables derived from those
+output by \verb{[climr::downscale()]}. Presently it adds the following:
 \itemize{
-\item May to June precip.: \eqn{PPT_MJ = PPT05 + PPT06}
-\item July to September precip \eqn{PPT_JAS = PPT07 + PPT08 + PPT09}
-\item Precipitation during vegetation dormant period: \eqn{PPT.dormant = PPT_at + PPT_wt}
-\item CMD deficit \eqn{CMD.def = 500 - PPT.dormant} (bounded to 0)
-\item \eqn{CMDMax = CMD07}
+\item May to June precip.: \eqn{PPT_MJ = PPT_05 + PPT_06}
+\item July to September precip.: \eqn{PPT_JAS = PPT_07 + PPT_08 + PPT_09}
+\item Precip. during vegetation dormant period (autumn, winter): \eqn{PPT.dormant = PPT_at + PPT_wt}
+\item CMD deficit: \eqn{CMD.def = 500 - PPT.dormant} (bounded to 0)
+\item \eqn{CMDMax = CMD_07}
 \item \eqn{CMD.total = CMD.def + CMD}
-\item \eqn{DD_delayed = ((DD_0_at + DD_0_wt)*0.0238) - 1.8386} bounded to 0)
+\item \eqn{DD_delayed = ((DDsub0_at + DDsub0_wt)*0.0238) - 1.8386} bounded to 0)
 }
 }

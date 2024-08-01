@@ -1,7 +1,7 @@
 Package: ccissr
 Title: B.C. Climate Change Informed Tree Species Selection
-Version: 1.0.1
-Date: 13-03-2024
+Version: 1.0.1.9001
+Date: 25-07-2024
 Authors@R: c(
   person("Will", "MacKenzie", role = c("cre", "aut"), email = "Will.MacKenzie@gov.bc.ca"),
   person("Kiri", "Daust", role = c("aut")),
@@ -43,5 +43,5 @@ Remotes:
 LinkingTo: Rcpp
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 SystemRequirements: chromium-browser

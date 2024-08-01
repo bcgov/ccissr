@@ -3,27 +3,45 @@
 \name{getClimate}
 \alias{getClimate}
 \title{Prepares coordinates and obtains climate normals
-using \code{climr_downscale}}
+using \code{climr::downscale}}
 \usage{
-getClimate(coords, ...)
+getClimate(
+  coords,
+  byCombo = FALSE,
+  outFormat = "data.table",
+  filename = tempfile(fileext = ".rds"),
+  ...
+)
 }
 \arguments{
 \item{coords}{a \code{data.table}, or spatial points (\code{SpatVector} or \code{sf})
 with point coordinates ("lon" = longitude, "lat" = latitude), elevation ("elev") and point IDs ("id").}
 
-\item{...}{further arguments passed to \code{\link[=climr_downscale]{climr_downscale()}}.}
+\item{byCombo}{logical. If TRUE, \code{climr::downscale} is iterated by
+combinations of any arguments passed to \code{downscale} via  \code{...}
+(e.g., \code{vars}, \code{gcms}, \code{ssps}).}
+
+\item{outFormat}{character. Should outputs be in the form of a
+\code{data.table} ("data.table"), list of \code{data.tables} ("list") or
+written directly to disk ("disk")? If \code{byCombo == FALSE}, only
+"data.table" and "disk" will work.}
+
+\item{filename}{character. Passed to \code{saveRDS(..., file)} if
+\code{outFormat == "disk"}. Defaults to \code{tempfile(fileext = ".csv")}.}
+
+\item{...}{further arguments passed to \code{\link[climr:downscale]{climr::downscale()}}.}
 }
 \value{
 climate normals as a \code{data.table}
 }
 \description{
 Prepares coordinates and obtains climate normals
-using \code{climr_downscale}
+using \code{climr::downscale}
 }
 \details{
 If \code{bgcs} is provided, the BGC field will be appended to
 the output \code{data.table}.
 }
 \seealso{
-\code{\link[=climr_downscale]{climr_downscale()}}
+\code{\link[climr:downscale]{climr::downscale()}}
 }
