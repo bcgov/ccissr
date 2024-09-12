@@ -7,12 +7,12 @@
 dwnldFromObjSto(prefix, bucket, path)
 }
 \arguments{
-\item{prefix}{passed to \code{\link[aws.s3:sync]{aws.s3::s3sync()}}. Must be a \emph{path}
+\item{prefix}{passed to \code{\link[aws.s3:s3sync]{aws.s3::s3sync()}}. Must be a \emph{path}
 to a remote folder. Use trailing slash (\verb{~/}).}
 
-\item{bucket}{passed to \code{\link[aws.s3:sync]{aws.s3::s3sync()}}.}
+\item{bucket}{passed to \code{\link[aws.s3:s3sync]{aws.s3::s3sync()}}.}
 
-\item{path}{passed to \code{\link[aws.s3:sync]{aws.s3::s3sync()}}. Must be an \emph{existing path}
+\item{path}{passed to \code{\link[aws.s3:s3sync]{aws.s3::s3sync()}}. Must be an \emph{existing path}
 to a local folder.}
 }
 \description{
