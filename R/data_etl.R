@@ -35,7 +35,6 @@ dbPointInfo <- function(con, points) {
   
   Long <- .subset2(points, "Long")
   Lat <- .subset2(points, "Lat")
-  ID <- .subset2(points, "ID")
   # points[,mls := paste0("(",Long," ",Lat,")")]
   # wkt_str <- paste0("MULTIPOINT(", paste(pnts$mls, collapse = ", "),")")
   
@@ -66,7 +65,9 @@ dbPointInfo <- function(con, points) {
   #   ON ST_Intersects(pts4326.geom, bgc_map.geom)
   #                        ")
   
-  bec_info_sql <- paste0("
+  if(nrow(points) > 1){
+    ID <- .subset2(points, "ID")
+    bec_info_sql <- paste0("
     WITH pts3005 AS (
       ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 3005) geom,
       ",ID," id ", collapse = "\n UNION ALL \n") ,"
@@ -91,6 +92,33 @@ dbPointInfo <- function(con, points) {
     LEFT JOIN bec_info bec
     ON ST_Intersects(pts.geom, bec.geometry)
   ")
+    
+  }else{
+    bec_info_sql <- paste0("
+    WITH pts3005 AS (
+      ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 3005) geom ", collapse = "\n UNION ALL \n") ,"
+    )
+    
+    SELECT bec.zone,
+           bec.subzone,
+           bec.variant,
+           bec.phase,
+           bec.natural_disturbance,
+           bec.map_label,
+           bec.bgc_label,
+           bec.zone_name,
+           bec.subzone_name,
+           bec.variant_name,
+           bec.phase_name,
+           bec.natural_disturbance_name,
+           bec.feature_area_sqm,
+           bec.feature_length_m
+    FROM pts3005 pts
+    LEFT JOIN bec_info bec
+    ON ST_Intersects(pts.geom, bec.geometry)
+  ")
+  }
+  
   
   #test <- dbGetQuery(pool, bec_info_sql)
   
