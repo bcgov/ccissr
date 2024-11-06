@@ -35,6 +35,9 @@ dbPointInfo <- function(con, points) {
   
   Long <- .subset2(points, "Long")
   Lat <- .subset2(points, "Lat")
+  ID <- .subset2(points, "ID")
+  # points[,mls := paste0("(",Long," ",Lat,")")]
+  # wkt_str <- paste0("MULTIPOINT(", paste(pnts$mls, collapse = ", "),")")
   
   # Some elevation rasters extent overlap. I'm taking the maximum elevation value per points
   # From the test I've done, they all share the same values.
@@ -50,6 +53,8 @@ dbPointInfo <- function(con, points) {
     GROUP BY pts
   ")
   
+  
+  
   # bec_subz_sql <- paste0("
   #   WITH pts4326 AS (
   #     ", paste0("SELECT st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326) geom", collapse = "\n UNION ALL \n") ,"
@@ -63,10 +68,12 @@ dbPointInfo <- function(con, points) {
   
   bec_info_sql <- paste0("
     WITH pts3005 AS (
-      ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 3005) geom", collapse = "\n UNION ALL \n") ,"
+      ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 3005) geom,
+      ",ID," id ", collapse = "\n UNION ALL \n") ,"
     )
     
-    SELECT bec.zone,
+    SELECT pts.id,
+           bec.zone,
            bec.subzone,
            bec.variant,
            bec.phase,
@@ -84,6 +91,8 @@ dbPointInfo <- function(con, points) {
     LEFT JOIN bec_info bec
     ON ST_Intersects(pts.geom, bec.geometry)
   ")
+  
+  #test <- dbGetQuery(pool, bec_info_sql)
   
   site_ref_sql <- paste0("
     WITH pts3005 AS (
