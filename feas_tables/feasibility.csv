@@ -9164,7 +9164,6 @@ IDFdk1,IDFdk1/Fm05,Fdi,2,Fd,2,MRyan,f
 IDFdk1,IDFdk1/Fm05,Pli,3,Pl,3,MRyan,f
 IDFdk1,IDFdk1/Fm05,Sxw,2,Sx,2,MRyan,f
 IDFdk2,IDFdk2/101,At,2,At,1,WHM,f
-IDFdk2,IDFdk2/101,Fdi,1,Fd,1,MRyan,f
 IDFdk2,IDFdk2/101,Lw,3,Lw,3,MRyan,t
 IDFdk2,IDFdk2/101,Pli,1,Pl,1,MRyan,f
 IDFdk2,IDFdk2/101,Pyi,3,Py,3,MRyan,f
@@ -9175,13 +9174,11 @@ IDFdk2,IDFdk2/102,Pyi,2,Py,2,MRyan,f
 IDFdk2,IDFdk2/103,Fdi,2,Fd,2,MRyan,f
 IDFdk2,IDFdk2/103,Pli,3,Pl,3,MRyan,f
 IDFdk2,IDFdk2/103,Pyi,2,Py,2,MRyan,f
-IDFdk2,IDFdk2/104,Fdi,2,Fd,2,MRyan,f
 IDFdk2,IDFdk2/104,Lw,3,Lw,3,MRyan,t
 IDFdk2,IDFdk2/104,Pli,2,Pl,2,MRyan,f
 IDFdk2,IDFdk2/104,Pyi,2,Py,2,MRyan,f
 IDFdk2,IDFdk2/105,At,2,At,2,MRyan,f
 IDFdk2,IDFdk2/105,Bl,3,Bl,3,MRyan,f
-IDFdk2,IDFdk2/105,Fdi,2,Fd,2,MRyan,f
 IDFdk2,IDFdk2/105,Lw,3,Lw,3,MRyan,t
 IDFdk2,IDFdk2/105,Pli,1,Pl,1,MRyan,f
 IDFdk2,IDFdk2/105,Sxw,3,Sx,3,MRyan,f
@@ -9257,6 +9254,7 @@ IDFdk4,IDFdk4/05,At,3,At,3,WHM,f
 IDFdk4,IDFdk4/05,Fdi,1,Fd,1,WHM,f
 IDFdk4,IDFdk4/05,Pli,3,Pl,3,WHM,f
 IDFdk4,IDFdk4/06,At,3,At,3,WHM,f
+IDFdk2,IDFdk2/101,Fdi,1,Fd,1,MRyan,f
 IDFdk4,IDFdk4/06,Fdi,3,Fd,3,WHM,f
 IDFdk4,IDFdk4/06,Pli,2,Pl,2,WHM,f
 IDFdk4,IDFdk4/06,Sxw,5,Sx,5,WHM,f
@@ -13800,3 +13798,5 @@ CWHvm1,CWHvm1/Ws54,Cw,1,Cw,1,AB,f
 CWHvm1,CWHvm1/Ws56,Cw,,Cw,1,ABx,f
 CWHvm1,CWHvm1/Ws58,Cw,,Cw,2,ABx,f
 CWHvm1,CWHvm1/Ws60,Cw,,Cw,3,ABx,f
+IDFdk2,IDFdk2/104,Fdi,2,Fd,1,false,f
+IDFdk2,IDFdk2/105,Fdi,2,Fd,2,MRyan,f
