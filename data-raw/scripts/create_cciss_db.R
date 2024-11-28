@@ -13,6 +13,8 @@ conn <- DBI::dbConnect(
   password = Sys.getenv("BCGOV_PWD")
 )
 
+load("../Common_Files/trainingpts_w_clim_Final.Rdata")
+
 feas <- fread("../Common_Files/Feasibility_v13_2.csv")
 dbWriteTable(conn, "feasorig", feas, row.names = FALSE)
 

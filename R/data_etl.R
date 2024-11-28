@@ -209,9 +209,9 @@ dbBbox <- function(con, points, buffer) {
 #' @export
 dbGetBGC <- function(con,bgc,district = NULL,maxPoints){
   if(is.null(district)){
-    query <- paste0("select siteno from bgc_points where bgc IN ('",paste(bgc,collapse = "','"),"')")
+    query <- paste0("select siteno from preselected_points13 where bgc IN ('",paste(bgc,collapse = "','"),"')")
   }else{
-    query <- paste0("select siteno from bgc_points where bgc IN ('",paste(bgc,collapse = "','"),"') and dist_code = '",district,"'")
+    query <- paste0("select siteno from preselected_dist13 where bgc IN ('",paste(bgc,collapse = "','"),"') and dist_code = '",district,"'")
   }
   dat <- RPostgres::dbGetQuery(con, query)$siteno
   return(dat)
