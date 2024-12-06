@@ -117,7 +117,7 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
   novelty <- rep(NA, length(label.targets)) # initiate a vector to store the sigma dissimilarities
   
   for(analog in analogs){ # loop through all of the analogs used to describe the target climates. 
-    clim.analog <- clim.pts[label.analogs==analog, ..vars]
+    clim.analog <- clim.analogs[label.analogs==analog, ..vars]
     clim.target <- clim.targets[label.targets==analog, ..vars]
     if(!is.null(clim.icvs)) clim.icv <- clim.icvs[label.icvs==analog, ..vars]
     
