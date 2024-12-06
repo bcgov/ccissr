@@ -97,7 +97,6 @@
 #' @importFrom grDevices rgb
 #' @importFrom plotly plot_ly layout add_trace
 #' @importFrom EnvStats pchi qchi
-#' @importFrom data.table := .SD .SDcols lapply var data.table
 #'  
 #' @examples
 #' if (FALSE) {
