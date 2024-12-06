@@ -63,7 +63,6 @@
 #' conditions listed in `clim.analogs`. Length equals number of records in
 #' `clim.analogs`.  
 #' @param vars character. Climate variables to use in the novelty measurement. 
-#' The default is Tmin, Tmax, and Precipitation for the four climatological seasons. 
 #' @param clim.icvs data.table. Time series of climate variables at the geographic
 #' centroids of each analog in the analog pool. If not null, this interannual climatic
 #' variability will be pooled with the spatial variation of the analog to calculate 
@@ -98,7 +97,7 @@
 #' @importFrom grDevices rgb
 #' @importFrom plotly plot_ly layout add_trace
 #' @importFrom EnvStats pchi qchi
-#' @importFrom data.table := .SD data.table
+#' @importFrom data.table := .SD .SDcols lapply var data.table
 #'  
 #' @examples
 #' if (FALSE) {
@@ -107,8 +106,7 @@
 #' #'
 #' @export
 
-analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.analogs, 
-                           vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")), 
+analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.analogs, vars,
                            clim.icvs = NULL, label.icvs = NULL, weight.icv = 0.5, sigma = TRUE,
                            analog.focal = NULL, threshold = 0.95, pcs = NULL, 
                            plotScree = FALSE, 
@@ -140,7 +138,7 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
       (get(col) - unlist(clim.mean)[col]) / unlist(clim.sd)[col]
     })]
     if(!is.null(clim.icvs)) clim.icv[, (names(clim.icv)) := lapply(names(clim.icv), function(col) {
-      (get(col) - unlist(clim.mean)[col]) / unlist(clim.sd)[col]
+      (get(col) - unlist(clim.icv[, lapply(.SD, mean, na.rm = TRUE)])[col]) / unlist(clim.sd)[col] # subtract mean of ICV to centre the ICV on zero. 
     })]
     
     ## PCA on pooled target and analog
@@ -235,8 +233,8 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     for(i in 1:4){
       a <- predict(pca, clim.analog)[, plot2d.pcs[i,]]
       b <- predict(pca, clim.target)[, plot2d.pcs[i,]]
-      a <- sweep(a, 2, apply(a, 2, mean), '-') # centre the analog centroid on zero. this is done at a later stage than the pca in the distance calculation. 
-      b <- sweep(b, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation. 
+      b <- sweep(b, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation.
+      a <- sweep(a, 2, apply(a, 2, mean), '-') # centre the analog centroid on zero. this is done at a later stage than the pca in the distance calculation.
       plot(a, col="dodgerblue", xlim=range(c(a[,1], b[,1])), ylim=range(c(a[,2], b[,2])), asp=1, tck=0.01)
       points(b, bg=ColScheme[cut(q, breakpoints)], pch=21, cex=1.5)
       if(!is.null(clim.icvs)){
@@ -255,8 +253,8 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     # revert to the raw pcs (centered on the analog centroid), because standardization obscures the shape of the analog distribution
     a <- predict(pca, clim.analog)
     b <- predict(pca, clim.target)
-    a <- sweep(a, 2, apply(a, 2, mean), '-') # centre the analog centroid on zero. this is done at a later stage than the pca in the distance calculation. 
-    b <- sweep(b, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation. 
+    b <- sweep(b, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation.
+    a <- sweep(a, 2, apply(a, 2, mean), '-') # centre the analog centroid on zero. this is done at a later stage than the pca in the distance calculation.
     
     b_colors <- ColScheme[cut(q, breakpoints)] # Define colors for points in 'b'
     
@@ -354,7 +352,7 @@ bc <- vect(bc_bound())
 bc <- project(bc, "EPSG:4326")
 
 # DEM
-# dir <- paste("//objectstore2.nrs.bcgov/ffec/Climatologies/PRISM_BC/PRISM_dem/", sep="")
+dir <- paste("//objectstore2.nrs.bcgov/ffec/Climatologies/PRISM_BC/PRISM_dem/", sep="")
 dem <- rast(paste(dir, "PRISM_dem.asc", sep=""))
 dem <- aggregate(dem, fact=3)
 dem <- mask(dem, bc)
@@ -364,10 +362,10 @@ dem <- trim(dem)
 grid <- as.data.frame(dem, cells = TRUE, xy = TRUE)
 colnames(grid) <- c("id", "lon", "lat", "elev") # rename column names to what climr expects
 clim.grid <- downscale(xyz = grid, 
-                       gcms = list_gcms()[1], 
+                       gcms = list_gcms()[5], 
                        ssps = list_ssps()[2],
                        gcm_periods = list_gcm_periods(), 
-                       run_nm = list_runs_ssp(list_gcms()[1], list_ssps()[2])[3], 
+                       run_nm = list_runs_ssp(list_gcms()[5], list_ssps()[2])[4], 
                        vars = list_vars()
 )
 addVars(clim.grid)
@@ -418,7 +416,8 @@ analog_novelty(clim.targets = clim.targets,
                clim.analogs = clim.pts, 
                label.targets = bgc.pred, 
                label.analogs = pts$BGC, 
-               vars = pred_vars[-which(pred_vars=="CMI")], # remove CMI as it is NA along the coast (climr bug)
+               # vars = pred_vars[-which(pred_vars=="CMI")], # remove CMI as it is NA along the coast (climr bug)
+               vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")), 
                pcs = 3,
                analog.focal = bgc.focal,
                plotScree = TRUE, 
@@ -438,6 +437,10 @@ breakseq <- c(0,4,8)
 breakpoints <- c(seq(breakseq[1], breakseq[3], 0.01),199); length(breakpoints)
 ColScheme <- c(colorRampPalette(c("gray90", "gray50", "#FFF200", "#CD0000", "black"))(length(breakpoints)))
 
+# template Raster
+X <- dem
+values(X) <- NA
+
 # climate data and BGC projections
 clim.targets <- clim.grid[PERIOD == list_gcm_periods()[3], ]
 bgc.pred <- predict(BGC_RFresp, data = clim.targets)[['predictions']]
@@ -447,7 +450,8 @@ novelty <- analog_novelty(clim.targets = clim.targets,
                           clim.analogs = clim.pts, 
                           label.targets = bgc.pred, 
                           label.analogs = pts$BGC, 
-                          vars = pred_vars[-which(pred_vars=="CMI")], # remove CMI as it is NA along the coast (climr bug)
+                          # vars = pred_vars[-which(pred_vars=="CMI")], # remove CMI as it is NA along the coast (climr bug)
+                          vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
                           clim.icvs <- clim.icv.pts,
                           label.icvs <- pts.mean$BGC[clim.icv.pts$id],
                           weight.icv = 0.5,
@@ -471,7 +475,8 @@ for(weight.icv in weight.icvs){
                             clim.icvs <- clim.icv.pts,
                             label.icvs <- pts.mean$BGC[clim.icv.pts$id],
                             weight.icv = weight.icv,
-                            vars = pred_vars[-which(pred_vars=="CMI")], 
+                            # vars = pred_vars[-which(pred_vars=="CMI")], 
+                            vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")), 
                             threshold = 0.95,
                             pcs = NULL
   )
@@ -488,7 +493,8 @@ for(pcnum in c(2,3,4,5)){
                           clim.analogs = clim.pts, 
                           label.targets = bgc.pred, 
                           label.analogs = pts$BGC, 
-                          vars = pred_vars[-which(pred_vars=="CMI")], 
+                          # vars = pred_vars[-which(pred_vars=="CMI")], 
+                          vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")), 
                           clim.icvs <- clim.icv.pts,
                           label.icvs <- pts.mean$BGC[clim.icv.pts$id],
                           weight.icv = 0.5,
