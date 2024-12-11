@@ -5,10 +5,19 @@ library(data.table)
 library(usethis)
 library(readxl)
 
+zone_cols <- fread("../../../Downloads/WNAv13_Zone_colours_2.csv")
+dat2 <- zone_cols[,.(ZONE,RGB)] |> unique()
+setnames(dat2,c("classification","colour"))
+fwrite(dat2, "WNAv13_ZoneCols.csv")
+
 E1 <- fread("../Common_Files/Edatopic_v13_2.csv")
 S1 <- fread("../Common_Files/Feasibility_v13_2.csv")
-N1 <- fread("./data-raw/data_tables/SiteSeries_names_v12_10.csv")
-N1[,SiteSeriesLongName := gsub("\x96","-",SiteSeriesLongName)]
+N1 <- fread("./data-raw/data_tables/SiteSeries_names_v12_15.csv", encoding = "Latin-1")
+#N1[,SiteSeriesLongName := gsub(pattern = "[\x80-\xff]", "",SiteSeriesLongName, perl = T)]
+library(ccissr)
+data(N1)
+SSnew <- unique(E1$SS_NoSpace)
+
 
 SS <- fread("../Common_Files/WNAv13_Special_SS.csv")
 
@@ -200,6 +209,7 @@ use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          models_info, TreeCols,
          overwrite = TRUE)
 
+use_data(N1, overwrite = T)
 use_data(E1, E1_Phase, S1, subzones_colours_ref, overwrite = TRUE)
 # see version in ?usethis::use_data, if you all use R 3.5 and up. You should bump to version 3
 # use_data(E1, S1, R1, F1, zones_colours_ref, subzones_colours_ref, overwrite = TRUE, version = 3)
