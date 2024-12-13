@@ -17,7 +17,7 @@
 #' @return `data.table` 
 #' @export
 logVars <- function(dat,
-                    elements = c("AHM", "DD", "Eref", "FFP", "NFFD", "PAS", "PPT", "SHM", "CMI", "CMD"),
+                    elements = c("AHM", "DD", "Eref", "FFP", "NFFD", "PAS", "PPT", "SHM", "CMD"),
                     base = exp(1),
                     add.fields = FALSE,
                     zero_adjust = FALSE) {
