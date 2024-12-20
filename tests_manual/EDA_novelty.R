@@ -102,8 +102,13 @@ analog_novelty(clim.targets = clim.targets,
                label.icvs <- pts.mean$BGC[clim.icv.pts$id],
                # plot2d = TRUE,
                plot3d = TRUE,
-               plot3d.pcs=c(1,2,3)
+               plot3d.pcs=c(1,2,3), 
+               plot3d.candidates = TRUE
 )
+
+
+pca <- prcomp(clim.pts, scale=TRUE)
+
 
 #---------------------------
 # Novelty maps
@@ -119,7 +124,7 @@ X <- dem
 values(X) <- NA
 
 # climate data and BGC projections
-clim.targets <- clim.grid[PERIOD == list_gcm_periods()[3], ]
+clim.targets <- clim.grid[PERIOD == list_gcm_periods()[1], ]
 bgc.pred <- predict(BGC_RFresp, data = clim.targets)[['predictions']]
 
 par(mar=c(1,1,1,1), mfrow=c(1,1))
@@ -133,7 +138,8 @@ novelty <- analog_novelty(clim.targets = clim.targets,
                           label.icvs <- pts.mean$BGC[clim.icv.pts$id],
                           weight.icv = 0.5,
                           threshold = 0.95,
-                          pcs = NULL
+                          pcs = NULL, 
+                          logVars = TRUE
                           
 )
 X[clim.targets[, id]] <- novelty
@@ -207,6 +213,7 @@ for(pcnum in c(2,3,4,5)){
 }
 
 # Maps with and without log-transformation
+clim.targets <- clim.grid[PERIOD == list_gcm_periods()[1], ]
 par(mar=c(1,1,1,1), mfrow=c(1,2))
 for(log in c(TRUE, FALSE)){
   novelty <- analog_novelty(clim.targets = clim.targets,
