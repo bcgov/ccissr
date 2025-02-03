@@ -142,13 +142,13 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     if(logVars){
       clim.analog <- logVars(clim.analog, zero_adjust = TRUE)
       clim.target <- logVars(clim.target, zero_adjust = TRUE)
-      clim.icv <- logVars(clim.icv, zero_adjust = TRUE)
+      if(!is.null(clim.icvs)) clim.icv <- logVars(clim.icv, zero_adjust = TRUE)
       if(plot3d.candidates) clim.analogs.all <- logVars(clim.analogs.all, zero_adjust = TRUE)
       
       ## remove variables with non-finite values in the target population (this is an edge case that occurs when the target population has a variable (typically CMD) with only zeroes)
       clim.target <- clim.target[, lapply(.SD, function(x) if (all(is.finite(x))) x else NULL)]
       clim.analog <- clim.analog[, .SD, .SDcols = names(clim.target)]
-      clim.icv <- clim.icv[, .SD, .SDcols = names(clim.target)]
+      if(!is.null(clim.icvs)) clim.icv <- clim.icv[, .SD, .SDcols = names(clim.target)]
       if(plot3d.candidates) clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.target)]
     }
     
