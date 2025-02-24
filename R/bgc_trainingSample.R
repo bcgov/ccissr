@@ -23,7 +23,7 @@
 #' 
 #' @return A `data.table` containing the subsampled points with columns `id`, `lon`, `lat`, `elev`, and `BGC`.
 #' 
-#' @importFrom data.table as.data.table setnames .SD .N := rbind
+#' @importFrom data.table as.data.table setnames .SD .N := 
 #' @importFrom terra cells
 #' @importFrom climr downscale
 #' 

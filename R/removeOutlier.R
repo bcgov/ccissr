@@ -6,7 +6,7 @@
 #' 
 #' @details TODO. Parallelizes computations internally with `foreach`.
 #'
-#' @return
+#' @return A `data.table` containing the non-outlying observations
 #' @seealso [foreach::foreach()]
 #' 
 #' @importFrom foreach foreach %do%
