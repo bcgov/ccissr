@@ -48,7 +48,7 @@ addVars(clim.grid)
 clim.grid <- clim.grid[is.finite(CMD.total)] #remove NA rows to have complete cases for RF model
 
 #historical climate for training points
-pts <- fread("//objectstore2.nrs.bcgov/ffec/BGC_models/WNA_v13_50-200filtpts_15Nov.csv")
+pts <- fread("//objectstore2.nrs.bcgov/ffec/BGC_models/points_WNA_simple200.csv")
 colnames(pts) <- c("id", "BGC", "lon", "lat", "elev") # rename column names to what climr expects
 clim.pts <- downscale(xyz = pts,
                       vars = list_vars())
