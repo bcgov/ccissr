@@ -1,4 +1,4 @@
-# `ccissr` 1.0.2
+# `ccissr` 1.0.3
 ## Enhancements
 * added new function 'bgc_trainingSample' for selecting a training sample for biogeoclimatic projections
 * added new function 'removeOutlier' for remove mahalanobian outliers from a sample
