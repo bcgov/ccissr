@@ -1,46 +1,47 @@
+library(tidyverse)
+
 #read in current table
-feas<-read.csv("feas_tables/suitability.csv")
-feas$X<-NULL
-names(feas)
+suit<-read.csv("tables/versioned/Feasibility_v13_7.csv")
+suit$X<-NULL
+names(suit)
+suit<-rename(suit, suitability=feasible, newsuit=newfeas)#rename to suitability
 
 #read in updated table
-omineca_update<-read.csv("feas_tables/regional_updates/Coast_Feb2025.csv") 
-#coast_updatex<-subset(coast_update, ss_nospace %in% feas$ss_nospace) #already there -update suit ratings
-#new_ss<-anti_join(coast_update, coast_updatex) #add new 
+omineca_update<-read.csv("tables/regional_updates/omineca_cariboo_Feb2025.csv") 
+names(omineca_update)
+unique(omineca_update$expert_initials)
+#subset to Daniel Sklar
+omineca_update<-subset(omineca_update,  expert_initials=="DS")
 
-#delete bgcs from coast update in main 
-feas<-subset(feas, !bgc %in% coast_update$bgc)
-#delete CWHms1 & 2-> replaced with CWHms 4 & 5
-feas<-filter(feas, bgc!="CWHms1" & bgc!="CWHms2")
+#select relevant columns and rename for join
+omineca_update<-select(omineca_update, BGC, SS_NoSpace, expert, spp, expert_updated, expert_initials)%>%rename(bgc=BGC, ss_nospace=SS_NoSpace)
 
-check<-as.data.frame(unique(feas$bgc)) #look good 
-
+#join 
+suit2<-left_join(suit, omineca_update)
 
 #calculate change stats  
-coast_update<-mutate(coast_update, feas_change= if_else(newfeas==FEASFEB2025, 0, 1))
-nchange<-sum(coast_update$feas_change, na.rm = T)
+suit2<-mutate(suit2, suit_change= if_else(newsuit==expert_updated, 0, 1))
+nchange<-sum(suit2$suit_change, na.rm = T)
 
 #subset changed ratings 
-updated_ratings<-subset(coast_update, feas_change>0)
+updated_ratings<-subset(suit2, suit_change>0)
 
 #how many of these were initially blank?
-blanks<-subset(updated_ratings, newfeas=="")
-nchange=nchange-nrow(blanks)
+blanks<-subset(updated_ratings, newsuit=="")
+#nchange=nchange-nrow(blanks)
 
 #percent change 
-pchange<-nchange/nrow(coast_updatex)*100 #ratings were changed/updated
-padd<-nrow(blanks)/nrow(coast_updatex)*100 #ratings were added to site series where there were none
+pchange<-nchange/nrow(omineca_update)*100 #ratings were changed/updated
+#padd<-nrow(blanks)/nrow(omineca_update)*100 #ratings were added to site series where there were none
 
-#bind updates to full feas table 
-coast_update$newfeas<-NULL
-coast_update$feas_change<-NULL
-coast_update<-rename(coast_update, newfeas=FEASFEB2025)%>%relocate(newfeas,.after = spp)
 
-names(coast_update)
-names(feas)
+#replace with updated ratings & expert initials
+suit3<-mutate(suit2, newsuit= if_else(!is.na(expert_initials), expert_updated, newsuit))
+suit3<-mutate(suit3, mod= if_else(!is.na(expert_initials), expert_initials, mod))
 
-#bind back together
-feas<-rbind(feas, coast_update)
+#remove additional cols
+suit3<-select(suit3, -expert, -expert_updated, -expert_initials, -suit_change)
+names(suit3)
 
 #write as new version
-write.csv(feas, "feas_tables/versioned/Feasibility_v13_6.csv")
+write.csv(suit3, "tables/versioned/suitability_v13_8.csv")
