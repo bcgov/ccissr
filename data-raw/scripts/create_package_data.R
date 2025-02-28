@@ -10,16 +10,13 @@ dat2 <- zone_cols[,.(ZONE,RGB)] |> unique()
 setnames(dat2,c("classification","colour"))
 fwrite(dat2, "WNAv13_ZoneCols.csv")
 
-E1 <- fread("./Edatopic_v12_15.csv")
-S1 <- fread("../Common_Files/Feasibility_v13_2.csv")
+E1 <- fread("tables/versioned/Edatopic_v13_5.csv")
+S1 <- fread("tables/suitability.csv")
 N1 <- fread("./data-raw/data_tables/SiteSeries_names_v12_15.csv", encoding = "Latin-1")
 #N1[,SiteSeriesLongName := gsub(pattern = "[\x80-\xff]", "",SiteSeriesLongName, perl = T)]
-library(ccissr)
-data(N1)
-SSnew <- unique(E1$SS_NoSpace)
 
 
-SS <- fread("./WNA_SSeries_v12_12.csv")
+SS <- fread("tables/versioned/Special_SS_v13_1.csv")
 
 covMat <- read.csv("data-raw/Feas_CovMat.csv", header = TRUE, row.names = 1)
 
@@ -210,7 +207,7 @@ use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          overwrite = TRUE)
 
 use_data(N1, overwrite = T)
-use_data(E1, E1_Phase, S1, subzones_colours_ref, overwrite = TRUE)
+use_data(E1, E1_Phase, S1, overwrite = TRUE)
 # see version in ?usethis::use_data, if you all use R 3.5 and up. You should bump to version 3
 # use_data(E1, S1, R1, F1, zones_colours_ref, subzones_colours_ref, overwrite = TRUE, version = 3)
 
