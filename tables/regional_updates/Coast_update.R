@@ -1,10 +1,11 @@
+library(tidyverse)
 #read in current table
-feas<-read.csv("feas_tables/feasibility.csv")
+feas<-read.csv("tables/versioned/Feasibility_v13_5.csv")
 feas$X<-NULL
 names(feas)
 
 #read in updated table
-coast_update<-read.csv("feas_tables/regional_updates/Coast_Feb2025.csv") 
+coast_update<-read.csv("tables/regional_updates/Coast_Feb2025.csv") 
 #coast_updatex<-subset(coast_update, ss_nospace %in% feas$ss_nospace) #already there -update suit ratings
 #new_ss<-anti_join(coast_update, coast_updatex) #add new 
 
@@ -28,8 +29,8 @@ blanks<-subset(updated_ratings, newfeas=="")
 nchange=nchange-nrow(blanks)
 
 #percent change 
-pchange<-nchange/nrow(coast_updatex)*100 #ratings were changed/updated
-padd<-nrow(blanks)/nrow(coast_updatex)*100 #ratings were added to site series where there were none
+pchange<-nchange/nrow(coast_update)*100 #ratings were changed/updated
+padd<-nrow(blanks)/nrow(coast_update)*100 #ratings were added to site series where there were none
 
 #bind updates to full feas table 
 coast_update$newfeas<-NULL
