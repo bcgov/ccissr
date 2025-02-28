@@ -24,7 +24,7 @@ logVars <- function(dat,
   
   dat <- copy(dat)
   
-  # Fields to operate on (generally these should be ratio (zero-limited) variable)
+  # Fields to operate on (generally these should be ratio (zero-limited) variables)
   logFields <- grep(paste(elements, collapse = "|"), names(dat), value = TRUE)
   dat.log <- dat[, .SD, .SDcols = logFields]
   

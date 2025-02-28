@@ -22,7 +22,8 @@ analog_novelty(
   plot2d.pcs = cbind(c(1, 2, 3, 4), c(2, 3, 4, 5)),
   plot3d = FALSE,
   plot3d.pcs = c(1, 2, 3),
-  biplot = TRUE
+  biplot = TRUE,
+  plot3d.candidates = FALSE
 )
 }
 \arguments{
@@ -78,6 +79,9 @@ axes of the 3D scatterplot.}
 
 \item{biplot}{logical. Include lines on the 3D plot indicating the correlation
 of the standardized climate variables with the principal components.}
+
+\item{plot3d.candidates}{logical. Include representative points and labelled centroids for all
+western North American candidate analogs.}
 }
 \value{
 \code{vector} of sigma dissimilarity (if sigma==TRUE) or Mahalanobis distances

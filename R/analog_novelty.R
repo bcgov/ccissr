@@ -91,6 +91,8 @@
 #' axes of the 3D scatterplot. 
 #' @param biplot logical. Include lines on the 3D plot indicating the correlation 
 #' of the standardized climate variables with the principal components. 
+#' @param plot3d.candidates logical. Include representative points and labelled centroids for all 
+#' western North American candidate analogs. 
 #' 
 #' @return `vector` of sigma dissimilarity (if sigma==TRUE) or Mahalanobis distances 
 #' (if sigma==FALSE) corresponding to each element of the 'analogs.target' vector. 
@@ -113,7 +115,8 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
                            analog.focal = NULL, threshold = 0.95, pcs = NULL, logVars = TRUE, 
                            plotScree = FALSE, 
                            plot2d = FALSE, plot2d.pcs = cbind(c(1,2,3,4), c(2,3,4,5)), 
-                           plot3d = FALSE, plot3d.pcs=c(1,2,3), biplot = TRUE){
+                           plot3d = FALSE, plot3d.pcs=c(1,2,3), biplot = TRUE, 
+                           plot3d.candidates = FALSE){
   
   analogs <- if(is.null(analog.focal)) unique(label.targets) else analog.focal # list of analogs to loop through
   novelty <- rep(NA, length(label.targets)) # initiate a vector to store the sigma dissimilarities
@@ -122,24 +125,31 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     clim.analog <- clim.analogs[label.analogs==analog, ..vars]
     clim.target <- clim.targets[label.targets==analog, ..vars]
     if(!is.null(clim.icvs)) clim.icv <- clim.icvs[label.icvs==analog, ..vars]
-    
+    if(plot3d.candidates) clim.analogs.all <- clim.analogs[, ..vars]
+      
     ## data cleaning
     clim.analog <- clim.analog[complete.cases(clim.analog)] # remove rows without data
     clim.analog <- clim.analog[, .SD, .SDcols = which(sapply(clim.analog, function(x) var(x, na.rm = TRUE) > 0))]  # Remove zero-variance columns
     clim.target <- clim.target[, .SD, .SDcols = names(clim.analog)]
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[complete.cases(clim.icv)]
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[, .SD, .SDcols = names(clim.analog)]
+    if(plot3d.candidates){
+      clim.analogs.all <- clim.analogs.all[complete.cases(clim.analogs.all)]
+    clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.analog)]
+    }
     
     ## log-transform ratio variables
     if(logVars){
       clim.analog <- logVars(clim.analog, zero_adjust = TRUE)
       clim.target <- logVars(clim.target, zero_adjust = TRUE)
-      clim.icv <- logVars(clim.icv, zero_adjust = TRUE)
-
+      if(!is.null(clim.icvs)) clim.icv <- logVars(clim.icv, zero_adjust = TRUE)
+      if(plot3d.candidates) clim.analogs.all <- logVars(clim.analogs.all, zero_adjust = TRUE)
+      
       ## remove variables with non-finite values in the target population (this is an edge case that occurs when the target population has a variable (typically CMD) with only zeroes)
       clim.target <- clim.target[, lapply(.SD, function(x) if (all(is.finite(x))) x else NULL)]
       clim.analog <- clim.analog[, .SD, .SDcols = names(clim.target)]
-      clim.icv <- clim.icv[, .SD, .SDcols = names(clim.target)]
+      if(!is.null(clim.icvs)) clim.icv <- clim.icv[, .SD, .SDcols = names(clim.target)]
+      if(plot3d.candidates) clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.target)]
     }
     
     ## scale the data to the variance of the analog, since this is what we will ultimately be measuring the M distance in. 
@@ -153,6 +163,9 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     })]
     if(!is.null(clim.icvs)) clim.icv[, (names(clim.icv)) := lapply(names(clim.icv), function(col) {
       (get(col) - unlist(clim.icv[, lapply(.SD, mean, na.rm = TRUE)])[col]) / unlist(clim.sd)[col] # subtract mean of ICV to centre the ICV on zero. 
+    })]
+    if(plot3d.candidates) clim.analogs.all[, (names(clim.analogs.all)) := lapply(names(clim.analogs.all), function(col) {
+      (get(col) - unlist(clim.mean)[col]) / unlist(clim.sd)[col]
     })]
     
     ## PCA on pooled target and analog
@@ -268,6 +281,14 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     a <- predict(pca, clim.analog)
     b <- predict(pca, clim.target)
     b <- sweep(b, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation.
+    if(plot3d.candidates){
+      d <- predict(pca, clim.analogs.all)
+      d <- sweep(d, 2, apply(a, 2, mean), '-') # shift the candidate data so that the analog centroid is at zero. 
+      e <- aggregate(d, by=list(label.analogs), FUN=mean)
+      e <- e[is.finite(e$PC1),]
+      label.analogs.mean <- e$Group.1
+      e <- e[,-1]
+    }
     a <- sweep(a, 2, apply(a, 2, mean), '-') # centre the analog centroid on zero. this is done at a later stage than the pca in the distance calculation.
     
     b_colors <- ColScheme[cut(q, breakpoints)] # Define colors for points in 'b'
@@ -278,12 +299,14 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
         x = a[, plot3d.pcs[1]], y = a[, plot3d.pcs[2]], z = a[, plot3d.pcs[3]],
         type = "scatter3d", mode = "markers",
         marker = list(size = 5, color = "dodgerblue", opacity = 1),
+        hoverinfo = "none", # Turn off hover labels
         name = "Analog Points"
       ) %>%
       add_trace(
         x = b[, plot3d.pcs[1]], y = b[, plot3d.pcs[2]], z = b[, plot3d.pcs[3]],
         type = "scatter3d", mode = "markers",
         marker = list(size = 6, color = b_colors, opacity = 1),
+        hoverinfo = "none", # Turn off hover labels
         name = "Target Points"
       ) 
     # Add ICV points if they exist
@@ -295,9 +318,41 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
           x = c[, plot3d.pcs[1]], y = c[, plot3d.pcs[2]], z = c[, plot3d.pcs[3]],
           type = "scatter3d", mode = "markers",
           marker = list(size = 4, color = "black", opacity = 1),
+          hoverinfo = "none", # Turn off hover labels
           name = "ICV"
         )
     }
+    # Add candidate analogs
+    if(plot3d.candidates){
+      data("zones_colours_ref")
+      zone <- rep(NA, length(label.analogs.mean))
+      for(i in zones_colours_ref$classification){ zone[grep(i,label.analogs.mean)] <- i }
+      # zone <- factor(zone, zones_colours_ref$classification)
+      zone_colours <- as.character(zones_colours_ref$colour[match(zone, zones_colours_ref$classification)]) 
+      zone_colours[is.na(zone_colours)] <- "#808080"
+      # zone_colours <- factor(zone_colours, zones_colours_ref$colour)
+      
+      plot <- plot %>%
+        add_trace(
+          x = d[, plot3d.pcs[1]], y = d[, plot3d.pcs[2]], z = d[, plot3d.pcs[3]],
+          type = "scatter3d", mode = "markers",
+          marker = list(size = 2, color = "#cccccc", opacity = 0.35),
+          hoverinfo = "none", # Turn off hover labels
+          name = "All analogs"
+        ) %>%
+        add_trace(
+          x = e[, plot3d.pcs[1]], y = e[, plot3d.pcs[2]], z = e[, plot3d.pcs[3]],
+          type = "scatter3d", mode = "markers+text",
+          marker = list(size = 5, color = zone_colours, opacity = 1),
+          # marker = list(size = 3, color = "#000000", opacity = 0.5),
+          text = label.analogs.mean, # Vector of labels corresponding to points in e
+          textposition = "right",
+          textfont = list(size = 8, color = "#666666"),
+          hoverinfo = "none", # Turn off hover labels
+          name = "BGC centroids"
+        )
+    }
+    
     # Add biplot lines
     if(biplot) {
       loadings <- pca$rotation[, plot3d.pcs]
@@ -322,9 +377,9 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     plot <- plot %>%
       layout(
         scene = list(
-          xaxis = list(title = paste0("PC", plot3d.pcs[1])),
-          yaxis = list(title = paste0("PC", plot3d.pcs[2])),
-          zaxis = list(title = paste0("PC", plot3d.pcs[3]))
+          xaxis = list(title = paste0("PC", plot3d.pcs[1]), showspikes = FALSE),
+          yaxis = list(title = paste0("PC", plot3d.pcs[2]), showspikes = FALSE),
+          zaxis = list(title = paste0("PC", plot3d.pcs[3]), showspikes = FALSE)
         ),
         title = list(text = paste(analog, "\nNovelty in", pcs, "PCs"), x = 0.05)
       )
