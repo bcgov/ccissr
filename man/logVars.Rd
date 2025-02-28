@@ -6,7 +6,7 @@
 \usage{
 logVars(
   dat,
-  elements = c("AHM", "DD", "Eref", "FFP", "NFFD", "PAS", "PPT", "SHM", "CMI"),
+  elements = c("AHM", "DD", "Eref", "FFP", "NFFD", "PAS", "PPT", "SHM", "CMD"),
   base = exp(1),
   add.fields = FALSE,
   zero_adjust = FALSE
@@ -20,12 +20,12 @@ the selected climate \code{elements}.}
 
 \item{base}{numeric. Log base.}
 
+\item{add.fields}{logical. If \code{TRUE}, the new logged variables are added to \code{dat}
+(TRUE). Otherwise, original column values are replaced with the logs (FALSE).}
+
 \item{zero_adjust}{logical. If \code{TRUE} adjusts zeroes in raw data as:
 \eqn{base^{\log_base{x_min} - 1}}.
 where \eqn{x_min} is the minimum non-zero, non-NA value.}
-
-\item{add.vars}{logical. If \code{TRUE}, the new logged variables are added to \code{dat}
-(TRUE). Otherwise, original column values are replaced with the logs (FALSE).}
 }
 \value{
 \code{data.table}

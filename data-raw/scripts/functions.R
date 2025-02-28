@@ -1,116 +1,10 @@
-
-# Copyright 2024 Province of British Columbia
-# 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-# http://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-#' Novelty (outlyingness) measurement for pre-determined spatial climate analogs. 
-#'
-#' @description
-#' 
-#' This function calculates novelty (or outlyingness) of climate conditions by measuring 
-#' the Mahalanobis distance between these target climates and the centroid of their pre-determined
-#' climate analogs. The covariance matrix of the Mahalanobis distance is the spatial 
-#' and/or interannual variation in climate conditions of the climate analog, as 
-#' selected by the user. It optionally renders 2D and 3D plots for visualizing 
-#' the distance measurements in the principal component space.
-#' 
-#' @details
-#' 
-#' The novelty measure is calculated using Mahalanobis distance, which quantifies the 
-#' statistical distance between the target climate conditions and their spatial analogs 
-#' (i.e., climates similar to the target in historical records). The function can also 
-#' incorporate interannual climatic variability (ICV) in the covariance matrix of the climate 
-#' analog to provide additional information on the climatic scale of each principal component. 
-#' For visualization purposes, the function supports 2D and 3D scatterplots 
-#' based on principal component analysis (PCA), showing how the target climate conditions 
-#' relate to the analogs and, optionally, to the ICV.
-#' 
-#' The main output of the function is a vector of novelty values, either as Mahalanobis 
-#' distances or as sigma dissimilarities (Interpretable as the number of standard deviations away from 
-#' the analog cluster). These values are returned for each target climate in the dataset. 
-#' Additional outputs include several optional plots:
-#' - A scree plot (if `plotScree` is enabled) showing the standard deviation of the 
-#' analog and target variation in the principal components.
-#' - A 2D scatterplot (if `plot2d` is enabled) showing the relationship between the target 
-#'   and analogs across selected principal components
-#' - A 3D scatterplot (if `plot3d` is enabled) to visualize the distribution of the 
-#'   target and analogs in 3D PCA space, with optional biplot vectors representing the 
-#'   correlation of the standardized climate variables with the principal components.
-#' 
-#' The function supports customization of the principal component selection (via `threshold` or 
-#' `pcs`), weighting of the ICV in the distance measurement (`weight.icv`), and the selection 
-#' of specific analogs for visualization (`analog.focal`).
-#' 
-#'  
-#' @param clim.targets data.table. Climate variables for which the analogs were 
-#' identified
-#' @param clim.analogs data.table. Climate variables of at least 50 locations 
-#' representing the spatial variation in the reference period (historical) climate
-#' of each analog in the analog pool. 
-#' @param label.targets character. Vector of the analog IDs identified for the 
-#' climatic conditions listed in `clim.targets`. Length equals number of records 
-#' in `clim.targets`.  
-#' @param label.analogs character. Vector of the analog IDs for the climatic 
-#' conditions listed in `clim.analogs`. Length equals number of records in
-#' `clim.analogs`.  
-#' @param vars character. Climate variables to use in the novelty measurement. 
-#' @param clim.icvs data.table. Time series of climate variables at the geographic
-#' centroids of each analog in the analog pool. If not null, this interannual climatic
-#' variability will be pooled with the spatial variation of the analog to calculate 
-#' the covariance matrix used in the Mahalanobis distance measurement. 
-#' @param label.icvs character. Vector of the analog IDs for the climatic 
-#' conditions listed in `clim.icvs`. Length equals number of records in `clim.icvs`.  
-#' @param analog.focal character. Optionally specify a single analog for visualization. 
-#' @param threshold numeric. The cumulative variance explained to use as a threshold
-#' for truncation of principal components to use in the mahalanobis distance measurement. 
-#' @param pcs integer. The fixed number of PCs to use in the mahalanobis distance 
-#' measurement. Non-null values of this parameter override the `threshold` parameter.
-#' @param logVars logical. Log-transform ratio variables, i.e., variables with a minimum 
-#' of zero. 
-#' @param plotScree logical. If `analog.focal` is specified, plot a scree plot showing 
-#' the standard deviation of the analog points, target points, and (if activated) interannual
-#' climatic variability (ICV). The difference of the analog and target means is also shown. 
-#' @param plot2d logical. If `analog.focal` is specified, plot a 4-panel set of 
-#' bivariate scatterplots visualizing the distances in the principal components. 
-#' @param plot2d.pcs numeric matrix. a 4x2 matrix indicating the principal components to 
-#' display in the 2D scatterplots. Rows correspond to the panel to be displayed, 
-#' and columns indicate the principal components to display in the x and y axes. 
-#' @param plot3d logical. If `analog.focal` is specified, plot a 3-dimensional scatterplot 
-#' visualizing the distances in the first three PCs. 
-#' @param plot3d.pcs numeric. Principal components to display in the x, y, and z 
-#' axes of the 3D scatterplot. 
-#' @param biplot logical. Include lines on the 3D plot indicating the correlation 
-#' of the standardized climate variables with the principal components. 
-#' 
-#' @return `vector` of sigma dissimilarity (if sigma==TRUE) or Mahalanobis distances 
-#' (if sigma==FALSE) corresponding to each element of the 'analogs.target' vector. 
-#'
-#' @importFrom stats prcomp mahalanobis cov cor sd
-#' @importFrom graphics plot text points abline arrows
-#' @importFrom grDevices rgb
-#' @importFrom plotly plot_ly layout add_trace
-#' @importFrom EnvStats pchi qchi
-#'  
-#' @examples
-#' if (FALSE) {
-#'   
-#' }
-#' #'
-#' @export
+library(scales)
+library(EnvStats)
+library(plotly)
 
 analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.analogs, vars,
                            clim.icvs = NULL, label.icvs = NULL, weight.icv = 0.5, sigma = TRUE,
-                           analog.focal = NULL, threshold = 0.95, pcs = NULL, logVars = TRUE, 
+                           analog.focal = NULL, threshold = 0.95, pcs = NULL, 
                            plotScree = FALSE, 
                            plot2d = FALSE, plot2d.pcs = cbind(c(1,2,3,4), c(2,3,4,5)), 
                            plot3d = FALSE, plot3d.pcs=c(1,2,3), biplot = TRUE){
@@ -129,18 +23,6 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     clim.target <- clim.target[, .SD, .SDcols = names(clim.analog)]
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[complete.cases(clim.icv)]
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[, .SD, .SDcols = names(clim.analog)]
-    
-    ## log-transform ratio variables
-    if(logVars){
-      clim.analog <- logVars(clim.analog, zero_adjust = TRUE)
-      clim.target <- logVars(clim.target, zero_adjust = TRUE)
-      clim.icv <- logVars(clim.icv, zero_adjust = TRUE)
-
-      ## remove variables with non-finite values in the target population (this is an edge case that occurs when the target population has a variable (typically CMD) with only zeroes)
-      clim.target <- clim.target[, lapply(.SD, function(x) if (all(is.finite(x))) x else NULL)]
-      clim.analog <- clim.analog[, .SD, .SDcols = names(clim.target)]
-      clim.icv <- clim.icv[, .SD, .SDcols = names(clim.target)]
-    }
     
     ## scale the data to the variance of the analog, since this is what we will ultimately be measuring the M distance in. 
     clim.mean <- clim.analog[, lapply(.SD, mean, na.rm = TRUE)]
@@ -195,7 +77,7 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     } else {
       cov.combined <- cov.analog
     }
-
+    
     ## Mahalanobis distance and sigma dissimilarity
     md <- (mahalanobis(pcs.target[,1:pcs], rep(0, pcs), cov.combined))^0.5
     p <- pchi(md,pcs) # percentiles of the M distances on the chi distribution with degrees of freedom equaling the dimensionality of the distance measurement (PCs)
@@ -214,7 +96,7 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
   breakseq <- c(0,4,8)
   breakpoints <- c(seq(breakseq[1], breakseq[3], 0.01),199); length(breakpoints)
   ColScheme <- c(colorRampPalette(c("gray90", "gray50", "#FFF200", "#CD0000", "black"))(length(breakpoints)))
-
+  
   ## Scree plot
   if(plotScree){
     par(mfrow=c(1,1), mar=c(3,3,1,1), mgp=c(1.75,0.25,0))
@@ -334,3 +216,134 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
   return(novelty)
 }
 
+# gcm_weight <- data.table(gcm = c("ACCESS-ESM1-5", "BCC-CSM2-MR", "CanESM5", "CNRM-ESM2-1", "EC-Earth3", 
+#                                  "GFDL-ESM4", "GISS-E2-1-G", "INM-CM5-0", "IPSL-CM6A-LR", "MIROC6", 
+#                                  "MPI-ESM1-2-HR", "MRI-ESM2-0", "UKESM1-0-LL"),
+#                          weight = c(1,0,0,1,1,1,1,0,0,1,1,1,0))
+# 
+# rcp_weight <- data.table(rcp = c("ssp126","ssp245","ssp370","ssp585"), 
+#                          weight = c(0.8,1,0.8,0))
+# 
+# all_weight <- as.data.table(expand.grid(gcm = gcm_weight$gcm,rcp = rcp_weight$rcp))
+# all_weight[gcm_weight,wgcm := i.weight, on = "gcm"]
+# all_weight[rcp_weight,wrcp := i.weight, on = "rcp"]
+# all_weight[,weight := wgcm*wrcp]
+# all_weight[,comb := paste0("('",gcm,"','",rcp,"',",weight,")")]
+# weights <- paste(all_weight$comb,collapse = ",")
+# 
+# temp <- dbGetQuery(conn, q2)
+# setDT(temp)
+# t2 <- unique(temp[,.(siteno,gcm,scenario,run)])
+# 
+# siteno <- c(43,47,48,49,51)
+# 
+# groupby = "siteno"
+# cciss_sql <- paste0("
+#   WITH cciss AS (
+#     SELECT cciss_future13_array.siteno,
+#          labels.gcm,
+#          labels.scenario,
+#          labels.futureperiod,
+#          labels.run,
+#          bgc_attribution13.bgc,
+#          bgcv13.bgc bgc_pred,
+#          w.weight
+#   FROM cciss_future13_array
+#   JOIN bgc_attribution13
+#     ON (cciss_future13_array.siteno = bgc_attribution13.siteno),
+#        unnest(bgc_id) WITH ordinality as source(bgc_id, row_idx)
+#   JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
+#                gcm,
+#                scenario,
+#                futureperiod,
+#                run
+#         FROM gcm 
+#         CROSS JOIN scenario
+#         CROSS JOIN futureperiod
+#         CROSS JOIN run) labels
+#     ON labels.row_idx = source.row_idx
+#     JOIN (values ",weights,") 
+#     AS w(gcm,scenario,weight)
+#     ON labels.gcm = w.gcm AND labels.scenario = w.scenario
+#   JOIN bgcv13
+#     ON bgcv13.bgc_id = source.bgc_id
+#   WHERE cciss_future13_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
+#   AND futureperiod IN ('2001', '2021','2041','2061','2081')
+#   
+#   ), cciss_count_den AS (
+#   
+#     SELECT ", groupby, " siteref,
+#            futureperiod,
+#            SUM(weight) w
+#     FROM cciss
+#     GROUP BY ", groupby, ", futureperiod
+#   
+#   ), cciss_count_num AS (
+#   
+#     SELECT ", groupby, " siteref,
+#            futureperiod,
+#            bgc,
+#            bgc_pred,
+#            SUM(weight) w
+#     FROM cciss
+#     GROUP BY ", groupby, ", futureperiod, bgc, bgc_pred
+#   
+#   ), cciss_curr AS (
+#       SELECT cciss_prob13.siteno,
+#       '1991' as period,
+#       bgc_attribution13.bgc,
+#       bgc_pred,
+#       prob
+#       FROM cciss_prob13
+#       JOIN bgc_attribution13
+#       ON (cciss_prob13.siteno = bgc_attribution13.siteno)
+#       WHERE cciss_prob13.siteno IN (", paste(unique(siteno), collapse = ","), ")
+#       
+#   ), curr_temp AS (
+#     SELECT ", groupby, " siteref,
+#            COUNT(distinct siteno) n
+#     FROM cciss_curr
+#     GROUP BY ", groupby, "
+#   )
+#   
+#   SELECT cast(a.siteref as text) siteref,
+#          a.futureperiod,
+#          a.bgc,
+#          a.bgc_pred,
+#          a.w/cast(b.w as float) bgc_prop
+#   FROM cciss_count_num a
+#   JOIN cciss_count_den b
+#     ON a.siteref = b.siteref
+#    AND a.futureperiod = b.futureperiod
+#    WHERE a.w <> 0
+#   
+#   UNION ALL
+# 
+#   SELECT cast(", groupby, " as text) siteref,
+#           period as futureperiod,
+#           bgc,
+#           bgc_pred,
+#           SUM(prob)/b.n bgc_prop
+#   FROM cciss_curr a
+#   JOIN curr_temp b
+#     ON a.",groupby," = b.siteref
+#   WHERE siteno in (", paste(unique(siteno), collapse = ","), ")
+#   GROUP BY ", groupby, ",period,b.n, bgc, bgc_pred
+#   
+#   UNION ALL
+# 
+#   SELECT DISTINCT 
+#             cast(", groupby, " as text) siteref,
+#             '1961' as futureperiod,
+#             bgc,
+#             bgc as bgc_pred,
+#             cast(1 as numeric) bgc_prop
+#     FROM cciss_curr
+#     WHERE siteno IN (", paste(unique(siteno), collapse = ","), ")
+#   ")
+# 
+# 
+# test <- dbGetQuery(conn, cciss_sql)
+# setDT(test)
+# setorder(test, siteref, futureperiod)
+# 

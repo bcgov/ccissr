@@ -10,7 +10,7 @@ dat2 <- zone_cols[,.(ZONE,RGB)] |> unique()
 setnames(dat2,c("classification","colour"))
 fwrite(dat2, "WNAv13_ZoneCols.csv")
 
-E1 <- fread("../Common_Files/Edatopic_v13_2.csv")
+E1 <- fread("./Edatopic_v12_15.csv")
 S1 <- fread("../Common_Files/Feasibility_v13_2.csv")
 N1 <- fread("./data-raw/data_tables/SiteSeries_names_v12_15.csv", encoding = "Latin-1")
 #N1[,SiteSeriesLongName := gsub(pattern = "[\x80-\xff]", "",SiteSeriesLongName, perl = T)]
@@ -19,7 +19,7 @@ data(N1)
 SSnew <- unique(E1$SS_NoSpace)
 
 
-SS <- fread("../Common_Files/WNAv13_Special_SS.csv")
+SS <- fread("./WNA_SSeries_v12_12.csv")
 
 covMat <- read.csv("data-raw/Feas_CovMat.csv", header = TRUE, row.names = 1)
 

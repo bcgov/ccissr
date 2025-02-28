@@ -3,199 +3,21 @@ library(DBI)
 library(data.table)
 library(sf)
 library(terra)
+library(climr)
+library(ranger)
+library(ccissr)
+
+source("./data-raw/scripts/functions.R")
 
 conn <- DBI::dbConnect(
   drv = RPostgres::Postgres(),
-  dbname = "spp_feas",
+  dbname = "cciss",
   host = Sys.getenv("BCGOV_HOST"),
   port = 5432, 
   user = Sys.getenv("BCGOV_USR"),
   password = Sys.getenv("BCGOV_PWD")
 )
 
-load("../Common_Files/trainingpts_w_clim_Final.Rdata")
-
-feas <- fread("../Common_Files/Feasibility_v13_2.csv")
-dbWriteTable(conn, "feasorig", feas, row.names = FALSE)
-
-#### Simplification ##########
-dat <- vect("BGCv13_2_clip_dissolved.gpkg")
-d2 <- simplifyGeom(dat, tolerance = 5)
-writeVector(d2, "BGC_simplified.gpkg")
-
-bgcs <- st_read("../Common_Files/BGC_simplified.gpkg")
-bgcs <- as.data.table(bgcs)
-crosswalk <- data.table(BGC = c("CWHxm1","CWHxm2","CWHdm","MHws","MHwsp","CWHms4"), 
-                        BGC_new = c("CWHdm1","CWHdm2","CWHdm3","MHms","MHmsp","CWHws3"))
-
-bgcs[crosswalk, BGC_new := i.BGC_new, on = "BGC"]
-bgcs[!is.na(BGC_new), BGC := BGC_new]
-bgcs[,c("BGC_new","MAP_LABEL") := NULL]
-bgc2 <- st_as_sf(bgcs)
-st_write(bgc2,"BGC_v13_Fixed.gpkg")
-
-###BGC attribution
-bgc <- vect("../Common_Files/BGC_simplified.gpkg")
-bgc4326 <- project(bgc, "epsg:4326")
-hex <- fread("../Common_Files/Hex_Points_Elev.csv")
-hex <- hex[!is.na(elev),]
-hexsf <- st_as_sf(hex, coords = c("lon","lat"), crs = 4326)
-hexv <- vect(hexsf["id"])
-hexv <- project(hexv, "epsg:3005")
-bgc_att <- intersect(bgc, hexv)
-
-dat <- fread("../../../Downloads/WNAv13_Subzone_colours_2.csv")
-dat2 <- dat[,.(classification = BGC, colour = RGB)]
-dat2 <- dat2[classification != "",]
-fwrite(dat2, "WNAv13_SubzoneCols.csv")
-
-
-run <- data.table(run_id = 1:3, run = 1:3)
-dbWriteTable(conn, "run", run, row.names = F)
-
-dbWriteTable(conn, "bgcv13", bgcs, row.names = F)
-
-tq <- "SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
-               gcm,
-               scenario,
-               futureperiod,
-               run
-        FROM gcm 
-        CROSS JOIN scenario
-        CROSS JOIN futureperiod
-        CROSS JOIN run"
-
-
-gcm_weight <- data.table(gcm = c("ACCESS-ESM1-5", "BCC-CSM2-MR", "CanESM5", "CNRM-ESM2-1", "EC-Earth3", 
-                                 "GFDL-ESM4", "GISS-E2-1-G", "INM-CM5-0", "IPSL-CM6A-LR", "MIROC6", 
-                                 "MPI-ESM1-2-HR", "MRI-ESM2-0", "UKESM1-0-LL"),
-                         weight = c(1,0,0,1,1,1,1,0,0,1,1,1,0))
-
-rcp_weight <- data.table(rcp = c("ssp126","ssp245","ssp370","ssp585"), 
-                         weight = c(0.8,1,0.8,0))
-
-all_weight <- as.data.table(expand.grid(gcm = gcm_weight$gcm,rcp = rcp_weight$rcp))
-all_weight[gcm_weight,wgcm := i.weight, on = "gcm"]
-all_weight[rcp_weight,wrcp := i.weight, on = "rcp"]
-all_weight[,weight := wgcm*wrcp]
-all_weight[,comb := paste0("('",gcm,"','",rcp,"',",weight,")")]
-weights <- paste(all_weight$comb,collapse = ",")
-
-temp <- dbGetQuery(conn, q2)
-setDT(temp)
-t2 <- unique(temp[,.(siteno,gcm,scenario,run)])
-
-siteno <- c(43,47,48,49,51)
-
-groupby = "siteno"
-cciss_sql <- paste0("
-  WITH cciss AS (
-    SELECT cciss_future13_array.siteno,
-         labels.gcm,
-         labels.scenario,
-         labels.futureperiod,
-         labels.run,
-         bgc_attribution13.bgc,
-         bgcv13.bgc bgc_pred,
-         w.weight
-  FROM cciss_future13_array
-  JOIN bgc_attribution13
-    ON (cciss_future13_array.siteno = bgc_attribution13.siteno),
-       unnest(bgc_id) WITH ordinality as source(bgc_id, row_idx)
-  JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
-               gcm,
-               scenario,
-               futureperiod,
-               run
-        FROM gcm 
-        CROSS JOIN scenario
-        CROSS JOIN futureperiod
-        CROSS JOIN run) labels
-    ON labels.row_idx = source.row_idx
-    JOIN (values ",weights,") 
-    AS w(gcm,scenario,weight)
-    ON labels.gcm = w.gcm AND labels.scenario = w.scenario
-  JOIN bgcv13
-    ON bgcv13.bgc_id = source.bgc_id
-  WHERE cciss_future13_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
-  AND futureperiod IN ('2001', '2021','2041','2061','2081')
-  
-  ), cciss_count_den AS (
-  
-    SELECT ", groupby, " siteref,
-           futureperiod,
-           SUM(weight) w
-    FROM cciss
-    GROUP BY ", groupby, ", futureperiod
-  
-  ), cciss_count_num AS (
-  
-    SELECT ", groupby, " siteref,
-           futureperiod,
-           bgc,
-           bgc_pred,
-           SUM(weight) w
-    FROM cciss
-    GROUP BY ", groupby, ", futureperiod, bgc, bgc_pred
-  
-  ), cciss_curr AS (
-      SELECT cciss_prob13.siteno,
-      '1991' as period,
-      bgc_attribution13.bgc,
-      bgc_pred,
-      prob
-      FROM cciss_prob13
-      JOIN bgc_attribution13
-      ON (cciss_prob13.siteno = bgc_attribution13.siteno)
-      WHERE cciss_prob13.siteno IN (", paste(unique(siteno), collapse = ","), ")
-      
-  ), curr_temp AS (
-    SELECT ", groupby, " siteref,
-           COUNT(distinct siteno) n
-    FROM cciss_curr
-    GROUP BY ", groupby, "
-  )
-  
-  SELECT cast(a.siteref as text) siteref,
-         a.futureperiod,
-         a.bgc,
-         a.bgc_pred,
-         a.w/cast(b.w as float) bgc_prop
-  FROM cciss_count_num a
-  JOIN cciss_count_den b
-    ON a.siteref = b.siteref
-   AND a.futureperiod = b.futureperiod
-   WHERE a.w <> 0
-  
-  UNION ALL
-
-  SELECT cast(", groupby, " as text) siteref,
-          period as futureperiod,
-          bgc,
-          bgc_pred,
-          SUM(prob)/b.n bgc_prop
-  FROM cciss_curr a
-  JOIN curr_temp b
-    ON a.",groupby," = b.siteref
-  WHERE siteno in (", paste(unique(siteno), collapse = ","), ")
-  GROUP BY ", groupby, ",period,b.n, bgc, bgc_pred
-  
-  UNION ALL
-
-  SELECT DISTINCT 
-            cast(", groupby, " as text) siteref,
-            '1961' as futureperiod,
-            bgc,
-            bgc as bgc_pred,
-            cast(1 as numeric) bgc_prop
-    FROM cciss_curr
-    WHERE siteno IN (", paste(unique(siteno), collapse = ","), ")
-  ")
-
-
-test <- dbGetQuery(conn, cciss_sql)
-setDT(test)
-setorder(test, siteref, futureperiod)
 
 addVars <- function(dat) {
   dat[, PPT_MJ := PPT_05 + PPT_06]
@@ -208,12 +30,17 @@ addVars <- function(dat) {
 vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT", 
                  "MWMT", "NFFD_sm", "NFFD_sp", "PAS", "PAS_sp", "SHM", "Tave_sm", 
                  "Tave_sp", "Tmax_sm", "Tmax_sp", "Tmin", "Tmin_at", "Tmin_sm", 
-                 "Tmin_sp", "Tmin_wt","CMI", "PPT_05","PPT_06","PPT_07","PPT_08","PPT_09","PPT_at","PPT_wt","CMD_07","CMD"
+                 "Tmin_sp", "Tmin_wt","CMI", "PPT_05","PPT_06","PPT_07","PPT_08",
+                 "PPT_09","PPT_at","PPT_wt","CMD_07","CMD"
 )
 
-load("../Common_Files/BGC_RFresp.Rdata")
+nov_vars <- as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_"))
 
-all_bgcs <- BGC_RFresp$predictions
+vars_needed <- unique(c(vars_needed,nov_vars))
+
+BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
+
+all_bgcs <- BGCmodel$predictions
 bgcs <- data.table(bgc_id = 1:length(levels(all_bgcs)), bgc = levels(all_bgcs))
 gcms <- dbGetQuery(conn, "select * from gcm") |> as.data.table()
 ssps <- dbGetQuery(conn, "select * from scenario")|> as.data.table()
@@ -221,14 +48,23 @@ fps <- dbGetQuery(conn, "select * from futureperiod")|> as.data.table()
 fps[,fp_full := gsub("-","_",fp_full)]
 
 # dbExecute(conn, "drop table cciss_future13_array")
-# query <- "
-#   CREATE TABLE cciss_future13_array (
-#     siteno INTEGER REFERENCES hex_points,
-#     -- [gcm][scenario][futureperiod][run]
-#     bgc_id SMALLINT[13][4][5][3]
-#   )
-# "
-# dbExecute(conn, query)
+query <- "
+  CREATE TABLE cciss_future_array (
+    siteno INTEGER REFERENCES hex_points,
+    -- [gcm][scenario][futureperiod][run]
+    bgc_id SMALLINT[13][4][5][3]
+  )
+"
+dbExecute(conn, query)
+
+query <- "
+  CREATE TABLE cciss_novelty_array (
+    siteno INTEGER REFERENCES hex_points,
+    -- [gcm][scenario][futureperiod][run]
+    novelty SMALLINT[13][4][5][3]
+  )
+"
+dbExecute(conn, query)
 
 idx_ipt_len <- function(index, input, length) {
   x <- NA_integer_
@@ -240,14 +76,35 @@ idx_ipt_len <- function(index, input, length) {
 
 pnts <- fread("../Common_Files/Hex_Points_Elev.csv")
 pnts <- pnts[!is.na(elev),]
-splits <- c(seq(1,nrow(pnts), by = 10000),nrow(pnts)+1)
+splits <- c(seq(1,nrow(pnts), by = 40000),nrow(pnts)+1)
+
+##novelty setup
+pts <- fread("../Common_Files/points_WNA_simple200.csv")
+clim.pts <- downscale(xyz = pts, which_refmap = "refmap_climr",
+                      vars = list_vars())
+addVars(clim.pts)
+
+# Calculate the centroid climate for the training points
+clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = pts$BGC, .SDcols = -c(1,2)]
+
+# historical interannual climatic variability at the geographic centroids of the training points
+pts.mean <- pts[, lapply(.SD, mean), by = BGC]
+pts.mean$id <- 1:dim(pts.mean)[1]
+clim.icv.pts <- downscale(xyz = pts.mean,
+                          which_refmap = "refmap_climr",
+                          obs_years = 1961:1990,
+                          obs_ts_dataset = "cru.gpcc",
+                          return_refperiod = FALSE,
+                          vars = list_vars())
+addVars(clim.icv.pts)
 
 
-for(i in 2:(length(splits) - 1)){
+for(i in 1:(length(splits) - 1)){
   #tic()
   message("Processing",i)
   res <- downscale(pnts[splits[i]:(splits[i+1]-1),], 
                    which_refmap = "refmap_climr", 
+                   obs_periods = "2001_2020",
                    gcms = list_gcms(), 
                    ssps = list_ssps(), 
                    gcm_periods = list_gcm_periods(), 
@@ -258,13 +115,45 @@ for(i in 2:(length(splits) - 1)){
   addVars(res)
   res <- res[!is.na(Tave_sm),]
   res[is.na(res)] <- 0
+  res <- res[RUN != "ensembleMean",]
   
   ##predict
-  temp <- predict(BGC_RFresp, data = res, num.threads = 4)
+  temp <- predict(BGCmodel, data = res, num.threads = 4)
   dat <- cbind(res[,.(id,GCM,SSP,RUN,PERIOD)],temp$predictions)
   dat <- dat[RUN != "ensembleMean",]
   setnames(dat, old = "V2", new = "BGC")
   
+  vars_temp <- c("id","GCM","SSP","RUN","PERIOD",nov_vars)
+  ##novelty
+  clim_nov <- res[,..vars_temp]
+  clim_nov[,bgc_pred := dat$BGC]
+  
+  temp <- clim_nov[GCM == "ACCESS-ESM1-5" & SSP == "ssp245" & RUN == "r1i1p1f1" & PERIOD == "2041_2060",]
+  novelty <- analog_novelty(clim.targets = temp, 
+                            clim.analogs = clim.pts, 
+                            label.targets = temp$bgc_pred, 
+                            label.analogs = pts$BGC, 
+                            vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
+                            clim.icvs <- clim.icv.pts,
+                            label.icvs <- pts.mean$BGC[clim.icv.pts$id],
+                            weight.icv = 0.5,
+                            threshold = 0.95,
+                            pcs = NULL
+                            
+  )
+  
+  clim_nov[,novelty := analog_novelty(clim.targets = .SD, 
+                                      clim.analogs = clim.pts, 
+                                      label.targets = bgc_pred, 
+                                      label.analogs = pts$BGC, 
+                                      vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
+                                      clim.icvs <- clim.icv.pts,
+                                      label.icvs <- pts.mean$BGC[clim.icv.pts$id],
+                                      weight.icv = 0.5,
+                                      threshold = 0.95,
+                                      pcs = NULL),
+           by = .(GCM,SSP,RUN,PERIOD)]
+  ####prepare BGC preds
   dat[gcms, gcm_id := i.gcm_id, on = c(GCM = "gcm")
       ][ssps, ssp_id := i.scenario_id, on = c(SSP = "scenario")
       ][fps, period_id := i.futureperiod_id, on = c(PERIOD = "fp_full")
@@ -287,16 +176,52 @@ for(i in 2:(length(splits) - 1)){
   ][,
     list(id, bgc_id = gsub("NA", "NULL", bgc_id, fixed = TRUE))
   ]
+  
+  ##prepare novelty
+  clim_nov[gcms, gcm_id := i.gcm_id, on = c(GCM = "gcm")
+  ][ssps, ssp_id := i.scenario_id, on = c(SSP = "scenario")
+  ][fps, period_id := i.futureperiod_id, on = c(PERIOD = "fp_full")
+  ]
+  clim_nov[,run_id := as.integer(as.factor(RUN)), by = .(GCM,SSP,PERIOD)]
+  clim_nov[,novelty_int := as.integer(novelty*10)]
+  
+  clim_nov <- clim_nov[!is.na(gcm_id),]
+  
+  insert_nov <- clim_nov[,list(novelty_int = paste0(idx_ipt_len(run_id, novelty_int, 3L), collapse = ",")), ##run
+                by = list(id, gcm_id, ssp_id, period_id)
+  ][,
+    list(novelty_int = paste0("{", idx_ipt_len(period_id, novelty_int, 5L), "}", collapse = ",")), ##period
+    by = list(id, gcm_id, ssp_id)
+  ][,
+    list(novelty_int = paste0("{", idx_ipt_len(ssp_id, novelty_int, 4L), "}", collapse = ",")), ## scenario
+    by = list(id, gcm_id)
+  ][,
+    list(novelty_int = paste0("'{", paste0("{", idx_ipt_len(gcm_id, novelty_int, 13L), "}", collapse = ","), "}'")), ## gcm
+    by = list(id)
+  ][,
+    list(id, novelty = gsub("NA", "NULL", novelty_int, fixed = TRUE))
+  ]
+  
+  
   #toc()
-  query <- paste0("
-    INSERT INTO cciss_future13_array (
+  query_bgc <- paste0("
+    INSERT INTO cciss_future_array (
       siteno,
       bgc_id
     ) VALUES ",
                   paste0("(", insert$id, ", ", insert$bgc_id, ")", collapse = ", ")
   )
   
-  dbExecute(conn, query) 
+  query_novelty <- paste0("
+    INSERT INTO cciss_novelty_array (
+      siteno,
+      novelty
+    ) VALUES ",
+                      paste0("(", insert_nov$id, ", ", insert_nov$novelty, ")", collapse = ", ")
+  )
+  
+  dbExecute(conn, query_bgc) 
+  dbExecute(conn, query_novelty)
 }
 
 #########create indices#############################
@@ -366,6 +291,61 @@ for(i in 2:(length(splits) - 1)){
   
   dbExecute(conn, query) 
 }
+
+
+load("../Common_Files/trainingpts_w_clim_Final.Rdata")
+
+feas <- fread("../Common_Files/Feasibility_v13_2.csv")
+dbWriteTable(conn, "feasorig", feas, row.names = FALSE)
+
+#### Simplification ##########
+dat <- vect("BGCv13_2_clip_dissolved.gpkg")
+d2 <- simplifyGeom(dat, tolerance = 5)
+writeVector(d2, "BGC_simplified.gpkg")
+
+bgcs <- st_read("../Common_Files/BGC_simplified.gpkg")
+bgcs <- as.data.table(bgcs)
+crosswalk <- data.table(BGC = c("CWHxm1","CWHxm2","CWHdm","MHws","MHwsp","CWHms4"), 
+                        BGC_new = c("CWHdm1","CWHdm2","CWHdm3","MHms","MHmsp","CWHws3"))
+
+bgcs[crosswalk, BGC_new := i.BGC_new, on = "BGC"]
+bgcs[!is.na(BGC_new), BGC := BGC_new]
+bgcs[,c("BGC_new","MAP_LABEL") := NULL]
+bgc2 <- st_as_sf(bgcs)
+st_write(bgc2,"BGC_v13_Fixed.gpkg")
+
+###BGC attribution
+bgc <- vect("../Common_Files/BGC_simplified.gpkg")
+bgc4326 <- project(bgc, "epsg:4326")
+hex <- fread("../Common_Files/Hex_Points_Elev.csv")
+hex <- hex[!is.na(elev),]
+hexsf <- st_as_sf(hex, coords = c("lon","lat"), crs = 4326)
+hexv <- vect(hexsf["id"])
+hexv <- project(hexv, "epsg:3005")
+bgc_att <- intersect(bgc, hexv)
+
+dat <- fread("../../../Downloads/WNAv13_Subzone_colours_2.csv")
+dat2 <- dat[,.(classification = BGC, colour = RGB)]
+dat2 <- dat2[classification != "",]
+fwrite(dat2, "WNAv13_SubzoneCols.csv")
+
+
+run <- data.table(run_id = 1:3, run = 1:3)
+dbWriteTable(conn, "run", run, row.names = F)
+
+dbWriteTable(conn, "bgcv13", bgcs, row.names = F)
+
+tq <- "SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
+               gcm,
+               scenario,
+               futureperiod,
+               run
+        FROM gcm 
+        CROSS JOIN scenario
+        CROSS JOIN futureperiod
+        CROSS JOIN run"
+
+
 
 
 # hex_grid <- st_read(conn, query = "select * from hex_points")
