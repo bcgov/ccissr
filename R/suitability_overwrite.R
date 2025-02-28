@@ -2,7 +2,7 @@ library(dplyr)
 library(compareDF)
 
 #read in current table
-feas<-read.csv("feas_tables/feasibility.csv")
+feas<-read.csv("feas_tables/suitability.csv")
 feas$X<-NULL
 names(feas)
 
