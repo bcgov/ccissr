@@ -5,12 +5,21 @@ library(data.table)
 library(usethis)
 library(readxl)
 
-E1 <- fread("./data-raw/data_tables/Edatopic_v12_12.csv")
-S1 <- fread("./data-raw/data_tables/Feasibility_v12_14_w_OHR.csv")
-N1 <- fread("./data-raw/data_tables/SiteSeries_names_v12_10.csv")
-N1[,SiteSeriesLongName := gsub("\x96","-",SiteSeriesLongName)]
+zone_cols <- fread("../../../Downloads/WNAv13_Zone_colours_2.csv")
+dat2 <- zone_cols[,.(ZONE,RGB)] |> unique()
+setnames(dat2,c("classification","colour"))
+fwrite(dat2, "WNAv13_ZoneCols.csv")
 
-SS <- fread("./data-raw/data_tables/WNA_SSeries_v12_12.csv")
+E1 <- fread("./Edatopic_v12_15.csv")
+S1 <- fread("../Common_Files/Feasibility_v13_2.csv")
+N1 <- fread("./data-raw/data_tables/SiteSeries_names_v12_15.csv", encoding = "Latin-1")
+#N1[,SiteSeriesLongName := gsub(pattern = "[\x80-\xff]", "",SiteSeriesLongName, perl = T)]
+library(ccissr)
+data(N1)
+SSnew <- unique(E1$SS_NoSpace)
+
+
+SS <- fread("./WNA_SSeries_v12_12.csv")
 
 covMat <- read.csv("data-raw/Feas_CovMat.csv", header = TRUE, row.names = 1)
 
@@ -41,7 +50,7 @@ SIBEC <- unique(SIBEC)
 
 TreeCols <- fread("data-raw/PortfolioSppColours.csv", header = TRUE) ##in package data
 
-SS <- SS[,.(Source, BGC, SS_NoSpace,SpecialCode)]
+SS <- SS[,.(SS_NoSpace,SpecialCode)]
 SS <- SS[SpecialCode != "",]
 E1 <- SS[E1, on = "SS_NoSpace"]
 setcolorder(E1,c("Source","BGC","SS_NoSpace","Edatopic","SpecialCode"))
@@ -190,6 +199,7 @@ stocking_info <- stocking_info[!is.na(StockingTarget),]
 # models informations
 models_info <- fread("./data-raw/data_tables/CCISS_DataTable_Versions.csv")
 models_info[, Date := as.character(Date, format = "%Y/%m/%d")]
+subzones_colours_ref <- fread("WNAv13_SubzoneCols.csv")
 
 use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          cfrg_rules, SIBEC, covMat,
@@ -198,13 +208,16 @@ use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          silvics_tol, silvics_regen, silvics_mature, silvics_resist,
          models_info, TreeCols,
          overwrite = TRUE)
+
+use_data(N1, overwrite = T)
+use_data(E1, E1_Phase, S1, subzones_colours_ref, overwrite = TRUE)
 # see version in ?usethis::use_data, if you all use R 3.5 and up. You should bump to version 3
 # use_data(E1, S1, R1, F1, zones_colours_ref, subzones_colours_ref, overwrite = TRUE, version = 3)
 
 # This will document your dataset in R/_data.R. See https://roxygen2.r-lib.org/articles/rd.html#datasets
 # if you want to document them individually
 writeLines(c(
-"#' Data to be included in bccciss package",
+"#' Data to be included in ccissr package",
 "#'",
 "#' @name bccciss-data",
 "#' @docType data",

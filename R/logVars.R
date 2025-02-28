@@ -4,7 +4,7 @@
 #'   the selected climate `elements`.
 #' @param elements character. Climate elements to search for in `dat`.
 #' @param base numeric. Log base.
-#' @param add.vars logical. If `TRUE`, the new logged variables are added to `dat` 
+#' @param add.fields logical. If `TRUE`, the new logged variables are added to `dat` 
 #'   (TRUE). Otherwise, original column values are replaced with the logs (FALSE).
 #' @param zero_adjust logical. If `TRUE` adjusts zeroes in raw data as:
 #'   \eqn{base^{\log_base{x_min} - 1}}.
@@ -17,20 +17,20 @@
 #' @return `data.table` 
 #' @export
 logVars <- function(dat,
-                    elements = c("AHM", "DD", "Eref", "FFP", "NFFD", "PAS", "PPT", "SHM", "CMI"),
+                    elements = c("AHM", "DD", "Eref", "FFP", "NFFD", "PAS", "PPT", "SHM", "CMD"),
                     base = exp(1),
                     add.fields = FALSE,
                     zero_adjust = FALSE) {
   
   dat <- copy(dat)
   
-  # Fields to operate on (generally these should be ratio (zero-limited) variable)
+  # Fields to operate on (generally these should be ratio (zero-limited) variables)
   logFields <- grep(paste(elements, collapse = "|"), names(dat), value = TRUE)
   dat.log <- dat[, .SD, .SDcols = logFields]
   
   # If specified by the user, give zero values a positive value that is one order of magnitude less than the minimum positive value
   if (zero_adjust) {
-    dat.log[, lapply(.SD, function(x) {
+    dat.log <- dat.log[, lapply(.SD, function(x) {
       x[x <= 0] <- base^(log(min(x[x > 0], na.rm = TRUE), base = base) - 1)
       return(x)
     })]

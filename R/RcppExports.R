@@ -15,6 +15,10 @@ gs2gw <- function(x, a, b) {
     .Call(`_ccissr_gs2gw`, x, a, b)
 }
 
+cmd_sum <- function(vals, cutoff) {
+    .Call(`_ccissr_cmd_sum`, vals, cutoff)
+}
+
 SimGrowth <- function(DF, cmdMin, cmdMax, tempMin, tempMax, climLoss) {
     .Call(`_ccissr_SimGrowth`, DF, cmdMin, cmdMax, tempMin, tempMax, climLoss)
 }

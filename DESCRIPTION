@@ -1,7 +1,7 @@
 Package: ccissr
 Title: B.C. Climate Change Informed Tree Species Selection
-Version: 1.0.2
-Date: 01-08-2024
+Version: 1.0.3
+Date: 02-24-2025
 Authors@R: c(
   person("Will", "MacKenzie", role = c("cre", "aut"), email = "Will.MacKenzie@gov.bc.ca"),
   person("Kiri", "Daust", role = c("aut")),

@@ -9,7 +9,7 @@ getClimate(
   coords,
   byCombo = FALSE,
   outFormat = "data.table",
-  filename = tempfile(fileext = ".rds"),
+  filename = NULL,
   ...
 )
 }
