@@ -22,6 +22,12 @@ write.csv(diffrept, "tables/versioned/tracked_changes/diff_report_v13_9.csv") #r
 write.csv(suit_update, "tables/suitability.csv")
 
 
+#update readme 
+path <- "tables/README.md"
+updated_readme<- c("# Current table versions ", "Suitability v13_9" , "Edatopic v13_5 " ) #update version #s 
+# Write the updated content back to the README
+writeLines(updated_readme, path)
+
 
 
               
