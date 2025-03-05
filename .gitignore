@@ -2,6 +2,7 @@
 .Rproj.user
 .Rhistory
 .Renviron
+*.Rproj
 
 *.RDS
 *.rds
