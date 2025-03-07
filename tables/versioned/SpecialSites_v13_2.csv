@@ -1,0 +1,496 @@
+BGC,SS_NoSpace,Special,SpecialCode
+BGxh1,BGxh1/Fm01,Mid fluvial bench,Fm
+BGxh1,BGxh1/Fm06,Mid fluvial bench,Fm
+BGxh2,BGxh2/Fm01,Mid fluvial bench,Fm
+BGxh2,BGxh2/Fm05,Mid fluvial bench,Fm
+BGxh2,BGxh2/Fm06,Mid fluvial bench,Fm
+BGxh3,BGxh3/110,Cool aspects/cold air,CAS
+BGxh3,BGxh3/112,Mid fluvial bench,Fm
+BGxh3,BGxh3/113,Mid fluvial bench,Fm
+BGxw1,BGxw1/Fm01,Mid fluvial bench,Fm
+BGxw1,BGxw1/Fm05,Mid fluvial bench,Fm
+BGxw2,BGxw2/110,Cool aspects/cold air,CAS
+BGxw2,BGxw2/111,Cool aspects/cold air,CAS
+BGxw2,BGxw2/112,Mid fluvial bench,Fm
+BWBSdk,BWBSdk/103,Insolation,IN
+BWBSdk,BWBSdk/104,Cool aspects/cold air,CA
+BWBSdk,BWBSdk/104a,Cool aspects/cold air,CA
+BWBSdk,BWBSdk/104b,Cool aspects/cold air,CA
+BWBSdk,BWBSdk/110,High fluvial bench,Fh
+BWBSdk,BWBSdk/111,Mid fluvial bench,Fm
+BWBSdk,BWBSdk/112,Mid fluvial bench,Fm
+BWBSdk,BWBSdk/Gb,Insolation,IN2
+BWBSdk,BWBSdk/Gg,Insolation,IN2
+BWBSmk,BWBSmk/103,Insolation,IN
+BWBSmk,BWBSmk/104,Cool aspects/cold air,CA
+BWBSmk,BWBSmk/104a,Cool aspects/cold air,CA
+BWBSmk,BWBSmk/104b,Cool aspects/cold air,CA
+BWBSmk,BWBSmk/111,High fluvial bench,Fh
+BWBSmk,BWBSmk/112,Mid fluvial bench,Fm
+BWBSmk,BWBSmk/Gg,Insolation,IN2
+BWBSmw,BWBSmw/103,Insolation,IN
+BWBSmw,BWBSmw/104,Cool aspects/cold air,CA
+BWBSmw,BWBSmw/111,High fluvial bench,Fh
+BWBSmw,BWBSmw/112,Mid fluvial bench,Fm
+BWBSmw,BWBSmw/Gg,Insolation,IN2
+BWBSwk1,BWBSwk1/103,Insolation,IN
+BWBSwk1,BWBSwk1/104,Cool aspects/cold air,CA
+BWBSwk1,BWBSwk1/111,Cold air influence,CA
+BWBSwk2,BWBSwk2/103,Insolation,IN
+BWBSwk2,BWBSwk2/104,Cool aspects/cold air,CA
+BWBSwk2,BWBSwk2/111,High fluvial bench,Fh
+BWBSwk2,BWBSwk2/Gg,Insolation,IN2
+BWBSwk3,BWBSwk3/103,Cool aspects/cold air,CA
+CWHvh3,CWHvh3/103,Salt Spray,SS
+CWHvh3,CWHvh3/103.1,Salt Spray,SS
+CWHvh3,CWHvh3/103.2,Salt Spray,SS
+CWHvh3,CWHvh3/104,Salt Spray,SS
+CWHvh2,CWHvh3/110b,High fluvial bench,Fh
+CWHvh3,CWHvh3/111,High fluvial bench,Fh
+CWHvh3,CWHvh3/112,Mid fluvial bench,Fm
+CWHvh3,CWHvh3/113,Low fluvial bench,Fl
+CWHvh3,CWHvh3/116,Salt Spray,SS
+CWHwh1,CWHwh1/103,Salt Spray,SS
+CWHwh1,CWHwh1/103.1,Salt Spray,SS
+CWHwh1,CWHwh1/103.2,Salt Spray,SS
+CWHwh1,CWHwh1/104,Salt Spray,SS
+CWHwh1,CWHwh1/111b,High fluvial bench,Fh
+CWHwh1,CWHwh1/112,High fluvial bench,Fh
+CWHwh1,CWHwh1/113,Mid fluvial bench,Fm
+CWHwh1,CWHwh1/114,Low fluvial bench,Fl
+CWHwh1,CWHwh1/117,Salt Spray,SS
+CWHwh2,CWHwh2/112a,High fluvial bench,Fh
+ESSFdc2,ESSFdc2/103,Insolation,IN
+ESSFdc2,ESSFdc2/110,Cold air influence,CA
+ESSFdh1,ESSFdh1/104,Insolation,IN
+ESSFdk1,ESSFdk1/103,Insolation,IN
+ESSFdk1,ESSFdk1/111a,High fluvial bench,Fh
+ESSFdk2,ESSFdk2/103,Insolation,IN
+ESSFdk2,ESSFdk2/112a,High fluvial bench,Fh
+ESSFmc,ESSFmc/08,Late Snow,SN
+ESSFmcw,ESSFmcw/103,Late Snow,SN
+ESSFmkw,ESSFmkw/103,Late Snow,SN
+ESSFmv2,ESSFmv2/03,Cool aspects/cold air,CA
+ESSFmv3,ESSFmv3/03,Cool aspects/cold air,CA
+ESSFmv4,ESSFmv4/03,Cool aspects/cold air,CA
+ESSFmw1,ESSFmw1/104,Insolation,IN
+ESSFmw1,ESSFmw1/110,Cool aspects/cold air,CAS
+ESSFwc3,ESSFwc3/03,Late Snow,SN
+ESSFwc4,ESSFwc4/112a,High fluvial bench,Fh
+ESSFwcw,ESSFwcw/104,Late Snow,SN
+ESSFwh1,ESSFwh1/103,Insolation,IN
+ESSFwh1,ESSFwh1/111a,High fluvial bench,Fh
+ESSFwh2,ESSFwh2/103,Insolation,IN
+ESSFwh2,ESSFwh2/112a,High fluvial bench,Fh
+ESSFwh3,ESSFwh3/103,Insolation,IN
+ESSFwh3,ESSFwh3/112a,High fluvial bench,Fh
+ESSFwk1,ESSFwk1/04,Cold air influence,CA
+ESSFwk1,ESSFwk1/06,Cold air influence,CA
+ESSFwm1,ESSFwm1/103,Insolation,IN
+ESSFwm1,ESSFwm1/104,Cool aspects/cold air,CAS
+ESSFwm2,ESSFwm2/112a,High fluvial bench,Fh
+ESSFwm3,ESSFwm3/103,Insolation,IN
+ESSFwm3,ESSFwm3/104,Cool aspects/cold air,CAS
+ESSFwm3,ESSFwm3/112a,High fluvial bench,Fh
+ESSFwvw,ESSFwvw/103,Late Snow,SN
+ESSFwvw,ESSFwvw/105,Cool aspects/cold air,CAS
+ESSFxc1,ESSFxc1/110,Cool aspects/cold air,CAS
+ESSFxc2,ESSFxc2/110,Cool aspects/cold air,CAS
+ESSFxv1,ESSFxv1/04,Insolation,IN
+ESSFxv1,ESSFxv1/05,Cool aspects/cold air,CAS
+ESSFxv1,ESSFxv1/06,Cool aspects/cold air,CAS
+ESSFxv1,ESSFxv1/08,Cold air influence,CA
+ICHdk,ICHdk/02a,Insolation,IN
+ICHdk,ICHdk/03,Cool aspects/cold air,CA
+ICHdk,ICHdk/07,Cold air influence,CA
+ICHdm,ICHdm/112,Cold air influence,CA
+ICHdm,ICHdm/Fm01,Mid fluvial bench,Fm
+ICHdm,ICHdm/Fm02,Mid fluvial bench,Fm
+ICHdm,ICHdm/Fm04,Mid fluvial bench,Fm
+ICHdw1,ICHdw1/103,Insolation,IN
+ICHdw1,ICHdw1/Fm01,Mid fluvial bench,Fm
+ICHdw1,ICHdw1/Fm02,Mid fluvial bench,Fm
+ICHdw1,ICHdw1/Fm04,Mid fluvial bench,Fm
+ICHdw3,ICHdw3/07,High and Medium fluvial bench,Fm
+ICHdw4,ICHdw4/Fm01,Mid fluvial bench,Fm
+ICHdw4,ICHdw4/Fm02,Mid fluvial bench,Fm
+ICHdw4,ICHdw4/Fm04,Mid fluvial bench,Fm
+ICHmc1,ICHmc1/05,High and Medium fluvial bench,Fm
+ICHmc2,ICHmc2/01a.2,Frost,FR
+ICHmc2,ICHmc2/01b.2,Frost,FR
+ICHmc2,ICHmc2/05,Cold air influence,CA
+ICHmc2,ICHmc2/06,High and Medium fluvial bench,Fm
+ICHmc2,ICHmc2/06a,,Fh
+ICHmc2,ICHmc2/06b,Mid fluvial bench,Fm
+ICHmc2,ICHmc2/08,Frost,FR
+ICHmk3,ICHmk3/03,Insolation,IN
+ICHmk3,ICHmk3/05,Cold air influence,CA
+ICHmk4,ICHmk4/Fm01,Mid fluvial bench,Fm
+ICHmk4,ICHmk4/Fm02,Mid fluvial bench,Fm
+ICHmw2,ICHmw2/104,Insolation,IN
+ICHmw2,ICHmw2/112,Cold air influence,CA
+ICHmw2,ICHmw2/Fm01,Mid fluvial bench,Fm
+ICHmw2,ICHmw2/Fm02,Mid fluvial bench,Fm
+ICHmw2,ICHmw2/Fm04,Mid fluvial bench,Fm
+ICHmw3,ICHmw3/07,High and Medium fluvial bench,Fm
+ICHmw4,ICHmw4/111,Cold air influence,CA
+ICHmw4,ICHmw4/113,Cold air influence,CA
+ICHmw4,ICHmw4/Fm01,Mid fluvial bench,Fm
+ICHmw4,ICHmw4/Fm02,Mid fluvial bench,Fm
+ICHmw4,ICHmw4/Fm04,Mid fluvial bench,Fm
+ICHmw5,ICHmw5/Fm01,Mid fluvial bench,Fm
+ICHmw5,ICHmw5/Fm02,Mid fluvial bench,Fm
+ICHvc,ICHvc/01.2,Frost,FR
+ICHvc,ICHvc/02.2,Frost,FR
+ICHvc,ICHvc/03,Cold air influence,CA
+ICHvc,ICHvc/03a,Cold air influence,CA
+ICHvc,ICHvc/03b,Cold air influence,CA
+ICHvc,ICHvc/04,High fluvial bench,Fh
+ICHvc,ICHvc/05,Mid fluvial bench,Fm
+ICHvc,ICHvc/06,Cold air influence,CA
+ICHvk2,ICHvk2/05,High fluvial bench,Fh
+ICHvk2,ICHvk2/07,Cold air influence,CA
+ICHwc,ICHwc/05,Cold air influence,CA
+ICHwc,ICHwc/06,High and Medium fluvial bench,Fm
+ICHwc,ICHwc/07,Cold air influence,CA
+ICHwk1,ICHwk1/06,High and Medium fluvial bench,Fm
+ICHwk2,ICHwk2/05,Cold air influence,CA
+ICHwk2,ICHwk2/06,Cold air influence,CA
+ICHwk4,ICHwk4/04,Cold air influence,CA
+ICHwk4,ICHwk4/06,Cold air influence,CA
+ICHwk4,ICHwk4/08,Cold air influence,CA
+ICHxwa,ICHxwa/Fm01,Mid fluvial bench,Fm
+IDFdh,IDFdh/Fm01,Mid fluvial bench,Fm
+IDFdh,IDFdh/Fm05,Mid fluvial bench,Fm
+IDFdk1,IDFdk1/103,Insolation,IN
+IDFdk1,IDFdk1/105,Cold air influence,CA
+IDFdk1,IDFdk1/Fm02,Mid fluvial bench,Fm
+IDFdk1,IDFdk1/Fm05,Mid fluvial bench,Fm
+IDFdk1,IDFdk1/Gg1,Insolation,IN2
+IDFdk1,IDFdk1/Gg2,Insolation,IN2
+IDFdk2,IDFdk2/103,Insolation,IN
+IDFdk2,IDFdk2/105,Cold air influence,CA
+IDFdk2,IDFdk2/Fm02,Mid fluvial bench,Fm
+IDFdk2,IDFdk2/Gg,Insolation,IN2
+IDFdk3,IDFdk3/02,Insolation,IN
+IDFdk3,IDFdk3/04,Insolation,IN
+IDFdk3,IDFdk3/05,Cool aspects,CAS
+IDFdk3,IDFdk3/06,Insolation,IN
+IDFdk4,IDFdk4/03,Insolation,IN
+IDFdk4,IDFdk4/04,Insolation,IN
+IDFdk4,IDFdk4/07,Cool aspects,CAS
+IDFdk4,IDFdk4/08,Cold air influence,CA
+IDFdk5,IDFdk5/103,Insolation,IN
+IDFdk5,IDFdk5/111,Cold air influence,CA
+IDFdk5,IDFdk5/Fm01,Mid fluvial bench,Fm
+IDFdk5,IDFdk5/Fm02,Mid fluvial bench,Fm
+IDFdk5,IDFdk5/Fm07,Mid fluvial bench,Fm
+IDFdm1,IDFdm1/103,Insolation,IN
+IDFdm1,IDFdm1/112,Cold air influence,CA
+IDFdm1,IDFdm1/Fm01,Mid fluvial bench,Fm
+IDFdm1,IDFdm1/Fm05,Mid fluvial bench,Fm
+IDFdm2,IDFdm2/112a,Mid fluvial bench,Fh
+IDFxh1,IDFxh1/104,Insolation,IN
+IDFxh1,IDFxh1/Fm01,Mid fluvial bench,Fm
+IDFxh1,IDFxh1/Fm05,Mid fluvial bench,Fm
+IDFxh1,IDFxh1/Gg,Insolation,IN2
+IDFxh2,IDFxh2/103,Insolation,IN
+IDFxh2,IDFxh2/110,Cool aspects,CAS
+IDFxh2,IDFxh2/Fm01,Mid fluvial bench,Fm
+IDFxh2,IDFxh2/Fm02,Mid fluvial bench,Fm
+IDFxh2,IDFxh2/Fm05,Mid fluvial bench,Fm
+IDFxh2,IDFxh2/Gg,Insolation,IN2
+IDFxk,IDFxk/110,Cool aspects,CAS
+IDFxk,IDFxk/112,Cold air influence,CA
+IDFxk,IDFxk/113,Cold air influence,CA
+IDFxk,IDFxk/Fm01,Mid fluvial bench,Fm
+IDFxk,IDFxk/Fm02,Mid fluvial bench,Fm
+IDFxk,IDFxk/Fm07,Mid fluvial bench,Fm
+IDFxm,IDFxm/01b,Cold air influence,CA
+IDFxm,IDFxm/02a,Insolation,IN
+IDFxm,IDFxm/04,Insolation,IN
+IDFxm,IDFxm/05,Cool aspects,CAS
+IDFxm,IDFxm/Gg,Insolation,IN2
+IDFxw,IDFxw/03,Insolation,IN
+IDFxw,IDFxw/04,Insolation,IN
+IDFxw,IDFxw/05,Cool aspects,CAS
+IDFxx2,IDFxx2/103,Insolation,IN
+IDFxx2,IDFxx2/110,Cool aspects,CAS
+IDFxx2,IDFxx2/112a,High fluvial bench,Fh
+IDFxx2,IDFxx2/112b,Cold air influence,CA
+IDFxx2,IDFxx2/Fm01,Mid fluvial bench,Fm
+IDFxx2,IDFxx2/Fm02,Mid fluvial bench,Fm
+IDFxx2,IDFxx2/Fm07,Mid fluvial bench,Fm
+MSdc2,MSdc2/03,Insolation,IN
+MSdc2,MSdc2/05,Cold air influence,CA
+MSdk,MSdk/103,Insolation,IN
+MSdk,MSdk/104,Cold air influence,CA
+MSdk,MSdk/111a,High fluvial bench,Fh
+MSdk,MSdk/112a,High fluvial bench,Fh
+MSdk,MSdk/Fm01,Mid fluvial bench,Fm
+MSdk,MSdk/Fm02,Mid fluvial bench,Fm
+MSdm1,MSdm1/Fm02,Mid fluvial bench,Fm
+MSdm2,MSdm2/103,Insolation,IN
+MSdm2,MSdm2/105,Cold air influence,CA
+MSdm2,MSdm2/110,Cold air influence,CA
+MSdv,MSdv/03,Cold air influence,CA
+MSdv,MSdv/07,Cold air influence,CA
+MSdw,MSdw/103,Insolation,IN
+MSdw,MSdw/111a,High fluvial bench,Fh
+MSdw,MSdw/112,Cold air influence,CA
+MSdw,MSdw/Fm01,Mid fluvial bench,Fm
+MSdw,MSdw/Fm02,Mid fluvial bench,Fm
+MSxk2,MSxk2/104,Insolation,IN
+MSxk2,MSxk2/110,Cold air influence,CA
+MSxv,MSxv/03b,Insolation,IN
+MSxv,MSxv/07,Cold air influence,CA
+MSxv,MSxv/09,Cold air influence,CA
+PPxh1,PPxh1/110,Cool aspects,CAS
+PPxh1,PPxh1/Fm01,Mid fluvial bench,Fm
+PPxh1,PPxh1/Fm05,Mid fluvial bench,Fm
+PPxh1,PPxh1/Fm06,Mid fluvial bench,Fm
+PPxh1,PPxh1/Gg,Insolation,IN2
+PPxh1,PPxh1/Gs,Insolation,IN2
+PPxh2,PPxh2/103a,Insolation,IN
+PPxh2,PPxh2/110,Cool aspects,CAS
+PPxh2,PPxh2/110.1,Cool aspects,CAS
+PPxh2,PPxh2/110.2,Cool aspects,CAS
+PPxh2,PPxh2/Fm01,Mid fluvial bench,Fm
+PPxh2,PPxh2/Fm05,Mid fluvial bench,Fm
+PPxh2,PPxh2/Gg,Insolation,IN2
+SBPSdc,SBPSdc/02a,Insolation,IN
+SBPSdc,SBPSdc/04,Cold air influence,CA
+SBPSdc,SBPSdc/05,Cold air influence,CA
+SBPSdc,SBPSdc/07,Cold air influence,CA
+SBPSmc,SBPSmc/03,Cool aspects/cold air,CA
+SBPSmc,SBPSmc/04,Cool aspects/cold air,CA
+SBPSmc,SBPSmc/07,Cool aspects/cold air,CA
+SBPSmk,SBPSmk/03,Insolation,IN
+SBPSmk,SBPSmk/05,Cool aspects,CAS
+SBPSmk,SBPSmk/06,Frost,FR
+SBSdk,SBSdk/04,Insolation,IN
+SBSdk,SBSdk/07a,High fluvial bench,Fh
+SBSdk,SBSdk/08,High and Medium fluvial bench,Fm
+SBSdk,SBSdk/08a,High fluvial bench,Fh
+SBSdk,SBSdk/08b,Mid fluvial bench,Fm
+SBSdk,SBSdk/09,Cold air influence,CA
+SBSdk,SBSdk/10,Cold air influence,CA
+SBSdk,SBSdk/Gg,Insolation,IN2
+SBSdw1,SBSdw1/03,Insolation,IN
+SBSdw1,SBSdw1/05,Cool aspects,CAS
+SBSdw1,SBSdw1/07,High fluvial bench,Fh
+SBSdw2,SBSdw2/04,Insolation,IN
+SBSdw2,SBSdw2/05,Cool aspects,CAS
+SBSdw2,SBSdw2/07,Cold air influence,CA
+SBSdw2,SBSdw2/08,Cold air influence,CA
+SBSdw3,SBSdw3/03,Insolation,IN
+SBSdw3,SBSdw3/05,Cold air influence,CA
+SBSdw3,SBSdw3/10,Cold air influence,CA
+SBSmc1,SBSmc1/03,Insolation,IN
+SBSmc1,SBSmc1/04,Cold air influence,CA
+SBSmc1,SBSmc1/05,Cold air influence,CA
+SBSmc1,SBSmc1/08,Cold air influence,CA
+SBSmc2,SBSmc2/03,Cold air influence,CA
+SBSmc2,SBSmc2/04,Cold air influence,CA
+SBSmc2,SBSmc2/07,Cold air influence,CA
+SBSmc2,SBSmc2/08,Cold air influence,CA
+SBSmc2,SBSmc2/12,Cold air influence,CA
+SBSmc3,SBSmc3/05,Cold air influence,CA
+SBSmc3,SBSmc3/06,Cold air influence,CA
+SBSmc3,SBSmc3/09,Cold air influence,CA
+SBSmh,SBSmh/04,Insolation,IN
+SBSmh,SBSmh/08,High fluvial bench,Fh
+SBSmk1,SBSmk1/04,Insolation,IN
+SBSmk1,SBSmk1/06,Cool aspects/cold air,CA
+SBSmk1,SBSmk1/08,High fluvial bench,Fh
+SBSmk1,SBSmk1/09a,High fluvial bench,Fh
+SBSmk2,SBSmk2/04,Cool aspects/cold air,CA
+SBSmk2,SBSmk2/06,High fluvial bench,Fh
+SBSmm,SBSmm/08,High fluvial bench,Fh
+SBSmw,SBSmw/04,Insolation,IN
+SBSmw,SBSmw/05,Cool aspects/cold air,CA
+SBSvk,SBSvk/03,Insolation,IN
+SBSvk,SBSvk/08,Cool aspects/cold air,CA
+SBSwk1,SBSwk1/04,Insolation,IN
+SBSwk1,SBSwk1/06,Cool aspects/cold air,CA
+SBSwk1,SBSwk1/07,Cool aspects/cold air,CA
+SBSwk1,SBSwk1/11,Cool aspects/cold air,CA
+SBSwk1,SBSwk1/12,Cool aspects/cold air,CA
+SBSwk2,SBSwk2/04,Cool aspects/cold air,CA
+SBSwk3,SBSwk3/05,Cool aspects/cold air,CA
+SBSwk3a,SBSwk3a/05,Cool aspects/cold air,CA
+SBSwk3a,SBSwk3a/08,High fluvial bench,Fh
+SWBmk,SWBmk/03,Cold air influence,CA
+SWBmk,SWBmk/04,Insolation,IN
+SWBmk,SWBmk/05,Cool aspects,CAS
+SWBmk,SWBmk/07,Cool aspects,CAS
+CWHvh1,CWHvh1/120.2,Salt Spray,SS
+CDFmm,CDFmm/112b,Fluctuating Water Table,FWT
+CWHds1,CWHds1/103,Insolation,IN
+CWHds1,CWHds1/104,Insolation,IN
+CWHds1,CWHds1/112,High fluvial bench,Fh
+CWHds2,CWHds2/112,High fluvial bench,Fh
+CWHmm1,CWHmm1/113,High fluvial bench,Fh
+CWHms1,CWHms1/104,Insolation,IN
+CWHms1,CWHms1/113,High fluvial bench,Fh
+CWHms2,CWHms2/104,Insolation,IN
+CWHms2,CWHms2/105,Insolation,IN
+CWHms2,CWHms2/112,High fluvial bench,Fh
+CWHms3,CWHms3/113,High fluvial bench,Fh
+CWHvh1,CWHvh1/111,High fluvial bench,Fh
+CWHvh1,CWHvh1/120,Salt Spray,SS
+CWHvh1,CWHvh1/120.1,Salt Spray,SS
+CWHvh1,CWHvh1/121,Salt Spray,SS
+CWHvh2,CWHvh2/112,High fluvial bench,Fh
+CWHvh2,CWHvh2/120.1,Salt Spray,SS
+CWHvh2,CWHvh2/120.2,Salt Spray,SS
+CWHvm1,CWHvm1/104,Insolation,IN
+CWHvm1,CWHvm1/114,High fluvial bench,Fh
+CWHvm2,CWHvm2/104,Late snow,SN
+CWHvm2,CWHvm2/105,Insolation,IN
+CWHvm3,CWHvm3/114,High fluvial bench,Fh
+CWHvm4,CWHvm4/104,Late snow,SN
+CWHwm,CWHwm/113,High fluvial bench,Fh
+CWHws1,CWHws1/113,High fluvial bench,Fh
+CWHws2,CWHws2/113,High fluvial bench,Fh
+CWHws2,CWHws2/114,Cold air,CA
+CWHws3,CWHws3/113,High fluvial bench,Fh
+CWHxm1,CWHxm1/113,High fluvial bench,Fh
+CWHxm2,CWHxm2/113,High fluvial bench,Fh
+CWHxm3,CWHxm3/113,High fluvial bench,Fh
+CWHxs,CWHxs/112,High fluvial bench,Fh
+IDFww1,IDFww1/111,Cold air,CA
+IDFww1,IDFww1/112,High fluvial bench,Fh
+MHmm1,MHmm1/103,Late snow,SN
+MHmm1,MHmm1/104,Late snow,SN
+MHmm2,MHmm2/103,Late snow,SN
+MHws,MHws/104,Late snow,SN
+CWHvh1,CWHvh1/120.2,Salt Spray,SS
+CDFmm,CDFmm/112b,Fluctuating Water Table,FWT
+CWHds1,CWHds1/103,Insolation,IN
+CWHds1,CWHds1/104,Insolation,IN
+CWHds1,CWHds1/112,High fluvial bench,Fh
+CWHds2,CWHds2/112,High fluvial bench,Fh
+CWHmm1,CWHmm1/113,High fluvial bench,Fh
+CWHms1,CWHms1/104,Insolation,IN
+CWHms1,CWHms1/113,High fluvial bench,Fh
+CWHms2,CWHms2/104,Insolation,IN
+CWHms2,CWHms2/105,Insolation,IN
+CWHms2,CWHms2/112,High fluvial bench,Fh
+CWHms3,CWHms3/113,High fluvial bench,Fh
+CWHvh1,CWHvh1/111,High fluvial bench,Fh
+CWHvh1,CWHvh1/120,Salt Spray,SS
+CWHvh1,CWHvh1/120.1,Salt Spray,SS
+CWHvh1,CWHvh1/121,Salt Spray,SS
+CWHvh2,CWHvh2/112,High fluvial bench,Fh
+CWHvh2,CWHvh2/120.1,Salt Spray,SS
+CWHvh2,CWHvh2/120.2,Salt Spray,SS
+CWHvm1,CWHvm1/104,Insolation,IN
+CWHvm1,CWHvm1/114,High fluvial bench,Fh
+CWHvm2,CWHvm2/104,Late snow,SN
+CWHvm2,CWHvm2/105,Insolation,IN
+CWHvm3,CWHvm3/114,High fluvial bench,Fh
+CWHvm4,CWHvm4/104,Late snow,SN
+CWHwm,CWHwm/113,High fluvial bench,Fh
+CWHws1,CWHws1/113,High fluvial bench,Fh
+CWHws2,CWHws2/113,High fluvial bench,Fh
+CWHws2,CWHws2/114,Cold air,CA
+CWHws3,CWHws3/113,High fluvial bench,Fh
+CWHxm1,CWHxm1/113,High fluvial bench,Fh
+CWHxm2,CWHxm2/113,High fluvial bench,Fh
+CWHxm3,CWHxm3/113,High fluvial bench,Fh
+CWHxs,CWHxs/112,High fluvial bench,Fh
+IDFww1,IDFww1/111,Cold air,CA
+IDFww1,IDFww1/112,High fluvial bench,Fh
+MHmm1,MHmm1/103,Late snow,SN
+MHmm1,MHmm1/104,Late snow,SN
+MHmm2,MHmm2/103,Late snow,SN
+MHws,MHws/104,Late snow,SN
+CDFmm,CDFmm/Fm54,Fm,Fm
+CWHds1,CWHds1/Fl51,Fl,Fl
+CWHvm2,CWHvm2/Fl51,Fl,Fl
+CWHwm,CWHwm/Fl51,Fl,Fl
+CWHvm1,CWHvm1/Fm50.2,Fm,Fm
+CWHvm1,CWHvm1/Fm54,Fm,Fm
+CWHds1,CWHds1/Fm53,Fm,Fm
+CWHvm1,CWHvm1/Fl50,Fl,Fl
+CWHms2,CWHms2/Fm50.1,Fm,Fm
+CWHws1,CWHws1/Fl51,Fl,Fl
+CWHds2,CWHds2/Fm50.2,Fm,Fm
+CWHds2,CWHds2/Fm50.1,Fm,Fm
+CWHws2,CWHws2/Fm50.2,Fm,Fm
+CWHdm1,CWHdm1/Fm54,Fm,Fm
+CWHws2,CWHws2/Fl51,Fl,Fl
+CWHms2,CWHms2/Fm52,Fm,Fm
+CWHws1,CWHws1/Fm50.1,Fm,Fm
+CWHmm1,CWHmm1/Fl50,Fl,Fl
+CWHxs,CWHxs/Fm52,Fm,Fm
+CWHxs,CWHxs/Fl50,Fl,Fl
+CWHdm2,CWHdm2/Fl50,Fl,Fl
+CDFmm,CDFmm/Fl51,Fl,Fl
+CWHwh1,CWHwh1/Fl51,Fl,Fl
+CWHvh1,CWHvh1/Fl51,Fl,Fl
+CWHvm1,CWHvm1/Fm50,Fm,Fm
+CWHms2,CWHms2/Fm50,Fm,Fm
+CWHds2,CWHds2/Fm50,Fm,Fm
+CWHws2,CWHws2/Fm50,Fm,Fm
+CWHws1,CWHws1/Fm50,Fm,Fm
+CWHvh1,CWHvh1/120.1,salt spray,SS
+CWHvh1,CWHvh1/120.2,salt spray,SS
+CWHvh1,CWHvh1/121,salt spray,SS
+CWHvh2,CWHvh2/112,Fh,Fh
+CWHvh2,CWHvh2/120,salt spray,SS
+CWHvh2,CWHvh2/120.1,salt spray,SS
+CWHvh2,CWHvh2/120.2,salt spray,SS
+CWHvm1,CWHvm1/104,warm aspect,IN
+CWHvm1,CWHvm1/114,Fh,Fh
+CWHvm2,CWHvm2/104,late snow,SN
+CWHvm2,CWHvm2/105,warm aspect,IN
+CWHvh1,CWHvh1/111,Fh,Fh
+CWHvh1,CWHvh1/120,salt spray,SS
+CWHxs,CWHxs/112,Fh,Fh
+IDFww,IDFww/111,cold air,CA
+IDFww,IDFww/112,Fh,Fh
+MHmm1,MHmm1/103,late snow,SN
+MHmm1,MHmm1/104,late snow,SN
+MHmm2,MHmm2/103,late snow,SN
+MHms,MHms/104,late snow,SN
+CWHvm3,CWHvm3/114,Fh,Fh
+CWHvm4,CWHvm4/104,late snow,SN
+CWHwm,CWHwm/113,Fh,Fh
+CWHws1,CWHws1/113,Fh,Fh
+CWHws2,CWHws2/113,Fh,Fh
+CWHws2,CWHws2/114,cold air,CA
+CWHws3,CWHws3/113,Fh,Fh
+CWHdm1,CWHdm1/113,Fh,Fh
+CWHdm2,CWHdm2/113,Fh,Fh
+CWHdm3,CWHdm3/113,Fh,Fh
+CWHds1,CWHds1/103,warm aspect,IN
+CWHds1,CWHds1/104,warm aspect,IN
+CWHds1,CWHds1/112,Fh,Fh
+CWHds2,CWHds2/112,Fh,Fh
+CWHmm1,CWHmm1/113,Fh,Fh
+CWHms1,CWHms1/104,warm aspect,IN
+CWHms1,CWHms1/113,Fh,Fh
+CWHms2,CWHms2/104,warm aspect,IN
+CWHms2,CWHms2/105,warm aspect,IN
+CWHms3,CWHms3/113,Fh,Fh
+CWHvm1,CWHvm1/Fm50.1,Fm,Fm
+CWHdm3,CWHdm3/Fl51,Fl,Fl
+CWHwm,CWHwm/Fl50,Fl,Fl
+CWHwm,CWHwm/Fm51,Fm,Fm
+CWHvh2,CWHvh2/Fl51,Fl,Fl
+CWHdm2,CWHdm2/Fm53,Fm,Fm
+CWHvm1,CWHvm1/Fl51,Fl,Fl
+CWHdm3,CWHdm3/Fm53,Fm,Fm
+CWHdm3,CWHdm3/Fl50,Fl,Fl
+CWHdm2,CWHdm2/Fl51,Fl,Fl
+CDFmm,CDFmm/Fm53,Fm,Fm
+SBSvz,SBSvz/Fm02,Fm,Fm
+SBSmz,SBSmz/112,Fh,Fh
+SBSmz,SBSmz/103,insolation,IN
+IDFdw,IDFdw/104,warm aspect,WA
+IDFdw,IDFdw/105,cool aspect,CAS
+IDFdw,IDFdw/111,cold sites,CA
+IDFdw,IDFdw/Fm01,Fm,Fm
+IDFdw,IDFdw/Fm02,Fm,Fm

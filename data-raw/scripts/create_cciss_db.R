@@ -19,6 +19,9 @@ conn <- DBI::dbConnect(
 )
 
 
+t1 <- dbGetQuery(conn, "select * from cciss_future_array limit 5")
+t1 <- dbGetQuery(conn, "select * from cciss_novelty_array limit 5")
+
 addVars <- function(dat) {
   dat[, PPT_MJ := PPT_05 + PPT_06]
   dat[, PPT_JAS := PPT_07 + PPT_08 + PPT_09]
@@ -315,13 +318,16 @@ bgc2 <- st_as_sf(bgcs)
 st_write(bgc2,"BGC_v13_Fixed.gpkg")
 
 ###BGC attribution
-bgc <- vect("../Common_Files/BGC_simplified.gpkg")
-bgc4326 <- project(bgc, "epsg:4326")
+library(terra)
+library(data.table)
+library(sf)
+bgc <- vect("../Common_Files/BEC13Draft_4326.gpkg")
 hex <- fread("../Common_Files/Hex_Points_Elev.csv")
 hex <- hex[!is.na(elev),]
 hexsf <- st_as_sf(hex, coords = c("lon","lat"), crs = 4326)
 hexv <- vect(hexsf["id"])
-hexv <- project(hexv, "epsg:3005")
+#hexv <- project(hexv, "epsg:3005")
+bgc <- simplifyGeom(bgc)
 bgc_att <- intersect(bgc, hexv)
 
 dat <- fread("../../../Downloads/WNAv13_Subzone_colours_2.csv")
