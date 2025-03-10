@@ -330,8 +330,10 @@ bc2 <- vect(bc_ol)
 bgc_crop <- terra::mask(bgc, bc2)
 bgc_crop2 <- terra::intersect(bgc, bc2)
 writeVector(bgc_crop2,"BEC13_Clipped.shp")
+bgc_crop2 <- vect("BEC13_Clipped.shp")
 temp <- bgc_crop2[,"BGC"]
 bgc_crop <- terra::aggregate(temp, by = "BGC", count = F)
+writeVector(bgc_crop, "BEC13_Mar9.geojson", filetype = "GeoJSON")
 
 
 hex <- fread("../Common_Files/Hex_Points_Elev.csv")

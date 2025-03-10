@@ -17,6 +17,7 @@ analog_novelty(
   analog.focal = NULL,
   threshold = 0.95,
   pcs = NULL,
+  logVars = TRUE,
   plotScree = FALSE,
   plot2d = FALSE,
   plot2d.pcs = cbind(c(1, 2, 3, 4), c(2, 3, 4, 5)),
@@ -59,6 +60,9 @@ for truncation of principal components to use in the mahalanobis distance measur
 
 \item{pcs}{integer. The fixed number of PCs to use in the mahalanobis distance
 measurement. Non-null values of this parameter override the \code{threshold} parameter.}
+
+\item{logVars}{logical. Log-transform ratio variables, i.e., variables with a minimum
+of zero.}
 
 \item{plotScree}{logical. If \code{analog.focal} is specified, plot a scree plot showing
 the standard deviation of the analog points, target points, and (if activated) interannual
@@ -110,7 +114,8 @@ distances or as sigma dissimilarities (Interpretable as the number of standard d
 the analog cluster). These values are returned for each target climate in the dataset.
 Additional outputs include several optional plots:
 \itemize{
-\item A scree plot showing the standard deviation of the first few principal components
+\item A scree plot (if \code{plotScree} is enabled) showing the standard deviation of the
+analog and target variation in the principal components.
 \item A 2D scatterplot (if \code{plot2d} is enabled) showing the relationship between the target
 and analogs across selected principal components
 \item A 3D scatterplot (if \code{plot3d} is enabled) to visualize the distribution of the

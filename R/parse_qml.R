@@ -5,6 +5,7 @@
 #' @importFrom xml2 read_xml xml_find_all xml_attr
 #' @import data.table
 #' @export
+
 parse_qml <- function(qml_path){
   doc <- read_xml(qml_path)
   categories <- xml_find_all(doc, './renderer-v2/categories/category')

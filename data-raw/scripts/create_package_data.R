@@ -5,6 +5,35 @@ library(data.table)
 library(usethis)
 library(readxl)
 
+edatopic <- fread("tables/versioned/Edatopic_v13_6.csv")
+suit <- fread("tables/versioned/suitability_v13_9.csv")
+ss <- fread("tables/versioned/SpecialSites_v13_2.csv")
+
+subzones_colours_ref <- parse_qml("../../../Downloads/WNAv13_v5_Subzones.qml")
+subzones_colours_ref <- fread("../Common_Files/WNAv13_SubzoneCols.csv")
+
+SS <- ss[,.(SS_NoSpace,SpecialCode)]
+SS <- SS[SpecialCode != "",]
+E1 <- SS[edatopic, on = "SS_NoSpace"]
+setcolorder(E1,c("Source","BGC","SS_NoSpace","Edatopic","SpecialCode"))
+phases <- E1[grepl("BEC",Source) & grepl("[0-9]a$|[0-9]b$|[0-9]c$",SS_NoSpace),]
+E1 <- E1[!(grepl("BEC",Source) & grepl("[0-9]a$|[0-9]b$|[0-9]c$",SS_NoSpace)),]
+vars <- E1[grep("\\.1$|\\.2$|\\.3$",SS_NoSpace),]
+E1 <- E1[!grepl("\\.1$|\\.2$|\\.3$",SS_NoSpace),]
+E1_Phase <- rbind(phases,vars)
+E1_Phase[,MainUnit := gsub("[a-z]$","",SS_NoSpace)]
+E1_Phase[,MainUnit := gsub("\\.[1-9]$","",MainUnit)]
+
+setnames(suit, c("bgc", "ss_nospace", "sppsplit", "feasible", "spp", "newfeas", 
+                 "mod", "outrange"))
+S1 <- copy(suit)
+use_data(subzones_colours_ref, overwrite = TRUE)
+
+
+
+
+
+
 zone_cols <- fread("../../../Downloads/WNAv13_Zone_colours_2.csv")
 dat2 <- zone_cols[,.(ZONE,RGB)] |> unique()
 setnames(dat2,c("classification","colour"))

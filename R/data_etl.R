@@ -423,15 +423,15 @@ dbGetCCISS_v13 <- function(con, siteno, avg, modWeights){
     GROUP BY ", groupby, ", futureperiod, bgc, bgc_pred
   
   ), cciss_curr AS (
-      SELECT cciss_prob13.siteno,
+      SELECT cciss_current.siteno,
       '1991' as period,
-      bgc_attribution13.bgc,
+      bgc_attribution13_1.bgc,
       bgc_pred,
-      prob
-      FROM cciss_prob13
-      JOIN bgc_attribution13
-      ON (cciss_prob13.siteno = bgc_attribution13.siteno)
-      WHERE cciss_prob13.siteno IN (", paste(unique(siteno), collapse = ","), ")
+      cast (1 as numeric) prob
+      FROM cciss_current
+      JOIN bgc_attribution13_1
+      ON (cciss_current.siteno = bgc_attribution13_1.siteno)
+      WHERE cciss_current.siteno IN (", paste(unique(siteno), collapse = ","), ")
       
   ), curr_temp AS (
     SELECT ", groupby, " siteref,
