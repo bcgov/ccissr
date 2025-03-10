@@ -375,17 +375,17 @@ dbGetCCISS_v13 <- function(con, siteno, avg, modWeights){
   
   cciss_sql <- paste0("
   WITH cciss AS (
-    SELECT cciss_future13_array.siteno,
+    SELECT cciss_future_array.siteno,
          labels.gcm,
          labels.scenario,
          labels.futureperiod,
          labels.run,
-         bgc_attribution13.bgc,
-         bgcv13.bgc bgc_pred,
+         bgc_attribution13_1.bgc,
+         bgcv13_1.bgc bgc_pred,
          w.weight
-  FROM cciss_future13_array
-  JOIN bgc_attribution13
-    ON (cciss_future13_array.siteno = bgc_attribution13.siteno),
+  FROM cciss_future_array
+  JOIN bgc_attribution13_1
+    ON (cciss_future_array.siteno = bgc_attribution13_1.siteno),
        unnest(bgc_id) WITH ordinality as source(bgc_id, row_idx)
   JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
                gcm,
@@ -400,10 +400,9 @@ dbGetCCISS_v13 <- function(con, siteno, avg, modWeights){
     JOIN (values ",weights,") 
     AS w(gcm,scenario,weight)
     ON labels.gcm = w.gcm AND labels.scenario = w.scenario
-  JOIN bgcv13
-    ON bgcv13.bgc_id = source.bgc_id
-  WHERE cciss_future13_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
-  AND futureperiod IN ('2001', '2021','2041','2061','2081')
+  JOIN bgcv13_1
+    ON bgcv13_1.bgc_id = source.bgc_id
+  WHERE cciss_future_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
   
   ), cciss_count_den AS (
   
