@@ -17,9 +17,9 @@ library(dplyr)
 #Each site series listed in the edatopic table should also have species information in the feasibility table (and vis versa).
 
 #read in tables 
-edatop_tab<-read.csv("feas_tables/versioned/Edatopic_v13_5.csv")#update to local if needed
-feas_tab<-read.csv("feas_tables/versioned/Feasibility_v13_7.csv")
-BGC_list<-read.csv("feas_tables/versioned/BGCs_V13Nov2024.csv")
+edatop_tab<-read.csv("tables/versioned/Edatopic_v13_7.csv")#update to local if needed
+feas_tab<-read.csv("tables/versioned/suitability_v13_11.csv")
+BGC_list<-read.csv("tables/versioned/BGCs_V13_22Feb2025.csv")
 
 subzones<-as.data.frame(unique(BGC_list$BGC))#427
 subzones$BGC<-subzones$`unique(BGC_list$BGC)`
@@ -35,7 +35,7 @@ miss_SS_feas<-anti_join(ss_e, ss_f, by = 'ss_nospace')
 miss_BGCs_edatope<-anti_join(subzones, ss_e)
 miss_SS_edatope<-anti_join(ss_f, ss_e, by = 'ss_nospace')
 
-write.csv(miss_BGCs_edatope, "feas_tables/versioned/check_tables/missing_BGCs_edatope2.csv")
-write.csv(miss_BGCs_feas, "feas_tables/versioned/check_tables/missing_BGCs_feasibility2.csv")
-write.csv(miss_SS_feas, "feas_tables/versioned/check_tables/missing_SS_feasibility2.csv")
-write.csv(miss_SS_edatope, "feas_tables/versioned/check_tables/missing_SS_edatope2.csv")
+write.csv(miss_BGCs_edatope, "tables/versioned/check_tables/missing_BGCs_edatope3.csv")
+write.csv(miss_BGCs_feas, "tables/versioned/check_tables/missing_BGCs_feasibility3.csv")
+write.csv(miss_SS_feas, "tables/versioned/check_tables/missing_SS_feasibility3.csv")
+write.csv(miss_SS_edatope, "tables/versioned/check_tables/missing_SS_edatope3.csv")
