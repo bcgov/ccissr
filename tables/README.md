@@ -1,4 +1,4 @@
 # Current table versions 
-Suitability v13_9 
+Suitability v13_11 
 
-Edatopic v13_5 
+Edatopic v13_6 
