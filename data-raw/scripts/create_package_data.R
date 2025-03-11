@@ -4,13 +4,29 @@
 library(data.table)
 library(usethis)
 library(readxl)
+library(ccissr)
+
+bgcs <- fread("tables/versioned/WNA_BGCs_Info_v13_2.csv")
+bgcs_wna <- unique(bgcs[DataSet == "BC", BGC])
+
+bgc_notin <- bgcs_wna[!bgcs_wna %in% stocking_standards$ZoneSubzone]
+eda <- E1[BGC %in% bgcs_wna, ]
+bc_ss <- unique(eda$SS_NoSpace)
+
+ss_notin <- bc_ss[!bc_ss %in% stocking_standards$SS_NoSpace]
+fwrite(data.table(bgc_notin),"BGC_NoStocking.csv")
+fwrite(data.table(ss_notin), "SiteSeries_NoStocking.csv")
 
 edatopic <- fread("tables/versioned/Edatopic_v13_6.csv")
 suit <- fread("tables/versioned/suitability_v13_9.csv")
 ss <- fread("tables/versioned/SpecialSites_v13_2.csv")
 
-subzones_colours_ref <- parse_qml("../../../Downloads/WNAv13_v5_Subzones.qml")
-subzones_colours_ref <- fread("../Common_Files/WNAv13_SubzoneCols.csv")
+#subzones_colours_ref <- parse_qml("../../../Downloads/WNAv13_v5_Subzones.qml")
+sz_wna <- fread("../Common_Files/WNAv13_SubzoneCols.csv")
+sz_bc <- fread("../CCISS_ShinyApp/app/BC_SubzoneColours_v13_6.csv")
+sz_wna <- sz_wna[!classification %in% sz_bc$classification,]
+sz_all <- rbind(sz_bc, sz_wna)
+fwrite(sz_all, "../CCISS_ShinyApp/app/WNA_SZ_Cols_v13_6.csv")
 
 SS <- ss[,.(SS_NoSpace,SpecialCode)]
 SS <- SS[SpecialCode != "",]
