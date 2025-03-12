@@ -5,7 +5,7 @@ suit<-read.csv("tables/versioned/suitability_v13_8.csv")
 suit$X<-NULL
 names(suit)
 
-#read in updated table
+#read in update 
 cariboo_update<-read.csv("tables/regional_updates/omineca_cariboo_Feb2025.csv") 
 unique(cariboo_update$expert_initials)
 #subset to Kristi Iversen 

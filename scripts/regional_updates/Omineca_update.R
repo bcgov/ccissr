@@ -6,7 +6,7 @@ suit$X<-NULL
 names(suit)
 suit<-rename(suit, suitability=feasible, newsuit=newfeas)#rename to suitability
 
-#read in updated table
+#read in update 
 omineca_update<-read.csv("tables/regional_updates/omineca_cariboo_Feb2025.csv") 
 names(omineca_update)
 unique(omineca_update$expert_initials)
