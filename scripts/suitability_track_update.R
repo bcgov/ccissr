@@ -7,7 +7,7 @@ suit$X<-NULL
 names(suit)
 
 #read in updated table
-suit_update<-read.csv("tables/versioned/suitability_v13_11.csv") 
+suit_update<-read.csv("tables/versioned/suitability_v13_12.csv") 
 suit_update$X<-NULL
 
 #run diff and write out report 
@@ -15,7 +15,7 @@ diff <- compareDF::compare_df(suit_update, suit, group_col = c("ss_nospace", "sp
 diff$change_summary
 diffrept<-diff$comparison_df
 
-write.csv(diffrept, "tables/versioned/tracked_changes/diff_report_v13_11.csv") #rename with version to match update 
+write.csv(diffrept, "tables/versioned/tracked_changes/diff_report_v13_12.csv") #rename with version to match update 
 
 #overwrite current table with updated table 
 #indicate in git commit 
@@ -24,7 +24,7 @@ write.csv(suit_update, "tables/suitability.csv")
 
 #update readme 
 path <- "tables/README.md"
-updated_readme<- c("# Current table versions ",  "Suitability v13_11 ",        ""               ,
+updated_readme<- c("# Current table versions ",  "Suitability v13_12 ",        ""               ,
                    "Edatopic v13_6 ")     #update version #s 
 # Write the updated content back to the README
 writeLines(updated_readme, path)

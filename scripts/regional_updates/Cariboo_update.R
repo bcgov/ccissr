@@ -43,3 +43,49 @@ names(suit3)
 
 #write as new version
 write.csv(suit3, "tables/versioned/suitability_v13_9.csv")
+
+
+# add back in new units - 3/11/25 
+suit<-read.csv("tables/versioned/suitability_v13_11.csv")
+suit$X<-NULL
+
+#read in updated table
+cariboo_update<-read.csv("tables/regional_updates/omineca_cariboo_Feb2025.csv") 
+#subset to Kristi Iversen 
+cariboo_update<-subset(cariboo_update,  expert_initials=="KI"| expert_initials=="KEI")
+
+#select relevant columns and rename for join
+cariboo_update<-select(cariboo_update, BGC, SS_NoSpace, expert, spp, expert_updated, expert_initials)%>%rename(bgc=BGC, ss_nospace=SS_NoSpace)
+
+#join 
+suit3<-left_join(suit, cariboo_update)
+
+#figure out which were missed
+cariboo_check<-subset(suit3, expert_initials=="KI"| expert_initials=="KEI")
+diff<-anti_join(cariboo_update, cariboo_check)
+
+#remove duplicate cols
+suit3<-select(suit3, -expert, -expert_updated, -expert_initials)
+names(suit3)
+names(diff)
+
+#rename or add cols to match 
+diff<-rename(diff, mod=expert_initials, suitability=expert, newsuit=expert_updated)
+diff$outrange<-"FALSE"
+unique(diff$spp)
+diff<-mutate(diff, sppsplit= case_when(spp=="Fd"~"Fdi", 
+                                       spp=="Py"~"Pyi",
+                                       spp=="Pl"~"Pli", 
+                                       TRUE~ NA))
+diff<-mutate(diff, sppsplit=if_else(is.na(sppsplit), spp, sppsplit))
+
+#reorder cols
+diff<-select(diff, bgc, ss_nospace, sppsplit, suitability, spp, newsuit, mod, outrange)
+
+#bind back to main suitability table
+suit3<-rbind(suit3, diff)
+
+#write as new version
+write.csv(suit3, "tables/versioned/suitability_v13_12.csv")
+
+
