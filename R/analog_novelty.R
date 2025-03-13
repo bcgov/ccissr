@@ -134,7 +134,8 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[complete.cases(clim.icv)]
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[, .SD, .SDcols = names(clim.analog)]
     if(plot3d.candidates){
-      clim.analogs.all <- clim.analogs.all[complete.cases(clim.analogs.all)]
+      label.analogs <- label.analogs[complete.cases(clim.analogs.all)]
+            clim.analogs.all <- clim.analogs.all[complete.cases(clim.analogs.all)]
     clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.analog)]
     }
     
