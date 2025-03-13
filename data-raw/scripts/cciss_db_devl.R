@@ -23,8 +23,6 @@ t1 <- dbGetQuery(conn, "select * from cciss_future_array limit 5")
 t2 <- dbGetQuery(conn, "select * from cciss_novelty_array where siteno = 49")
 
 
-""
-
 ### create parameter input charts
 gcm_weight <- data.table(gcm = c("ACCESS-ESM1-5", "BCC-CSM2-MR", "CanESM5", "CNRM-ESM2-1", "EC-Earth3", 
                                  "GFDL-ESM4", "GISS-E2-1-G", "INM-CM5-0", "IPSL-CM6A-LR", "MIROC6", 
@@ -41,7 +39,7 @@ all_weight[,weight := wgcm*wrcp]
 all_weight[,comb := paste0("('",gcm,"','",rcp,"',",weight,")")]
 weights <- paste(all_weight$comb,collapse = ",")
 
-siteno <- c(1952239)
+siteno <- c(590351)
 groupby = "siteno"
 
 cciss_sql <- paste0("
@@ -76,13 +74,13 @@ cciss_sql <- paste0("
          labels.scenario,
          labels.futureperiod,
          labels.run,
-         bgc_attribution13.bgc,
-         CASE WHEN cciss_nov.novelty > 40 THEN 'novel' ELSE bgcv13.bgc END AS bgc_pred,
+         bgc_attribution13_1.bgc,
+         CASE WHEN cciss_nov.novelty > 50 THEN 'novel' ELSE bgcv13_1.bgc END AS bgc_pred,
          cciss_nov.novelty,
          w.weight
   FROM cciss_future_array
-  JOIN bgc_attribution13
-    ON (cciss_future_array.siteno = bgc_attribution13.siteno),
+  JOIN bgc_attribution13_1
+    ON (cciss_future_array.siteno = bgc_attribution13_1.siteno),
        unnest(bgc_id) WITH ordinality as source(bgc_id, row_idx)
   JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
                gcm,
@@ -97,8 +95,8 @@ cciss_sql <- paste0("
     JOIN (values ",weights,") 
     AS w(gcm,scenario,weight)
     ON labels.gcm = w.gcm AND labels.scenario = w.scenario
-  JOIN bgcv13
-    ON bgcv13.bgc_id = source.bgc_id
+  JOIN bgcv13_1
+    ON bgcv13_1.bgc_id = source.bgc_id
   JOIN cciss_nov
     ON cciss_nov.row_idx = source.row_idx
   WHERE cciss_future_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
@@ -123,7 +121,26 @@ cciss_sql <- paste0("
     FROM cciss
     GROUP BY ", groupby, ", futureperiod, bgc, bgc_pred
   
-  ) 
+  ) ,
+  
+  cciss_curr AS (
+      SELECT cciss_current_nov.siteno,
+      '1991' as period,
+      bgc_attribution13_1.bgc,
+      CASE WHEN novelty > 50 THEN 'novel' ELSE bgc_pred END AS bgc_pred,
+      cast (1 as numeric) prob,
+      novelty
+      FROM cciss_current_nov
+      JOIN bgc_attribution13_1
+      ON (cciss_current_nov.siteno = bgc_attribution13_1.siteno)
+      WHERE cciss_current_nov.siteno IN (", paste(unique(siteno), collapse = ","), ")
+      
+  ), curr_temp AS (
+    SELECT ", groupby, " siteref,
+           COUNT(distinct siteno) n
+    FROM cciss_curr
+    GROUP BY ", groupby, "
+  )
   
   SELECT cast(a.siteref as text) siteref,
          a.futureperiod,
@@ -136,6 +153,32 @@ cciss_sql <- paste0("
     ON a.siteref = b.siteref
    AND a.futureperiod = b.futureperiod
    WHERE a.w <> 0
+  
+  UNION ALL
+
+  SELECT cast(", groupby, " as text) siteref,
+          period as futureperiod,
+          bgc,
+          bgc_pred,
+          SUM(prob)/b.n bgc_prop,
+          AVG(novelty) novelty
+  FROM cciss_curr a
+  JOIN curr_temp b
+    ON a.",groupby," = b.siteref
+  WHERE siteno in (", paste(unique(siteno), collapse = ","), ")
+  GROUP BY ", groupby, ",period,b.n, bgc, bgc_pred
+  
+  UNION ALL
+
+  SELECT DISTINCT 
+            cast(", groupby, " as text) siteref,
+            '1961' as futureperiod,
+            bgc,
+            bgc as bgc_pred,
+            cast(1 as numeric) bgc_prop,
+            cast(0 as numeric) novelty
+    FROM cciss_curr
+    WHERE siteno IN (", paste(unique(siteno), collapse = ","), ")
   
                     ")
 

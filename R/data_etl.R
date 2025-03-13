@@ -485,6 +485,177 @@ dbGetCCISS_v13 <- function(con, siteno, avg, modWeights){
 }
 
 
+#' Pull CCISS version 13 from a vector of SiteNo with novelty 
+#' @param con An active postgres DBI connection.
+#' @param siteno A character vector of siteno.
+#' @param avg A boolean. 
+#' @param modWeights A data table of gcm and rcp weights.
+#' @param nov_cutoff Numeric between 1 and 8. Sigma value specifying novelty cutoff. 
+#' @details Get CCISS for provided SiteNo.
+#' @return A data.table containing CCISS information for each provided SiteNo.
+#' @importFrom RPostgres dbGetQuery
+#' @export
+#' 
+dbGetCCISS_novelty <- function(con, siteno, avg, modWeights, nov_cutoff = 5){
+  
+  # Declare binding for checks
+  if (FALSE) {
+    comb <- gcm <- rcp <- weight <- NULL
+  }
+  
+  groupby = "siteno"
+  if (isTRUE(avg)) {
+    groupby = "bgc"
+  }
+  modWeights[,comb := paste0("('",gcm,"','",rcp,"',",weight,")")]
+  weights <- paste(modWeights$comb,collapse = ",")
+  
+  nc <- as.character(round(nov_cutoff * 10,2))
+  
+  cciss_sql <- paste0("
+  
+  WITH 
+   cciss_nov AS (
+    SELECT cciss_novelty_array.siteno,
+         labels.gcm,
+         labels.scenario,
+         labels.futureperiod,
+         labels.run,
+         source.novelty,
+         source.row_idx
+  FROM cciss_novelty_array,
+       unnest(novelty) WITH ordinality as source(novelty, row_idx)
+  JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
+               gcm,
+               scenario,
+               futureperiod,
+               run
+        FROM gcm 
+        CROSS JOIN scenario
+        CROSS JOIN futureperiod
+        CROSS JOIN run) labels
+    ON labels.row_idx = source.row_idx
+    WHERE cciss_novelty_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
+  ),
+  
+  cciss AS (
+    SELECT cciss_future_array.siteno,
+         labels.gcm,
+         labels.scenario,
+         labels.futureperiod,
+         labels.run,
+         bgc_attribution13_1.bgc,
+         CASE WHEN cciss_nov.novelty > ",nc," THEN 'novel' ELSE bgcv13_1.bgc END AS bgc_pred,
+         cciss_nov.novelty,
+         w.weight
+  FROM cciss_future_array
+  JOIN bgc_attribution13_1
+    ON (cciss_future_array.siteno = bgc_attribution13_1.siteno),
+       unnest(bgc_id) WITH ordinality as source(bgc_id, row_idx)
+  JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
+               gcm,
+               scenario,
+               futureperiod,
+               run
+        FROM gcm 
+        CROSS JOIN scenario
+        CROSS JOIN futureperiod
+        CROSS JOIN run) labels
+    ON labels.row_idx = source.row_idx
+    JOIN (values ",weights,") 
+    AS w(gcm,scenario,weight)
+    ON labels.gcm = w.gcm AND labels.scenario = w.scenario
+  JOIN bgcv13_1
+    ON bgcv13_1.bgc_id = source.bgc_id
+  JOIN cciss_nov
+    ON cciss_nov.row_idx = source.row_idx
+  WHERE cciss_future_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
+  
+  ),
+  cciss_count_den AS (
+  
+    SELECT ", groupby, " siteref,
+           futureperiod,
+           SUM(weight) w
+    FROM cciss
+    GROUP BY ", groupby, ", futureperiod
+  
+  ), cciss_count_num AS (
+  
+    SELECT ", groupby, " siteref,
+           futureperiod,
+           bgc,
+           bgc_pred,
+           AVG(novelty) nov,
+           SUM(weight) w
+    FROM cciss
+    GROUP BY ", groupby, ", futureperiod, bgc, bgc_pred
+  
+  ) ,
+  
+  cciss_curr AS (
+      SELECT cciss_current_nov.siteno,
+      '1991' as period,
+      bgc_attribution13_1.bgc,
+      CASE WHEN novelty > ",nc," THEN 'novel' ELSE bgc_pred END AS bgc_pred,
+      cast (1 as numeric) prob,
+      novelty
+      FROM cciss_current_nov
+      JOIN bgc_attribution13_1
+      ON (cciss_current_nov.siteno = bgc_attribution13_1.siteno)
+      WHERE cciss_current_nov.siteno IN (", paste(unique(siteno), collapse = ","), ")
+      
+  ), curr_temp AS (
+    SELECT ", groupby, " siteref,
+           COUNT(distinct siteno) n
+    FROM cciss_curr
+    GROUP BY ", groupby, "
+  )
+  
+  SELECT cast(a.siteref as text) siteref,
+         a.futureperiod,
+         a.bgc,
+         a.bgc_pred,
+         a.w/cast(b.w as float) bgc_prop,
+         a.nov novelty
+  FROM cciss_count_num a
+  JOIN cciss_count_den b
+    ON a.siteref = b.siteref
+   AND a.futureperiod = b.futureperiod
+   WHERE a.w <> 0
+  
+  UNION ALL
+
+  SELECT cast(", groupby, " as text) siteref,
+          period as futureperiod,
+          bgc,
+          bgc_pred,
+          SUM(prob)/b.n bgc_prop,
+          AVG(novelty) novelty
+  FROM cciss_curr a
+  JOIN curr_temp b
+    ON a.",groupby," = b.siteref
+  WHERE siteno in (", paste(unique(siteno), collapse = ","), ")
+  GROUP BY ", groupby, ",period,b.n, bgc, bgc_pred
+  
+  UNION ALL
+
+  SELECT DISTINCT 
+            cast(", groupby, " as text) siteref,
+            '1961' as futureperiod,
+            bgc,
+            bgc as bgc_pred,
+            cast(1 as numeric) bgc_prop,
+            cast(0 as numeric) novelty
+    FROM cciss_curr
+    WHERE siteno IN (", paste(unique(siteno), collapse = ","), ")")
+  
+  dat <- setDT(RPostgres::dbGetQuery(con, cciss_sql))
+  
+  setnames(dat, c("SiteRef","FuturePeriod","BGC","BGC.pred","BGC.prop","Novelty"))
+  return(dat)
+}
+
 #' Pull individual predictions by district
 #' @param con An active postgres DBI connection.
 #' @param siteno A character vector of siteno.
