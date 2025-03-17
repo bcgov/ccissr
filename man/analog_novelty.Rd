@@ -28,12 +28,12 @@ analog_novelty(
 )
 }
 \arguments{
-\item{clim.targets}{data.table. Climate variables for which the analogs were
-identified}
+\item{clim.targets}{data.table. Climate values for which the analogs were
+identified. Must include variables specified in \code{vars}.}
 
-\item{clim.analogs}{data.table. Climate variables of at least 50 locations
+\item{clim.analogs}{data.table. Climate values of at least 50 locations
 representing the spatial variation in the reference period (historical) climate
-of each analog in the analog pool.}
+of each analog in the analog pool. Must include variables specified in \code{vars}.}
 
 \item{label.targets}{character. Vector of the analog IDs identified for the
 climatic conditions listed in \code{clim.targets}. Length equals number of records

@@ -20,15 +20,17 @@ library(plotly)
 #---------------------------
 
 #BGC model and variable list
-load("//objectstore2.nrs.bcgov/ffec/BGC_models/BGC_RFresp.Rdata") ##load RF model
-pred_vars <- BGC_RFresp[["forest"]][["independent.variable.names"]] ##required predictors
+# BGCmodel <- readRDS("//objectstore2.nrs.bcgov/ffec/BGC_models/BGCmodel_WNA_V2.1.rds") # permanent storage but too slow
+BGCmodel <- readRDS("C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models//BGCmodel_WNA_V2.1.rds")
+pred_vars <- BGCmodel[["forest"]][["independent.variable.names"]] ##required predictors
 
 # bc boundary
 bc <- vect(bc_bound())
 bc <- project(bc, "EPSG:4326")
 
 # DEM
-dir <- paste("//objectstore2.nrs.bcgov/ffec/Climatologies/PRISM_BC/PRISM_dem/", sep="")
+# dir <- paste("//objectstore2.nrs.bcgov/ffec/Climatologies/PRISM_BC/PRISM_dem/", sep="") # permanent storage but too slow
+dir <- paste("C:/Users/CMAHONY/OneDrive - Government of BC/Data/PRISM_dem/", sep="")
 dem <- rast(paste(dir, "PRISM_dem.asc", sep=""))
 dem <- aggregate(dem, fact=3)
 dem <- mask(dem, bc)
@@ -49,13 +51,13 @@ clim.grid <- clim.grid[is.finite(CMD.total)] #remove NA rows to have complete ca
 
 #historical climate for training points
 pts <- fread("//objectstore2.nrs.bcgov/ffec/BGC_models/points_WNA_simple200.csv")
-colnames(pts) <- c("id", "BGC", "lon", "lat", "elev") # rename column names to what climr expects
 clim.pts <- downscale(xyz = pts,
                       vars = list_vars())
 addVars(clim.pts)
+clim.pts <- pts[clim.pts, on = "id"]
 
 # Calculate the centroid climate for the training points
-clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = pts$BGC, .SDcols = -c(1,2)]
+clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = BGC, .SDcols = -c("id", "PERIOD")]
 
 # historical interannual climatic variability at the geographic centroids of the training points
 pts.mean <- pts[, lapply(.SD, mean), by = BGC]
@@ -66,7 +68,7 @@ clim.icv.pts <- downscale(xyz = pts.mean,
                           return_refperiod = FALSE,
                           vars = list_vars())
 addVars(clim.icv.pts)
-
+clim.icv.pts <- pts.mean[clim.icv.pts, on = "id"]
 
 #---------------------------
 # EDA with Scree and 3D plots
@@ -74,7 +76,7 @@ addVars(clim.icv.pts)
 
 # climate data and BGC projections
 clim.targets <- clim.grid[PERIOD == list_gcm_periods()[3], ]
-bgc.pred <- predict(BGC_RFresp, data = clim.targets)[['predictions']]
+bgc.pred <- predict(BGCmodel, data = clim.targets)[['predictions']]
 
 # plots of focal analogs
 pcnum <- 3
@@ -91,15 +93,15 @@ bgc.focal <- "IDFdk5" # low novelty in pred_vars but high novelty in basic varia
 analog_novelty(clim.targets = clim.targets,
                clim.analogs = clim.pts,
                label.targets = bgc.pred,
-               label.analogs = pts$BGC,
+               label.analogs = clim.pts$BGC,
                # vars = pred_vars[-which(pred_vars=="CMI")], # remove CMI as it is NA along the coast (climr bug)
                vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
-               pcs = 3,
+               # pcs = 3,
                analog.focal = bgc.focal,
                # logVars = FALSE,
                plotScree = TRUE,
                clim.icvs <- clim.icv.pts,
-               label.icvs <- pts.mean$BGC[clim.icv.pts$id],
+               label.icvs <- clim.icv.pts$BGC,
                # plot2d = TRUE,
                plot3d = TRUE,
                plot3d.pcs=c(1,2,3), 
@@ -125,7 +127,7 @@ values(X) <- NA
 
 # climate data and BGC projections
 clim.targets <- clim.grid[PERIOD == list_gcm_periods()[1], ]
-bgc.pred <- predict(BGC_RFresp, data = clim.targets)[['predictions']]
+bgc.pred <- predict(BGCmodel, data = clim.targets)[['predictions']]
 
 par(mar=c(1,1,1,1), mfrow=c(1,1))
 novelty <- analog_novelty(clim.targets = clim.targets,
@@ -247,7 +249,7 @@ for(i in 0:3){ # i is the iteration through gcm_periods
   } else clim.targets <- clim.grid[PERIOD == list_gcm_periods()[i], ]
   
   # BGC projections
-  bgc.pred <- predict(BGC_RFresp, data = clim.targets)[['predictions']]
+  bgc.pred <- predict(BGCmodel, data = clim.targets)[['predictions']]
   
   novelty <- analog_novelty(clim.targets = clim.targets,
                             clim.analogs = clim.pts,
