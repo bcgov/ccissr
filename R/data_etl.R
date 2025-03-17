@@ -515,83 +515,82 @@ dbGetCCISS_novelty <- function(con, siteno, avg, modWeights, nov_cutoff = 5){
   cciss_sql <- paste0("
   
   WITH 
-   cciss_nov AS (
+  cciss_nov AS (
     SELECT cciss_novelty_array.siteno,
-         labels.gcm,
-         labels.scenario,
-         labels.futureperiod,
-         labels.run,
-         source.novelty,
-         source.row_idx
-  FROM cciss_novelty_array,
-       unnest(novelty) WITH ordinality as source(novelty, row_idx)
-  JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
-               gcm,
-               scenario,
-               futureperiod,
-               run
-        FROM gcm 
-        CROSS JOIN scenario
-        CROSS JOIN futureperiod
-        CROSS JOIN run) labels
-    ON labels.row_idx = source.row_idx
+    source.novelty,
+    source.row_idx
+    FROM cciss_novelty_array,
+    unnest(novelty) WITH ordinality as source(novelty, row_idx)
     WHERE cciss_novelty_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
   ),
   
-  cciss AS (
+    cciss_bgc AS (
     SELECT cciss_future_array.siteno,
-         labels.gcm,
-         labels.scenario,
-         labels.futureperiod,
-         labels.run,
-         bgc_attribution13_1.bgc,
-         CASE WHEN cciss_nov.novelty > ",nc," THEN 'novel' ELSE bgcv13_1.bgc END AS bgc_pred,
-         cciss_nov.novelty,
-         w.weight
-  FROM cciss_future_array
-  JOIN bgc_attribution13_1
+    source.row_idx,
+    labels.gcm,
+    labels.scenario,
+    labels.futureperiod,
+    labels.run,
+    bgc_attribution13_1.bgc,
+    bgcv13_1.bgc bgc_pred,
+    w.weight
+    FROM cciss_future_array
+    JOIN bgc_attribution13_1
     ON (cciss_future_array.siteno = bgc_attribution13_1.siteno),
-       unnest(bgc_id) WITH ordinality as source(bgc_id, row_idx)
-  JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
-               gcm,
-               scenario,
-               futureperiod,
-               run
-        FROM gcm 
-        CROSS JOIN scenario
-        CROSS JOIN futureperiod
-        CROSS JOIN run) labels
+    unnest(bgc_id) WITH ordinality as source(bgc_id, row_idx)
+    JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
+          gcm,
+          scenario,
+          futureperiod,
+          run
+          FROM gcm 
+          CROSS JOIN scenario
+          CROSS JOIN futureperiod
+          CROSS JOIN run) labels
     ON labels.row_idx = source.row_idx
     JOIN (values ",weights,") 
     AS w(gcm,scenario,weight)
     ON labels.gcm = w.gcm AND labels.scenario = w.scenario
-  JOIN bgcv13_1
+    JOIN bgcv13_1
     ON bgcv13_1.bgc_id = source.bgc_id
-  JOIN cciss_nov
-    ON cciss_nov.row_idx = source.row_idx
-  WHERE cciss_future_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
-  
+    WHERE cciss_future_array.siteno IN (", paste(unique(siteno), collapse = ","), ")
+    
   ),
-  cciss_count_den AS (
   
+  cciss AS (
+  SELECT cciss_bgc.siteno,
+  gcm,
+  scenario, 
+  futureperiod,
+  run,
+  bgc,
+  CASE WHEN cciss_nov.novelty > ",nc," THEN 'novel' ELSE bgc_pred END AS bgc_pred,
+  cciss_nov.novelty,
+  weight
+  FROM cciss_bgc
+  JOIN cciss_nov USING (siteno, row_idx)
+  ),
+  
+  cciss_count_den AS (
+    
     SELECT ", groupby, " siteref,
-           futureperiod,
-           SUM(weight) w
+    futureperiod,
+    SUM(weight) w
     FROM cciss
     GROUP BY ", groupby, ", futureperiod
-  
+    
   ), cciss_count_num AS (
-  
+    
     SELECT ", groupby, " siteref,
-           futureperiod,
-           bgc,
-           bgc_pred,
-           AVG(novelty) nov,
-           SUM(weight) w
+    futureperiod,
+    bgc,
+    bgc_pred,
+    AVG(novelty) nov,
+    SUM(weight) w
     FROM cciss
     GROUP BY ", groupby, ", futureperiod, bgc, bgc_pred
-  
-  ) ,
+    
+  )  ,
   
   cciss_curr AS (
       SELECT cciss_current_nov.siteno,
