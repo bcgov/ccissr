@@ -7,6 +7,8 @@ library(climr)
 library(ranger)
 library(ccissr)
 
+dat <- parse_qml("../../../Downloads/WNAv13_v6_Subzones.qml")
+
 source("./data-raw/scripts/functions.R")
 
 conn <- DBI::dbConnect(

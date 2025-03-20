@@ -18,7 +18,7 @@ parse_qml <- function(qml_path){
   symbols <- xml_find_all(doc, './renderer-v2/symbols/symbol/layer/Option/Option')
   temp <- symbols[xml_attr(symbols,"name") == "color"]
   cols <- xml_attr(temp, "value")
-  cols <- gsub(",rgb:.*","",cols)
+  cols <- gsub(",rgb:.*|,hsv:.*","",cols)
   col_dt <- data.table(fill = cols, id = col_id)
   cat_dt[col_dt, fill := i.fill, on = "id"]
   
