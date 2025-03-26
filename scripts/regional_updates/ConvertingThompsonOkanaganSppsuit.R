@@ -35,6 +35,9 @@ long_data <- long_data %>% mutate(Species = str_extract_all(Species, "[A-Z][a-z]
 # Rename Species column to spp
 colnames(long_data)[colnames(long_data) == "Species"] <- "spp"
 
+# Update Se to Sx
+long_data$spp[long_data$spp == "Se"] <- 'Sx'
+
 # Add a new column 'mod' with every value set to 'MR'
 long_data$mod <- "MR"
 
@@ -53,6 +56,27 @@ long_data <- long_data %>% select(bgc, ss_nospace, spp, newsuit, mod, outrange, 
 # Print preview of transformed data
 head(long_data)
 
+#remove variants - Mike's decisions March 2025
+#ICHdw3/06 Use the Cw-dominated unit.
+#ICHdw3/08 Use the mineral soil with horsetail unit
+#ICHmk2/05 Use the Cw-dominated unit
+#ICHmw3/08 Use the 08 (organic soils with skunk cabbage)
+#IDFdc/03 Use the03 (shallow soils)
+#IDFmw2/04 Use lacks abundant devil’s club
+#MSdc1/02 Use the 02 (low elevations)
+#MSdm3/03 Use 03 shallow soils
+#MSxk3/05 steep warm slopes
+
+long_data<-subset(long_data, ss_nospace!= "ICHdw3/06 (Sx present)"&
+                            ss_nospace!= "ICHdw3/08 (organic soils with skunk cabbage)" &
+                              ss_nospace!= "ICHmk2/05 (Sx-dominant)" &
+                              ss_nospace!= "ICHmw3/08 (mineral soils with horsetail)"&   
+                              ss_nospace!= "IDFdc/03 (very steep slopes with pinegrass)"&
+                              ss_nospace!= "IDFdc/03 (very steep slopes with bluebunch wheatgrass)"&
+                              ss_nospace!= "IDFmw2/04 (abundant devil's club present)"  &
+                              ss_nospace!= "MSdc1/02 (high elevations)"  &
+                              ss_nospace!= "MSdm3/03 (deep soils)"  &   
+                              ss_nospace!= "MSxk3/05 (moderate and gentle slopes)")  
 # Save the transformed data
 write.csv(long_data, "tables/regional_updates/Thompson_Okanagan_Mar2025.csv", row.names = FALSE)
 
