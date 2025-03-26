@@ -77,6 +77,11 @@ long_data<-subset(long_data, ss_nospace!= "ICHdw3/06 (Sx present)"&
                               ss_nospace!= "MSdc1/02 (high elevations)"  &
                               ss_nospace!= "MSdm3/03 (deep soils)"  &   
                               ss_nospace!= "MSxk3/05 (moderate and gentle slopes)")  
+
+# Remove all variant info from ss column, 
+long_data<-separate(long_data, ss_nospace, into=c("ss", "remove"), sep = " " , remove=F)%>%
+  select(-ss_nospace, -remove)%>%rename(ss_nospace=ss)
+
 # Save the transformed data
 write.csv(long_data, "tables/regional_updates/Thompson_Okanagan_Mar2025.csv", row.names = FALSE)
 
