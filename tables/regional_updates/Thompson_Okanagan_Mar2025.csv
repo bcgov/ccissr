@@ -736,28 +736,17 @@ ICHdw3,ICHdw3/05,Ep,1,MR,FALSE
 ICHdw3,ICHdw3/05,At,2,MR,FALSE
 ICHdw3,ICHdw3/05,Sx,2,MR,FALSE
 ICHdw3,ICHdw3/05,Hw,2,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Cw,1,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Hw,1,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Sx,2,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Pw,2,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Bl,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Ac,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),At,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Fd,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Ep,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Cw present),Lw,3,MR,TRUE
-ICHdw3,ICHdw3/06 (Cw present),Ac,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Sx,1,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Cw,2,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Bl,2,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Ep,2,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Pw,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Lw,3,MR,TRUE
-ICHdw3,ICHdw3/06 (Sx present),Hw,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Fd,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Ep,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),At,3,MR,FALSE
-ICHdw3,ICHdw3/06 (Sx present),Ac,3,MR,FALSE
+ICHdw3,ICHdw3/06,Cw,1,MR,FALSE
+ICHdw3,ICHdw3/06,Hw,1,MR,FALSE
+ICHdw3,ICHdw3/06,Sx,2,MR,FALSE
+ICHdw3,ICHdw3/06,Pw,2,MR,FALSE
+ICHdw3,ICHdw3/06,Bl,3,MR,FALSE
+ICHdw3,ICHdw3/06,Ac,3,MR,FALSE
+ICHdw3,ICHdw3/06,At,3,MR,FALSE
+ICHdw3,ICHdw3/06,Fd,3,MR,FALSE
+ICHdw3,ICHdw3/06,Ep,3,MR,FALSE
+ICHdw3,ICHdw3/06,Lw,3,MR,TRUE
+ICHdw3,ICHdw3/06,Ac,3,MR,FALSE
 ICHdw3,ICHdw3/07,Cw,1,MR,FALSE
 ICHdw3,ICHdw3/07,Sx,1,MR,FALSE
 ICHdw3,ICHdw3/07,Hw,2,MR,FALSE
@@ -769,14 +758,10 @@ ICHdw3,ICHdw3/07,Hw,3,MR,FALSE
 ICHdw3,ICHdw3/07,Ep,3,MR,FALSE
 ICHdw3,ICHdw3/07,At,3,MR,FALSE
 ICHdw3,ICHdw3/07,Ac,3,MR,FALSE
-ICHdw3,ICHdw3/08 (mineral soils with horsetail),Cw,2,MR,FALSE
-ICHdw3,ICHdw3/08 (mineral soils with horsetail),Hw,2,MR,FALSE
-ICHdw3,ICHdw3/08 (mineral soils with horsetail),Bl,3,MR,FALSE
-ICHdw3,ICHdw3/08 (mineral soils with horsetail),Sx,3,MR,FALSE
-ICHdw3,ICHdw3/08 (organic soils with skunk cabbage),Cw,2,MR,FALSE
-ICHdw3,ICHdw3/08 (organic soils with skunk cabbage),Sx,2,MR,FALSE
-ICHdw3,ICHdw3/08 (organic soils with skunk cabbage),Bl,3,MR,FALSE
-ICHdw3,ICHdw3/08 (organic soils with skunk cabbage),Hw,3,MR,FALSE
+ICHdw3,ICHdw3/08,Cw,2,MR,FALSE
+ICHdw3,ICHdw3/08,Hw,2,MR,FALSE
+ICHdw3,ICHdw3/08,Bl,3,MR,FALSE
+ICHdw3,ICHdw3/08,Sx,3,MR,FALSE
 ICHdw3,ICHdw3/09,X,NA,MR,FALSE
 ICHmk2,ICHmk2/01,Cw,1,MR,FALSE
 ICHmk2,ICHmk2/01,Sx,1,MR,FALSE
@@ -807,24 +792,15 @@ ICHmk2,ICHmk2/04,Sx,2,MR,FALSE
 ICHmk2,ICHmk2/04,Cw,2,MR,FALSE
 ICHmk2,ICHmk2/04,At,2,MR,FALSE
 ICHmk2,ICHmk2/04,Ep,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Sx-dominant),Sx,1,MR,FALSE
-ICHmk2,ICHmk2/05 (Sx-dominant),Fd,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Sx-dominant),Cw,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Sx-dominant),At,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Sx-dominant),Ep,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Sx-dominant),Bl,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Sx-dominant),Pl,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Sx-dominant),Lw,2,MR,TRUE
-ICHmk2,ICHmk2/05 (Sx-dominant),Ac,3,MR,FALSE
-ICHmk2,ICHmk2/05 (Cw-dominant),Sx,1,MR,FALSE
-ICHmk2,ICHmk2/05 (Cw-dominant),Cw,1,MR,FALSE
-ICHmk2,ICHmk2/05 (Cw-dominant),Fd,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Cw-dominant),Bl,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Cw-dominant),Lw,2,MR,TRUE
-ICHmk2,ICHmk2/05 (Cw-dominant),Pl,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Cw-dominant),At,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Cw-dominant),Ep,2,MR,FALSE
-ICHmk2,ICHmk2/05 (Cw-dominant),Ac,3,MR,FALSE
+ICHmk2,ICHmk2/05,Sx,1,MR,FALSE
+ICHmk2,ICHmk2/05,Cw,1,MR,FALSE
+ICHmk2,ICHmk2/05,Fd,2,MR,FALSE
+ICHmk2,ICHmk2/05,Bl,2,MR,FALSE
+ICHmk2,ICHmk2/05,Lw,2,MR,TRUE
+ICHmk2,ICHmk2/05,Pl,2,MR,FALSE
+ICHmk2,ICHmk2/05,At,2,MR,FALSE
+ICHmk2,ICHmk2/05,Ep,2,MR,FALSE
+ICHmk2,ICHmk2/05,Ac,3,MR,FALSE
 ICHmk2,ICHmk2/06,Sx,2,MR,FALSE
 ICHmk2,ICHmk2/06,Cw,2,MR,FALSE
 ICHmk2,ICHmk2/06,Pl,2,MR,FALSE
@@ -887,20 +863,13 @@ ICHmw3,ICHmw3/07,At,2,MR,FALSE
 ICHmw3,ICHmw3/07,Ac,3,MR,FALSE
 ICHmw3,ICHmw3/07,Bl,3,MR,FALSE
 ICHmw3,ICHmw3/07,Pw,3,MR,FALSE
-ICHmw3,ICHmw3/08 (mineral soils with horsetail),Cw,1,MR,FALSE
-ICHmw3,ICHmw3/08 (mineral soils with horsetail),Hw,1,MR,FALSE
-ICHmw3,ICHmw3/08 (mineral soils with horsetail),Bl,2,MR,FALSE
-ICHmw3,ICHmw3/08 (mineral soils with horsetail),Sx,2,MR,FALSE
-ICHmw3,ICHmw3/08 (mineral soils with horsetail),Ac,2,MR,FALSE
-ICHmw3,ICHmw3/08 (mineral soils with horsetail),At,2,MR,FALSE
-ICHmw3,ICHmw3/08 (mineral soils with horsetail),Ep,2,MR,FALSE
-ICHmw3,ICHmw3/08 (organic soils with skunk cabbage),Cw,1,MR,FALSE
-ICHmw3,ICHmw3/08 (organic soils with skunk cabbage),Sx,1,MR,FALSE
-ICHmw3,ICHmw3/08 (organic soils with skunk cabbage),Bl,2,MR,FALSE
-ICHmw3,ICHmw3/08 (organic soils with skunk cabbage),Hw,2,MR,FALSE
-ICHmw3,ICHmw3/08 (organic soils with skunk cabbage),Ac,2,MR,FALSE
-ICHmw3,ICHmw3/08 (organic soils with skunk cabbage),At,2,MR,FALSE
-ICHmw3,ICHmw3/08 (organic soils with skunk cabbage),Ep,2,MR,FALSE
+ICHmw3,ICHmw3/08,Cw,1,MR,FALSE
+ICHmw3,ICHmw3/08,Sx,1,MR,FALSE
+ICHmw3,ICHmw3/08,Bl,2,MR,FALSE
+ICHmw3,ICHmw3/08,Hw,2,MR,FALSE
+ICHmw3,ICHmw3/08,Ac,2,MR,FALSE
+ICHmw3,ICHmw3/08,At,2,MR,FALSE
+ICHmw3,ICHmw3/08,Ep,2,MR,FALSE
 ICHvk1,ICHvk1/01,Cw,1,MR,FALSE
 ICHvk1,ICHvk1/01,Hw,1,MR,FALSE
 ICHvk1,ICHvk1/01,Sx,2,MR,FALSE
@@ -1004,15 +973,9 @@ IDFdc,IDFdc/01,Py,3,MR,FALSE
 IDFdc,IDFdc/01,Sx,4,MR,FALSE
 IDFdc,IDFdc/02,Fd,3,MR,FALSE
 IDFdc,IDFdc/02,Py,3,MR,FALSE
-IDFdc,IDFdc/03 (very steep slopes with bluebunch wheatgrass),Py,1,MR,FALSE
-IDFdc,IDFdc/03 (very steep slopes with bluebunch wheatgrass),Fd,1,MR,FALSE
-IDFdc,IDFdc/03 (very steep slopes with bluebunch wheatgrass),Pl,4,MR,FALSE
-IDFdc,IDFdc/03 (shallow soils),Fd,1,MR,FALSE
-IDFdc,IDFdc/03 (shallow soils),Py,2,MR,FALSE
-IDFdc,IDFdc/03 (shallow soils),Pl,3,MR,FALSE
-IDFdc,IDFdc/03 (very steep slopes with pinegrass),Fd,1,MR,FALSE
-IDFdc,IDFdc/03 (very steep slopes with pinegrass),Py,2,MR,FALSE
-IDFdc,IDFdc/03 (very steep slopes with pinegrass),Pl,3,MR,FALSE
+IDFdc,IDFdc/03,Fd,1,MR,FALSE
+IDFdc,IDFdc/03,Py,2,MR,FALSE
+IDFdc,IDFdc/03,Pl,3,MR,FALSE
 IDFdc,IDFdc/04,Fd,1,MR,FALSE
 IDFdc,IDFdc/04,Lw,1,MR,TRUE
 IDFdc,IDFdc/04,Py,2,MR,FALSE
@@ -1057,26 +1020,16 @@ IDFmw2,IDFmw2/03,Pw,2,MR,FALSE
 IDFmw2,IDFmw2/03,At,2,MR,FALSE
 IDFmw2,IDFmw2/03,Ep,2,MR,FALSE
 IDFmw2,IDFmw2/03,Py,3,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Fd,1,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Lw,1,MR,TRUE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Pw,1,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Cw,1,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Ep,1,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Sx,2,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Pl,2,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),At,2,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Bl,3,MR,FALSE
-IDFmw2,IDFmw2/04 (lack abundant devil's club),Ac,3,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Pw,1,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Cw,1,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Ep,1,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Fd,2,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Lw,2,MR,TRUE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Sx,2,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Hw,2,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),At,2,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Bl,3,MR,FALSE
-IDFmw2,IDFmw2/04 (abundant devil's club present),Ac,3,MR,FALSE
+IDFmw2,IDFmw2/04,Fd,1,MR,FALSE
+IDFmw2,IDFmw2/04,Lw,1,MR,TRUE
+IDFmw2,IDFmw2/04,Pw,1,MR,FALSE
+IDFmw2,IDFmw2/04,Cw,1,MR,FALSE
+IDFmw2,IDFmw2/04,Ep,1,MR,FALSE
+IDFmw2,IDFmw2/04,Sx,2,MR,FALSE
+IDFmw2,IDFmw2/04,Pl,2,MR,FALSE
+IDFmw2,IDFmw2/04,At,2,MR,FALSE
+IDFmw2,IDFmw2/04,Bl,3,MR,FALSE
+IDFmw2,IDFmw2/04,Ac,3,MR,FALSE
 IDFmw2,IDFmw2/05,Cw,2,MR,FALSE
 IDFmw2,IDFmw2/05,Hw,2,MR,FALSE
 IDFmw2,IDFmw2/05,Ac,2,MR,FALSE
@@ -1113,12 +1066,10 @@ MSdc1,MSdc1/01,Fd,2,MR,FALSE
 MSdc1,MSdc1/01,Lw,2,MR,TRUE
 MSdc1,MSdc1/01,Pw,3,MR,FALSE
 MSdc1,MSdc1/01,At,3,MR,FALSE
-MSdc1,MSdc1/02 (high elevations),Pl,3,MR,FALSE
-MSdc1,MSdc1/02 (high elevations),Pa,4,MR,FALSE
-MSdc1,MSdc1/02 (low elevations),Pl,3,MR,FALSE
-MSdc1,MSdc1/02 (low elevations),Fd,3,MR,FALSE
-MSdc1,MSdc1/02 (low elevations),Lw,3,MR,TRUE
-MSdc1,MSdc1/02 (low elevations),Py,4,MR,FALSE
+MSdc1,MSdc1/02,Pl,3,MR,FALSE
+MSdc1,MSdc1/02,Fd,3,MR,FALSE
+MSdc1,MSdc1/02,Lw,3,MR,TRUE
+MSdc1,MSdc1/02,Py,4,MR,FALSE
 MSdc1,MSdc1/03,Pl,1,MR,FALSE
 MSdc1,MSdc1/03,Fd,2,MR,FALSE
 MSdc1,MSdc1/03,Lw,2,MR,TRUE
@@ -1164,17 +1115,9 @@ MSdm3,MSdm3/01,At,3,MR,FALSE
 MSdm3,MSdm3/01,Fd,4,MR,FALSE
 MSdm3,MSdm3/01,Lw,4,MR,TRUE
 MSdm3,MSdm3/02,X,NA,MR,FALSE
-MSdm3,MSdm3/03 (shallow soils),Pl,3,MR,FALSE
-MSdm3,MSdm3/03 (shallow soils),Fd,3,MR,FALSE
-MSdm3,MSdm3/03 (shallow soils),Py,4,MR,FALSE
-MSdm3,MSdm3/03 (deep soils),Pl,1,MR,FALSE
-MSdm3,MSdm3/03 (deep soils),Fd,2,MR,FALSE
-MSdm3,MSdm3/03 (deep soils),Lw,2,MR,TRUE
-MSdm3,MSdm3/03 (deep soils),Pa,3,MR,FALSE
-MSdm3,MSdm3/03 (deep soils),At,3,MR,FALSE
-MSdm3,MSdm3/03 (deep soils),Py,4,MR,FALSE
-MSdm3,MSdm3/03 (deep soils),Bl,4,MR,FALSE
-MSdm3,MSdm3/03 (deep soils),Sx,4,MR,FALSE
+MSdm3,MSdm3/03,Pl,3,MR,FALSE
+MSdm3,MSdm3/03,Fd,3,MR,FALSE
+MSdm3,MSdm3/03,Py,4,MR,FALSE
 MSdm3,MSdm3/04,Pl,1,MR,FALSE
 MSdm3,MSdm3/04,Fd,2,MR,FALSE
 MSdm3,MSdm3/04,Pa,2,MR,FALSE
@@ -1210,18 +1153,12 @@ MSxk3,MSxk3/02,Fd,3,MR,FALSE
 MSxk3,MSxk3/02,Bl,4,MR,FALSE
 MSxk3,MSxk3/03,X,NA,MR,FALSE
 MSxk3,MSxk3/04,X,NA,MR,FALSE
-MSxk3,MSxk3/05 (steep warm slopes),Pl,1,MR,FALSE
-MSxk3,MSxk3/05 (steep warm slopes),Fd,2,MR,FALSE
-MSxk3,MSxk3/05 (steep warm slopes),Lw,2,MR,TRUE
-MSxk3,MSxk3/05 (steep warm slopes),Py,3,MR,FALSE
-MSxk3,MSxk3/05 (steep warm slopes),Sx,4,MR,FALSE
-MSxk3,MSxk3/05 (steep warm slopes),Bl,4,MR,FALSE
-MSxk3,MSxk3/05 (moderate and gentle slopes),Pl,1,MR,FALSE
-MSxk3,MSxk3/05 (moderate and gentle slopes),Fd,2,MR,FALSE
-MSxk3,MSxk3/05 (moderate and gentle slopes),Lw,2,MR,TRUE
-MSxk3,MSxk3/05 (moderate and gentle slopes),Sx,3,MR,FALSE
-MSxk3,MSxk3/05 (moderate and gentle slopes),Bl,3,MR,FALSE
-MSxk3,MSxk3/05 (moderate and gentle slopes),Py,4,MR,FALSE
+MSxk3,MSxk3/05,Pl,1,MR,FALSE
+MSxk3,MSxk3/05,Fd,2,MR,FALSE
+MSxk3,MSxk3/05,Lw,2,MR,TRUE
+MSxk3,MSxk3/05,Py,3,MR,FALSE
+MSxk3,MSxk3/05,Sx,4,MR,FALSE
+MSxk3,MSxk3/05,Bl,4,MR,FALSE
 MSxk3,MSxk3/06,Pl,1,MR,FALSE
 MSxk3,MSxk3/06,Sx,2,MR,FALSE
 MSxk3,MSxk3/06,Bl,2,MR,FALSE
