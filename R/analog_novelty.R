@@ -198,7 +198,7 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
       (get(col) - unlist(pcs.mean.analog)[col]) / unlist(pcs.sd.use)[col]
     })]
     if(!is.null(clim.icvs)) pcs.icv[, (names(pcs.icv)) := lapply(names(pcs.icv), function(col) {
-      (get(col) - unlist(pcs.icv[, lapply(.SD, mean, na.rm = TRUE)])[col]) / unlist(pcs.sd.use)[col] # separately centering on the ICV mean becuase sometime the ICV is not centred on the centroid, and we want it to be. 
+      (get(col) - unlist(pcs.icv[, lapply(.SD, mean, na.rm = TRUE)])[col]) / unlist(pcs.sd.use)[col] # separately centering on the ICV mean because sometime the ICV is not centered on the centroid, and we want it to be. 
     })]
     
     ## create a combined covariance matrix for spatial variation and ICV
@@ -272,6 +272,7 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
       }
       points(a, col="dodgerblue", pch=16)
       mtext(paste(analog, "\n", pcs, "PCs"), line=-2.5, adj = 0.05, )
+      mtext(paste0("(", letters[i], ")"), side=3, line=-1, adj = -0.065, font=2)
     }
   }
   
