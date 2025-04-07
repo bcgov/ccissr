@@ -29,4 +29,4 @@ broads_tab<-group_by(broads, sppsplit, zone)%>%summarise(count=n())
 broads_tab2<-group_by(broads, sppsplit)%>%mutate(count2=n())%>%select(sppsplit, count2)%>%distinct(.)
 broads_tab<-left_join(broads_tab, broads_tab2)
 
-write.csv(broads_tab, "broadleaf_table.csv")
+#write.csv(broads_tab, "broadleaf_table.csv")
