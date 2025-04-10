@@ -1,0 +1,217 @@
+bgc,ss_nospace,sppsplit,suitability,spp,newsuit1,mod1,newsuit,mod,outrange,Action,MR response,Notes 
+BGxh1,BGxh1/110,At,2,At,2,MRyan,NA,NA,NA,delete,Delete,Note - I am very uncertain about broadleaf species. 
+ESSFdc2,ESSFdc2/112,Pli,2,Pl,2,MRyan,NA,NA,NA,2,Include,I am doing a query of deciduous for the entire TO Region using VRI and eocsystem mapping and will have a better idea
+ESSFdh1,ESSFdh1/101,At,2,At,2,MRyan,NA,NA,NA,delete,delete,of which BGC units and site series support the presence of At and Ep.
+ESSFdh1,ESSFdh1/103,At,2,At,2,MRyan,NA,NA,NA,delete,delete,
+ESSFdv1,ESSFdv1/02,At,3,At,3,,NA,NA,NA,delete,Delete,
+ESSFdv1,ESSFdv1/05,Pli,2,Pl,2,D6,NA,NA,NA,3,3,
+ESSFdv1,ESSFdv1/06,Pa,2,Pa,2,,NA,NA,NA,delete,Delete,
+ESSFdv2,ESSFdv2/02,At,3,At,3,,NA,NA,NA,delete,Delete,
+ESSFdv2,ESSFdv2/06,Pa,2,Pa,2,,NA,NA,NA,delete,Delete,
+ESSFmw1,ESSFmw1/101.1,Ba,2,Ba,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.1,Bl,2,Bl,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.1,Hm,2,Hm,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.1,Hw,2,Hw,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.1,Pli,3,Pl,3,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.1,Se,1,Sx,1,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.2,Ba,2,Ba,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.2,Bl,2,Bl,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.2,Hm,2,Hm,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.2,Hw,2,Hw,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.2,Pli,3,Pl,3,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/101.2,Se,1,Sx,1,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFmw1/101 so I don't know where this is from
+ESSFmw1,ESSFmw1/102.1,Bl,2,Bl,2,MRyan,NA,NA,NA,3,,I did not assign separate values to the variations of the 102 but if you want to….
+ESSFmw1,ESSFmw1/102.1,Fdi,3,Fd,3,MRyan,NA,NA,NA,4,,I did not assign separate values to the variations of the 102 but if you want to….
+ESSFmw1,ESSFmw1/102.1,Pli,2,Pl,2,MRyan,NA,NA,NA,3,,I did not assign separate values to the variations of the 102 but if you want to….
+ESSFmw1,ESSFmw1/102.1,Se,2,Sx,2,MRyan,NA,NA,NA,3,,I did not assign separate values to the variations of the 102 but if you want to….
+ESSFmw1,ESSFmw1/102.2,Bl,2,Bl,2,MRyan,NA,NA,NA,3,,I did not assign separate values to the variations of the 102 but if you want to….
+ESSFmw1,ESSFmw1/102.2,Fdi,3,Fd,3,MRyan,NA,NA,NA,4,,I did not assign separate values to the variations of the 102 but if you want to….
+ESSFmw1,ESSFmw1/102.2,Pa,2,Pa,2,MRyan,NA,NA,NA,3,,I did not assign separate values to the variations of the 102 but if you want to….
+ESSFmw1,ESSFmw1/102.2,Se,2,Sx,2,MRyan,NA,NA,NA,3,,I did not assign separate values to the variations of the 102 but if you want to….
+ESSFmw1,ESSFmw1/104,At,2,At,2,MRyan,NA,NA,NA,delete,Delete,
+ESSFmw2,ESSFmw2/02,Fdi,2,Fd,2,,NA,NA,NA,delete,Delete,
+ESSFmw2,ESSFmw2/03,Pa,3,Pa,3,B2,NA,NA,NA,delete,Delete,
+ESSFmw2,ESSFmw2/04,Fdi,2,Fd,2,,NA,NA,NA,delete,Delete,
+ESSFmw2,ESSFmw2/06,Pli,3,Pl,3,,NA,NA,NA,3,ok to include,203
+ESSFmw2,ESSFmw2/07,Pli,3,Pl,3,D6,NA,NA,NA,3,ok to include,63
+ESSFmw2,ESSFmw2/08,Cw,3,Cw,3,,NA,NA,NA,delete,delete,143
+ESSFwc2,ESSFwc2/01,Lw,4,Lw,4,C4,NA,NA,NA,delete,delete,126
+ESSFwc2,ESSFwc2/01,Pli,4,Pl,4,C4,NA,NA,NA,delete,Delete,
+ESSFwc2,ESSFwc2/07,Pli,4,Pl,4,,NA,NA,NA,delete,Delete,
+ESSFwc2,ESSFwc2/08,Pli,4,Pl,4,D6,NA,NA,NA,delete,Delete,
+ESSFxc1,ESSFxc1/102,Fdi,3,Fd,3,MRyan,NA,NA,NA,3,ok to include,
+ESSFxc1,ESSFxc1/104,Lw,3,Lw,3,MRyan,NA,NA,NA,delete,Delete,
+ESSFxc1,ESSFxc1/105,Lw,3,Lw,3,MRyan,NA,NA,NA,delete,Delete,
+ESSFxc2,ESSFxc2/102,Se,3,Sx,3,MRyan,NA,NA,NA,delete,Delete,
+ESSFxc2,ESSFxc2/103a,Bl,2,Bl,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFxc2/103 so I don't know where this is from
+ESSFxc2,ESSFxc2/103a,Pli,2,Pl,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFxc2/103 so I don't know where this is from
+ESSFxc2,ESSFxc2/103a,Se,2,Sx,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFxc2/103 so I don't know where this is from
+ESSFxc2,ESSFxc2/103b,Bl,2,Bl,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFxc2/103 so I don't know where this is from
+ESSFxc2,ESSFxc2/103b,Pli,2,Pl,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFxc2/103 so I don't know where this is from
+ESSFxc2,ESSFxc2/103b,Se,2,Sx,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the ESSFxc2/103 so I don't know where this is from
+ESSFxc2,ESSFxc2/111,Pli,1,Pl,1,MRyan,NA,NA,NA,delete,Delete,
+ESSFxc3,ESSFxc3/10,Bl,NA,Bl,4,REVIEW,NA,NA,NA,4,this is a nonforested unit,
+ESSFxc3,ESSFxc3/10,Se,NA,Sx,4,REVIEW,NA,NA,NA,4,this is a nonforested unit,
+ICHdw3,ICHdw3/01,Act,3,Ac,3,C4,NA,NA,NA,delete,delete,
+ICHdw3,ICHdw3/02,Ep,3,Ep,3,,NA,NA,NA,delete,Delete,
+ICHdw3,ICHdw3/02,Lw,3,Lw,3,,NA,NA,NA,3,ok to include,
+ICHdw3,ICHdw3/03,Bl,3,Bl,3,B2,NA,NA,NA,delete,delete,
+ICHdw3,ICHdw3/03,Hw,3,Hw,3,B2,NA,NA,NA,delete,Delete,
+ICHdw3,ICHdw3/04,Bl,3,Bl,3,,NA,NA,NA,delete,delete,
+ICHdw3,ICHdw3/05,Act,3,Ac,3,,NA,NA,NA,delete,Delete,
+ICHdw3,ICHdw3/05,Bl,3,Bl,3,,NA,NA,NA,delete,Delete,
+ICHdw3,ICHdw3/06,Pli,2,Pl,2,,NA,NA,NA,3,3,
+ICHdw3,ICHdw3/07,Pli,2,Pl,2,D6,NA,NA,NA,3,3,
+ICHdw3,ICHdw3/08,Act,2,Ac,2,,NA,NA,NA,3,3,
+ICHdw3,ICHdw3/08,At,3,At,3,,NA,NA,NA,3,3,
+ICHdw3,ICHdw3/08,Ep,3,Ep,3,,NA,NA,NA,3,3,
+ICHdw3,ICHdw3/08,Pli,2,Pl,2,,NA,NA,NA,delete,Delete,
+ICHdw3,ICHdw3/08,Pw,3,Pw,3,,NA,NA,NA,delete,Delete,
+ICHmk2,ICHmk2/02,At,3,At,3,,NA,NA,NA,delete,Delete,
+ICHmk2,ICHmk2/02,Ep,3,Ep,3,,NA,NA,NA,delete,Delete,
+ICHmk2,ICHmk2/03,Cw,3,Cw,3,B2,NA,NA,NA,4,4,
+ICHmk2,ICHmk2/06,Fdi,2,Fd,5,VC,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/01,Act,3,Ac,3,C4,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/02,Cw,3,Cw,3,,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/02,Ep,3,Ep,3,,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/02,Pw,3,Pw,3,,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/03,Bl,3,Bl,3,B2,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/03,Hw,3,Hw,3,B2,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/03,Lw,3,Lw,3,B2,NA,NA,NA,2,2,
+ICHmw3,ICHmw3/03,Pw,3,Pw,3,B2,NA,NA,NA,3,3,
+ICHmw3,ICHmw3/04,Bl,3,Bl,3,,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/04,Hw,3,Hw,3,,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/05,Act,3,Ac,3,,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/05,Bl,3,Bl,3,,NA,NA,NA,delete,delete,
+ICHmw3,ICHmw3/05,Hw,3,Hw,3,,NA,NA,NA,delete,delete,
+ICHmw3,ICHmw3/06,Act,2,Ac,2,,NA,NA,NA,delete,delete,
+ICHmw3,ICHmw3/06,Pli,2,Pl,2,,NA,NA,NA,3,3,
+ICHmw3,ICHmw3/06,Pw,3,Pw,3,,NA,NA,NA,2,2,
+ICHmw3,ICHmw3/07,Pli,2,Pl,2,D6,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/08,Pli,2,Pl,2,,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/08,Pw,3,Pw,3,,NA,NA,NA,delete,Delete,
+ICHmw3,ICHmw3/09,Pli,NA,Pl,4,REVIEW,NA,NA,NA,4,nonforested unit,
+ICHvk1,ICHvk1/01,Act,3,Ac,3,C4,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/01,At,3,At,3,C4,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/01,Ep,3,Ep,3,C4,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/01,Fdi,3,Fd,3,C4,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/02,Act,3,Ac,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/02,At,3,At,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/02,Ep,3,Ep,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/02,Lw,3,Lw,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/02,Pli,4,Pl,4,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/02,Pw,3,Pw,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/03,Act,3,Ac,3,B2,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/03,Lw,3,Lw,3,B2,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/03,Pli,4,Pl,4,B2,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/04,Act,3,Ac,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/04,Fdi,3,Fd,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/04,Lw,3,Lw,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/05,Pw,3,Pw,3,D6,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/06,Pli,4,Pl,4,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHvk1,ICHvk1/06,Pw,3,Pw,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/01,Act,3,Ac,3,C4,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/01,Pli,4,Pl,4,C4,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/02,Bl,3,Bl,3,B2,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/04,Act,3,Ac,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/04,Pli,4,Pl,4,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/05,Fdi,2,Fd,2,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/05,Lw,3,Lw,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/05,Pli,3,Pl,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/06,Pli,3,Pl,3,D6,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/06,Pw,3,Pw,3,D6,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/07,Pli,4,Pl,4,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/07,Pw,3,Pw,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/08,Act,3,Ac,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/08,At,3,At,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/08,Bl,2,Bl,2,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/08,Cw,1,Cw,1,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/08,Ep,3,Ep,3,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/08,Hw,1,Hw,1,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/08,Pli,4,Pl,4,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+ICHwk1,ICHwk1/08,Sxw,1,Sx,1,,NA,NA,NA,Deb MacKillop,Deb MacKillop,
+IDFdk1,IDFdk1/101,Bl,3,Bl,3,MRyan,NA,NA,NA,delete,Delete,
+IDFdk2,IDFdk2/110,Act,3,Ac,3,MRyan,NA,NA,NA,delete,Delete,
+IDFmw2,IDFmw2/01,Pyi,4,Py,4,C4,NA,NA,NA,delete,delete,
+IDFmw2,IDFmw2/02,At,3,At,3,,NA,NA,NA,delete,delete,
+IDFmw2,IDFmw2/03,Cw,3,Cw,3,B2,NA,NA,NA,delete,delete,
+IDFmw2,IDFmw2/03,Sxw,3,Sx,3,B2,NA,NA,NA,delete,Delete,
+IDFmw2,IDFmw2/04,Hw,3,Hw,3,D6,NA,NA,NA,4,4,
+IDFmw2,IDFmw2/05,At,3,At,3,,NA,NA,NA,3,3,
+IDFmw2,IDFmw2/05,Bl,3,Bl,3,,NA,NA,NA,3,3,
+IDFmw2,IDFmw2/05,Pli,2,Pl,2,,NA,NA,NA,3,3,
+IDFmw2,IDFmw2/05,Sxw,2,Sx,2,,NA,NA,NA,2,2,
+IDFxc,IDFxc/01,At,3,At,3,C4,NA,NA,NA,delete,Delete,
+IDFxc,IDFxc/06,At,3,At,3,,NA,NA,NA,delete,Delete,
+IDFxc,IDFxc/07,Pli,3,Pl,3,,NA,NA,NA,delete,Delete,
+IDFxc,IDFxc/08,Pli,4,Pl,4,D6,NA,NA,NA,delete,Delete,
+IDFxh1,IDFxh1/102.1,Fdi,2,Fd,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the IDFxh2/102 so I don't know where this is from
+IDFxh1,IDFxh1/102.1,Pyi,2,Py,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the IDFxh2/102 so I don't know where this is from
+IDFxh1,IDFxh1/102.2,Fdi,2,Fd,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the IDFxh2/102 so I don't know where this is from
+IDFxh1,IDFxh1/102.2,Pyi,2,Py,2,MRyan,NA,NA,NA,delete,,No variations are now recognized for the IDFxh2/102 so I don't know where this is from
+IDFxh1,IDFxh1/111,At,3,At,3,MRyan,NA,NA,NA,delete,delete,Why do you have both variations and non-variations in the database?
+IDFxh1,IDFxh1/111,Cw,2,Cw,2,MRyan,NA,NA,NA,2,2,Why do you have both variations and non-variations in the database?
+IDFxh1,IDFxh1/111,Ep,2,Ep,2,MRyan,NA,NA,NA,delete,delete,Why do you have both variations and non-variations in the database?
+IDFxh1,IDFxh1/111,Fdi,1,Fd,1,MRyan,NA,NA,NA,1,1,Why do you have both variations and non-variations in the database?
+IDFxh1,IDFxh1/111,Pyi,3,Py,3,MRyan,NA,NA,NA,delete,Delete,Why do you have both variations and non-variations in the database?
+IDFxh1,IDFxh1/111,Sxw,2,Sx,2,MRyan,NA,NA,NA,2,2,Why do you have both variations and non-variations in the database?
+IDFxh1,IDFxh1/111.1,Pyi,3,Py,3,MRyan,NA,NA,NA,delete,delete,Why do you have both variations and non-variations in the database?
+IDFxh1,IDFxh1/111.2,Pli,3,Pl,3,MRyan,NA,NA,NA,delete,delete,Why do you have both variations and non-variations in the database?
+IDFxh1,IDFxh1/111.2,Pyi,3,Py,3,MRyan,NA,NA,NA,delete,delete,
+IDFxh1,IDFxh1/112,Pyi,3,Py,3,MRyan,NA,NA,NA,delete,delete,
+IDFxh2,IDFxh2/110,Pyi,2,Py,2,MRyan,NA,NA,NA,2,2,
+IDFxh2,IDFxh2/111,Pyi,2,Py,2,MRyan,NA,NA,NA,delete,delete,
+IDFxh2,IDFxh2/112,Pyi,3,Py,3,MRyan,NA,NA,NA,delete,delete,
+MSdc1,MSdc1/01,Pa,3,Pa,3,C4,NA,NA,NA,delete,Delete,
+MSdc1,MSdc1/02,Bl,3,Bl,3,,NA,NA,NA,delete,delete,
+MSdc1,MSdc1/02,Pa,3,Pa,3,,NA,NA,NA,delete,delete,
+MSdc1,MSdc1/02,Sxw,3,Sx,3,,NA,NA,NA,delete,delete,
+MSdc1,MSdc1/04,Act,3,Ac,3,D6,NA,NA,NA,delete,delete,
+MSdc3,MSdc3/03,Bl,3,Bl,3,B2,NA,NA,NA,3,3,
+MSdc3,MSdc3/03,Sxw,3,Sx,3,B2,NA,NA,NA,3,3,
+MSdm2,MSdm2/101,Lw,2,Lw,2,WHM,NA,NA,NA,3,3,
+MSdm2,MSdm2/102,Lw,3,Lw,3,WHM,NA,NA,NA,delete,delete,
+MSdm2,MSdm2/102,Pyi,3,Py,3,MRyan,NA,NA,NA,3,3,
+MSdm2,MSdm2/104,Lw,3,Lw,3,WHM,NA,NA,NA,1,1,
+MSdm2,MSdm2/105,Fdi,2,Fd,2,MRyan,NA,NA,NA,delete,delete,
+MSdm2,MSdm2/105,Lw,3,Lw,3,WHM,NA,NA,NA,delete,delete,
+MSdm2,MSdm2/110,Fdi,3,Fd,3,MRyan,NA,NA,NA,delete,delete,
+MSdm2,MSdm2/110,Lw,3,Lw,3,WHM,NA,NA,NA,delete,delete,
+MSdm3,MSdm3/03,Bl,3,Bl,3,B2,NA,NA,NA,3,3,
+MSdm3,MSdm3/03,Lw,3,Lw,3,B2,NA,NA,NA,2,2,
+MSdm3,MSdm3/03,Sxw,3,Sx,3,B2,NA,NA,NA,2,3,
+MSdm3,MSdm3/05,Cw,3,Cw,3,,NA,NA,NA,delete,delete,
+MSdm3,MSdm3/06,Cw,3,Cw,3,D6,NA,NA,NA,delete,delete,
+MSxk1,MSxk1/101a,Bl,2,Bl,2,WHM,NA,NA,NA,3,3,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101a,Fdi,3,Fd,3,WHM,NA,NA,NA,3,3,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101a,Lw,3,Lw,3,WHM,NA,NA,NA,3,3,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101a,Pli,1,Pl,1,WHM,NA,NA,NA,1,1,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101a,Sxw,2,Sx,2,WHM,NA,NA,NA,3,3,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101b,Bl,3,Bl,3,WHM,NA,NA,NA,3,3,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101b,Fdi,2,Fd,2,WHM,NA,NA,NA,3,3,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101b,Lw,2,Lw,2,WHM,NA,NA,NA,3,3,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101b,Pli,1,Pl,1,WHM,NA,NA,NA,1,1,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/101b,Sxw,2,Sx,2,WHM,NA,NA,NA,3,3,I did not assign separate values to the variations of the 101 but if you want to….
+MSxk1,MSxk1/102,Pyi,3,Py,3,MRyan,NA,NA,NA,delete,delete,
+MSxk2,MSxk2/110,Lw,3,Lw,3,WHM,NA,NA,NA,4,4,
+MSxk3,MSxk3/01,At,3,At,3,C4,NA,NA,NA,delete,delete,
+MSxk3,MSxk3/06,At,3,At,3,,NA,NA,NA,delete,delete,
+MSxk3,MSxk3/07,Bl,2,Bl,2,,NA,NA,NA,delete,does not exist in the MSxk3,
+MSxk3,MSxk3/07,Fdi,2,Fd,2,,NA,NA,NA,delete,does not exist in the MSxk3,
+MSxk3,MSxk3/07,Pli,1,Pl,1,,NA,NA,NA,delete,does not exist in the MSxk3,
+MSxk3,MSxk3/07,Sxw,2,Sx,2,,NA,NA,NA,delete,does not exist in the MSxk3,
+MSxk3,MSxk3/08,Act,3,Ac,3,D6,NA,NA,NA,delete,delete,
+MSxk3,MSxk3/08,Fdi,2,Fd,2,D6,NA,NA,NA,delete,delete,
+PPxh2,PPxh2/103a,Fdi,2,Fd,2,MRyan,NA,NA,NA,delete,,Variations do not exist in the PPxh2/103
+PPxh2,PPxh2/103a,Pyi,2,Py,2,MRyan,NA,NA,NA,delete,,Variations do not exist in the PPxh2/103
+PPxh2,PPxh2/103b,Fdi,NA,Fd,2,VC,NA,NA,NA,delete,,Variations do not exist in the PPxh2/103
+PPxh2,PPxh2/103b,Pli,NA,Pl,2,VC,NA,NA,NA,delete,,Variations do not exist in the PPxh2/103
+PPxh2,PPxh2/110,Fdi,1,Fd,1,MRyan,NA,NA,NA,2,2,This is present in the table - why do you have it in this list?
+PPxh2,PPxh2/110,Pyi,1,Py,1,MRyan,NA,NA,NA,2,2,This is present in the table - why do you have it in this list?
+SBSmm,SBSmm/01,Act,3,Ac,3,C4,NA,NA,NA,delete,delete,
+SBSmm,SBSmm/02,At,3,At,3,B2,NA,NA,NA,delete,delete,
+SBSmm,SBSmm/04,At,3,At,3,,NA,NA,NA,delete,delete,
+SBSmm,SBSmm/07,Act,3,Ac,3,,NA,NA,NA,delete,delete,
+SBSmm,SBSmm/08,Bl,2,Bl,2,D6,NA,NA,NA,2,2,
+SBSmm,SBSmm/08,Ep,3,Ep,3,D6,NA,NA,NA,delete,delete,
+SBSmm,SBSmm/08,Sxw,1,Sx,1,D6,NA,NA,NA,2,2,Note the SBSmm/09 should be deleted. It is a nonforested unit.

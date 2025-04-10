@@ -14,47 +14,65 @@ suitx<-subset(suit, bgc %in% TO_update$bgc)
 #make list of site series Mike has added suitability for (not currently in main table) 
 new<-anti_join(TO_update, suitx,  by="ss_nospace") #added ratings 
 
-#calculate change stats  
+#merge remaining 
 suitx<-rename(suitx, newsuit1=newsuit, mod1=mod)%>%select(-outrange)
 suitx<-left_join(suitx, TO_update, by=c('bgc', 'ss_nospace', 'spp'))
 
-#determine which ratings are not filled in (forested units only) that were previously 
+#determine which ratings are not filled in that were previously in the table 
 check<-subset(suitx, is.na(newsuit))%>%separate(ss_nospace, into=c("zone", "ss"), sep='/', remove=F)%>%
-  filter(. , !grepl("Fm|Gg|Gs|Ro|Rt|Ws", ss))%>%select(-ss, -zone)%>%
-  subset( bgc!="ESSFdh2"& ss_nospace!="ESSFdc3/04"& spp!="X")
-write.csv(check, 'checkTOmissing.csv')
+  filter(. , !grepl("Fm|Gg|Gs|Ro|Rt|Ws", ss))%>%select(-ss, -zone)%>% #forested units only
+  subset( bgc!="ESSFdh2"& ss_nospace!="ESSFdc3/04"& spp!="X") #ESSFdc3 does not have an /04
+#write.csv(check, 'tables/regional_updates/checkTOmissing.csv')
 
-#ESSFdc3 does not have an /04
 
+#read in Mike's responses 4/9/25
+check2<-read.csv("tables/regional_updates/checkTOmissing_MR.csv")
+suitx<-left_join(suitx, check2)
+
+#remove ones Mike says to delete 
+suitx<-subset(suitx, Action!="delete"|is.na(Action))
+
+#update ratings for some 
+suitx<- mutate(suitx, 
+  action_numeric = suppressWarnings(as.numeric(Action)),  # non-numeric → NA
+  newsuit = if_else(is.na(newsuit) & !is.na(action_numeric), action_numeric, newsuit)) %>%
+  select(-action_numeric) 
+
+blanks<-subset(suitx, is.na(newsuit)& is.na(Action))
+sort(unique(blanks$ss_nospace)) #check remaining blanks-> mostly non forested units 
 
 #calculate change stats  
-TO_update<-mutate(TO_update, feas_change= if_else(newfeas==FEAS2025, 0, 1))
-nchange<-sum(TO_update$feas_change, na.rm = T)
-
-#subset changed ratings 
-updated_ratings<-subset(coast_update, feas_change>0)
-
-#how many of these were initially blank?
-blanks<-subset(updated_ratings, newfeas=="")
-nchange=nchange-nrow(blanks)
+suitx<-mutate(suitx, feas_change= if_else(newsuit==newsuit1, 0, 1))
 
 #percent change 
-pchange<-nchange/nrow(coast_update)*100 #ratings were changed/updated
-padd<-nrow(blanks)/nrow(coast_update)*100 #ratings were added to site series where there were none
+nchange<-sum(suitx$feas_change == 1, na.rm = TRUE)
+nsame<-sum(suitx$feas_change == 0, na.rm = TRUE)
+nblank<-sum(is.na(suitx$feas_change))
+total<-nrow(suitx)-nblank
+nrow(new)
 
-#bind updates to full feas table 
-coast_update$newfeas<-NULL
-coast_update$feas_change<-NULL
-coast_update<-rename(coast_update, newfeas=FEASFEB2025)%>%relocate(newfeas,.after = spp)
+round(nchange/total, 2)*100
+round(nrow(new)/total, 2)*100
 
-names(coast_update)
-names(feas)
+#clean up 
+suitxy<-select(suitx,bgc, ss_nospace, spp, newsuit, mod, outrange)
+TO_update2<-rbind(suitxy, new)%>%mutate(outrange=if_else(spp=="Lw", TRUE, FALSE))
 
-#suit<-subset(suit, !bgc %in% TO_update$bgc)
+#Mike provided ratings for 01, 02 etc. ESSFdh2
+TO_update3<-filter(TO_update2, bgc=='ESSFdh2' & is.na(mod))
+TO_update2<-anti_join(TO_update2, TO_update3)  
+TO_update2<-subset(TO_update2, ss_nospace!="ESSFdc3/04")
 
+#pull out ratings of bgcs in TO update from main  
+suitx<-subset(suit, bgc %in% TO_update$bgc)
+suit<-anti_join(suit, suitx)
 
-#bind back together
-feas<-rbind(feas, coast_update)
+#add back in original suitability
+suitx<-select(suitx, bgc, ss_nospace, sppsplit, suitability, spp)
+TO_update2<-left_join(TO_update2, suitx)
+
+#merge back to main table 
+suit<-rbind(suit, TO_update2)
 
 #write as new version
-write.csv(feas, "feas_tables/versioned/Feasibility_v13_6.csv")
+write.csv(suit, "tables/versioned/Suitability_v13_15.csv")
