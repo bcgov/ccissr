@@ -88,4 +88,15 @@ suit3<-rbind(suit3, diff)
 #write as new version
 write.csv(suit3, "tables/versioned/suitability_v13_12.csv")
 
+#clean up some NAs- 4/14/25
+NAs<-read.csv("tables/regional_updates/Cariboo_delete_NA.csv")
 
+#read in current table
+suit<-read.csv("tables/versioned/suitability_v13_15.csv")
+suit$X<-NULL
+names(suit)
+
+suitx<-left_join(suit, NAs)%>%subset(is.na(X))%>%select(-X)
+
+#write as new version
+write.csv(suitx, "tables/versioned/suitability_v13_16.csv")
