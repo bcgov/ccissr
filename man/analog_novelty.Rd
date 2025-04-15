@@ -10,6 +10,7 @@ analog_novelty(
   label.targets,
   label.analogs,
   vars,
+  clim.point = NULL,
   clim.icvs = NULL,
   label.icvs = NULL,
   weight.icv = 0.5,
@@ -44,6 +45,9 @@ conditions listed in \code{clim.analogs}. Length equals number of records in
 \code{clim.analogs}.}
 
 \item{vars}{character. Climate variables to use in the novelty measurement.}
+
+\item{clim.point}{data.table. Climate values of a single location of interest.
+Must include variables specified in \code{vars}.}
 
 \item{clim.icvs}{data.table. Time series of climate variables at the geographic
 centroids of each analog in the analog pool. If not null, this interannual climatic
