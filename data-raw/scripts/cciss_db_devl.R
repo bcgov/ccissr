@@ -7,6 +7,13 @@ library(climr)
 library(ranger)
 library(ccissr)
 
+create_preselected <- 
+"create table preselected_points13 as (select * from (
+  select siteno, bgc, row_number() over (partition by bgc order by random()) as u
+  from bgc_attribution13_1
+) as a
+where u <= 150);"
+
 dat <- parse_qml("../../../Downloads/WNAv13_v6_Subzones.qml")
 
 source("./data-raw/scripts/functions.R")
@@ -20,6 +27,10 @@ conn <- DBI::dbConnect(
   password = Sys.getenv("BCGOV_PWD")
 )
 
+bc_bgc <- st_read("../Common_Files/BEC13Draft_4326.gpkg")
+bc_bgc <- bc_bgc["BGC"]
+plot(bc_bgc[1,])
+st_write(bc_bgc, conn, "bgc_map_v13")
 
 t1 <- dbGetQuery(conn, "select * from cciss_future_array limit 5")
 t2 <- dbGetQuery(conn, "select * from cciss_novelty_array where siteno = 49")
