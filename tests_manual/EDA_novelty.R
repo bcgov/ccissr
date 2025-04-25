@@ -78,6 +78,8 @@ clim.icv.pts <- pts.mean[clim.icv.pts, on = "id"]
 clim.targets <- clim.grid[PERIOD == list_gcm_periods()[3], ]
 bgc.pred <- predict(BGCmodel, data = clim.targets)[['predictions']]
 
+
+
 # plots of focal analogs
 pcnum <- 3
 bgc.focal = "CWHxm_WA" # moderate to high novelty
@@ -94,23 +96,20 @@ analog_novelty(clim.targets = clim.targets,
                clim.analogs = clim.pts,
                label.targets = bgc.pred,
                label.analogs = clim.pts$BGC,
+               clim.point = clim.targets[bgc.pred == bgc.focal][1],
                # vars = pred_vars[-which(pred_vars=="CMI")], # remove CMI as it is NA along the coast (climr bug)
                vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
                # pcs = 3,
                analog.focal = bgc.focal,
                # logVars = FALSE,
                plotScree = TRUE,
-               clim.icvs <- clim.icv.pts,
-               label.icvs <- clim.icv.pts$BGC,
+               clim.icvs = clim.icv.pts,
+               label.icvs = clim.icv.pts$BGC,
                # plot2d = TRUE,
                plot3d = TRUE,
                plot3d.pcs=c(1,2,3), 
-               plot3d.candidates = TRUE
+               plot3d.candidates = FALSE
 )
-
-
-pca <- prcomp(clim.pts, scale=TRUE)
-
 
 #---------------------------
 # Novelty maps

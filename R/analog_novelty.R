@@ -125,12 +125,12 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
   novelty <- rep(NA, length(label.targets)) # initiate a vector to store the sigma dissimilarities
   
   for(analog in analogs){ # loop through all of the analogs used to describe the target climates. 
-    clim.analog <- clim.analogs[label.analogs==analog, ..vars]
-    clim.target <- clim.targets[label.targets==analog, ..vars]
-    if(!is.null(clim.point)) clim.point <- clim.point[, ..vars]
-    if(!is.null(clim.icvs)) clim.icv <- clim.icvs[label.icvs==analog, ..vars]
-    if(plot3d.candidates) clim.analogs.all <- clim.analogs[, ..vars]
-      
+    clim.analog <- clim.analogs[label.analogs==analog, vars, with = FALSE]
+    clim.target <- clim.targets[label.targets==analog, vars, with = FALSE]
+    if(!is.null(clim.point)) clim.point <- clim.point[, vars, with = FALSE]
+    if(!is.null(clim.icvs)) clim.icv <- clim.icvs[label.icvs==analog, vars, with = FALSE]
+    if(plot3d.candidates) clim.analogs.all <- clim.analogs[, vars, with = FALSE]
+
     ## data cleaning
     clim.analog <- clim.analog[complete.cases(clim.analog)] # remove rows without data
     clim.analog <- clim.analog[, .SD, .SDcols = which(sapply(clim.analog, function(x) var(x, na.rm = TRUE) > 0))]  # Remove zero-variance columns
@@ -140,8 +140,8 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[, .SD, .SDcols = names(clim.analog)]
     if(plot3d.candidates){
       label.analogs <- label.analogs[complete.cases(clim.analogs.all)]
-            clim.analogs.all <- clim.analogs.all[complete.cases(clim.analogs.all)]
-    clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.analog)]
+      clim.analogs.all <- clim.analogs.all[complete.cases(clim.analogs.all)]
+      clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.analog)]
     }
     
     ## log-transform ratio variables
@@ -297,6 +297,10 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     a <- predict(pca, clim.analog)
     b <- predict(pca, clim.target)
     b <- sweep(b, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation.
+    if(!is.null(clim.point)) { # predict and centre the selected point. need to do this here because we centre the analogs at the end of this code block. 
+      f <- predict(pca, clim.point)
+      f <- sweep(f, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation.
+    }
     if(plot3d.candidates){
       d <- predict(pca, clim.analogs.all)
       d <- sweep(d, 2, apply(a, 2, mean), '-') # shift the candidate data so that the analog centroid is at zero. 
@@ -340,8 +344,6 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     }
     # Add selected point if it exists
     if(!is.null(clim.point)) {
-      f <- predict(pca, clim.point)
-      f <- sweep(f, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation.
       plot <- plot %>%
         add_trace(
           x = f[, plot3d.pcs[1]], y = f[, plot3d.pcs[2]], z = f[, plot3d.pcs[3]],
