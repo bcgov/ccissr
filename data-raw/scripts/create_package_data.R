@@ -244,7 +244,7 @@ stocking_info <- stocking_info[!is.na(StockingTarget),]
 # models informations
 models_info <- fread("./data-raw/data_tables/CCISS_DataTable_Versions.csv")
 models_info[, Date := as.character(Date, format = "%Y/%m/%d")]
-subzones_colours_ref <- fread("WNAv13_SubzoneCols.csv")
+subzones_colours_ref <- fread("../Common_Files/WNAv13_v6_SubzoneCols.csv")
 
 use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          cfrg_rules, SIBEC, covMat,
@@ -254,7 +254,7 @@ use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          models_info, TreeCols,
          overwrite = TRUE)
 
-use_data(N1, overwrite = T)
+use_data(subzones_colours_ref, overwrite = T)
 use_data(E1, E1_Phase, S1, subzones_colours_ref, overwrite = TRUE)
 # see version in ?usethis::use_data, if you all use R 3.5 and up. You should bump to version 3
 # use_data(E1, S1, R1, F1, zones_colours_ref, subzones_colours_ref, overwrite = TRUE, version = 3)
