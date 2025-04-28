@@ -5,4 +5,4 @@ Edatopic v13_9
 
 WNA BGCs v13_2 
 
-Special sites v13_2
+Site series v13_2
