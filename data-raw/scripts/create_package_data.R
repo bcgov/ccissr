@@ -6,6 +6,11 @@ library(usethis)
 library(readxl)
 library(ccissr)
 
+N1 <- fread("site_series.csv", encoding = "Latin-1")
+N1[RealmClass == "", RealmClass := NA]
+N1 <- N1[,.(SS_NoSpace,SiteSeriesLongName,RealmClass)]
+use_data(N1, overwrite = T)
+
 bgcs <- fread("tables/versioned/WNA_BGCs_Info_v13_2.csv")
 bgcs_wna <- unique(bgcs[DataSet == "BC", BGC])
 
