@@ -25,9 +25,9 @@ write.csv(suit_update, "tables/suitability.csv")
 #update readme 
 path <- "tables/README.md"
 updated_readme<- c("# Current table versions ",  "Suitability v13_17 ",        ""               ,
-                   "Edatopic v13_9 ",    ""               ,
+                   "Edatopic v13_11 ",    ""               ,
                    "WNA BGCs v13_2 ",     ""               ,
-                   "Special sites v13_2")     #update version #s 
+                   "Site series v13_2")     #update version #s 
 # Write the updated content back to the README
 writeLines(updated_readme, path)
 
