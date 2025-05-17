@@ -25,8 +25,8 @@ broads<-mutate(broads, zone=(case_when(grepl("SWB", bgc)~"SWB",
                                  grepl("CWH", bgc)~"CWH",TRUE~NA)))
                
                
-broads_tab<-group_by(broads, sppsplit, zone)%>%summarise(count=n())
-broads_tab2<-group_by(broads, sppsplit)%>%mutate(count2=n())%>%select(sppsplit, count2)%>%distinct(.)
+broads_tab<-group_by(broads, sppsplit, bgc)%>%summarise(nratings_ss=n())
+broads_tab2<-group_by(broads, sppsplit)%>%mutate(nratings_spp=n())%>%select(sppsplit, nratings_spp)%>%distinct(.)
 broads_tab<-left_join(broads_tab, broads_tab2)
 
 #write.csv(broads_tab, "broadleaf_table.csv")
