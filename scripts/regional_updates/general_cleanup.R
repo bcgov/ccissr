@@ -63,7 +63,7 @@ AB_units<-c("BWBScmC",  "BWBScmE",  "BWBScmNW" ,"BWBScmW",  "BWBSdmN" , "BWBSdmS
             "BWBSlf",   "BWBSnm",   "BWBSpp",   "BWBSub",   "BWBSuf")  
 BCunits<-filter(BCunits, !bgc %in% AB_units) #AB units
 BCunits<-mutate(BCunits, Zone= case_when(grepl('ICH', bgc)~"ICH",grepl('SWB', bgc)~"SWB", grepl('MS', bgc)~"MS",
-                                         grepl('SBP', bgc)~"SBP", grepl('BAFA', bgc)~"BAFA", grepl('CWH', bgc)~"CWH", grepl('IDF', bgc)~"IDF",
+                                         grepl('SBPS', bgc)~"SBPS", grepl('BAFA', bgc)~"BAFA", grepl('CWH', bgc)~"CWH", grepl('IDF', bgc)~"IDF",
                                          grepl('BG', bgc)~"BG", grepl('ESSF', bgc)~"ESSF", grepl('CDF', bgc)~"CDF", grepl('SBS', bgc)~"SBS", 
                                          grepl('MH', bgc)~"MH", grepl('CMA', bgc)~"CMA", grepl('PP', bgc)~"PP", grepl('BWBS', bgc)~"BWBS", TRUE~ NA))
 BCunits<-subset(BCunits, !is.na(Zone)) #NAs
@@ -143,6 +143,6 @@ ggplot(subset(BCunits,treetype=="Broadleaf"), aes(fill=Status, x=spp, y=ratings)
 
 ggplot(subset(BCunits,treetype=="Conifer"), aes(fill=Status, x=spp, y=ratings)) + 
   geom_bar(position="stack", stat="identity") + facet_wrap(~mod)+theme_bw()+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +ggtitle("Conifers") +ylab("N ratings")+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +ggtitle("Conifers") +ylab("N ratings") 
   
 
