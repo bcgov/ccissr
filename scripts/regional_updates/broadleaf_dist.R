@@ -24,7 +24,9 @@ broads<-mutate(broads, zone=(case_when(grepl("SWB", bgc)~"SWB",
                                  grepl("ICH", bgc)~"ICH",
                                  grepl("CWH", bgc)~"CWH",TRUE~NA)))
                
-               
+
+broads<-mutate(broads, sppsplit=if_else(is.na(sppsplit), spp, sppsplit))#fill in NAs for subspp for broadleaf
+
 broads_tab<-group_by(broads, sppsplit, bgc)%>%summarise(nratings_ss=n())
 broads_tab2<-group_by(broads, sppsplit)%>%mutate(nratings_spp=n())%>%select(sppsplit, nratings_spp)%>%distinct(.)
 broads_tab<-left_join(broads_tab, broads_tab2)

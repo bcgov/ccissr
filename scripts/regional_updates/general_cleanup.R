@@ -123,6 +123,7 @@ BCunits<-mutate(BCunits, treetype=if_else(spp=="Cw"|spp=="Fd"|spp=="Hw"|spp=="Yc
                                             spp=="Sb"|spp=="Ss"|spp=="Sw"|spp=="Sx", "Conifer", "Broadleaf"))
 
 cts<-group_by(BCunits, spp) %>%summarise(nrat=n())
+BCunits<-mutate(BCunits, sppsplit=if_else(is.na(sppsplit), spp, sppsplit))#fill in NAs for subspp for broadleaf
 
 #remove rare conifers from plot to make smaller 
 BCunits<-subset(BCunits, spp!='Oa' &  spp!="Sw" & spp!="Jr" & spp!="Js" )
@@ -136,7 +137,7 @@ ggplot(subset(BCunits,treetype=="Conifer"), aes(fill=Status, x=spp, y=ratings)) 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "top") +ggtitle("Conifers") +
   scale_fill_paletteer_d("wesanderson::AsteroidCity3") +ylab("N ratings")
 
-ggplot(subset(BCunits,treetype=="Broadleaf"), aes(fill=Status, x=spp, y=ratings)) + 
+ggplot(subset(BCunits,treetype=="Broadleaf"), aes(fill=Status, x=sppsplit, y=ratings)) + 
   geom_bar(position="stack", stat="identity") + facet_wrap(~Zone, scales="free_y", ncol=3)+ theme_bw()+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "top") +ggtitle("Broadleaves")+ ylab("N ratings")+
   scale_fill_paletteer_d("wesanderson::AsteroidCity3")
