@@ -22,8 +22,8 @@ ss_notin <- bc_ss[!bc_ss %in% stocking_standards$SS_NoSpace]
 fwrite(data.table(bgc_notin),"BGC_NoStocking.csv")
 fwrite(data.table(ss_notin), "SiteSeries_NoStocking.csv")
 
-edatopic <- fread("tables/versioned/Edatopic_v13_6.csv")
-suit <- fread("tables/versioned/suitability_v13_9.csv")
+edatopic <- fread("../../../Downloads/edatopic.csv")
+suit <- fread("../../../Downloads/suitability.csv")
 ss <- fread("tables/versioned/SpecialSites_v13_2.csv")
 
 #subzones_colours_ref <- parse_qml("../../../Downloads/WNAv13_v5_Subzones.qml")
@@ -45,15 +45,10 @@ E1_Phase <- rbind(phases,vars)
 E1_Phase[,MainUnit := gsub("[a-z]$","",SS_NoSpace)]
 E1_Phase[,MainUnit := gsub("\\.[1-9]$","",MainUnit)]
 
+suit[,V1 := NULL]
 setnames(suit, c("bgc", "ss_nospace", "sppsplit", "feasible", "spp", "newfeas", 
                  "mod", "outrange"))
 S1 <- copy(suit)
-use_data(subzones_colours_ref, overwrite = TRUE)
-
-
-
-
-
 
 zone_cols <- fread("../../../Downloads/WNAv13_Zone_colours_2.csv")
 dat2 <- zone_cols[,.(ZONE,RGB)] |> unique()
@@ -260,7 +255,7 @@ use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          overwrite = TRUE)
 
 use_data(subzones_colours_ref, overwrite = T)
-use_data(E1, E1_Phase, S1, subzones_colours_ref, overwrite = TRUE)
+use_data(E1, E1_Phase, S1, overwrite = TRUE)
 # see version in ?usethis::use_data, if you all use R 3.5 and up. You should bump to version 3
 # use_data(E1, S1, R1, F1, zones_colours_ref, subzones_colours_ref, overwrite = TRUE, version = 3)
 
