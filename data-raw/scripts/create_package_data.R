@@ -68,10 +68,11 @@ zones_colours_ref <- fread("./data-raw/data_tables/WNAv11_Zone_Colours.csv", key
 subzones_colours_ref <- fread("./data-raw/data_tables/WNAv12_3_SubzoneCols.csv", key = "classification")
 
 # StockingStds
-stocking_standards_v12 <- fread("./data-raw/data_tables/StockingStds/StockStands_v12_2.csv", key = c("Region", "ZoneSubzone","SiteSeries", "Species"), colClasses = c("Standard" = "numeric"))
-stocking_info_v12 <- fread("./data-raw/data_tables/StockingStds/StockingInfo_v12.csv", key = "Standard", colClasses = c("Standard" = "numeric"))
-stocking_height_v12 <- fread("./data-raw/data_tables/StockingStds/StockingHeight_v12.csv", key = c("Standard", "Species"), colClasses = c("Standard" = "numeric"))
+stocking_standards_v12 <- fread("./data-raw/data_tables/StockingStds/StockStands_v13_1.csv", key = c("Region", "ZoneSubzone","SiteSeries", "Species"), colClasses = c("Standard" = "numeric"))
+stocking_info_v12 <- fread("./data-raw/data_tables/StockingStds/StockingInfo_v13.csv", encoding = "Latin-1", key = "Standard", colClasses = c("Standard" = "numeric"))
+stocking_height_v12 <- fread("./data-raw/data_tables/StockingStds/StockingHeight_v13.csv", key = c("Standard", "Species"), colClasses = c("Standard" = "numeric"))
 crosswalk <- fread("./data-raw/data_tables/StockingStds/Crosswalk.csv", key = "Modeled")
+stocking_standards_v12[,V1 := NULL]
 
 # Massaging data
 # Some Standards end with CC, discarding them
@@ -81,15 +82,15 @@ setkey(stocking_info_v12, "Standard")
 stocking_info_v12 <- stocking_info_v12[!is.na(Standard) & Standard %in% stocking_standards_v12$Standard]
 stocking_height_v12 <- stocking_height_v12[!is.na(Standard) & Standard %in% stocking_standards_v12$Standard]
 
-# Duplicated pairs
-dupPairs <- function(data) {
-  data[duplicated(data[, j = key(data), with=FALSE]) | duplicated(data[, j = key(data), with=FALSE], fromLast = TRUE), j = .SD, by=key(data)]
-}
-
-# Checks standards for duplicates
-dupPairs(stocking_standards_v12)
-dupPairs(stocking_info_v12)
-dupPairs(stocking_height_v12)
+# # Duplicated pairs
+# dupPairs <- function(data) {
+#   data[duplicated(data[, j = key(data), with=FALSE]) | duplicated(data[, j = key(data), with=FALSE], fromLast = TRUE), j = .SD, by=key(data)]
+# }
+# 
+# # Checks standards for duplicates
+# dupPairs(stocking_standards_v12)
+# dupPairs(stocking_info_v12)
+# dupPairs(stocking_height_v12)
 
 # Remove duplicates for now, keeping the first of each combination
 remDups <- function(d) {
@@ -103,14 +104,14 @@ stocking_height_v12 <- remDups(stocking_height_v12)
 # Stocking standards formatting
 stocking_standards <- data.table::copy(stocking_standards_v12)
 stocking_standards[, Footnotes := list(list({x <- unname(do.call(c, .SD)); x[!x %in% c(NA, "")]})), by=1:NROW(stocking_standards), .SDcols = FN1:FN5]
-stocking_standards[, c("FN1","FN2","FN3","FN4","FN5") := NULL]
+stocking_standards[, c("FN1","FN2","FN3","FN4","FN5","FN6") := NULL]
 # add-in crosswalk rows to complete standards dataset
 # Gettings standards that would be substitute according to crosswalk
 a <- stocking_standards[ZoneSubzone %chin% crosswalk$Tables]
 # Generate all possible BGC that would use a substitute
 a <- a[crosswalk, on = c(ZoneSubzone = "Tables"), allow.cartesian = TRUE, nomatch = NULL]
 # Checking if any of those already have a match in the standards table
-#nrow(stocking_standards[a, on = c(Region = "Region", ZoneSubzone = "Modeled", SS_NoSpace = "SS_NoSpace", Species = "Species"), nomatch = NULL])
+nrow(stocking_standards[a, on = c(Region = "Region", ZoneSubzone = "Modeled", SS_NoSpace = "SS_NoSpace", Species = "Species"), nomatch = NULL])
 # Does not seems like it, so it is safe to add all of them
 a[, `:=`(ZoneSubzone = Modeled, Modeled = NULL)]
 k <- data.table::key(stocking_standards)
@@ -118,7 +119,7 @@ stocking_standards <- rbindlist(list(stocking_standards, a))
 setkeyv(stocking_standards, k)
 # Recheck for dups
 #dupPairs(stocking_standards)
-stocking_standards[,SiteSeries := gsub("[^0-9.-]", "", SiteSeries)]
+#stocking_standards[,SiteSeries := gsub("[^0-9.-]", "", SiteSeries)]
 stocking_standards[,SS_NoSpace := paste0(ZoneSubzone,"/",SiteSeries)]
 stocking_standards[,SiteSeries := NULL]
 region_cw <- data.table(RegionNew = unique(stocking_standards$Region), 
@@ -127,7 +128,7 @@ setnames(stocking_standards,old = "Region",new = "RegionNew")
 stocking_standards[region_cw, Region := i.RegionOld, on = "RegionNew"]
 stocking_standards[,RegionNew := NULL]
 
-stocking_standards[,FN6 := NULL]
+#stocking_standards[,FN6 := NULL]
 temp <- stocking_standards[grep("BWBS",ZoneSubzone),]
 temp[,Region := "Pr Rupert"]
 stocking_standards <- rbind(stocking_standards,temp)
@@ -197,6 +198,8 @@ stocking_info <- stocking_info[!is.na(StockingTarget),]
 models_info <- fread("./data-raw/data_tables/CCISS_DataTable_Versions.csv")
 models_info[, Date := as.character(Date, format = "%Y/%m/%d")]
 subzones_colours_ref <- fread("WNAv13_SubzoneCols.csv")
+
+use_data(stocking_standards,stocking_info,stocking_height, overwrite = TRUE)
 
 use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          cfrg_rules, SIBEC, covMat,
