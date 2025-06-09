@@ -10,6 +10,7 @@ analog_novelty(
   label.targets,
   label.analogs,
   vars,
+  clim.point = NULL,
   clim.icvs = NULL,
   label.icvs = NULL,
   weight.icv = 0.5,
@@ -17,6 +18,7 @@ analog_novelty(
   analog.focal = NULL,
   threshold = 0.95,
   pcs = NULL,
+  logVars = TRUE,
   plotScree = FALSE,
   plot2d = FALSE,
   plot2d.pcs = cbind(c(1, 2, 3, 4), c(2, 3, 4, 5)),
@@ -27,12 +29,12 @@ analog_novelty(
 )
 }
 \arguments{
-\item{clim.targets}{data.table. Climate variables for which the analogs were
-identified}
+\item{clim.targets}{data.table. Climate values for which the analogs were
+identified. Must include variables specified in \code{vars}.}
 
-\item{clim.analogs}{data.table. Climate variables of at least 50 locations
+\item{clim.analogs}{data.table. Climate values of at least 50 locations
 representing the spatial variation in the reference period (historical) climate
-of each analog in the analog pool.}
+of each analog in the analog pool. Must include variables specified in \code{vars}.}
 
 \item{label.targets}{character. Vector of the analog IDs identified for the
 climatic conditions listed in \code{clim.targets}. Length equals number of records
@@ -43,6 +45,9 @@ conditions listed in \code{clim.analogs}. Length equals number of records in
 \code{clim.analogs}.}
 
 \item{vars}{character. Climate variables to use in the novelty measurement.}
+
+\item{clim.point}{data.table. Climate values of a single location of interest.
+Must include variables specified in \code{vars}.}
 
 \item{clim.icvs}{data.table. Time series of climate variables at the geographic
 centroids of each analog in the analog pool. If not null, this interannual climatic
@@ -59,6 +64,9 @@ for truncation of principal components to use in the mahalanobis distance measur
 
 \item{pcs}{integer. The fixed number of PCs to use in the mahalanobis distance
 measurement. Non-null values of this parameter override the \code{threshold} parameter.}
+
+\item{logVars}{logical. Log-transform ratio variables, i.e., variables with a minimum
+of zero.}
 
 \item{plotScree}{logical. If \code{analog.focal} is specified, plot a scree plot showing
 the standard deviation of the analog points, target points, and (if activated) interannual
@@ -110,7 +118,8 @@ distances or as sigma dissimilarities (Interpretable as the number of standard d
 the analog cluster). These values are returned for each target climate in the dataset.
 Additional outputs include several optional plots:
 \itemize{
-\item A scree plot showing the standard deviation of the first few principal components
+\item A scree plot (if \code{plotScree} is enabled) showing the standard deviation of the
+analog and target variation in the principal components.
 \item A 2D scatterplot (if \code{plot2d} is enabled) showing the relationship between the target
 and analogs across selected principal components
 \item A 3D scatterplot (if \code{plot3d} is enabled) to visualize the distribution of the

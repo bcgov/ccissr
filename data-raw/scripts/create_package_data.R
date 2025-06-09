@@ -4,6 +4,51 @@
 library(data.table)
 library(usethis)
 library(readxl)
+library(ccissr)
+
+N1 <- fread("site_series.csv", encoding = "Latin-1")
+N1[RealmClass == "", RealmClass := NA]
+N1 <- N1[,.(SS_NoSpace,SiteSeriesLongName,RealmClass)]
+use_data(N1, overwrite = T)
+
+bgcs <- fread("tables/versioned/WNA_BGCs_Info_v13_2.csv")
+bgcs_wna <- unique(bgcs[DataSet == "BC", BGC])
+
+bgc_notin <- bgcs_wna[!bgcs_wna %in% stocking_standards$ZoneSubzone]
+eda <- E1[BGC %in% bgcs_wna, ]
+bc_ss <- unique(eda$SS_NoSpace)
+
+ss_notin <- bc_ss[!bc_ss %in% stocking_standards$SS_NoSpace]
+fwrite(data.table(bgc_notin),"BGC_NoStocking.csv")
+fwrite(data.table(ss_notin), "SiteSeries_NoStocking.csv")
+
+edatopic <- fread("../../../Downloads/edatopic.csv")
+suit <- fread("../../../Downloads/suitability.csv")
+ss <- fread("tables/versioned/SpecialSites_v13_2.csv")
+
+#subzones_colours_ref <- parse_qml("../../../Downloads/WNAv13_v5_Subzones.qml")
+sz_wna <- fread("../Common_Files/WNAv13_SubzoneCols.csv")
+sz_bc <- fread("../CCISS_ShinyApp/app/BC_SubzoneColours_v13_6.csv")
+sz_wna <- sz_wna[!classification %in% sz_bc$classification,]
+sz_all <- rbind(sz_bc, sz_wna)
+fwrite(sz_all, "../CCISS_ShinyApp/app/WNA_SZ_Cols_v13_6.csv")
+
+SS <- ss[,.(SS_NoSpace,SpecialCode)]
+SS <- SS[SpecialCode != "",]
+E1 <- SS[edatopic, on = "SS_NoSpace"]
+setcolorder(E1,c("Source","BGC","SS_NoSpace","Edatopic","SpecialCode"))
+phases <- E1[grepl("BEC",Source) & grepl("[0-9]a$|[0-9]b$|[0-9]c$",SS_NoSpace),]
+E1 <- E1[!(grepl("BEC",Source) & grepl("[0-9]a$|[0-9]b$|[0-9]c$",SS_NoSpace)),]
+vars <- E1[grep("\\.1$|\\.2$|\\.3$",SS_NoSpace),]
+E1 <- E1[!grepl("\\.1$|\\.2$|\\.3$",SS_NoSpace),]
+E1_Phase <- rbind(phases,vars)
+E1_Phase[,MainUnit := gsub("[a-z]$","",SS_NoSpace)]
+E1_Phase[,MainUnit := gsub("\\.[1-9]$","",MainUnit)]
+
+suit[,V1 := NULL]
+setnames(suit, c("bgc", "ss_nospace", "sppsplit", "feasible", "spp", "newfeas", 
+                 "mod", "outrange"))
+S1 <- copy(suit)
 
 zone_cols <- fread("../../../Downloads/WNAv13_Zone_colours_2.csv")
 dat2 <- zone_cols[,.(ZONE,RGB)] |> unique()
@@ -197,7 +242,7 @@ stocking_info <- stocking_info[!is.na(StockingTarget),]
 # models informations
 models_info <- fread("./data-raw/data_tables/CCISS_DataTable_Versions.csv")
 models_info[, Date := as.character(Date, format = "%Y/%m/%d")]
-subzones_colours_ref <- fread("WNAv13_SubzoneCols.csv")
+subzones_colours_ref <- fread("../Common_Files/WNAv13_v6_SubzoneCols.csv")
 
 use_data(stocking_standards,stocking_info,stocking_height, overwrite = TRUE)
 
@@ -208,6 +253,7 @@ use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          silvics_tol, silvics_regen, silvics_mature, silvics_resist,
          models_info, TreeCols,
          overwrite = TRUE)
+
 
 use_data(N1, overwrite = T)
 use_data(E1, E1_Phase, S1, overwrite = TRUE)
