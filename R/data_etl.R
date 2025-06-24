@@ -40,7 +40,7 @@ dbPointInfo <- function(con, points) {
   elev_info_sql <- paste0("
     WITH pts4269 AS (
       ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 4269) geom,
-      ",ID," id ", collapse = "\n UNION ALL \n") ,"
+      '",ID,"' id ", collapse = "\n UNION ALL \n") ,"
     )
     
     SELECT pts.id, 
@@ -54,7 +54,7 @@ dbPointInfo <- function(con, points) {
   bec_info_sql <- paste0("
     WITH pts3005 AS (
       ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 3005) geom,
-      ",ID," id ", collapse = "\n UNION ALL \n") ,"
+      '",ID,"' id ", collapse = "\n UNION ALL \n") ,"
     )
     
     SELECT pts.id,
@@ -80,7 +80,7 @@ dbPointInfo <- function(con, points) {
   site_ref_sql <- paste0("
     WITH pts3005 AS (
       ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 3005) geom,
-      ",ID," id ", collapse = "\n UNION ALL \n") ,"
+      '",ID,"' id ", collapse = "\n UNION ALL \n") ,"
     )
     
     SELECT pts.id, 
@@ -93,7 +93,7 @@ dbPointInfo <- function(con, points) {
   bc_land_sql <- paste0("
     WITH pts3005 AS (
       ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 3005) geom,
-      ",ID," id ", collapse = "\n UNION ALL \n") ,"
+      '",ID,"' id ", collapse = "\n UNION ALL \n") ,"
     )
     
     SELECT pts.id,
@@ -106,7 +106,7 @@ dbPointInfo <- function(con, points) {
   bc_forest_region <- paste0("
     WITH pts3005 AS (
       ", paste0("SELECT st_transform(st_pointfromtext('POINT(", Long, " ", Lat, ")', 4326), 3005) geom,
-      ",ID," id ", collapse = "\n UNION ALL \n") ,"
+      '",ID,"' id ", collapse = "\n UNION ALL \n") ,"
     )
     
     SELECT pts.id,

@@ -7,6 +7,21 @@ library(climr)
 library(ranger)
 library(ccissr)
 
+qry <- "CREATE TABLE preselected_dist13 AS
+SELECT * FROM (
+  SELECT siteno, bgc, dist_code,
+         ROW_NUMBER() OVER (PARTITION BY bgc, dist_code ORDER BY RANDOM()) AS u
+  FROM (
+    SELECT dist_code, bgc, bgc_attribution13_1.siteno
+    FROM bgc_attribution13_1
+    JOIN district_ids USING (siteno)
+  ) AS temp
+) AS a
+WHERE u <= 150;
+"
+dbExecute(conn, qry)
+
+
 create_preselected <- 
 "create table preselected_points13 as (select * from (
   select siteno, bgc, row_number() over (partition by bgc order by random()) as u
