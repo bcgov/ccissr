@@ -147,3 +147,8 @@ ggplot(subset(BCunits,treetype=="Conifer"), aes(fill=Status, x=spp, y=ratings)) 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +ggtitle("Conifers") +ylab("N ratings") 
   
 
+#August 2025
+#Haida Gwaii units under review by SS/HK (CWHvh3, wh1, wh2)
+
+notrevBC<-subset(notrevBC, Zone!="CWH"& bgc!="ESSFun" & bgc!="ESSFunp")
+write.csv(notrevBC, "needsreview.csv")
