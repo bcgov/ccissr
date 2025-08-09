@@ -142,13 +142,21 @@ ggplot(subset(BCunits,treetype=="Broadleaf"), aes(fill=Status, x=sppsplit, y=rat
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "top") +ggtitle("Broadleaves")+ ylab("N ratings")+
   scale_fill_paletteer_d("wesanderson::AsteroidCity3")
 
-ggplot(subset(BCunits,treetype=="Conifer"), aes(fill=Status, x=spp, y=ratings)) + 
-  geom_bar(position="stack", stat="identity") + facet_wrap(~mod)+theme_bw()+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +ggtitle("Conifers") +ylab("N ratings") 
-  
 
 #August 2025
 #Haida Gwaii units under review by SS/HK (CWHvh3, wh1, wh2)
-
 notrevBC<-subset(notrevBC, Zone!="CWH"& bgc!="ESSFun" & bgc!="ESSFunp")
+
+#add CGC imputed values to review list 
+suit_add<-read.csv("tables/regional_updates/inputed_suit_ratings_CGC2.csv")
+suit_add$X<-NULL
+suit_add<-mutate(suit_add, Zone= case_when(grepl('ICH', bgc)~"ICH",grepl('SWB', bgc)~"SWB", grepl('MS', bgc)~"MS",
+                                         grepl('SBPS', bgc)~"SBPS", grepl('BAFA', bgc)~"BAFA", grepl('CWH', bgc)~"CWH", grepl('IDF', bgc)~"IDF",
+                                         grepl('BG', bgc)~"BG", grepl('ESSF', bgc)~"ESSF", grepl('CDF', bgc)~"CDF", grepl('SBS', bgc)~"SBS", 
+                                         grepl('MH', bgc)~"MH", grepl('CMA', bgc)~"CMA", grepl('PP', bgc)~"PP", grepl('BWBS', bgc)~"BWBS", TRUE~ NA))
+
+notrevBC<-rbind(notrevBC, suit_add)
+notrevBC<-mutate(notrevBC, Note=if_else(mod=="inputed", 'imputed', 'NA'))
+notrevBC$mod<-NA
 write.csv(notrevBC, "needsreview.csv")
+

@@ -14,7 +14,7 @@ suit_add<-mutate(suit_add, sppsplit=case_when(spp=='Pl'& grepl("CWH|ESSFun|MH", 
                                               spp=='Fd'& !grepl("CWH|ESSFun|MH", bgc)~"Fdi", 
                                               TRUE~spp))
 suit_add<-select(suit_add, bgc, ss_nospace, sppsplit, suitability, spp, newsuit,mod,outrange) %>% distinct(.)
-
+write.csv(suit_add, "tables/regional_updates/inputed_suit_ratings_CGC2.csv")
 #add to main table 
 suit<-rbind(suit, suit_add)
 
