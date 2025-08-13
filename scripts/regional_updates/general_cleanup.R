@@ -148,7 +148,7 @@ ggplot(subset(BCunits,treetype=="Broadleaf"), aes(fill=Status, x=sppsplit, y=rat
 notrevBC<-subset(notrevBC, Zone!="CWH"& bgc!="ESSFun" & bgc!="ESSFunp")
 
 #add CGC imputed values to review list 
-suit_add<-read.csv("tables/regional_updates/inputed_suit_ratings_CGC2.csv")
+suit_add<-read.csv("tables/regional_updates/imputed_suit_ratings_CGC.csv")
 suit_add$X<-NULL
 suit_add<-mutate(suit_add, Zone= case_when(grepl('ICH', bgc)~"ICH",grepl('SWB', bgc)~"SWB", grepl('MS', bgc)~"MS",
                                          grepl('SBPS', bgc)~"SBPS", grepl('BAFA', bgc)~"BAFA", grepl('CWH', bgc)~"CWH", grepl('IDF', bgc)~"IDF",
