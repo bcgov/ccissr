@@ -19,12 +19,24 @@
 #'  
 #' @return `dat` with all of the above added climate variables.
 #' @export
+#' 
+#' 
+#' 
 addVars <- function(dat) {
   dat[, PPT_MJ := PPT_05 + PPT_06]
   dat[, PPT_JAS := PPT_07 + PPT_08 + PPT_09]
   dat[, PPT.dormant := PPT_at + PPT_wt]
   dat[, CMD.def := pmax(0, 500 - PPT.dormant)]
   dat[, CMDMax := CMD_07]   ## TODO: THIS IS NOT NECESSARILY CMD MAX
-  dat[, CMD.total := CMD.def + CMD]
-  dat[, DD_delayed := pmax(0, ((DDsub0_at + DDsub0_wt)*0.0238) - 1.8386)]
+  dat[, CMD.total := CMD.def + CMD_an]
 }
+
+# addVars <- function(dat) {
+#   dat[, PPT_MJ := PPT_05 + PPT_06]
+#   dat[, PPT_JAS := PPT_07 + PPT_08 + PPT_09]
+#   dat[, PPT.dormant := PPT_at + PPT_wt]
+#   dat[, CMD.def := pmax(0, 500 - PPT.dormant)]
+#   dat[, CMDMax := CMD_07]   ## TODO: THIS IS NOT NECESSARILY CMD MAX
+#   dat[, CMD.total := CMD.def + CMD_an]
+#   dat[, DD_delayed := pmax(0, ((DDsub0_at + DDsub0_wt)*0.0238) - 1.8386)]
+# }
