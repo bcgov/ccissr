@@ -271,6 +271,31 @@ cciss_rasterize <- function(raster_template, base_folder = "spatial") {
   }
 }
 
+#' Function to create rasters of historic (mapped) suitability by species and edatopic position
+#' @param species Character. Vector of species codes to map
+#' @param edatopes Character. Vector of edatopes (e.g., "C4")
+#' @param bgc_raster_list List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_raster`
+#' @param base_folder Base folder to write results to.
+#' @return NULL. Writes tifs to "base_folder/historic_suit"
+#' @export
+mapped_suit <- function(species, edatopes, bgc_raster_list, base_folder) {
+  if(!dir.exists(paste0(base_folder,"/historic_suit"))) dir.create(paste0(base_folder,"/historic_suit"))
+  out_folder <- paste0(base_folder,"/historic_suit")
+  for(eda_sel in edatopes){
+    for(spp_sel in species) {
+      bgc_ids <- copy(bgc_raster_list$ids)
+      bgc_rast <- copy(bgc_raster_list$bgc_rast)
+      eda_sub <- copy(ccissr::E1)[Edatopic == eda_sel & is.na(SpecialCode),]
+      suit_sub <- copy(ccissr::S1)[spp == spp_sel,]
+      eda_sub[suit_sub, suit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]
+      eda_sub[is.na(suit), suit := 5]
+      eda_sub <- eda_sub[,.(suit = mean(suit)), by = .(BGC)]
+      bgc_ids[eda_sub, suit := i.suit, on = c(bgc = "BGC")]
+      suit_rast <- subst(bgc_rast, from = bgc_ids$bgc_id, to = bgc_ids$suit)
+      writeRaster(suit_rast, file.path(out_folder, paste0("HistoricSuit_",spp_sel,"_",eda_sel,".tif")))
+    }
+  }
+}
 
 
 #' Internal function to create cciss projections from site series predictions. Calculates projected suitability for each period, as well as other CCISS statistics.

@@ -145,3 +145,22 @@ plot(cw_2050)
 fd_2050 <- rast(file.path(base_path, "final_rasters","CCISS_2041_2060_C4_Fd.tif"))
 plot(fd_2050)
 ```
+
+## Historic Suitability Maps
+
+For comparison purposes, we'll often want to view historic mapped species suitability. This is a fairly straightforward procedure - we take the BGC map (created above), then subset the siteseries in each BGC unit to those containing the specified edatopic position, and finally join the suitability values for the selected species to the siteseries table. The function below facilitates this process.
+
+```{r}
+mapped_suit(species = spp, edatopes = eda, bgc_raster_list = bgc_raster, base_folder = base_path)
+```
+
+```{r}
+fd_hist <- rast(file.path(base_path, "historic_suit","HistoricSuit_Fd_C4.tif"))
+plot(fd_hist)
+```
+
+All done!
+
+```{r}
+unlink(base_path, recursive = TRUE)
+```
