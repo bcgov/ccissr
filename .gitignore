@@ -25,3 +25,5 @@ inst/doc
 
 *.geojson
 .httr-oauth
+
+*.docx 
