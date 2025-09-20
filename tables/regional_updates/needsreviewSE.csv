@@ -1,0 +1,900 @@
+﻿bgc,ss_nospace,sppsplit,suitability,spp,newsuit,mod,outrange,Zone,Note,Comments
+ESSFdcp,ESSFdcp/00,Bl,3,Bl,3,cd,FALSE,ESSF,NA,Generally limited by severe growing conditions
+ESSFdcw,ESSFdcw/102,La,2,La,2,cd,FALSE,ESSF,NA,
+ESSFdk1,ESSFdk1/103,Pf,3,Pf,2,cd,FALSE,ESSF,NA,fits within it's tolerance
+ESSFdkw,ESSFdkw/101,Bl,2,Bl,2,cd,FALSE,ESSF,NA,Generally limited by severe growing conditions
+ESSFdkw,ESSFdkw/102,Bl,2,Bl,3,cd,FALSE,ESSF,NA,"Generally limited by severe growing conditions, limited by drought"
+ESSFdkw,ESSFdkw/103,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFdkw,ESSFdkw/110,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFdkw,ESSFdkw/102,La,2,La,2,cd,FALSE,ESSF,NA,
+ESSFdkw,ESSFdkw/103,La,2,La,2,cd,FALSE,ESSF,NA,
+ESSFdkw,ESSFdkw/101,Pa,3,Pa,3,cd,FALSE,ESSF,imputed,
+ESSFdkw,ESSFdkw/102,Pa,3,Pa,2,cd,FALSE,ESSF,NA,
+ESSFdkw,ESSFdkw/103,Pa,3,Pa,2,cd,FALSE,ESSF,NA,
+ESSFdkw,ESSFdkw/101,Pli,3,Pl,3,cd,FALSE,ESSF,NA,limited to lower elevations; snow press will limit productivity
+ESSFdkw,ESSFdkw/102,Pli,3,Pl,3,cd,FALSE,ESSF,NA,limited to lower elevations; snow press will limit productivity
+ESSFdkw,ESSFdkw/103,Pli,3,Pl,3,cd,FALSE,ESSF,NA,limited to lower elevations; snow press will limit productivity
+ESSFdkw,ESSFdkw/101,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFdkw,ESSFdkw/102,Se,3,Sx,3,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFdkw,ESSFdkw/103,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFdkw,ESSFdkw/110,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFmh,ESSFmh/112.1,Act,3,Ac,2,cd,FALSE,ESSF,NA,
+ESSFmh,ESSFmh/112.2,Act,3,Ac,3,cd,FALSE,ESSF,NA,poor aeration will limit establishment
+ESSFmh,ESSFmh/103,At,3,At,2,cd,FALSE,ESSF,imputed,restricted to warm slopes
+ESSFmh,ESSFmh/112.1,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFmh,ESSFmh/112.2,Bl,2,Bl,2,cd,FALSE,ESSF,NA,poor aeration will limit productivity
+ESSFmh,ESSFmh/111,Ep,3,Ep,2,cd,FALSE,ESSF,imputed,limited to warm aspects
+ESSFmh,ESSFmh/110,Fdi,3,Fd,3,cd,FALSE,ESSF,imputed,limited to warm aspects; often outcompeted on these sites
+ESSFmh,ESSFmh/110,Lw,3,Lw,3,cd,FALSE,ESSF,imputed,limited to warm aspects; often outcompeted on these sites
+ESSFmh,ESSFmh/111,Lw,3,Lw,3,cd,FALSE,ESSF,imputed,
+ESSFmh,ESSFmh/112.1,Sxw,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFmh,ESSFmh/112.2,Sxw,1,Sx,2,cd,FALSE,ESSF,NA,poor aeration will limit productivity
+ESSFmmp,ESSFmmp/00,Bl,3,Bl,3,cd,FALSE,ESSF,NA,
+ESSFmmp,ESSFmmp/00,La,3,La,3,cd,FALSE,ESSF,imputed,
+ESSFmmw,ESSFmmw/01,Bl,2,Bl,2,cd,FALSE,ESSF,NA,generally establishment and growth are more limited in this BGC unit
+ESSFmmw,ESSFmmw/02,Bl,3,Bl,3,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFmmw,ESSFmmw/03,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/04,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/05,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/06,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/07,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/01,Pli,3,Pl,5,cd,FALSE,ESSF,NA,not know to occur in  this site series possibly due to lack of fire history
+ESSFmmw,ESSFmmw/02,Pli,3,Pl,5,cd,FALSE,ESSF,NA,not known to occur in this site series
+ESSFmmw,ESSFmmw/03,Pli,3,Pl,3,cd,FALSE,ESSF,NA,snow press will impact establishment and growth on steeper slopes
+ESSFmmw,ESSFmmw/04,Pli,3,Pl,3,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/05,Pli,3,Pl,5,cd,FALSE,ESSF,NA,not known to occur in this site series
+ESSFmmw,ESSFmmw/06,Pli,3,Pl,5,cd,FALSE,ESSF,NA,not known to occur in this site series
+ESSFmmw,ESSFmmw/07,Pli,3,Pl,5,cd,FALSE,ESSF,NA,not known to occur in this site series
+ESSFmmw,ESSFmmw/01,Sxw,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/02,Sxw,3,Sx,3,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFmmw,ESSFmmw/03,Sxw,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/04,Sxw,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/05,Sxw,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/06,Sxw,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFmmw,ESSFmmw/07,Sxw,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFmw,ESSFmw/08,Ba,3,Ba,3,cd,FALSE,ESSF,NA,limited establishment on poorly drained sites
+ESSFmw,ESSFmw/01,Bl,1,Bl,2,cd,FALSE,ESSF,NA,may not do well on coarse-textured fluvial sites
+ESSFmw,ESSFmw/02,Bl,3,Bl,3,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFmw,ESSFmw/03,Bl,3,Bl,3,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFmw,ESSFmw/04,Bl,3,Bl,2,cd,FALSE,ESSF,NA,may not do well on coarse-textured fluvial sites
+ESSFmw,ESSFmw/05,Bl,2,Bl,1,cd,FALSE,ESSF,NA,no known limitations
+ESSFmw,ESSFmw/06,Bl,1,Bl,1,cd,FALSE,ESSF,NA,no known limitations
+ESSFmw,ESSFmw/07,Bl,1,Bl,1,cd,FALSE,ESSF,NA,no known limitations
+ESSFmw,ESSFmw/08,Bl,3,Bl,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFmw,ESSFmw/03,Hm,2,Hm,2,cd,FALSE,ESSF,imputed,limited to areas close to MH zone
+ESSFmw,ESSFmw/07,Hw,3,Hw,2,cd,FALSE,ESSF,NA,limited to lower elevations of the BGC unit
+ESSFmw,ESSFmw/03,Lw,3,Lw,5,cd,TRUE,ESSF,NA,not know to occur in  this BGC unit
+ESSFmw,ESSFmw/02,Pa,3,Pa,3,cd,FALSE,ESSF,NA,
+ESSFmw,ESSFmw/03,Pa,3,Pa,3,cd,FALSE,ESSF,NA,
+ESSFvc,ESSFvc/01,Bl,1,Bl,1,cd,FALSE,ESSF,NA,no known limitations
+ESSFvc,ESSFvc/02,Bl,2,Bl,2,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFvc,ESSFvc/03,Bl,1,Bl,1,cd,FALSE,ESSF,NA,no known limitations
+ESSFvc,ESSFvc/04,Bl,1,Bl,1,cd,FALSE,ESSF,NA,no known limitations
+ESSFvc,ESSFvc/05,Bl,1,Bl,1,cd,FALSE,ESSF,NA,no known limitations
+ESSFvc,ESSFvc/01,Cw,3,Cw,2,cd,FALSE,ESSF,imputed,limited to lower elevations of the BGC unit
+ESSFvc,ESSFvc/01,Fdi,2,Fd,2,cd,FALSE,ESSF,imputed,limited to lower elevations of the BGC unit
+ESSFvc,ESSFvc/01,Hm,2,Hm,1,cd,FALSE,ESSF,NA,
+ESSFvc,ESSFvc/02,Hm,3,Hm,2,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFvc,ESSFvc/03,Hm,2,Hm,1,cd,FALSE,ESSF,NA,
+ESSFvc,ESSFvc/04,Hm,2,Hm,1,cd,FALSE,ESSF,NA,
+ESSFvc,ESSFvc/05,Hm,2,Hm,1,cd,FALSE,ESSF,NA,
+ESSFvc,ESSFvc/01,Hw,2,Hw,2,cd,FALSE,ESSF,imputed,limited to lower elevations of the BGC unit
+ESSFvc,ESSFvc/01,Pli,1,Pl,2,cd,FALSE,ESSF,imputed,snow press will impact establishment and growth on steeper slopes
+ESSFvc,ESSFvc/02,Pli,4,Pl,2,cd,FALSE,ESSF,NA,snow press will impact establishment and growth on steeper slopes
+ESSFvc,ESSFvc/01,Se,1,Sx,1,cd,FALSE,ESSF,NA,no known limitations
+ESSFvc,ESSFvc/02,Se,2,Sx,2,cd,FALSE,ESSF,NA,may be limited by drought
+ESSFvc,ESSFvc/03,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFvc,ESSFvc/04,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFvc,ESSFvc/05,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFvcp,ESSFvcp/00,Bl,3,Bl,3,cd,FALSE,ESSF,NA,
+ESSFvcp,ESSFvcp/00,Sx,3,Sx,3,cd,FALSE,ESSF,imputed,
+ESSFvcw,ESSFvcw/01,Bl,2,Bl,2,cd,FALSE,ESSF,NA,climatic conditions limits establishment
+ESSFvcw,ESSFvcw/02,Bl,3,Bl,3,cd,FALSE,ESSF,NA,drought will limit establishment
+ESSFvcw,ESSFvcw/03,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/04,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/05,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/01,Hm,3,Hm,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/02,Hm,3,Hm,3,cd,FALSE,ESSF,NA,drought will limit establishment
+ESSFvcw,ESSFvcw/03,Hm,3,Hm,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/04,Hm,3,Hm,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/05,Hm,3,Hm,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/02,Pli,5,Pl,5,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/01,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/02,Se,3,Sx,3,cd,FALSE,ESSF,NA,drought will limit establishment
+ESSFvcw,ESSFvcw/03,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/04,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFvcw,ESSFvcw/05,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFwc2,ESSFwc2/02,Fdi,3,Fd,2,cd,FALSE,ESSF,imputed,limited to lower elevations of the BGC unit
+ESSFwc2,ESSFwc2/05,Hw,3,Hw,2,cd,FALSE,ESSF,imputed,limited to lower elevations of the BGC unit
+ESSFwc2,ESSFwc2/01,Hw,3,Hw,2,cd,FALSE,ESSF,imputed,limited to lower elevations of the BGC unit
+ESSFwc4,ESSFwc4/101,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/102,Bl,2,Bl,2,cd,FALSE,ESSF,NA,may be limited by drought
+ESSFwc4,ESSFwc4/103,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/110,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/111,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/102,Cw,4,Cw,3,cd,FALSE,ESSF,imputed,limited to lower elevations of the BGC unit; may be limited by drought
+ESSFwc4,ESSFwc4/103,Cw,4,Cw,2,cd,FALSE,ESSF,imputed,limited to lower elevations of the BGC unit
+ESSFwc4,ESSFwc4/101,Hw,3,Hw,2,cd,FALSE,ESSF,NA,limited to lower elevations of the BGC unit
+ESSFwc4,ESSFwc4/102,La,3,La,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwc4,ESSFwc4/103,La,3,La,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwc4,ESSFwc4/102,Pa,2,Pa,2,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/103,Pa,2,Pa,2,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/101,Pli,3,Pl,3,cd,FALSE,ESSF,NA,severe limitations due to vegetation competition
+ESSFwc4,ESSFwc4/102,Pli,2,Pl,2,cd,FALSE,ESSF,NA,snow press will impact establishment and growth
+ESSFwc4,ESSFwc4/103,Pli,2,Pl,2,cd,FALSE,ESSF,NA,snow press will impact establishment and growth
+ESSFwc4,ESSFwc4/101,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/102,Se,2,Sx,2,cd,FALSE,ESSF,NA,may be limited by drought
+ESSFwc4,ESSFwc4/103,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/110,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwc4,ESSFwc4/111,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwcp,ESSFwcp/00,Bl,3,Bl,3,cd,FALSE,ESSF,NA,
+ESSFwcp,ESSFwcp/00,Ep,3,Ep,4,cd,FALSE,ESSF,imputed,at very edge of range and likely only occuring on warm aspects
+ESSFwcp,ESSFwcp/00,Fdi,2,Fd,3,cd,FALSE,ESSF,imputed,
+ESSFwcw,ESSFwcw/101,Bl,1,Bl,2,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/102,Bl,3,Bl,2,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwcw,ESSFwcw/103,Bl,1,Bl,2,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/104,Bl,1,Bl,2,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/110,Bl,1,Bl,2,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/102,La,3,La,3,cd,FALSE,ESSF,NA,drought and low nutrients limit establishment
+ESSFwcw,ESSFwcw/103,La,3,La,3,cd,FALSE,ESSF,NA,drought and low nutrients limit establishment
+ESSFwcw,ESSFwcw/104,La,3,La,2,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/101,Pa,3,Pa,4,cd,FALSE,ESSF,NA,generally does not establish on these sites
+ESSFwcw,ESSFwcw/102,Pa,2,Pa,2,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/103,Pa,2,Pa,3,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/104,Pa,3,Pa,4,cd,FALSE,ESSF,NA,generally does not establish on these sites
+ESSFwcw,ESSFwcw/103,Pli,3,Pl,4,cd,FALSE,ESSF,imputed,at very edge of range
+ESSFwcw,ESSFwcw/102,Pli,3,Pl,4,cd,FALSE,ESSF,NA,at very edge of range
+ESSFwcw,ESSFwcw/101,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/102,Se,3,Sx,3,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwcw,ESSFwcw/103,Se,2,Sx,3,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwcw,ESSFwcw/104,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFwcw,ESSFwcw/110,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/101,Act,3,Ac,2,cd,FALSE,ESSF,NA,limited to lower elevatons of this BGC unit on warm aspects
+ESSFwh1,ESSFwh1/110,Act,2,Ac,2,cd,FALSE,ESSF,NA,limited to lower elevations of this BGC unit on warm aspects
+ESSFwh1,ESSFwh1/101,At,3,At,2,cd,FALSE,ESSF,NA,limited to lower elevations of this BGC unit on warm aspects
+ESSFwh1,ESSFwh1/101,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/102,Bl,3,Bl,2,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwh1,ESSFwh1/103,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/104,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/110,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/101,Cw,2,Cw,2,cd,FALSE,ESSF,NA,limited to lower elevations of this BGC unit
+ESSFwh1,ESSFwh1/103,Cw,3,Cw,3,cd,FALSE,ESSF,NA,limited to lower elevations of this BGC unit
+ESSFwh1,ESSFwh1/104,Cw,3,Cw,3,cd,FALSE,ESSF,NA,limited to lower elevations of this BGC unit
+ESSFwh1,ESSFwh1/110,Cw,2,Cw,2,cd,FALSE,ESSF,NA,limited to lower elevations of this BGC unit
+ESSFwh1,ESSFwh1/101,Fdi,3,Fd,3,cd,FALSE,ESSF,NA,limited to warm aspects on coarse soils in this site series
+ESSFwh1,ESSFwh1/102,Fdi,2,Fd,5,cd,FALSE,ESSF,NA,absent from this site series
+ESSFwh1,ESSFwh1/103,Fdi,1,Fd,2,cd,FALSE,ESSF,NA,may have an upper elevation limit in this site series
+ESSFwh1,ESSFwh1/104,Fdi,2,Fd,2,cd,FALSE,ESSF,NA,limited to warm aspects on coarse soils in this site series
+ESSFwh1,ESSFwh1/101,Hw,1,Hw,2,cd,FALSE,ESSF,NA,may have an upper elevation limit in this site series
+ESSFwh1,ESSFwh1/104,Hw,1,Hw,2,cd,FALSE,ESSF,NA,may have an upper elevation limit in this site series
+ESSFwh1,ESSFwh1/110,Hw,3,Hw,3,cd,FALSE,ESSF,NA,cold soils may limit establishment
+ESSFwh1,ESSFwh1/101,Lw,3,Lw,3,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/103,Lw,2,Lw,2,cd,FALSE,ESSF,NA,limited to lower elevations of this BGC unit
+ESSFwh1,ESSFwh1/104,Lw,2,Lw,2,cd,FALSE,ESSF,NA,limited to lower elevations of this BGC unit
+ESSFwh1,ESSFwh1/102,Pa,3,Pa,2,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/103,Pa,3,Pa,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwh1,ESSFwh1/104,Pa,3,Pa,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwh1,ESSFwh1/101,Pli,3,Pl,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwh1,ESSFwh1/102,Pli,3,Pl,2,cd,FALSE,ESSF,NA,limited to lower elevations on this BGC unit; snow press will limit productivity on steep slopes
+ESSFwh1,ESSFwh1/103,Pli,2,Pl,2,cd,FALSE,ESSF,NA,limited to lower elevations on this BGC unit; snow press will limit productivity on steep slopes
+ESSFwh1,ESSFwh1/104,Pli,3,Pl,2,cd,FALSE,ESSF,NA,blister rust will limit establishment
+ESSFwh1,ESSFwh1/101,Pw,4,Pw,4,cd,FALSE,ESSF,NA,at edge of suitability; may be suitable at lower elevations
+ESSFwh1,ESSFwh1/103,Pw,3,Pw,3,cd,FALSE,ESSF,NA,at edge of suitability; may be suitable at lower elevations
+ESSFwh1,ESSFwh1/104,Pw,3,Pw,3,cd,FALSE,ESSF,NA,at edge of suitability; may be suitable at lower elevations
+ESSFwh1,ESSFwh1/101,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/102,Se,2,Sx,2,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwh1,ESSFwh1/103,Se,2,Sx,2,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwh1,ESSFwh1/104,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh1,ESSFwh1/110,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/101,Act,3,Ac,3,cd,FALSE,ESSF,NA,may occur at lower edge of this BGC unit on warm aspects
+ESSFwh2,ESSFwh2/110,Act,2,Ac,3,cd,FALSE,ESSF,NA,may occur at lower edge of this BGC unit on warm aspects
+ESSFwh2,ESSFwh2/111,Act,2,Ac,3,cd,FALSE,ESSF,NA,may occur at lower edge of this BGC unit on warm aspects
+ESSFwh2,ESSFwh2/101,At,3,At,3,cd,FALSE,ESSF,NA,may occur at lower edge of this BGC unit on warm aspects
+ESSFwh2,ESSFwh2/101,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/102,Bl,2,Bl,2,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwh2,ESSFwh2/103,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/104,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/110,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/111,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/101,Cw,3,Cw,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwh2,ESSFwh2/104,Cw,3,Cw,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/110,Cw,3,Cw,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwh2,ESSFwh2/111,Cw,3,Cw,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/101,Fdi,3,Fd,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/102,Fdi,3,Fd,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/103,Fdi,2,Fd,2,cd,FALSE,ESSF,NA,may be limited to lower elevations of this unit
+ESSFwh2,ESSFwh2/104,Fdi,3,Fd,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/101,Hw,2,Hw,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwh2,ESSFwh2/102,Hw,3,Hw,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/103,Hw,3,Hw,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/104,Hw,3,Hw,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwh2,ESSFwh2/110,Hw,3,Hw,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/111,Hw,3,Hw,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/101,Lw,3,Lw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwh2,ESSFwh2/103,Lw,3,Lw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwh2,ESSFwh2/104,Lw,3,Lw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwh2,ESSFwh2/102,Pa,3,Pa,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwh2,ESSFwh2/103,Pa,3,Pa,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwh2,ESSFwh2/101,Pli,3,Pl,4,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/102,Pli,2,Pl,2,cd,FALSE,ESSF,NA,snow press will impact establishment and growth
+ESSFwh2,ESSFwh2/103,Pli,2,Pl,2,cd,FALSE,ESSF,NA,snow press will impact establishment and growth
+ESSFwh2,ESSFwh2/104,Pli,3,Pl,4,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh2,ESSFwh2/101,Pw,3,Pw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwh2,ESSFwh2/102,Pw,5,Pw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwh2,ESSFwh2/103,Pw,3,Pw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwh2,ESSFwh2/104,Pw,3,Pw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwh2,ESSFwh2/101,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/102,Se,3,Sx,2,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwh2,ESSFwh2/103,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/104,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/110,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh2,ESSFwh2/111,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/101,Act,3,Ac,3,cd,FALSE,ESSF,NA,soil moisture availability will limit establishment; only at lower elevations of this unit
+ESSFwh3,ESSFwh3/110,Act,2,Ac,2,cd,FALSE,ESSF,NA,only suitable at lower elevations
+ESSFwh3,ESSFwh3/111,Act,2,Ac,2,cd,FALSE,ESSF,NA,only suitable at lower elevations
+ESSFwh3,ESSFwh3/101,At,3,At,3,cd,FALSE,ESSF,NA,only suitable at lower elevations on warm aspects
+ESSFwh3,ESSFwh3/101,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/102,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/103,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/104,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/110,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/111,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/101,Cw,3,Cw,2,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations
+ESSFwh3,ESSFwh3/104,Cw,3,Cw,3,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh3,ESSFwh3/110,Cw,3,Cw,2,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations
+ESSFwh3,ESSFwh3/111,Cw,3,Cw,3,cd,FALSE,ESSF,NA,generally not found in this site series; cold air will limit establishment
+ESSFwh3,ESSFwh3/101,Fdi,3,Fd,3,cd,FALSE,ESSF,NA,may be suitable on warm aspects on coarse soils
+ESSFwh3,ESSFwh3/102,Fdi,3,Fd,3,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/103,Fdi,2,Fd,2,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations
+ESSFwh3,ESSFwh3/104,Fdi,3,Fd,3,cd,FALSE,ESSF,NA,may be suitable on warm aspects on coarse soils
+ESSFwh3,ESSFwh3/101,Hw,2,Hw,2,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations
+ESSFwh3,ESSFwh3/103,Hw,3,Hw,3,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh3,ESSFwh3/104,Hw,3,Hw,2,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations
+ESSFwh3,ESSFwh3/110,Hw,2,Hw,3,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations; cold air may limit establishment
+ESSFwh3,ESSFwh3/111,Hw,1,Hw,3,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh3,ESSFwh3/101,Lw,3,Lw,3,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh3,ESSFwh3/102,Lw,3,Lw,3,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh3,ESSFwh3/103,Lw,2,Lw,2,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations
+ESSFwh3,ESSFwh3/104,Lw,3,Lw,3,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/102,Pa,3,Pa,3,cd,FALSE,ESSF,NA,may occur at upper edge of this BGC unit
+ESSFwh3,ESSFwh3/103,Pa,3,Pa,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwh3,ESSFwh3/101,Pli,3,Pl,3,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations; outcompeted on these sites
+ESSFwh3,ESSFwh3/102,Pli,2,Pl,2,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations; snow press may reduce growth on steep slopes
+ESSFwh3,ESSFwh3/103,Pli,1,Pl,2,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations
+ESSFwh3,ESSFwh3/104,Pli,3,Pl,3,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations; snow press may reduce growth on steep slopes
+ESSFwh3,ESSFwh3/110,Pli,5,Pl,5,cd,FALSE,ESSF,NA,generally not found in this site series
+ESSFwh3,ESSFwh3/101,Pw,3,Pw,3,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations; outcompeted on these sites
+ESSFwh3,ESSFwh3/103,Pw,3,Pw,3,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations; outcompeted on these sites
+ESSFwh3,ESSFwh3/104,Pw,3,Pw,3,cd,FALSE,ESSF,NA,environmental suitablility reduced at upper elevations; outcompeted on these sites
+ESSFwh3,ESSFwh3/101,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/102,Se,3,Sx,3,cd,FALSE,ESSF,NA,drought limits establishment
+ESSFwh3,ESSFwh3/103,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/104,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/110,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwh3,ESSFwh3/111,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/101,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/102,Bl,2,Bl,2,cd,FALSE,ESSF,NA,drought limits productivity
+ESSFwm1,ESSFwm1/103,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/104,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/111,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/112,Bl,2,Bl,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFwm1,ESSFwm1/102,Fdi,3,Fd,2,cd,FALSE,ESSF,NA,limited to lower elevations
+ESSFwm1,ESSFwm1/103,Fdi,3,Fd,3,cd,FALSE,ESSF,NA,limited to lower elevations; generally limited due to lack of fire
+ESSFwm1,ESSFwm1/103,Lw,5,Lw,5,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/102,Pa,3,Pa,2,cd,FALSE,ESSF,NA,blister rust will limit establishment
+ESSFwm1,ESSFwm1/103,Pa,3,Pa,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwm1,ESSFwm1/101,Pli,3,Pl,4,cd,FALSE,ESSF,NA,generally not found on these sites
+ESSFwm1,ESSFwm1/102,Pli,3,Pl,3,cd,FALSE,ESSF,NA,generally not found on these sites
+ESSFwm1,ESSFwm1/103,Pli,2,Pl,2,cd,FALSE,ESSF,NA,restricted to lower elevations; snow press will limit productivity
+ESSFwm1,ESSFwm1/104,Pli,3,Pl,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwm1,ESSFwm1/101,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/102,Se,2,Sx,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm1,ESSFwm1/103,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/104,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/111,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm1,ESSFwm1/112,Se,2,Sx,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFwm2,ESSFwm2/101,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm2,ESSFwm2/102,Bl,2,Bl,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm2,ESSFwm2/103,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm2,ESSFwm2/104,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm2,ESSFwm2/110,Bl,2,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm2,ESSFwm2/111,Bl,2,Bl,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFwm2,ESSFwm2/102,Fdi,5,Fd,4,cd,FALSE,ESSF,NA,restricted to lower elevations; only on warm aspects
+ESSFwm2,ESSFwm2/104,Hw,3,Hw,3,cd,FALSE,ESSF,imputed,uncommon; limited to lower elevations
+ESSFwm2,ESSFwm2/101,Hw,4,Hw,3,cd,FALSE,ESSF,imputed,uncommon; limited to lower elevations
+ESSFwm2,ESSFwm2/102,La,3,La,3,cd,FALSE,ESSF,NA,limited to rocky soils on cool aspects
+ESSFwm2,ESSFwm2/102,Pa,3,Pa,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm2,ESSFwm2/103,Pa,3,Pa,3,cd,FALSE,ESSF,NA,outcompeted on these site
+ESSFwm2,ESSFwm2/104,Pa,3,Pa,3,cd,FALSE,ESSF,NA,outcompeted on these site
+ESSFwm2,ESSFwm2/101,Pli,3,Pl,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwm2,ESSFwm2/102,Pli,3,Pl,2,cd,FALSE,ESSF,NA,restricted to lower elevations on warm slope
+ESSFwm2,ESSFwm2/103,Pli,2,Pl,2,cd,FALSE,ESSF,NA,snowpress will limit productivity on steep slopes; restricted to lower elevations on warem aspects
+ESSFwm2,ESSFwm2/104,Pli,3,Pl,2,cd,FALSE,ESSF,NA,snowpress will limit productivity on steep slopes; restricted to lower elevations on warem aspects
+ESSFwm2,ESSFwm2/101,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm2,ESSFwm2/102,Se,2,Sx,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm2,ESSFwm2/103,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm2,ESSFwm2/104,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm2,ESSFwm2/110,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm2,ESSFwm2/111,Se,1,Sx,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFwm3,ESSFwm3/101,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/102,Bl,2,Bl,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm3,ESSFwm3/103,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/104,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/105,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/110,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/111,Bl,1,Bl,2,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/112,Bl,2,Bl,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFwm3,ESSFwm3/112a,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/112b,Bl,3,Bl,3,cd,FALSE,ESSF,NA,saturated soils wiil limit productivity
+ESSFwm3,ESSFwm3/101,Hw,4,Hw,4,cd,FALSE,ESSF,imputed,at edge of range; restricted to lower elevations
+ESSFwm3,ESSFwm3/104,Hw,3,Hw,4,cd,FALSE,ESSF,imputed,at edge of range; restricted to lower elevations
+ESSFwm3,ESSFwm3/102,La,3,La,2,cd,FALSE,ESSF,NA,limited to rocky soils on cool aspects
+ESSFwm3,ESSFwm3/104,Pa,3,Pa,4,cd,FALSE,ESSF,imputed,generally outcompeted on these sites
+ESSFwm3,ESSFwm3/102,Pa,2,Pa,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm3,ESSFwm3/103,Pa,2,Pa,2,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/101,Pli,3,Pl,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwm3,ESSFwm3/102,Pli,2,Pl,2,cd,FALSE,ESSF,NA,restricted to lower elevations on warm slope
+ESSFwm3,ESSFwm3/103,Pli,2,Pl,2,cd,FALSE,ESSF,NA,restricted to lower elevations on warm slope
+ESSFwm3,ESSFwm3/104,Pli,3,Pl,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwm3,ESSFwm3/105,Pli,2,Pl,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwm3,ESSFwm3/101,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/102,Se,3,Sx,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm3,ESSFwm3/103,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/104,Se,2,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/105,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/110,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/111,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm3,ESSFwm3/112,Se,2,Sx,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFwm3,ESSFwm3/112a,Se,2,Sx,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFwm3,ESSFwm3/112b,Se,3,Sx,3,cd,FALSE,ESSF,NA,saturated soils wiil limit productivity
+ESSFwm4,ESSFwm4/110,At,3,At,3,cd,FALSE,ESSF,imputed,restricted to lower elevations
+ESSFwm4,ESSFwm4/101,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm4,ESSFwm4/102,Bl,2,Bl,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm4,ESSFwm4/102a,Bl,3,Bl,4,cd,FALSE,ESSF,NA,drought will limit establishment
+ESSFwm4,ESSFwm4/102b,Bl,2,Bl,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm4,ESSFwm4/103,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm4,ESSFwm4/110,Bl,1,Bl,1,cd,FALSE,ESSF,NA,
+ESSFwm4,ESSFwm4/111,Bl,2,Bl,2,cd,FALSE,ESSF,NA,saturated soils may limit productivity
+ESSFwm4,ESSFwm4/101,Cw,3,Cw,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/110,Cw,3,Cw,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/101,Fdi,3,Fd,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/102,Fdi,3,Fd,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/102a,Fdi,3,Fd,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/102b,Fdi,3,Fd,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/103,Fdi,3,Fd,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/101,Hw,3,Hw,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/103,Hw,3,Hw,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/110,Hw,3,Hw,2,cd,FALSE,ESSF,NA,establishment and growth restricted at higher elevations
+ESSFwm4,ESSFwm4/102,La,3,La,2,cd,FALSE,ESSF,NA,restricted to colder sites
+ESSFwm4,ESSFwm4/102a,La,3,La,2,cd,FALSE,ESSF,NA,restricted to colder sites
+ESSFwm4,ESSFwm4/102b,La,3,La,2,cd,FALSE,ESSF,NA,restricted to colder sites
+ESSFwm4,ESSFwm4/101,Lw,3,Lw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwm4,ESSFwm4/102,Lw,3,Lw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwm4,ESSFwm4/102a,Lw,3,Lw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwm4,ESSFwm4/102b,Lw,3,Lw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwm4,ESSFwm4/103,Lw,3,Lw,5,cd,FALSE,ESSF,NA,not known to occur; environmental limitations unknown
+ESSFwm4,ESSFwm4/102,Pa,3,Pa,2,cd,FALSE,ESSF,NA,drought may limit establishment
+ESSFwm4,ESSFwm4/102a,Pa,2,Pa,2,cd,FALSE,ESSF,NA,
+ESSFwm4,ESSFwm4/102b,Pa,3,Pa,2,cd,FALSE,ESSF,NA,
+ESSFwm4,ESSFwm4/101,Pli,2,Pl,4,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwm4,ESSFwm4/102,Pli,2,Pl,2,cd,FALSE,ESSF,NA,snow press will limit productivity on steep slopes
+ESSFwm4,ESSFwm4/102a,Pli,3,Pl,2,cd,FALSE,ESSF,NA,snow press will limit productivity on steep slopes
+ESSFwm4,ESSFwm4/102b,Pli,2,Pl,2,cd,FALSE,ESSF,NA,snow press will limit productivity on steep slopes
+ESSFwm4,ESSFwm4/103,Pli,2,Pl,2,cd,FALSE,ESSF,NA,snow press will limit productivity on steep slopes
+ESSFwm4,ESSFwm4/101,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm4,ESSFwm4/102,Se,3,Sx,2,cd,FALSE,ESSF,NA,drought will limit establishment
+ESSFwm4,ESSFwm4/102a,Se,3,Sx,2,cd,FALSE,ESSF,NA,drought will limit establishment
+ESSFwm4,ESSFwm4/102b,Se,3,Sx,2,cd,FALSE,ESSF,NA,drought will limit establishment
+ESSFwm4,ESSFwm4/103,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm4,ESSFwm4/110,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwm4,ESSFwm4/111,Se,1,Sx,1,cd,FALSE,ESSF,NA,
+ESSFwmp,ESSFwmp/00,Bl,3,Bl,3,cd,FALSE,ESSF,NA,limited establishment and productivity in this BGC unit
+ESSFwmw,ESSFwmw/101,Bl,1,Bl,2,cd,FALSE,ESSF,NA,short growing season limits establishment and productivity 
+ESSFwmw,ESSFwmw/102,Bl,3,Bl,3,cd,FALSE,ESSF,NA,drought will limit establishment and growth
+ESSFwmw,ESSFwmw/103,Bl,1,Bl,2,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/110,Bl,2,Bl,2,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/101,La,3,La,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwmw,ESSFwmw/102,La,2,La,2,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/103,La,2,La,2,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/102,Pa,2,Pa,2,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/103,Pa,3,Pa,3,cd,FALSE,ESSF,NA,generally outcompeted on these sites
+ESSFwmw,ESSFwmw/102,Pli,5,Pl,5,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/103,Pli,5,Pl,5,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/101,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/102,Se,2,Sx,3,cd,FALSE,ESSF,NA,drought will limit establishment
+ESSFwmw,ESSFwmw/103,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ESSFwmw,ESSFwmw/110,Se,2,Sx,2,cd,FALSE,ESSF,NA,
+ICHdm,ICHdm/111,Fdi,4,Fd,3,cd,FALSE,ICH,imputed,generally outcompeted on these sites; only found on the margins of this site series
+ICHdm,ICHdm/111,Pli,3,Pl,3,cd,FALSE,ICH,imputed,generally outcompeted on these sites; only found on the margins of this site series
+ICHdm,ICHdm/110,Tw,3,Tw,3,cd,FALSE,ICH,imputed,wet soils would limit establishment in this unit; at edge of suitability
+ICHdw1,ICHdw1/103,Bg,3,Bg,3,cd,FALSE,ICH,imputed,drought will limit establishment; would require shade to establish
+ICHdw1,ICHdw1/102,Cw,5,Cw,5,cd,FALSE,ICH,NA,not known to occur in this site series
+ICHdw1,ICHdw1/111,Tw,3,Tw,3,cd,FALSE,ICH,imputed,wet soils would limit establishment in this unit; at edge of suitability
+ICHdw1,ICHdw1/104,Tw,3,Tw,2,cd,FALSE,ICH,imputed,drought wil limit establishment
+ICHdw4,ICHdw4/110,Fdi,2,Fd,3,cd,TRUE,ICH,NA,wet soils would limit establishment in this unit; at edge of suitability
+ICHdw4,ICHdw4/102,Lw,3,Lw,2,cd,TRUE,ICH,NA,drought will limit establishment
+ICHdw4,ICHdw4/104,Tw,3,Tw,3,cd,FALSE,ICH,imputed,generally outcompeted
+ICHmk1,ICHmk1/101,Act,3,Ac,3,cd,FALSE,ICH,NA,"would only establish where roots can reach abundant water (e.g., adjacent to streams)"
+ICHmk1,ICHmk1/110,Act,2,Ac,1,cd,FALSE,ICH,NA,no known limitations
+ICHmk1,ICHmk1/111,Act,2,Ac,1,cd,FALSE,ICH,NA,no known limitations
+ICHmk1,ICHmk1/112,Act,2,Ac,1,cd,FALSE,ICH,NA,no known limitations
+ICHmk1,ICHmk1/101,At,2,At,1,cd,FALSE,ICH,NA,no known limitations
+ICHmk1,ICHmk1/103,At,3,At,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHmk1,ICHmk1/104,At,2,At,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/105,At,2,At,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/110,At,2,At,2,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmk1,ICHmk1/111,At,2,At,2,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmk1,ICHmk1/112,At,3,At,3,cd,FALSE,ICH,NA,outcompeted on these site
+ICHmk1,ICHmk1/101,Bl,2,Bl,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/102,Bl,3,Bl,3,cd,FALSE,ICH,NA,drought will limit establishmet
+ICHmk1,ICHmk1/103,Bl,3,Bl,3,cd,FALSE,ICH,NA,drought will limit establishmet
+ICHmk1,ICHmk1/104,Bl,2,Bl,2,cd,FALSE,ICH,NA,productivity limited at drier end of this unit
+ICHmk1,ICHmk1/105,Bl,3,Bl,2,cd,FALSE,ICH,NA,productivity limited at drier end of this unit
+ICHmk1,ICHmk1/110,Bl,2,Bl,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/111,Bl,2,Bl,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/112,Bl,2,Bl,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/101,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/103,Cw,3,Cw,3,cd,FALSE,ICH,NA,drought wil limit establishment
+ICHmk1,ICHmk1/104,Cw,3,Cw,3,cd,FALSE,ICH,NA,drought wil limit establishment
+ICHmk1,ICHmk1/105,Cw,2,Cw,3,cd,FALSE,ICH,NA,drought wil limit establishment
+ICHmk1,ICHmk1/110,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/111,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/112,Cw,2,Cw,2,cd,FALSE,ICH,NA,generally outcompeted on these sites
+ICHmk1,ICHmk1/101,Ep,2,Ep,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/103,Ep,3,Ep,3,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmk1,ICHmk1/104,Ep,2,Ep,2,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/105,Ep,2,Ep,2,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/110,Ep,3,Ep,3,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmk1,ICHmk1/111,Ep,2,Ep,3,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmk1,ICHmk1/112,Ep,3,Ep,3,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmk1,ICHmk1/101,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/102,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/103,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/104,Fdi,2,Fd,2,cd,FALSE,ICH,NA,frost may limit establishment
+ICHmk1,ICHmk1/105,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/110,Fdi,1,Fd,2,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmk1,ICHmk1/111,Fdi,2,Fd,2,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmk1,ICHmk1/112,Fdi,5,Fd,5,cd,FALSE,ICH,NA,not found in this unit
+ICHmk1,ICHmk1/101,Lw,1,Lw,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/103,Lw,2,Lw,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHmk1,ICHmk1/104,Lw,2,Lw,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/105,Lw,1,Lw,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/110,Lw,2,Lw,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/111,Lw,2,Lw,2,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmk1,ICHmk1/112,Lw,5,Lw,5,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/101,Pli,2,Pl,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/102,Pli,2,Pl,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHmk1,ICHmk1/103,Pli,2,Pl,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/104,Pli,1,Pl,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/105,Pli,1,Pl,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/110,Pli,2,Pl,2,cd,FALSE,ICH,NA,generally outcompeted in this unit
+ICHmk1,ICHmk1/111,Pli,2,Pl,2,cd,FALSE,ICH,NA,generally outcompeted in this unit
+ICHmk1,ICHmk1/112,Pli,3,Pl,5,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/101,Pyi,4,Py,4,cd,FALSE,ICH,NA,generally outcompeted on this site unit
+ICHmk1,ICHmk1/102,Pyi,3,Py,2,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/103,Pyi,4,Py,2,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/104,Pyi,4,Py,4,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/101,Sxw,1,Sx,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/102,Sxw,3,Sx,3,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmk1,ICHmk1/103,Sxw,3,Sx,3,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmk1,ICHmk1/104,Sxw,2,Sx,2,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/105,Sxw,2,Sx,2,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/110,Sxw,1,Sx,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/111,Sxw,1,Sx,1,cd,FALSE,ICH,NA,
+ICHmk1,ICHmk1/112,Sxw,1,Sx,2,cd,FALSE,ICH,NA,frost may limit establishment
+ICHmk1,ICHmk1/112,Tw,3,Tw,3,cd,FALSE,ICH,imputed,
+ICHmw1,ICHmw1/05,Act,2,Ac,2,cd,FALSE,ICH,NA,most suitable to wetter end of this unit
+ICHmw1,ICHmw1/06,Act,2,Ac,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/07,Act,2,Ac,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/01,At,2,At,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,At,3,At,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHmw1,ICHmw1/03,At,3,At,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHmw1,ICHmw1/04,At,3,At,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/05,At,3,At,2,cd,FALSE,ICH,NA,most suitable to drier end of this unit
+ICHmw1,ICHmw1/06,At,3,At,3,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/07,At,3,At,3,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/01,Bl,3,Bl,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,Bl,3,Bl,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmw1,ICHmw1/03,Bl,2,Bl,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmw1,ICHmw1/04,Bl,3,Bl,2,cd,FALSE,ICH,NA,drought may limit establishment; only suitable for wetter end of this unit
+ICHmw1,ICHmw1/05,Bl,2,Bl,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/06,Bl,1,Bl,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/07,Bl,2,Bl,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/01,Cw,2,Cw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,Cw,3,Cw,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmw1,ICHmw1/03,Cw,3,Cw,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmw1,ICHmw1/04,Cw,3,Cw,2,cd,FALSE,ICH,NA,drought may limit establishment; only suitable for wetter end of this unit
+ICHmw1,ICHmw1/05,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/06,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/07,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/01,Ep,2,Ep,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,Ep,3,Ep,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmw1,ICHmw1/03,Ep,3,Ep,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmw1,ICHmw1/04,Ep,2,Ep,2,cd,FALSE,ICH,NA,drought may limit establishment; only suitable for wetter end of this unit
+ICHmw1,ICHmw1/05,Ep,2,Ep,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/06,Ep,2,Ep,2,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmw1,ICHmw1/07,Ep,2,Ep,3,cd,FALSE,ICH,NA,saturated soils wiil limit establishment; outcompeted on these sites
+ICHmw1,ICHmw1/01,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/03,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/04,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/05,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/06,Fdi,2,Fd,2,cd,FALSE,ICH,NA,saturated soils wiil limit establishment
+ICHmw1,ICHmw1/07,Fdi,2,Fd,3,cd,FALSE,ICH,NA,saturated soils wiil limit establishment; outcompeted on these sites
+ICHmw1,ICHmw1/01,Hw,3,Hw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,Hw,3,Hw,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHmw1,ICHmw1/03,Hw,3,Hw,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHmw1,ICHmw1/04,Hw,3,Hw,2,cd,FALSE,ICH,NA,drought may limit establishment; only suitable for wetter end of this unit
+ICHmw1,ICHmw1/05,Hw,1,Hw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/06,Hw,1,Hw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/07,Hw,1,Hw,3,cd,FALSE,ICH,NA,establishment limited on saturated soils; out competed on these sites
+ICHmw1,ICHmw1/01,Lw,3,Lw,5,cd,TRUE,ICH,NA,not known to occur in this site series; unkown limitations
+ICHmw1,ICHmw1/02,Lw,3,Lw,5,cd,TRUE,ICH,NA,not known to occur in this site series; unkown limitations
+ICHmw1,ICHmw1/03,Lw,3,Lw,5,cd,TRUE,ICH,NA,not known to occur in this site series; unkown limitations
+ICHmw1,ICHmw1/04,Lw,3,Lw,5,cd,TRUE,ICH,NA,not known to occur in this site series; unkown limitations
+ICHmw1,ICHmw1/06,Lw,3,Lw,5,cd,TRUE,ICH,NA,not known to occur in this site series; unkown limitations
+ICHmw1,ICHmw1/04,Pa,3,Pa,3,cd,FALSE,ICH,NA,generally outcompeted in this unit; restricted to higher elevations
+ICHmw1,ICHmw1/01,Pli,1,Pl,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,Pli,2,Pl,2,cd,FALSE,ICH,NA,drought may limit growth
+ICHmw1,ICHmw1/03,Pli,1,Pl,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/04,Pli,1,Pl,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/05,Pli,2,Pl,2,cd,FALSE,ICH,NA,generally outcompeted in this unit
+ICHmw1,ICHmw1/06,Pli,2,Pl,3,cd,FALSE,ICH,NA,outcompeted on these site
+ICHmw1,ICHmw1/07,Pli,2,Pl,3,cd,FALSE,ICH,NA,outcompeted on these site
+ICHmw1,ICHmw1/01,Pw,2,Pw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,Pw,2,Pw,3,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmw1,ICHmw1/03,Pw,2,Pw,3,cd,FALSE,ICH,NA,drought will limit establishment
+ICHmw1,ICHmw1/04,Pw,2,Pw,2,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/05,Pw,2,Pw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/06,Pw,2,Pw,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/01,Sxw,2,Sx,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/02,Sxw,3,Sx,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHmw1,ICHmw1/03,Sxw,2,Sx,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/04,Sxw,3,Sx,2,cd,FALSE,ICH,NA,drought may limit establishment; only suitable for wetter end of this unit
+ICHmw1,ICHmw1/05,Sxw,1,Sx,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/06,Sxw,1,Sx,1,cd,FALSE,ICH,NA,
+ICHmw1,ICHmw1/07,Sxw,1,Sx,1,cd,FALSE,ICH,NA,
+ICHmw2,ICHmw2/101,Act,3,Ac,3,cd,FALSE,ICH,NA,limited to areas close to creek drainages in this unit
+ICHmw2,ICHmw2/111,Fdi,5,Fd,5,cd,FALSE,ICH,NA,
+ICHmw2,ICHmw2/111,Lw,5,Lw,5,cd,FALSE,ICH,NA,
+ICHmw2,ICHmw2/101,Pli,3,Pl,2,cd,FALSE,ICH,imputed,Limited to warmer slopes
+ICHmw2,ICHmw2/111,Pw,5,Pw,4,cd,FALSE,ICH,NA,saturated soils will limit establishment
+ICHmw2,ICHmw2/103,Sx,4,Sx,3,cd,FALSE,ICH,imputed,drought will limit establishment
+ICHmw2,ICHmw2/110,Tw,3,Tw,3,cd,FALSE,ICH,imputed,
+ICHmw2,ICHmw2/101,Tw,3,Tw,3,cd,FALSE,ICH,imputed,
+ICHmw3,ICHmw3/01,Ac,3,Ac,3,cd,FALSE,ICH,imputed,limited to areas close to creek drainages in this unit
+ICHmw3,ICHmw3/09,Pli,4,Pl,3,cd,FALSE,ICH,NA,saturated soils and poor aeration limits establishment growth; suitable only on raised microsties
+ICHmw3,ICHmw3/03,Pw,3,Pw,2,cd,FALSE,ICH,NA,
+ICHmw4,ICHmw4/103,Bg,3,Bg,3,cd,FALSE,ICH,imputed,drought limits establishment
+ICHmw4,ICHmw4/102,Cw,3,Cw,2,cd,FALSE,ICH,imputed,drought limits establishment
+ICHmw4,ICHmw4/112,Pw,5,Pw,5,cd,FALSE,ICH,NA,
+ICHmw4,ICHmw4/103,Sx,3,Sx,3,cd,FALSE,ICH,imputed,drought limits establishment
+ICHmw5,ICHmw5/101,Pa,3,Pa,4,cd,FALSE,ICH,imputed,generally outcompeted on these sites; only found at higher elevations in this bgc unit
+ICHmw5,ICHmw5/103,Tw,4,Tw,3,cd,FALSE,ICH,imputed,
+ICHxw,ICHxw/101,Tw,3,Tw,3,cd,FALSE,ICH,imputed,
+ICHxwa,ICHxwa/110,Act,3,Ac,2,cd,FALSE,ICH,NA,suitable for the wetter end of this unit
+ICHxwa,ICHxwa/111,Act,2,Ac,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/112,Act,2,Ac,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/113,Act,2,Ac,4,cd,FALSE,ICH,NA,saturated soils limits establishment 
+ICHxwa,ICHxwa/101,At,2,At,2,cd,FALSE,ICH,NA,best suited to warmer slopes
+ICHxwa,ICHxwa/102,At,3,At,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHxwa,ICHxwa/103,At,3,At,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHxwa,ICHxwa/104,At,3,At,2,cd,FALSE,ICH,NA,drought will limit establishment
+ICHxwa,ICHxwa/110,At,2,At,2,cd,FALSE,ICH,NA,best suited to warmer slopes
+ICHxwa,ICHxwa/111,At,3,At,3,cd,FALSE,ICH,NA,saturated soils will limit establishment
+ICHxwa,ICHxwa/112,At,3,At,4,cd,FALSE,ICH,NA,saturated soils will limit establishment
+ICHxwa,ICHxwa/113,At,3,At,5,cd,FALSE,ICH,NA,not suitable
+ICHxwa,ICHxwa/101,Bg,2,Bg,2,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/104,Bg,3,Bg,2,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/110,Bg,2,Bg,2,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/111,Bg,2,Bg,3,cd,FALSE,ICH,NA,saturated soils will limit establishment
+ICHxwa,ICHxwa/101,Cw,2,Cw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/104,Cw,3,Cw,2,cd,FALSE,ICH,NA,drought limits establishment
+ICHxwa,ICHxwa/110,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/111,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/112,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/113,Cw,1,Cw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/101,Ep,2,Ep,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/102,Ep,3,Ep,3,cd,FALSE,ICH,NA,drought limits establishment
+ICHxwa,ICHxwa/103,Ep,3,Ep,3,cd,FALSE,ICH,NA,drought limits establishment
+ICHxwa,ICHxwa/104,Ep,3,Ep,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHxwa,ICHxwa/110,Ep,2,Ep,2,cd,FALSE,ICH,NA,saturated soils may limit productivity
+ICHxwa,ICHxwa/111,Ep,2,Ep,3,cd,FALSE,ICH,NA,saturated soils may limit establishment
+ICHxwa,ICHxwa/113,Ep,3,Ep,5,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/101,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/102,Fdi,3,Fd,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/103,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/104,Fdi,1,Fd,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/110,Fdi,1,Fd,2,cd,FALSE,ICH,NA,generally outcompeted on these sites
+ICHxwa,ICHxwa/111,Fdi,1,Fd,2,cd,FALSE,ICH,NA,generally outcompeted on these sites
+ICHxwa,ICHxwa/101,Hw,3,Hw,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHxwa,ICHxwa/110,Hw,2,Hw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/111,Hw,2,Hw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/112,Hw,1,Hw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/113,Hw,1,Hw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/101,Lw,2,Lw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/103,Lw,3,Lw,3,cd,FALSE,ICH,NA,drought limits establishment
+ICHxwa,ICHxwa/104,Lw,2,Lw,3,cd,FALSE,ICH,NA,drought limits establishment
+ICHxwa,ICHxwa/110,Lw,1,Lw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/111,Lw,1,Lw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/101,Pli,3,Pl,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHxwa,ICHxwa/104,Pli,3,Pl,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHxwa,ICHxwa/101,Pw,2,Pw,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHxwa,ICHxwa/104,Pw,3,Pw,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHxwa,ICHxwa/110,Pw,2,Pw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/111,Pw,2,Pw,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/112,Pw,2,Pw,3,cd,FALSE,ICH,NA,saturated soils will limit establishment
+ICHxwa,ICHxwa/113,Pw,2,Pw,3,cd,FALSE,ICH,NA,saturated soils will limit establishment
+ICHxwa,ICHxwa/101,Pyi,3,Py,2,cd,FALSE,ICH,NA,generally outcompeted on these sites
+ICHxwa,ICHxwa/102,Pyi,2,Py,2,cd,FALSE,ICH,NA,drought may limit establishment
+ICHxwa,ICHxwa/103,Pyi,1,Py,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/104,Pyi,2,Py,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/110,Sxw,3,Sx,2,cd,FALSE,ICH,NA,drought may limit establishement at drier end of this unit
+ICHxwa,ICHxwa/111,Sxw,3,Sx,2,cd,FALSE,ICH,NA,drought may limit establishement at drier end of this unit
+ICHxwa,ICHxwa/112,Sxw,1,Sx,1,cd,FALSE,ICH,NA,
+ICHxwa,ICHxwa/113,Sxw,1,Sx,1,cd,FALSE,ICH,NA,
+IDFdh,IDFdh/110,At,2,At,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdh,IDFdh/110,Cw,2,Cw,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/111,Cw,2,Cw,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/101,Ep,3,Ep,3,cd,FALSE,IDF,NA,drought generally limits establishment
+IDFdh,IDFdh/110,Ep,2,Ep,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/111,Ep,2,Ep,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdh,IDFdh/101,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/102,Fdi,2,Fd,2,cd,FALSE,IDF,NA,drought may limit establishment
+IDFdh,IDFdh/103,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/104,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/110,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/111,Fdi,2,Fd,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdh,IDFdh/101,Lw,1,Lw,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/104,Lw,2,Lw,2,cd,FALSE,IDF,NA,drought may limit establishment
+IDFdh,IDFdh/110,Lw,2,Lw,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/111,Lw,2,Lw,3,cd,FALSE,IDF,NA,saturated soils will limit establishment
+IDFdh,IDFdh/110,Pli,2,Pl,2,cd,FALSE,IDF,NA,only suitable in cooler landscape positions
+IDFdh,IDFdh/101,Pyi,2,Py,2,cd,FALSE,IDF,NA,vegetation competition limits establishment
+IDFdh,IDFdh/102,Pyi,1,Py,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/103,Pyi,1,Py,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/104,Pyi,1,Py,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/110,Pyi,1,Py,2,cd,FALSE,IDF,NA,vegetation competition limits establishment
+IDFdh,IDFdh/111,Pyi,5,Py,5,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/110,Sxw,2,Sx,1,cd,FALSE,IDF,NA,
+IDFdh,IDFdh/111,Sxw,1,Sx,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/111,Act,2,Ac,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/112,Act,2,Ac,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/101,At,2,At,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/103,At,3,At,2,cd,FALSE,IDF,NA,drought may limit establishment
+IDFdm1,IDFdm1/104,At,3,At,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110,At,3,At,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.1,At,3,At,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.2,At,3,At,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/111,At,2,At,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm1,IDFdm1/112,At,2,At,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm1,IDFdm1/112,Bl,4,Bl,5,cd,FALSE,IDF,NA,not suitable
+IDFdm1,IDFdm1/110,Cw,3,Cw,2,cd,FALSE,IDF,NA,drought may limit establishment at drier end of this unit
+IDFdm1,IDFdm1/110.1,Cw,3,Cw,2,cd,FALSE,IDF,NA,drought may limit establishment at drier end of this unit
+IDFdm1,IDFdm1/110.2,Cw,3,Cw,2,cd,FALSE,IDF,NA,drought may limit establishment at drier end of this unit
+IDFdm1,IDFdm1/101,Ep,3,Ep,3,cd,FALSE,IDF,NA,drought will limit establishment
+IDFdm1,IDFdm1/110,Ep,2,Ep,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.1,Ep,2,Ep,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.2,Ep,2,Ep,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/111,Ep,2,Ep,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm1,IDFdm1/112,Ep,2,Ep,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm1,IDFdm1/101,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/102,Fdi,2,Fd,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/103,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/104,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.1,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.2,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/111,Fdi,2,Fd,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm1,IDFdm1/112,Fdi,5,Fd,5,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/101,Lw,1,Lw,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/103,Lw,3,Lw,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/104,Lw,2,Lw,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110,Lw,2,Lw,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.1,Lw,2,Lw,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.2,Lw,2,Lw,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/111,Lw,2,Lw,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm1,IDFdm1/112,Lw,5,Lw,5,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/101,Pli,2,Pl,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/102,Pli,3,Pl,2,cd,FALSE,IDF,NA,drought may limit establishment
+IDFdm1,IDFdm1/103,Pli,3,Pl,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/104,Pli,2,Pl,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110,Pli,2,Pl,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm1,IDFdm1/110.1,Pli,2,Pl,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm1,IDFdm1/110.2,Pli,2,Pl,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm1,IDFdm1/111,Pli,2,Pl,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm1,IDFdm1/112,Pli,3,Pl,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm1,IDFdm1/101,Pyi,3,Py,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm1,IDFdm1/102,Pyi,3,Py,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/103,Pyi,1,Py,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/104,Pyi,2,Py,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110,Pyi,5,Py,5,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.1,Pyi,5,Py,5,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.2,Pyi,5,Py,5,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110,Sxw,1,Sx,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.1,Sxw,1,Sx,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/110.2,Sxw,1,Sx,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/111,Sxw,1,Sx,1,cd,FALSE,IDF,NA,
+IDFdm1,IDFdm1/112,Sxw,1,Sx,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm2,IDFdm2/111,Act,3,Ac,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/112,Act,2,Ac,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/112a,Act,2,Ac,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/112b,Act,2,Ac,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/101,At,3,At,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/102,At,5,At,2,cd,FALSE,IDF,NA,drought may limit establishment
+IDFdm2,IDFdm2/103,At,5,At,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/104,At,5,At,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/110,At,2,At,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm2,IDFdm2/111,At,2,At,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm2,IDFdm2/112,At,2,At,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm2,IDFdm2/112a,At,2,At,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm2,IDFdm2/112b,At,2,At,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm2,IDFdm2/101,Ep,2,Ep,2,cd,FALSE,IDF,NA,drought may limit establishment
+IDFdm2,IDFdm2/103,Ep,5,Ep,5,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/104,Ep,5,Ep,5,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/110,Ep,3,Ep,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/111,Ep,2,Ep,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm2,IDFdm2/112,Ep,3,Ep,3,cd,FALSE,IDF,NA,saturated soils will limit establishment
+IDFdm2,IDFdm2/112a,Ep,3,Ep,3,cd,FALSE,IDF,NA,saturated soils will limit establishment
+IDFdm2,IDFdm2/112b,Ep,3,Ep,3,cd,FALSE,IDF,NA,saturated soils will limit establishment
+IDFdm2,IDFdm2/101,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/102,Fdi,2,Fd,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/103,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/104,Fdi,1,Fd,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/110,Fdi,2,Fd,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm2,IDFdm2/111,Fdi,2,Fd,3,cd,FALSE,IDF,NA,saturated soils will limit establishment
+IDFdm2,IDFdm2/101,Lw,2,Lw,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/103,Lw,3,Lw,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/104,Lw,2,Lw,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/110,Lw,2,Lw,2,cd,FALSE,IDF,NA,saturated soils may limit establishment
+IDFdm2,IDFdm2/111,Lw,2,Lw,3,cd,FALSE,IDF,NA,saturated soils will limit establishment
+IDFdm2,IDFdm2/101,Pli,2,Pl,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/104,Pli,3,Pl,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/110,Pli,3,Pl,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm2,IDFdm2/111,Pli,3,Pl,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm2,IDFdm2/101,Pyi,3,Py,2,cd,FALSE,IDF,NA,generally outcompeted on these sites
+IDFdm2,IDFdm2/102,Pyi,2,Py,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/103,Pyi,2,Py,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/104,Pyi,2,Py,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/103,Sx,2,Sx,5,cd,FALSE,IDF,imputed,
+IDFdm2,IDFdm2/110,Sxw,2,Sx,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/111,Sxw,1,Sx,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/112,Sxw,2,Sx,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/112a,Sxw,2,Sx,1,cd,FALSE,IDF,NA,
+IDFdm2,IDFdm2/112b,Sxw,2,Sx,1,cd,FALSE,IDF,NA,
+MSdk,MSdk/101,Act,3,Ac,3,cd,FALSE,MS,NA,restricted to areas adjacent to stream channells
+MSdk,MSdk/110,Act,2,Ac,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111,Act,2,Ac,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111a,Act,2,Ac,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111b,Act,3,Ac,3,cd,FALSE,MS,NA,poorly aerated soils will restrict establishment
+MSdk,MSdk/112,Act,3,Ac,2,cd,FALSE,MS,NA,
+MSdk,MSdk/112a,Act,3,Ac,1,cd,FALSE,MS,NA,
+MSdk,MSdk/112b,Act,3,Ac,3,cd,FALSE,MS,NA,poorly aerated soils will restrict establishment
+MSdk,MSdk/101,At,2,At,1,cd,FALSE,MS,NA,
+MSdk,MSdk/102,At,3,At,1,cd,FALSE,MS,NA,
+MSdk,MSdk/103,At,3,At,1,cd,FALSE,MS,NA,
+MSdk,MSdk/104,At,3,At,1,cd,FALSE,MS,NA,
+MSdk,MSdk/105,At,2,At,1,cd,FALSE,MS,NA,
+MSdk,MSdk/110,At,2,At,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdk,MSdk/111,At,3,At,3,cd,FALSE,MS,NA,saturated soils will limit establishment
+MSdk,MSdk/111a,At,3,At,3,cd,FALSE,MS,NA,saturated soils will limit establishment
+MSdk,MSdk/111b,At,3,At,5,cd,FALSE,MS,NA,saturated soils and poor aeration restrrict establishment
+MSdk,MSdk/112,At,3,At,3,cd,FALSE,MS,NA,saturated soils will limit establishment
+MSdk,MSdk/112a,At,3,At,3,cd,FALSE,MS,NA,saturated soils will limit establishment
+MSdk,MSdk/112b,At,3,At,5,cd,FALSE,MS,NA,saturated soils and poor aeration restrrict establishment
+MSdk,MSdk/101,Bl,3,Bl,1,cd,FALSE,MS,NA,
+MSdk,MSdk/103,Bl,3,Bl,3,cd,FALSE,MS,NA,drought will restrict establishment
+MSdk,MSdk/104,Bl,3,Bl,2,cd,FALSE,MS,NA,drought will limit establishment
+MSdk,MSdk/105,Bl,3,Bl,2,cd,FALSE,MS,NA,drought will limit establishment
+MSdk,MSdk/110,Bl,2,Bl,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111,Bl,3,Bl,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111a,Bl,3,Bl,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111b,Bl,3,Bl,2,cd,FALSE,MS,NA,poorly aerated soils will reduce establishment
+MSdk,MSdk/112,Bl,3,Bl,3,cd,FALSE,MS,NA,frost and poorly aerated soils will limit establishment and growth 
+MSdk,MSdk/112a,Bl,3,Bl,2,cd,FALSE,MS,NA,
+MSdk,MSdk/112b,Bl,3,Bl,3,cd,FALSE,MS,NA,
+MSdk,MSdk/103,Cw,3,Cw,3,cd,FALSE,MS,imputed,drought will limit establishment
+MSdk,MSdk/110,Cw,3,Cw,2,cd,FALSE,MS,NA,limited to lower elevations
+MSdk,MSdk/101,Ep,2,Ep,1,cd,FALSE,MS,NA,
+MSdk,MSdk/102,Ep,3,Ep,3,cd,FALSE,MS,NA,drought will limit establishment
+MSdk,MSdk/103,Ep,3,Ep,3,cd,FALSE,MS,NA,drought will limit establishment
+MSdk,MSdk/105,Ep,2,Ep,2,cd,FALSE,MS,NA,drought may limit establishment
+MSdk,MSdk/110,Ep,2,Ep,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111,Ep,3,Ep,2,cd,FALSE,MS,NA,saturated soils will may establishment
+MSdk,MSdk/111a,Ep,3,Ep,2,cd,FALSE,MS,NA,
+MSdk,MSdk/111b,Ep,3,Ep,3,cd,FALSE,MS,NA,saturated soils will limit establishment
+MSdk,MSdk/112,Ep,3,Ep,3,cd,FALSE,MS,NA,saturated soils will limit establishment
+MSdk,MSdk/112a,Ep,3,Ep,3,cd,FALSE,MS,NA,saturated soils will limit establishment
+MSdk,MSdk/112b,Ep,3,Ep,3,cd,FALSE,MS,NA,saturated soils will limit establishment
+MSdk,MSdk/111,Fdi,4,Fd,5,cd,FALSE,MS,imputed,
+MSdk,MSdk/101,Fdi,2,Fd,1,cd,FALSE,MS,NA,
+MSdk,MSdk/102,Fdi,2,Fd,1,cd,FALSE,MS,NA,
+MSdk,MSdk/103,Fdi,1,Fd,1,cd,FALSE,MS,NA,
+MSdk,MSdk/105,Fdi,1,Fd,1,cd,FALSE,MS,NA,
+MSdk,MSdk/110,Fdi,2,Fd,2,cd,FALSE,MS,NA,saturated soils may limit establishment
+MSdk,MSdk/101,Hw,3,Hw,2,cd,FALSE,MS,imputed,limited to lower elevations
+MSdk,MSdk/111,Lw,3,Lw,3,cd,FALSE,MS,imputed,saturated soils may limit establishment; restricted to southern portions of this BGC unit
+MSdk,MSdk/101,Lw,3,Lw,2,cd,FALSE,MS,NA,restricted to southern portions of this BGC unit
+MSdk,MSdk/103,Lw,3,Lw,2,cd,FALSE,MS,NA,
+MSdk,MSdk/105,Lw,3,Lw,2,cd,FALSE,MS,NA,
+MSdk,MSdk/110,Lw,3,Lw,2,cd,FALSE,MS,NA,
+MSdk,MSdk/102,Pf,3,Pf,2,cd,FALSE,MS,NA,often outcompeted on these sites
+MSdk,MSdk/103,Pf,3,Pf,2,cd,FALSE,MS,NA,often outcompeted on these sites
+MSdk,MSdk/101,Pli,2,Pl,1,cd,FALSE,MS,NA,
+MSdk,MSdk/102,Pli,3,Pl,2,cd,FALSE,MS,NA,may be limited by drought
+MSdk,MSdk/103,Pli,2,Pl,1,cd,FALSE,MS,NA,
+MSdk,MSdk/104,Pli,1,Pl,1,cd,FALSE,MS,NA,
+MSdk,MSdk/105,Pli,1,Pl,1,cd,FALSE,MS,NA,
+MSdk,MSdk/110,Pli,2,Pl,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdk,MSdk/112,Pli,3,Pl,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdk,MSdk/112a,Pli,3,Pl,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdk,MSdk/112b,Pli,3,Pl,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdk,MSdk/102,Pyi,4,Py,5,cd,FALSE,MS,NA,not suitable
+MSdk,MSdk/103,Pyi,4,Py,5,cd,FALSE,MS,NA,not suitable
+MSdk,MSdk/102,Sx,3,Sx,3,cd,FALSE,MS,imputed,drought limits establishment
+MSdk,MSdk/101,Sxw,1,Sx,1,cd,FALSE,MS,NA,
+MSdk,MSdk/103,Sxw,3,Sx,3,cd,FALSE,MS,NA,drought limits establishment
+MSdk,MSdk/104,Sxw,1,Sx,1,cd,FALSE,MS,NA,
+MSdk,MSdk/105,Sxw,2,Sx,1,cd,FALSE,MS,NA,
+MSdk,MSdk/110,Sxw,1,Sx,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111,Sxw,2,Sx,2,cd,FALSE,MS,NA,
+MSdk,MSdk/111a,Sxw,1,Sx,1,cd,FALSE,MS,NA,
+MSdk,MSdk/111b,Sxw,3,Sx,2,cd,FALSE,MS,NA,poorly aerated soils will reduce establishment
+MSdk,MSdk/112,Sxw,2,Sx,3,cd,FALSE,MS,NA,poorly aerated soils will reduce establishment
+MSdk,MSdk/112a,Sxw,2,Sx,2,cd,FALSE,MS,NA,
+MSdk,MSdk/112b,Sxw,2,Sx,3,cd,FALSE,MS,NA,poorly aerated soils will reduce establishment
+MSdm1,MSdm1/111,Act,2,Ac,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/112,Act,2,Ac,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/113,Act,2,Ac,2,cd,FALSE,MS,NA,poorly aerated soils restrict establishment especially on the organic phase
+MSdm1,MSdm1/101,At,2,At,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/102,At,3,At,2,cd,FALSE,MS,NA,drought may limit establishment
+MSdm1,MSdm1/103,At,3,At,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/104,At,2,At,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/111,At,2,At,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdm1,MSdm1/112,At,2,At,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdm1,MSdm1/113,At,2,At,3,cd,FALSE,MS,NA,poorly aerated soils restrict establishment especially on the organic phase
+MSdm1,MSdm1/101,Bl,1,Bl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/103,Bl,3,Bl,3,cd,FALSE,MS,NA,drought will limit establishment
+MSdm1,MSdm1/104,Bl,2,Bl,3,cd,FALSE,MS,NA,drought will limit establishment
+MSdm1,MSdm1/110,Bl,2,Bl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/111,Bl,1,Bl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/112,Bl,1,Bl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/113,Bl,2,Bl,2,cd,FALSE,MS,NA,poorly aerated soils restrict establishment especially on the organic phase
+MSdm1,MSdm1/101,Cw,3,Cw,3,cd,FALSE,MS,imputed,drought will limit establishment
+MSdm1,MSdm1/111,Cw,2,Cw,2,cd,FALSE,MS,NA,generally restricted to lower elevations
+MSdm1,MSdm1/111,Ep,2,Ep,2,cd,FALSE,MS,NA,
+MSdm1,MSdm1/112,Ep,2,Ep,2,cd,FALSE,MS,NA,
+MSdm1,MSdm1/113,Ep,2,Ep,3,cd,FALSE,MS,NA,poorly aerated soils will restrict establishment
+MSdm1,MSdm1/101,Fdi,2,Fd,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/102,Fdi,2,Fd,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/103,Fdi,1,Fd,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/104,Fdi,2,Fd,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/110,Fdi,5,Fd,2,cd,FALSE,MS,NA,frost will limit establishment
+MSdm1,MSdm1/111,Fdi,3,Fd,2,cd,FALSE,MS,NA,frost may limit establishment
+MSdm1,MSdm1/112,Fdi,2,Fd,2,cd,FALSE,MS,NA,frost may limit establishment
+MSdm1,MSdm1/113,Fdi,5,Fd,5,cd,FALSE,MS,NA,
+MSdm1,MSdm1/101,Lw,2,Lw,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/102,Lw,2,Lw,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/103,Lw,2,Lw,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/104,Lw,2,Lw,2,cd,FALSE,MS,NA,frost may limit establishment
+MSdm1,MSdm1/110,Lw,3,Lw,3,cd,FALSE,MS,NA,wetter soils limit establishment
+MSdm1,MSdm1/111,Lw,3,Lw,3,cd,FALSE,MS,NA,
+MSdm1,MSdm1/112,Lw,3,Lw,3,cd,FALSE,MS,NA,
+MSdm1,MSdm1/113,Lw,5,Lw,5,cd,FALSE,MS,NA,
+MSdm1,MSdm1/101,Pli,1,Pl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/102,Pli,2,Pl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/103,Pli,2,Pl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/104,Pli,1,Pl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/110,Pli,1,Pl,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/111,Pli,1,Pl,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdm1,MSdm1/112,Pli,2,Pl,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdm1,MSdm1/113,Pli,2,Pl,2,cd,FALSE,MS,NA,generally outcompeted on these sites
+MSdm1,MSdm1/102,Pyi,4,Py,5,cd,FALSE,MS,NA,not suitable
+MSdm1,MSdm1/103,Pyi,3,Py,5,cd,FALSE,MS,NA,not suitable
+MSdm1,MSdm1/101,Sxw,1,Sx,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/103,Sxw,3,Sx,2,cd,FALSE,MS,NA,drought may limit establishment
+MSdm1,MSdm1/104,Sxw,2,Sx,2,cd,FALSE,MS,NA,frost may limit establishment
+MSdm1,MSdm1/110,Sxw,2,Sx,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/111,Sxw,1,Sx,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/112,Sxw,1,Sx,1,cd,FALSE,MS,NA,
+MSdm1,MSdm1/113,Sxw,1,Sx,2,cd,FALSE,MS,NA,frost may limit establishment

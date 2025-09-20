@@ -160,3 +160,60 @@ notrevBC<-mutate(notrevBC, Note=if_else(mod=="inputed", 'imputed', 'NA'))
 notrevBC$mod<-NA
 write.csv(notrevBC, "needsreview.csv")
 
+
+#Sep 2025- 
+# compare all outstanding reviews against needs review table 
+coast_new<-read.csv("tables/regional_updates/Coast_review_missing_SCS_HAK_review.csv") 
+coast_new$Note<-" "
+SE_update<-read.csv("tables/regional_updates/needsreviewSE.csv") #Craig delong 9/19
+SE_update$Comments<-NULL
+NE_update<-read.csv("tables/regional_updates/needsreviewNE.csv") #Craig delong 9/12
+NE_update$Comments<-NULL
+NE_update$Footnotes<-NULL
+all_new<-rbind(coast_new, NE_update, SE_update)
+all_new$AugSep2025<-"Y"
+all_new<-select(all_new, bgc, ss_nospace, sppsplit, spp, AugSep2025)
+
+notrevBC<-read.csv("needsreview.csv")
+
+notrevBC<-left_join(notrevBC, all_new)
+notrevBC<-subset(notrevBC, is.na(AugSep2025))#remove all reviewed by Craig or Coast in Aug/Sep 2025
+notrevBC$AugSep2025<-NULL
+
+sort(unique(notrevBC$bgc))
+
+#which are in SE/NE? 
+notrevBCx<-subset(notrevBC, bgc=="ESSFdk2"|bgc=="ESSFdkp"|bgc=="ESSFwm1"|bgc=="ESSFmm3"|bgc=="ESSFmm1"|bgc=="ESSFwc3"|bgc=="ICHmk4"|
+                    bgc=="ICHmk5"|bgc=="IDFdk5"|bgc=="IDFxk"|bgc=="IDFxx2"|bgc=="IMAunp"|bgc=="MSdw"|bgc=="SBSdh2")
+
+notrevBCNE<-subset(notrevBCx, bgc=="ESSFwc3"|bgc=="SBSdh2"| bgc=="IMAunp"| bgc=="ESSFmm1")
+notrevBCSE<-anti_join(notrevBCx, notrevBCNE)
+
+#add back to review table 
+SE_update<-rbind(SE_update, notrevBCSE)
+write.csv(SE_update, "tables/regional_updates/needsreviewSE2.csv") 
+
+write.csv(notrevBCNE, "tables/regional_updates/needsreview_misc.csv") 
+
+#what is STILL not reviewed? 
+notrevBCy<-anti_join(notrevBC, notrevBCx)
+sort(unique(notrevBCy$bgc))
+
+#add imputed ratings for coast to csv
+notrevBCz<-subset(notrevBCy, Zone== "CDF"|Zone=="CMA"|Zone=="CWH"|Zone=="MH"|bgc=="ESSFmw"|bgc=="ESSFmw1"|bgc=="ESSFmwp"|
+                    bgc=="ESSFun"|bgc=="IDFww"|bgc=="ESSFmkw")
+coast_new<-rbind(coast_new, notrevBCz)
+
+write.csv(coast_new, "tables/regional_updates/Coast_review_missing_SCS_HAK_review2.csv") 
+
+#what is STILL not reviewed? Not sure who can look at these remaining units...  
+#many are parkland, woodland and floodplain/wetland
+#some inputed 
+notrevBCy<-anti_join(notrevBCy, notrevBCz)
+sort(unique(notrevBCy$bgc))
+check<-group_by(notrevBCy, bgc)%>%summarise((ct=n()))
+
+write.csv(notrevBCy, "needsreview_sub.csv")
+x<-read.csv("regions_tab.csv")
+x<-distinct(x)
+notrevBCy<-left_join(notrevBCy, x)
