@@ -213,7 +213,8 @@ notrevBCy<-anti_join(notrevBCy, notrevBCz)
 sort(unique(notrevBCy$bgc))
 check<-group_by(notrevBCy, bgc)%>%summarise((ct=n()))
 
-write.csv(notrevBCy, "needsreview_sub.csv")
 x<-read.csv("regions_tab.csv")
 x<-distinct(x)
 notrevBCy<-left_join(notrevBCy, x)
+
+write.csv(notrevBCy, "needsreview_sub.csv")
