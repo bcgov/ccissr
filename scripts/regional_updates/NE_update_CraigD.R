@@ -15,6 +15,13 @@ nchange<-sum(NE_update$suit_change, na.rm = T)
 #percent change 
 pchange<-nchange/nrow(NE_update)*100 #ratings were changed/updated
 
+#add to previous Skeena/NE data (Erica and Dan)
+#11% of reviewed ratings were updated (135/1227)
+#15.2% of total ratings were added where previously missing (187/1227)
+ntot<-1227+nrow(NE_update)
+nchange<-135+nchange
+pchange<-nchange/ntot*100
+
 #select relevant columns and rename for join
 #need to save footnotes somewhere else to be input into CCISS. Asked Kiri 9/10/25
 NE_update<-select(NE_update, -Zone, -Note, -Comments, -Footnotes, -suit_change)
