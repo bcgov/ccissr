@@ -218,3 +218,13 @@ x<-distinct(x)
 notrevBCy<-left_join(notrevBCy, x)
 
 write.csv(notrevBCy, "needsreview_sub.csv")
+
+#combine 
+notrevBC<-read.csv("needsreview_sub.csv")
+notrevBC2<-read.csv("tables/regional_updates/needsreview_misc.csv")
+x<-read.csv("regions_tab.csv")
+notrevBC2<-left_join(notrevBC2, x)
+notrevBC<-rbind(notrevBC, notrevBC2)
+notrevBC$X<-NULL
+
+write.csv(notrevBC, "needsreview_sub.csv")
