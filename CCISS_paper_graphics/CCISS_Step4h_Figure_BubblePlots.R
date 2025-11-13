@@ -488,7 +488,7 @@ for(rcp in rcps){
   
   
   #===============================================================================
-  # DEF. metric relative to temperature change
+  # DEF. bubble plots
   
   colors = grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = T)][-1]
   set.seed(2)
