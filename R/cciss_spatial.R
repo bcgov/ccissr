@@ -1,29 +1,41 @@
 
 #' Create raster and id table of BGCs based on vector data
-#' @param raster_template SpatRaster.
+#' @param xyz SpatRaster or data.table of points (must have lat, lon, id).
 #' @param bgcs SpatVector or sf object of bgc bondaries with column "BGC" specifying name.
-#' @return List containinng resultant SpatRaster and data.table of ids.
+#' @return List containing resultant SpatRaster and data.table of ids (or single data.table if input is a data.table).
 #' @import data.table
 #' @importFrom terra project vect rasterize
 #' @importFrom sf st_transform
 #' @export
-make_bgc_raster <- function(raster_template, bgcs){
+make_bgc_template <- function(xyz, bgcs, res = 0.0008){
   if(inherits(bgcs,"SpatVector")){
-    bgcs <- project(bgcs, crs(raster_template))
+    #bgcs <- project(bgcs, "epsg:4326")
     bgcs$bgc_id <- as.numeric(as.factor(bgcs$BGC))
   } else {
-    bgcs <- st_transform(bgcs, crs(raster_template))
+    #bgcs <- st_transform(bgcs, 4326)
     bgcs$bgc_id <- as.numeric(as.factor(bgcs$BGC))
     bgcs <- vect(bgcs)
   }
-  bgc_ids <- unique(data.table(bgc = bgcs$BGC, bgc_id = bgcs$bgc_id))
-
-  bc_bgc <- rasterize(bgcs, raster_template, field = "bgc_id")
-  return(list(bgc_rast = bc_bgc, ids = bgc_ids))
+  if(inherits(xyz,"SpatRaster")){
+    bgc_ids <- unique(data.table(bgc = bgcs$BGC, bgc_id = bgcs$bgc_id))
+    bc_bgc <- rasterize(bgcs, xyz, field = "bgc_id")
+    return(list(bgc_rast = bc_bgc, ids = bgc_ids))
+  } else {
+    bgcs$id <- 1:nrow(bgcs)
+    temp_pts <- vect(xyz, crs = "epsg:4326")
+    bgcs_small <- crop(bgcs, temp_pts)
+    temp_r <- rast(bgcs_small, res = res)
+    bgc_id <- rasterize(bgcs_small, temp_r, field = "id")
+    pnt_id <- extract(bgc_id, temp_pts)
+    
+    res <- data.table(cell = xyz$id, BGC = bgcs$BGC[pnt_id$id])
+    return(res)
+  }
+  
 }
 
 #' Create summarised BGC predictions from RF model
-#' @param raster_template SpatRaster.
+#' @param xyz SpatRaster or data.table.
 #' @param BGCmodel Ranger random forest model of BGCs
 #' @param vars_needed Character. List of variables required for model
 #' @param gcms_use Character. List of gcms used in summarised predictions
@@ -34,7 +46,7 @@ make_bgc_raster <- function(raster_template, bgcs){
 #' @return NULL. Results are written to csv files in base_folder/bgc_data
 #' @import climr data.table
 #' @export
-summary_preds_gcm <- function(raster_template, 
+summary_preds_gcm <- function(xyz, 
                               BGCmodel, 
                               vars_needed, 
                               gcms_use, 
@@ -47,9 +59,16 @@ summary_preds_gcm <- function(raster_template,
   if(!dir.exists(paste0(base_folder,"/bgc_data"))) dir.create(paste0(base_folder,"/bgc_data"))
   out_folder <- paste0(base_folder,"/bgc_data")
   
-  points_dat <- as.data.frame(raster_template, cells=T, xy=T)
-  colnames(points_dat) <- c("id", "lon", "lat", "elev")
-  points_dat <- points_dat[,c(2,3,4,1)] #restructure for climr input
+  if(inherits(xyz, "SpatRaster")){
+    points_dat <- as.data.frame(xyz, cells=T, xy=T)
+    colnames(points_dat) <- c("id", "lon", "lat", "elev")
+    #points_dat <- points_dat[,c(2,3,4,1)] #restructure for climr input
+  } else if(!all(c("lon", "lat", "elev", "id") %in% names(xyz))){
+    stop("xyz must have columns lon, lat, elev, and id if it is a dataframe")
+  } else {
+    points_dat <- copy(xyz)
+  }
+  
   splits <- c(seq(1, nrow(points_dat), by = 10000), nrow(points_dat) + 1)
   ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
   message("There are ", length(splits), " tiles")
@@ -115,7 +134,7 @@ summary_preds_gcm <- function(raster_template,
 #' Create siteseries predictions from summarised BGC predictions
 #' @param edatopes Character. Vector of desired edatopic positions. Default is "B2", "C4", "D6" (poor, mesic, rich).
 #' @param obs Logical. Do prediction for observed period? Default FALSE
-#' @param bgc_raster_list List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_raster`
+#' @param bgc_mapped List containing SpatRaster of BGCs and id table, or data.table (must have columns `cell`,`BGC`). Usually created using `make_bgc_raster`
 #' @param base_folder Base folder to write results to.
 #' @return NULL. Writes results to csvs in base_folder/ss_preds
 #' @import data.table
@@ -123,7 +142,7 @@ summary_preds_gcm <- function(raster_template,
 
 siteseries_preds <- function(edatopes = c("B2", "C4", "D6"), 
                              obs = F, 
-                             bgc_raster_list,
+                             bgc_mapped,
                              base_folder = "spatial") {
   in_folder <- file.path(base_folder,"bgc_data")
   if(obs){
@@ -141,10 +160,15 @@ siteseries_preds <- function(edatopes = c("B2", "C4", "D6"),
   
   periods <- unique(bgc_all$period)
   
-  bgc_rast <- bgc_raster_list$bgc_rast
-  rast_ids <- bgc_raster_list$ids
-  bgc_points <- as.data.frame(bgc_rast, cells=T, xy=T) |> as.data.table()
-  bgc_points[rast_ids, BGC := i.bgc, on = "bgc_id"]
+  if(inherits(bgc_mapped, "list")){
+    bgc_rast <- bgc_mapped$bgc_rast
+    rast_ids <- bgc_mapped$ids
+    bgc_points <- as.data.frame(bgc_rast, cells=T, xy=T) |> as.data.table()
+    bgc_points[rast_ids, BGC := i.bgc, on = "bgc_id"]
+  } else {
+    bgc_points <- bgc_mapped |> as.data.table()
+  }
+
   
   if(!dir.exists(paste0(base_folder,"/ss_preds"))) dir.create(paste0(base_folder,"/ss_preds"))
   out_folder <- paste0(base_folder,"/ss_preds")

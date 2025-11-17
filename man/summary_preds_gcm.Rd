@@ -5,7 +5,7 @@
 \title{Create summarised BGC predictions from RF model}
 \usage{
 summary_preds_gcm(
-  raster_template,
+  xyz,
   BGCmodel,
   vars_needed,
   gcms_use,
@@ -17,7 +17,7 @@ summary_preds_gcm(
 )
 }
 \arguments{
-\item{raster_template}{SpatRaster.}
+\item{xyz}{SpatRaster or data.table.}
 
 \item{BGCmodel}{Ranger random forest model of BGCs}
 

@@ -7,7 +7,7 @@
 siteseries_preds(
   edatopes = c("B2", "C4", "D6"),
   obs = F,
-  bgc_raster_list,
+  bgc_mapped,
   base_folder = "spatial"
 )
 }
@@ -16,7 +16,7 @@ siteseries_preds(
 
 \item{obs}{Logical. Do prediction for observed period? Default FALSE}
 
-\item{bgc_raster_list}{List containing SpatRaster of BGCs and id table. Usually created using \code{make_bgc_raster}}
+\item{bgc_mapped}{List containing SpatRaster of BGCs and id table, or data.table (must have columns \code{cell},\code{BGC},\code{bgc_id}). Usually created using \code{make_bgc_raster}}
 
 \item{base_folder}{Base folder to write results to.}
 }

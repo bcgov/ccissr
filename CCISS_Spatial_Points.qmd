@@ -1,5 +1,5 @@
 ---
-title: "CCISS Spatial Workflow"
+title: "CCISS Spatial Workflow (datatable version)"
 author: "Kiri Daust"
 format: html
 editor: visual
@@ -30,7 +30,7 @@ Let's get started!
 
 ## Load Necessary Data
 
-We'll use the high resolution dem for the lower mainland. It's small enough that we can run the analysis quickly.
+We'll use the high resolution dem for the lower mainland. It's small enough that we can run the analysis quickly. To demonstrate the data.table workflow, we'll project it to BC Albers, and then extract the cell coordinates.
 
 ```{r}
 library(terra)
@@ -40,6 +40,12 @@ library(data.table)
 
 BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
 dem <- unwrap(climr::dem_vancouver)
+dem <- project(dem, "epsg:3005")
+plot(dem)
+
+points_in <- as.data.frame(dem, xy = TRUE, na.rm = TRUE, cells = TRUE)
+coords_4326 <- project(as.matrix(points_in[,c("x","y")]), from = "epsg:3005", to= "epsg:4326")
+points <- data.table(id = points_in$cell,lon = coords_4326[,1], lat = coords_4326[,2], elev = points_in$WNA_DEM_SRT_30m)
 ```
 
 We'll also setup some parameters: the GCMs we want to use, the climate variables required for the BGC model, and the edatopic positions we want to run the model for. For speed, we'll also just create projections for the 2030s and 2050s. Finally - we need a folder to put the results in.
@@ -74,7 +80,7 @@ base_path <- "cciss_spatial_vignette"
 First, we use `climr` to downscale climate data from each GCM to the provided dem. Then, we use the random forest model to project BGCs at each gridpoint. Finally, we summarise that into the proportion of models projecting each BGC at each gridcell. Note that to avoid lost time due to crashing, the function saves the data in "tiles" as it goes.
 
 ```{r}
-summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = periods, base_folder = base_path)
+summary_preds_gcm(points, BGCmodel, vars_needed, gcms_cciss, periods_use = periods, base_folder = base_path)
 
 ```
 
@@ -93,15 +99,13 @@ However, the edatopic overlap needs to know what the current (mapped) BGC is at 
 
 ```{r}
 bgcs <- vect("../Common_Files/BEC13Draft_4326.gpkg")
-bgc_raster <- make_bgc_template(dem, bgcs)
-
-plot(bgc_raster$bgc_rast)
+pts_bgc <- make_bgc_template(points, bgcs)
 ```
 
 Looks good. Now we can pass that to the edatopic overlap function.
 
 ```{r}
-siteseries_preds(edatopes = eda, bgc_mapped = bgc_raster, base_folder = base_path)
+siteseries_preds(edatopes = eda, bgc_mapped = pts_bgc, base_folder = base_path)
 ```
 
 If we have a look at the data we just created, we'll see it now has projections on a site series level.
@@ -129,37 +133,11 @@ cciss
 
 ## Create Maps
 
-Our final step is to put these results back into raster maps. The following function reads all the results in the cciss_suit folder, and creates a raster for each species/period/edatope combination. We just need to pass it the original dem to use as a template, and it will write the rasters to "base_path/final_rasters".
-
 ```{r}
-cciss_rasterize(dem, base_folder = base_path)
-```
-
-Let's plot some!
-
-```{r}
-cw_2050 <- rast(file.path(base_path, "final_rasters","CCISS_2041_2060_C4_Cw.tif"))
-plot(cw_2050)
-
-fd_2050 <- rast(file.path(base_path, "final_rasters","CCISS_2041_2060_C4_Fd.tif"))
-plot(fd_2050)
-```
-
-## Historic Suitability Maps
-
-For comparison purposes, we'll often want to view historic mapped species suitability. This is a fairly straightforward procedure - we take the BGC map (created above), then subset the siteseries in each BGC unit to those containing the specified edatopic position, and finally join the suitability values for the selected species to the siteseries table. The function below facilitates this process.
-
-```{r}
-mapped_suit(species = spp, edatopes = eda, bgc_raster_list = bgc_raster, base_folder = base_path)
-```
-
-```{r}
-fd_hist <- rast(file.path(base_path, "historic_suit","HistoricSuit_Fd_C4.tif"))
-plot(fd_hist)
-```
-
-All done!
-
-```{r}
-unlink(base_path, recursive = TRUE)
+cciss_2041 <- fread(file.path(base_path,"cciss_suit","CCISS_2041_2060_C4.csv"))
+cw_2041 <- cciss_2041[Spp == "Cw",]
+cw_rast <- copy(dem)
+values(cw_rast) <- NA
+cw_rast[cw_2041$SiteRef] <- cw_2041$Newsuit
+plot(cw_rast)
 ```
