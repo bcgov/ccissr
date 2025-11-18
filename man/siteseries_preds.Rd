@@ -16,7 +16,7 @@ siteseries_preds(
 
 \item{obs}{Logical. Do prediction for observed period? Default FALSE}
 
-\item{bgc_mapped}{List containing SpatRaster of BGCs and id table, or data.table (must have columns \code{cell},\code{BGC},\code{bgc_id}). Usually created using \code{make_bgc_raster}}
+\item{bgc_mapped}{List containing SpatRaster of BGCs and id table, or data.table (must have columns \code{cell},\code{BGC}). Usually created using \code{make_bgc_template}}
 
 \item{base_folder}{Base folder to write results to.}
 }

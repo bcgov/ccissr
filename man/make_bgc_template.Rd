@@ -4,7 +4,7 @@
 \alias{make_bgc_template}
 \title{Create raster and id table of BGCs based on vector data}
 \usage{
-make_bgc_template(xyz, bgcs)
+make_bgc_template(xyz, bgcs, res = 8e-04)
 }
 \arguments{
 \item{xyz}{SpatRaster or data.table of points (must have lat, lon, id).}
