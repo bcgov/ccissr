@@ -289,7 +289,7 @@ cciss_rasterize <- function(raster_template, base_folder = "spatial") {
         rfinal <- copy(raster_template)
         values(rfinal) <- NA
         rfinal[dat_spp$SiteRef] <- dat_spp$Newsuit
-        writeRaster(rfinal,file.path(out_folder,paste0("CCISS_",period,"_", eda,"_",spp,".tif")))
+        writeRaster(rfinal,file.path(out_folder,paste0("CCISS_",period,"_", eda,"_",spp,".tif")), overwrite=TRUE)
       }
     }
   }
