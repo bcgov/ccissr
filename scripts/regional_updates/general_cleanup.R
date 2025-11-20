@@ -228,3 +228,22 @@ notrevBC<-rbind(notrevBC, notrevBC2)
 notrevBC$X<-NULL
 
 write.csv(notrevBC, "needsreview_sub.csv")
+
+#Nov 2025- 
+suit<-read.csv("tables/versioned/suitability_v13_22.csv") 
+suit<-subset(suit, spp!="X")
+
+#take out the US and alberta stuff because it won't match plot data
+suit<-filter(suit, !grepl('_OC|_WC|_CA|_OR|_WA|_ID|_MT|_CA|_WY|_CO|_NV|UT|BSJP|abE|abN|abS|abC|	MGPmg|
+ MGPdm|SBAP|SASbo|BWBScmC|BWBScmE|BWBScmNW|BWBScmW|BWBSdmN|BWBSdmS|BWBSlbE|BWBSlbN|BWBSlbW|BWBSlf|BWBSnm|BWBSpp|BWBSub|BWBSuf', ss_nospace))
+
+needs_rev<-subset(suit, is.na(mod)|mod=="inputed")
+needs_rev<-subset(needs_rev, bgc!="CWHvh3" & bgc!="MHwh") #Sari and Heather have reviewed these as of Aug 2025
+
+x<-read.csv("regions_tab.csv")
+needs_rev<-left_join(needs_rev, x)
+needs_rev<-mutate(needs_rev, Region= if_else(is.na(Region), "Coast", Region))
+
+needs_rev$X<-NULL
+write.csv(needs_rev, "needs_review_Nov2025.csv")
+
