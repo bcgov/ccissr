@@ -3,7 +3,7 @@ library(tidyverse)
 feas<-read.csv("tables/versioned/Feasibility_v13_5.csv")
 feas$X<-NULL
 names(feas)
-
+#first update Feb 2025----
 #read in updated table
 coast_update<-read.csv("tables/regional_updates/Coast_Feb2025.csv") 
 #coast_updatex<-subset(coast_update, ss_nospace %in% feas$ss_nospace) #already there -update suit ratings
@@ -45,3 +45,47 @@ feas<-rbind(feas, coast_update)
 
 #write as new version
 write.csv(feas, "feas_tables/versioned/Feasibility_v13_6.csv")
+
+#second update Haida Gwaii (pt 1) Aug 2025----
+library(tidyverse)
+
+#read in current table
+suit<-read.csv("tables/versioned/Suitability_v13_22.csv")
+suit$X<-NULL
+names(suit)
+
+#read in update 
+Coast_update2<-read.csv("tables/regional_updates/Coast_review_missing_SCS_HAK_review.csv") 
+Coast_update2<-subset(Coast_update2, !is.na(newsuit))
+unique(Coast_update2$bgc)
+Coast_update2$Zone<-NULL
+
+#remove updated ratings from main dataset
+suit<-mutate(suit, remove= case_when(bgc=="CWHvh3" &  !is.na(suitability)~1, 
+                                     bgc=="MHwh"&  !is.na(suitability)~1, 
+                                     bgc=="MHwhp"&  !is.na(suitability)~1, 
+                                     TRUE~0)) %>%subset(., remove<1)%>%select(-remove)
+
+#bind back in 
+suit<-rbind(suit, Coast_update2)
+
+#calculate change stats  
+Coast_update2<-mutate(Coast_update2, change= if_else(suitability==newsuit, 0, 1))
+nchange<-sum(Coast_update2$change, na.rm = T) #29
+#how many of these were initially blank?
+nadd<-sum(is.na(Coast_update2$change)) #54 added 
+
+#add values to what is in TR 
+#192/3027->221/3230->6.8
+#91/3027->145/3230->4.5
+
+#fill in other blanks in mod column from February review 
+coast<-read.csv("tables/regional_updates/Coast_Feb2025.csv") 
+suit<-mutate(suit, fill= case_when(is.na(mod) & bgc %in% coast$bgc~ 'SAS-HAK', TRUE~ NA))%>%mutate(mod=if_else(is.na(mod), fill, mod))
+suit$fill<-NULL
+  
+#write out new version
+suit<-write.csv(suit, "tables/versioned/Suitability_v13_23.csv")
+
+
+
