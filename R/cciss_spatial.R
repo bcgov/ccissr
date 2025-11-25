@@ -42,6 +42,7 @@ make_bgc_template <- function(xyz, bgcs, res = 0.0008){
 #' @param periods_use Character. List of time periods to create predictions for
 #' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
 #' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
+#' @param summarise Logical. Return results summarised by BGC? Defaults to `TRUE`.
 #' @param base_folder Character. Name of base folder to write results to.
 #' @return NULL. Results are written to csv files in base_folder/bgc_data
 #' @import climr data.table
@@ -52,7 +53,9 @@ summary_preds_gcm <- function(xyz,
                               gcms_use, 
                               periods_use, 
                               ssp_use = c("ssp126", "ssp245", "ssp370"),
+                              max_runs_use = 0L,
                               ssp_w = c(0.8,1,0.8),
+                              summarise = TRUE,
                               base_folder = "spatial",
                               start_tile = 1) {
   
@@ -80,7 +83,7 @@ summary_preds_gcm <- function(xyz,
                           gcms = gcms_use,
                           gcm_periods = periods_use,
                           ssps = ssp_use,
-                          max_run = 0L,
+                          max_run = max_runs_use,
                           vars = vars_needed,
                           nthread = 6,
                           return_refperiod = FALSE)
@@ -88,12 +91,16 @@ summary_preds_gcm <- function(xyz,
     clim_dat <- na.omit(clim_dat)
     setnames(clim_dat, old = c("PAS_an","Tmin_an","CMI_an"), new = c("PAS","Tmin","CMI"))
     temp <- predict(BGCmodel, data = clim_dat, num.threads = 8)
-    dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, 
+    dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, run = clim_dat$RUN,
                       period = clim_dat$PERIOD, bgc_pred = temp$predictions)
-    dat[ssp_weights, weight := i.weight, on = "ssp"]
-    dat_sum <- dat[,.(bgc_prop = sum(weight)/20.8), by = .(cellnum, period, bgc_pred)]
-    
-    fwrite(dat_sum, paste0(out_folder, "/bgc_summary_",i, ".csv"), append = TRUE)
+    if(!summarise){
+      fwrite(dat, paste0(out_folder, "/bgc_raw_",i, ".csv"), append = TRUE)
+    } else {
+      dat[ssp_weights, weight := i.weight, on = "ssp"]
+      dat_sum <- dat[,.(bgc_prop = sum(weight)/20.8), by = .(cellnum, period, bgc_pred)] ##need to fix this for runs
+      fwrite(dat_sum, paste0(out_folder, "/bgc_summary_",i, ".csv"), append = TRUE)
+    }
+
     rm(clim_dat, dat, dat_sum)
     gc()
   }
