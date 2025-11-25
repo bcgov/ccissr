@@ -141,7 +141,7 @@ summary_preds_gcm <- function(xyz,
 #' Create siteseries predictions from summarised BGC predictions
 #' @param edatopes Character. Vector of desired edatopic positions. Default is "B2", "C4", "D6" (poor, mesic, rich).
 #' @param obs Logical. Do prediction for observed period? Default FALSE
-#' @param bgc_mapped List containing SpatRaster of BGCs and id table, or data.table (must have columns `cell`,`BGC`). Usually created using `make_bgc_raster`
+#' @param bgc_mapped List containing SpatRaster of BGCs and id table, or data.table (must have columns `cell`,`BGC`). Usually created using `make_bgc_template`
 #' @param base_folder Base folder to write results to.
 #' @return NULL. Writes results to csvs in base_folder/ss_preds
 #' @import data.table
@@ -296,7 +296,7 @@ cciss_rasterize <- function(raster_template, base_folder = "spatial") {
         rfinal <- copy(raster_template)
         values(rfinal) <- NA
         rfinal[dat_spp$SiteRef] <- dat_spp$Newsuit
-        writeRaster(rfinal,file.path(out_folder,paste0("CCISS_",period,"_", eda,"_",spp,".tif")))
+        writeRaster(rfinal,file.path(out_folder,paste0("CCISS_",period,"_", eda,"_",spp,".tif")), overwrite=TRUE)
       }
     }
   }
@@ -305,17 +305,17 @@ cciss_rasterize <- function(raster_template, base_folder = "spatial") {
 #' Function to create rasters of historic (mapped) suitability by species and edatopic position
 #' @param species Character. Vector of species codes to map
 #' @param edatopes Character. Vector of edatopes (e.g., "C4")
-#' @param bgc_raster_list List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_raster`
+#' @param bgc_template_list List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_template`
 #' @param base_folder Base folder to write results to.
 #' @return NULL. Writes tifs to "base_folder/historic_suit"
 #' @export
-mapped_suit <- function(species, edatopes, bgc_raster_list, base_folder) {
+mapped_suit <- function(species, edatopes, bgc_template_list, base_folder) {
   if(!dir.exists(paste0(base_folder,"/historic_suit"))) dir.create(paste0(base_folder,"/historic_suit"))
   out_folder <- paste0(base_folder,"/historic_suit")
   for(eda_sel in edatopes){
     for(spp_sel in species) {
-      bgc_ids <- copy(bgc_raster_list$ids)
-      bgc_rast <- copy(bgc_raster_list$bgc_rast)
+      bgc_ids <- copy(bgc_template_list$ids)
+      bgc_rast <- copy(bgc_template_list$bgc_rast)
       eda_sub <- copy(ccissr::E1)[Edatopic == eda_sel & is.na(SpecialCode),]
       suit_sub <- copy(ccissr::S1)[spp == spp_sel,]
       eda_sub[suit_sub, suit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]

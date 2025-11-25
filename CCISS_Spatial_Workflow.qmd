@@ -93,15 +93,15 @@ However, the edatopic overlap needs to know what the current (mapped) BGC is at 
 
 ```{r}
 bgcs <- vect("../Common_Files/BEC13Draft_4326.gpkg")
-bgc_raster <- make_bgc_template(dem, bgcs)
+bgc_template <- make_bgc_template(dem, bgcs)
 
-plot(bgc_raster$bgc_rast)
+plot(bgc_template$bgc_rast)
 ```
 
 Looks good. Now we can pass that to the edatopic overlap function.
 
 ```{r}
-siteseries_preds(edatopes = eda, bgc_mapped = bgc_raster, base_folder = base_path)
+siteseries_preds(edatopes = eda, bgc_mapped = bgc_template, base_folder = base_path)
 ```
 
 If we have a look at the data we just created, we'll see it now has projections on a site series level.
@@ -150,7 +150,7 @@ plot(fd_2050)
 For comparison purposes, we'll often want to view historic mapped species suitability. This is a fairly straightforward procedure - we take the BGC map (created above), then subset the siteseries in each BGC unit to those containing the specified edatopic position, and finally join the suitability values for the selected species to the siteseries table. The function below facilitates this process.
 
 ```{r}
-mapped_suit(species = spp, edatopes = eda, bgc_raster_list = bgc_raster, base_folder = base_path)
+mapped_suit(species = spp, edatopes = eda, bgc_template_list = bgc_template, base_folder = base_path)
 ```
 
 ```{r}

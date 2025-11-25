@@ -4,14 +4,14 @@
 \alias{mapped_suit}
 \title{Function to create rasters of historic (mapped) suitability by species and edatopic position}
 \usage{
-mapped_suit(species, edatopes, bgc_raster_list, base_folder)
+mapped_suit(species, edatopes, bgc_template_list, base_folder)
 }
 \arguments{
 \item{species}{Character. Vector of species codes to map}
 
 \item{edatopes}{Character. Vector of edatopes (e.g., "C4")}
 
-\item{bgc_raster_list}{List containing SpatRaster of BGCs and id table. Usually created using \code{make_bgc_raster}}
+\item{bgc_template_list}{List containing SpatRaster of BGCs and id table. Usually created using \code{make_bgc_template}}
 
 \item{base_folder}{Base folder to write results to.}
 }
