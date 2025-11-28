@@ -6,7 +6,7 @@
 \usage{
 spp_bubbleplot(
   persist_expand,
-  period,
+  period_sel,
   scenario,
   species = "auto",
   edatope,
@@ -16,7 +16,7 @@ spp_bubbleplot(
 \arguments{
 \item{persist_expand}{data.table. Usually created with \code{spp_persist_expand}}
 
-\item{period}{Character. Period to create plot for.}
+\item{period_sel}{Character. Period to create plot for.}
 
 \item{scenario}{Character. ssp to use for plot.}
 

@@ -99,7 +99,9 @@ spp_persist_expand <- function(edatopes, fractional, bgc_mapped, species = "auto
     message(spp_curr)
     suit_sub <- suit[spp == spp_curr,]
     setkey(suit_sub,"ss_nospace")
-    bgc_eda[,c("NewSuit","HistSuit") := NULL]
+    if("NewSuit" %in% names(bgc_eda)){
+      bgc_eda[,c("NewSuit","HistSuit") := NULL]
+    }
     bgc_eda[suit_sub, NewSuit := i.newfeas, on = c(SS_Pred = "ss_nospace")]
     bgc_eda[suit_sub, HistSuit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]
     
@@ -217,6 +219,7 @@ bgc_persist_expand <- function(bgc_mapped, periods = "auto", base_folder){
 #' @return NULL. Creates plot
 #' @import data.table
 #' @importFrom car dataEllipse
+#' @importFrom RColorBrewer brewer.pal
 #' @export
 spp_bubbleplot <- function(persist_expand, period_sel, scenario, species = "auto", edatope, by = "species") {
   

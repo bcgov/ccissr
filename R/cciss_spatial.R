@@ -99,9 +99,10 @@ summary_preds_gcm <- function(xyz,
       dat[ssp_weights, weight := i.weight, on = "ssp"]
       dat_sum <- dat[,.(bgc_prop = sum(weight)/20.8), by = .(cellnum, period, bgc_pred)] ##need to fix this for runs
       fwrite(dat_sum, paste0(out_folder, "/bgc_summary_",i, ".csv"), append = TRUE)
+      rm(dat_sum)
     }
 
-    rm(clim_dat, dat, dat_sum)
+    rm(clim_dat, dat)
     gc()
   }
   cat("Done!")

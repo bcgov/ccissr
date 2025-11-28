@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-# Expansion/Persistance Bubbleplots
+# Expansion/Persistance
 
 ## Load Necessary Data
 
@@ -15,9 +15,11 @@ library(terra)
 library(ranger)
 library(ccissr)
 library(data.table)
+library(RColorBrewer)
 
 BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
 dem <- unwrap(climr::dem_vancouver)
+dem <- aggregate(dem, fact = 2)
 ```
 
 ## Setup parameters for model
@@ -43,7 +45,7 @@ Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperi
 
 ```{r}
 
-summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = periods,summarise = FALSE, base_folder = base_path)
+summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2041_2060", "2061_2080", "2081_2100"),summarise = FALSE, base_folder = base_path)
 
 ```
 
@@ -78,7 +80,7 @@ perexp <- spp_persist_expand(edatopes = c("B2", "C4", "D6"), fractional = TRUE, 
 ## Species Bubbleplot
 
 ```{r}
-spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", edatope = "D6")
+spp_bubbleplot(perexp, period_sel = "2081_2100", scenario = "ssp245", edatope = "C4")
 
 spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = "Pl", edatope = c("B2", "C4", "D6"), by = "edatope")
 ```
