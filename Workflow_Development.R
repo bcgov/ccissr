@@ -25,6 +25,19 @@ periods = list_gcm_periods()[-1]
 
 summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = periods,summarise = FALSE, base_folder = base_path)
 
+perexp <- spp_persist_expand(edatopes = c("B2", "C4", "D6"), fractional = TRUE, bgc_mapped = bgc_raster, 
+                             periods = c("2041_2060","2081_2100"), base_folder = "cciss_spatial_vignette")
+
+perexp <- na.omit(perexp)
+spp_bubbleplot(perexp, edatope = "B2")
+
+spp_bubbleplot(perexp, species = "Yc", edatope = c("B2", "C4", "D6"), by = "edatope")
+
+
+bgc_perexp <- bgc_persist_expand(bgc_raster, base_folder = "cciss_spatial_vignette")
+bgc_bubbleplot(bgc_perexp, period = "2041_2060", scenario = "ssp245")
+
+
 temp_ls <- list.files("cciss_spatial_vignette/bgc_data/", pattern = "bgc_raw.*", full.names = TRUE)
 bgc_all_ls <- lapply(temp_ls, FUN = fread)
 bgc_all <- rbindlist(bgc_all_ls)
@@ -47,6 +60,10 @@ eda_table <- unique(eda_table[,.(BGC,SS_NoSpace,Edatopic)])
 setkey(eda_table, BGC)
 setkey(bgc_all, bgc_pred)
 
+suit <- copy(S1)
+spp_list <- c("Pl", "Fd", "Cw", "Ep", "Dr", "Hw", "Mb", "Pw", "Ba", "Yc", "Hm")
+suit <- suit[spp %in% spp_list,]
+suit <- na.omit(suit, cols = "spp")
 
 bgc_eda <- merge(bgc_all, eda_table, by.x = "bgc_pred", by.y = "BGC", allow.cartesian = TRUE, all.x = TRUE)
 setnames(bgc_eda, old = "SS_NoSpace", new = "SS_Pred")
@@ -54,35 +71,155 @@ bgc_eda <- merge(bgc_eda, eda_table, by.x = c("bgc", "Edatopic"), by.y = c("BGC"
                  allow.cartesian = TRUE, all.x = TRUE)
 setorder(bgc_eda, Edatopic, cellnum, gcm, ssp, run, period)
 
-suit <- copy(S1)
-suit_sub <- suit[spp == "Fd",]
-setkey(suit_sub,"ss_nospace")
-bgc_eda[suit_sub, NewSuit := i.newfeas, on = c(SS_Pred = "ss_nospace")]
-bgc_eda[suit_sub, HistSuit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]
-
-cciss_res <- bgc_eda[,.(cellnum,ssp,gcm,run,period,Edatopic,NewSuit,HistSuit)]
+##mapped suitability
+bgc_sum <- bgc_mapped[,.(BGC_Tot = .N), by = bgc]
+mapped_ss <- merge(bgc_sum, eda_table, by.x = "bgc", by.y = "BGC", allow.cartesian = TRUE)
+mapped_ss <- merge(mapped_ss, suit[,.(ss_nospace,spp,newfeas)], by.x = "SS_NoSpace", by.y = "ss_nospace", 
+                   all.x = TRUE, allow.cartesian = TRUE)
+setnames(mapped_ss, old = "newfeas", new = "MappedSuit")
+mapped_ss[is.na(MappedSuit) | MappedSuit == 4, MappedSuit := 5]
+mapped_suit <- mapped_ss[,.(Suit = min(MappedSuit)), by = .(spp, bgc, BGC_Tot, Edatopic)]
 
 if(fractional){
-  cciss_res[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L]
-  cciss_res[, NewSuit := 1 - (NewSuit - 1) / 4]
-  
-  cciss_res[is.na(HistSuit) | HistSuit == 4L, HistSuit := 5L]
-  cciss_res[, HistSuit := 1 - (HistSuit - 1) / 4]
+  mapped_suit[,Suit := 1 - (Suit - 1) / 4]
+  mapped_suit[,FracSuit := Suit * BGC_Tot]
+  mapped_suit <- mapped_suit[,.(MappedSuit = sum(FracSuit)), by = .(spp, Edatopic)]
 } else {
-  ###convert to presence/absence
+  mapped_suit[Suit != 5,Suit := 1]
+  mapped_suit[Suit == 5,Suit := 0]
+  mapped_suit[,FracSuit := Suit * BGC_Tot]
+  mapped_suit <- mapped_suit[,.(MappedSuit = sum(FracSuit)), by = .(spp, Edatopic)]
 }
 
-##persist/expand
-cciss_res[,Persist := 0][HistSuit > 0, Persist := NewSuit]
-cciss_res[,Expand := 0][HistSuit == 0, Expand := NewSuit]
 
-suit_perexp <- cciss_res[,.(Persist_Tot = sum(Persist), 
-                         Expand_Tot = sum(Expand)), 
-                      by = .(Edatopic, ssp, gcm, run, period)]
+spp_res <- list()
+for(spp_curr in spp_list){
+  message(spp_curr)
+  suit_sub <- suit[spp == spp_curr,]
+  setkey(suit_sub,"ss_nospace")
+  bgc_eda[,c("NewSuit","HistSuit") := NULL]
+  bgc_eda[suit_sub, NewSuit := i.newfeas, on = c(SS_Pred = "ss_nospace")]
+  bgc_eda[suit_sub, HistSuit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]
+  
+  cciss_res <- bgc_eda[,.(cellnum,ssp,gcm,run,period,Edatopic,NewSuit,HistSuit)]
+  
+  if(fractional){
+    cciss_res[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L]
+    cciss_res[, NewSuit := 1 - (NewSuit - 1) / 4]
+    
+    cciss_res[is.na(HistSuit) | HistSuit == 4L, HistSuit := 5L]
+    cciss_res[, HistSuit := 1 - (HistSuit - 1) / 4]
+  } else {
+    cciss_res[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L][
+      NewSuit != 5, NewSuit := 1
+    ][
+      NewSuit == 5, NewSuit := 0
+    ]
+    cciss_res[is.na(HistSuit) | HistSuit == 4L, HistSuit := 5L][
+      HistSuit != 5, HistSuit := 1
+    ][
+      HistSuit == 5, HistSuit := 0
+    ]
+  }
+  
+  cciss_res <- cciss_res[,.(NewSuit = max(NewSuit), HistSuit = max(HistSuit)), 
+                         by = .(cellnum, ssp, gcm, run, period, Edatopic)]
+  ##persist/expand
+  cciss_res[,Persist := 0][HistSuit > 0, Persist := NewSuit]
+  cciss_res[,Expand := 0][HistSuit == 0, Expand := NewSuit]
+  
+  suit_perexp <- cciss_res[,.(Persist_Tot = sum(Persist), 
+                              Expand_Tot = sum(Expand)), 
+                           by = .(Edatopic, ssp, gcm, run, period)]
+  
+  suit_perexp[mapped_suit[spp == spp_curr,], Mapped := i.MappedSuit, on = "Edatopic"]
+  suit_perexp[,`:=`(Persistance = Persist_Tot/Mapped, Expansion = Expand_Tot/Mapped)]
+  suit_perexp[,c("Persist_Tot","Expand_Tot","Mapped") := NULL]
+  
+  spp_res[[spp_curr]] <- suit_perexp
+}
 
-##use original BGC map and join with species
+spp_perexp <- rbindlist(spp_res, idcol = "spp")
 
-bgc_sum <- bgc_mapped[,.(BGC_Tot = .N), by = bgc]
+##remove insignificant species
+spp_sum <- spp_perexp[,.(tot = sum(Persistance)), by = .(spp, Edatopic)]
+
+library(RColorBrewer)
+spps <- unique(spp_perexp$spp)
+colors = grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = T)][-1]
+colors = colors[-grep("yellow", colors)]
+set.seed(5)
+sppcolors <- c(brewer.pal(n=12, "Paired")[-11],sample(colors,length(spp_list) - 11)) # removal of "11" is light yellow, doesn't show up well.
+
+
+par(mar=c(3,4,0.1,0.1), mgp=c(1.25, 0.25, 0), cex=1.5)
+
+xlim <- c(0, 1.5)
+ylim <- c(-5,3)
+plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab="Persistence within historically feasible range", ylab="")
+axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
+axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
+par(mgp=c(2.75, 0.25, 0))
+title(ylab="Expansion beyond historically feasible range", cex.lab=1)
+iso <- seq(0,1.2, 0.001)
+lines(1-iso, log2(iso), lty=2, lwd=2, col="darkgray")
+arctext(x = "Growing feasible range", center = c(-1, -28.7), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
+arctext(x = "Shrinking feasible range", center = c(-1, -29.3), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
+#mtext(paste(edatope.names[which(edatopes==edatope)], " sites", " (", edatope, ")", sep=""), side=3, line=-1.25, adj= if(edatope=="C4") 0.025 else 0.075, cex=0.7, font=1)
+
+spp=spps[1]
+spp.focal <- "none"
+eda_sel <- "D6"
+#spps <- spps[-9]
+for(i in 1:length(spps)){
+  spp_sel <- spps[i]
+  col.focal <- if(spp.focal=="none") sppcolors[i] else "lightgray"
+  col.focal2 <- if(spp.focal=="none") "black" else "darkgray"
+  x <- spp_perexp[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
+  y <- spp_perexp[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
+  y[y<2^(ylim[1])] <- 2^(ylim[1])
+  y <- log2(y)
+  
+  # points(x,y)
+  if(length(x)>1 & var(x)>0){
+    if(var(y)==0) {
+      lines(range(x), range(y), col=col.focal)
+    }  else {
+      dataEllipse(x, y, levels=0.5, center.pch=21, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
+    } 
+  }
+  points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(spp==spp.focal) 4.5 else 3, col=col.focal2)
+  text(mean(x),mean(y), spp_sel, cex=if(spp==spp.focal) 1 else 0.7, font=2, col=col.focal2)
+}
+
+###
+#spps <- spps[-9]
+spp.focal <- "none"
+spp_sel <- "Fd"
+edas <- c("B2", "C4", "D6")
+for(i in 1:length(edas)){
+  eda_sel <- edas[i]
+  col.focal <- if(spp.focal=="none") sppcolors[i] else "lightgray"
+  col.focal2 <- if(spp.focal=="none") "black" else "darkgray"
+  x <- spp_perexp[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
+  y <- spp_perexp[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
+  y[y<2^(ylim[1])] <- 2^(ylim[1])
+  y <- log2(y)
+  
+  # points(x,y)
+  if(length(x)>1 & var(x)>0){
+    if(var(y)==0) {
+      lines(range(x), range(y), col=col.focal)
+    }  else {
+      dataEllipse(x, y, levels=0.5, center.pch=21, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
+    } 
+  }
+  points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(spp==spp.focal) 4.5 else 3, col=col.focal2)
+  text(mean(x),mean(y), eda_sel, cex=if(spp==spp.focal) 1 else 0.7, font=2, col=col.focal2)
+}
+
+######################################################################
+
 bgc_perexp[bgc_sum, BGC_Tot := i.BGC_Tot, on = c(bgc_pred = "bgc")]
 bgc_perexp[,`:=`(Persistance = (Persist_Tot/BGC_Tot), Expansion = (Expand_Tot/BGC_Tot))]
 bgc_perexp <- na.omit(bgc_perexp)

@@ -11,7 +11,9 @@ summary_preds_gcm(
   gcms_use,
   periods_use,
   ssp_use = c("ssp126", "ssp245", "ssp370"),
+  max_runs_use = 0L,
   ssp_w = c(0.8, 1, 0.8),
+  summarise = TRUE,
   base_folder = "spatial",
   start_tile = 1
 )
@@ -30,6 +32,8 @@ summary_preds_gcm(
 \item{ssp_use}{Character. List of ssps to use. Default \code{c("ssp126", "ssp245", "ssp370")}}
 
 \item{ssp_w}{Numeric vector. Weights for each ssp in \code{ssp_use}}
+
+\item{summarise}{Logical. Return results summarised by BGC? Defaults to \code{TRUE}.}
 
 \item{base_folder}{Character. Name of base folder to write results to.}
 }

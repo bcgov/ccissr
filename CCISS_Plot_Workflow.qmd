@@ -1,0 +1,84 @@
+---
+title: "CCISS_Plot_Workflow"
+format: html
+editor: visual
+---
+
+# Expansion/Persistance Bubbleplots
+
+## Load Necessary Data
+
+We'll use the high resolution dem for the lower mainland. It's small enough that we can run the analysis quickly.
+
+```{r}
+library(terra)
+library(ranger)
+library(ccissr)
+library(data.table)
+
+BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
+dem <- unwrap(climr::dem_vancouver)
+```
+
+## Setup parameters for model
+
+```{r}
+gcms_cciss <- c("ACCESS-ESM1-5", "CNRM-ESM2-1", "EC-Earth3", "GFDL-ESM4",
+                "GISS-E2-1-G", "MIROC6", "MPI-ESM1-2-HR", "MRI-ESM2-0")
+
+vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT", 
+                 "MWMT", "NFFD_sm", "NFFD_sp", "PAS_an", "PAS_sp", "SHM", "Tave_sm", 
+                 "Tave_sp", "Tmax_sm", "Tmax_sp", "Tmin_an", "Tmin_at", "Tmin_sm", 
+                 "Tmin_sp", "Tmin_wt","CMI_an", "PPT_05","PPT_06","PPT_07","PPT_08",
+                 "PPT_09","PPT_at","PPT_wt","CMD_07","CMD_an"
+)
+
+dir.create("cciss_spatial_vignette")
+base_path <- "cciss_spatial_vignette"
+```
+
+## Run Raw BGC Predictions
+
+Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperiod. We do this by simply passing `summarise = FALSE`.
+
+```{r}
+
+summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = periods,summarise = FALSE, base_folder = base_path)
+
+```
+
+## Create Mapped BGC Raster
+
+```{r}
+bgcs <- vect("../Common_Files/BEC13Draft_4326.gpkg")
+bgc_template <- make_bgc_template(dem, bgcs)
+
+plot(bgc_template$bgc_rast)
+```
+
+## Calculate BGC Persistance/Expansion
+
+```{r}
+bgc_perexp <- bgc_persist_expand(bgc_template, base_folder = "cciss_spatial_vignette")
+```
+
+## BGC Bubbleplot
+
+```{r}
+bgc_bubbleplot(bgc_perexp, period = "2041_2060", scenario = "ssp245")
+bgc_bubbleplot(bgc_perexp, period = "2081_2100", scenario = "ssp370")
+```
+
+## Calculate Species Persistance and Expansion
+
+```{r}
+perexp <- spp_persist_expand(edatopes = c("B2", "C4", "D6"), fractional = TRUE, bgc_mapped = bgc_template, periods = c("2041_2060","2081_2100"), base_folder = "cciss_spatial_vignette")
+```
+
+## Species Bubbleplot
+
+```{r}
+spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", edatope = "D6")
+
+spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = "Pl", edatope = c("B2", "C4", "D6"), by = "edatope")
+```
