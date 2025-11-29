@@ -23,28 +23,18 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 
 periods = list_gcm_periods()[-1]
 
-summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = periods,summarise = FALSE, base_folder = base_path)
-
-perexp <- spp_persist_expand(edatopes = c("B2", "C4", "D6"), fractional = TRUE, bgc_mapped = bgc_raster, 
-                             periods = c("2041_2060","2081_2100"), base_folder = "cciss_spatial_vignette")
-
-perexp <- na.omit(perexp)
-spp_bubbleplot(perexp, edatope = "B2")
-
-spp_bubbleplot(perexp, species = "Yc", edatope = c("B2", "C4", "D6"), by = "edatope")
-
-
-bgc_perexp <- bgc_persist_expand(bgc_raster, base_folder = "cciss_spatial_vignette")
-bgc_bubbleplot(bgc_perexp, period = "2041_2060", scenario = "ssp245")
+summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, max_runs_use = 5L, 
+                  periods_use = periods,summarise = FALSE, base_folder = "cciss_spatial_vignette")
 
 
 temp_ls <- list.files("cciss_spatial_vignette/bgc_data/", pattern = "bgc_raw.*", full.names = TRUE)
 bgc_all_ls <- lapply(temp_ls, FUN = fread)
 bgc_all <- rbindlist(bgc_all_ls)
+bgc_all <- bgc_all[run != "ensembleMean",]
 
-bgc_mapped <- as.data.frame(bgc_raster$bgc_rast, cells = TRUE) 
+bgc_mapped <- as.data.frame(bgc_template$bgc_rast, cells = TRUE) 
 setDT(bgc_mapped)
-bgc_mapped[bgc_raster$ids, bgc := i.bgc, on = "bgc_id"]
+bgc_mapped[bgc_template$ids, bgc := i.bgc, on = "bgc_id"]
 bgc_mapped[, bgc_id := NULL]
 setnames(bgc_mapped, old = "cell", new = "cellnum")
 bgc_all[bgc_mapped, bgc := i.bgc, on = "cellnum"]
@@ -67,9 +57,6 @@ suit <- na.omit(suit, cols = "spp")
 
 bgc_eda <- merge(bgc_all, eda_table, by.x = "bgc_pred", by.y = "BGC", allow.cartesian = TRUE, all.x = TRUE)
 setnames(bgc_eda, old = "SS_NoSpace", new = "SS_Pred")
-bgc_eda <- merge(bgc_eda, eda_table, by.x = c("bgc", "Edatopic"), by.y = c("BGC","Edatopic"), 
-                 allow.cartesian = TRUE, all.x = TRUE)
-setorder(bgc_eda, Edatopic, cellnum, gcm, ssp, run, period)
 
 ##mapped suitability
 bgc_sum <- bgc_mapped[,.(BGC_Tot = .N), by = bgc]
@@ -90,7 +77,7 @@ if(fractional){
   mapped_suit[,FracSuit := Suit * BGC_Tot]
   mapped_suit <- mapped_suit[,.(MappedSuit = sum(FracSuit)), by = .(spp, Edatopic)]
 }
-
+mapped_suit <- na.omit(mapped_suit)
 
 spp_res <- list()
 for(spp_curr in spp_list){
@@ -99,45 +86,84 @@ for(spp_curr in spp_list){
   setkey(suit_sub,"ss_nospace")
   bgc_eda[,c("NewSuit","HistSuit") := NULL]
   bgc_eda[suit_sub, NewSuit := i.newfeas, on = c(SS_Pred = "ss_nospace")]
-  bgc_eda[suit_sub, HistSuit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]
+  #bgc_eda[suit_sub, HistSuit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]
   
-  cciss_res <- bgc_eda[,.(cellnum,ssp,gcm,run,period,Edatopic,NewSuit,HistSuit)]
+  #cciss_res <- bgc_eda[,.(cellnum,ssp,gcm,run,period,Edatopic,NewSuit,HistSuit)]
   
   if(fractional){
-    cciss_res[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L]
-    cciss_res[, NewSuit := 1 - (NewSuit - 1) / 4]
-    
-    cciss_res[is.na(HistSuit) | HistSuit == 4L, HistSuit := 5L]
-    cciss_res[, HistSuit := 1 - (HistSuit - 1) / 4]
+    bgc_eda[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L]
+    bgc_eda[, NewSuit := 1 - (NewSuit - 1) / 4]
   } else {
-    cciss_res[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L][
+    bgc_eda[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L][
       NewSuit != 5, NewSuit := 1
     ][
       NewSuit == 5, NewSuit := 0
     ]
-    cciss_res[is.na(HistSuit) | HistSuit == 4L, HistSuit := 5L][
-      HistSuit != 5, HistSuit := 1
-    ][
-      HistSuit == 5, HistSuit := 0
-    ]
   }
   
-  cciss_res <- cciss_res[,.(NewSuit = max(NewSuit), HistSuit = max(HistSuit)), 
+  cciss_res <- bgc_eda[,.(NewSuit = max(NewSuit)), 
                          by = .(cellnum, ssp, gcm, run, period, Edatopic)]
-  ##persist/expand
-  cciss_res[,Persist := 0][HistSuit > 0, Persist := NewSuit]
-  cciss_res[,Expand := 0][HistSuit == 0, Expand := NewSuit]
   
-  suit_perexp <- cciss_res[,.(Persist_Tot = sum(Persist), 
-                              Expand_Tot = sum(Expand)), 
-                           by = .(Edatopic, ssp, gcm, run, period)]
-  
-  suit_perexp[mapped_suit[spp == spp_curr,], Mapped := i.MappedSuit, on = "Edatopic"]
-  suit_perexp[,`:=`(Persistance = Persist_Tot/Mapped, Expansion = Expand_Tot/Mapped)]
-  suit_perexp[,c("Persist_Tot","Expand_Tot","Mapped") := NULL]
-  
+  suit_area <- cciss_res[,.(Proj_Area = sum(NewSuit)), by = .(Edatopic, ssp, gcm, run, period)]
+  suit_area[mapped_suit[spp == spp_curr,], Mapped := i.MappedSuit, on = "Edatopic"]
+  suit_area[,Suit_Prop := Proj_Area/Mapped]
   spp_res[[spp_curr]] <- suit_perexp
 }
+
+
+suit_area[,Year := as.integer(substr(period,1,4))]
+library(stinepack)
+dat_spline <- suit_area[
+  , {
+    # add anchor point before interpolation
+    dt <- rbind(.SD, data.table(Year = 2000, Suit_Prop = 1), fill = TRUE)
+    
+    # order within-group
+    o <- order(dt$Year)
+    x <- dt$Year[o]
+    y <- dt$Suit_Prop[o]
+    
+    # interpolate
+    xout <- seq(min(x), max(x), length.out = 100)
+    yout <- stinterp(x, y, xout)$y
+    
+    .(Year = xout, Suit_Spline = yout)
+  },
+  by = .(Edatopic, ssp, gcm, run)
+]
+
+setorder(suit_area, Edatopic, ssp, gcm, run, Year)
+dat_spline <- suit_area[
+  , {
+    xout <- seq(min(Year), max(Year), length.out = 100)
+    
+    yout <- stinterp(Year, Suit_Prop, xout)$y
+    
+    .(Year = xout, Suit_Spline = yout)
+  },
+  by = .(Edatopic, ssp, gcm, run)
+]
+dat_spline[, Group := interaction(ssp, gcm, run)]
+mean_spline <- dat_spline[
+  , .(Suit_Spline = mean(Suit_Spline)),
+  by = .(Edatopic, ssp, Year)
+]
+
+library(ggplot2)
+ggplot(dat_spline, aes(x = Year, y = Suit_Spline, group = Group, colour = ssp)) +
+  geom_line(alpha = 0.4) +
+  geom_line(data = mean_spline, aes(group = ssp), size = 1.4) +
+  facet_wrap(~Edatopic)+
+  theme_minimal() +
+  ylab("Proportion of Historic Suitable Area")
+
+ggsave("Fd_Spaghetti.png", height = 5, width = 6, dpi = 400, bg = "white")
+
+
+sa <- spp_suit_area(edatopes = c("B2","C4","D6"), fractional = TRUE, spp_list = c("Fd","Pl","Cw"), 
+                    bgc_mapped = bgc_template, base_folder = "cciss_spatial_vignette")
+
+spp_spaghettiplot(sa, species = "Cw")
 
 spp_perexp <- rbindlist(spp_res, idcol = "spp")
 

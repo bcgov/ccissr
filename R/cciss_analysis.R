@@ -207,6 +207,158 @@ bgc_persist_expand <- function(bgc_mapped, periods = "auto", base_folder){
   return(bgc_perexp)
 }
 
+#' Create table of species relative suitabile area
+#' @param edatopes Character. Vector of desired edatopic positions.
+#' @param fractional Logical. Use fractional (suitability based) values for calculations?
+#' @param spp_list Character vector of species to analyse
+#' @param bgc_mapped List containing SpatRaster of BGCs and id table, or data.table (must have columns `cell`,`BGC`). Usually created using `make_bgc_template`
+#' @param base_folder Base folder to read results from.
+#' @return data.table containing relative area for each run/model/period/scenario/species
+#' @import data.table
+#' @export
+spp_suit_area <- function(edatopes, fractional, spp_list, bgc_mapped, base_folder) {
+  in_folder <- file.path(base_folder,"bgc_data")
+  obs <- FALSE
+  ##read in BGC preds
+  if(obs){
+    periods <- list_obs_periods()
+    bgc_all <- fread(file.path(in_folder, "bgc_summary_obs.csv"))
+    obs_nm <- "obs_"
+  } else {
+    temp_ls <- list.files(in_folder, pattern = "bgc_raw.*", full.names = TRUE)
+    #temp_ls <- temp_ls[!grepl("obs",temp_ls)]
+    bgc_all_ls <- lapply(temp_ls, FUN = fread)
+    bgc_all <- rbindlist(bgc_all_ls)
+    rm(bgc_all_ls)
+    obs_nm <- ""
+    bgc_all <- bgc_all[run != "ensembleMean",]
+  }
+  
+  ##create table of mapped BGCs
+  if(inherits(bgc_mapped, "list")){
+    bgc_rast <- bgc_mapped$bgc_rast
+    rast_ids <- bgc_mapped$ids
+    bgc_points <- as.data.frame(bgc_rast, cells=T) |> as.data.table()
+    bgc_points[rast_ids, bgc := i.bgc, on = "bgc_id"]
+    bgc_points[,bgc_id := NULL]
+  } else {
+    bgc_points <- bgc_mapped |> as.data.table()
+  }
+  
+  setnames(bgc_points, old = "cell", new = "cellnum")
+  bgc_all[bgc_points, bgc := i.bgc, on = "cellnum"]
+  
+  bgc_all <- na.omit(bgc_all)
+  
+  ### Prep edatopic and suitability tables
+  eda_table <- copy(E1) ##Edatopic table
+  eda_table <- eda_table[is.na(SpecialCode),]
+  eda_table <- eda_table[Edatopic %in% edatopes,]
+  eda_table <- unique(eda_table[,.(BGC,SS_NoSpace,Edatopic)])
+  setkey(eda_table, BGC)
+  setkey(bgc_all, bgc_pred)
+  
+  suit <- copy(S1) ##Suitability table
+  suit <- suit[spp %in% spp_list,]
+  suit <- na.omit(suit, cols = "spp")
+  
+  bgc_eda <- merge(bgc_all, eda_table, by.x = "bgc_pred", by.y = "BGC", allow.cartesian = TRUE, all.x = TRUE)
+  setnames(bgc_eda, old = "SS_NoSpace", new = "SS_Pred")
+  
+  ##mapped suitability
+  bgc_sum <- bgc_points[,.(BGC_Tot = .N), by = bgc]
+  mapped_ss <- merge(bgc_sum, eda_table, by.x = "bgc", by.y = "BGC", allow.cartesian = TRUE)
+  mapped_ss <- merge(mapped_ss, suit[,.(ss_nospace,spp,newfeas)], by.x = "SS_NoSpace", by.y = "ss_nospace", 
+                     all.x = TRUE, allow.cartesian = TRUE)
+  setnames(mapped_ss, old = "newfeas", new = "MappedSuit")
+  mapped_ss[is.na(MappedSuit) | MappedSuit == 4, MappedSuit := 5]
+  mapped_suit <- mapped_ss[,.(Suit = min(MappedSuit)), by = .(spp, bgc, BGC_Tot, Edatopic)]
+  
+  if(fractional){
+    mapped_suit[,Suit := 1 - (Suit - 1) / 4]
+    mapped_suit[,FracSuit := Suit * BGC_Tot]
+    mapped_suit <- mapped_suit[,.(MappedSuit = sum(FracSuit)), by = .(spp, Edatopic)]
+  } else {
+    mapped_suit[Suit != 5,Suit := 1]
+    mapped_suit[Suit == 5,Suit := 0]
+    mapped_suit[,FracSuit := Suit * BGC_Tot]
+    mapped_suit <- mapped_suit[,.(MappedSuit = sum(FracSuit)), by = .(spp, Edatopic)]
+  }
+  mapped_suit <- na.omit(mapped_suit)
+  
+  spp_res <- list()
+  for(spp_curr in spp_list){
+    message(spp_curr)
+    suit_sub <- suit[spp == spp_curr,]
+    setkey(suit_sub,"ss_nospace")
+    if("NewSuit" %in% names(bgc_eda)) bgc_eda[, NewSuit := NULL]
+    
+    bgc_eda[suit_sub, NewSuit := i.newfeas, on = c(SS_Pred = "ss_nospace")]
+    if(fractional){
+      bgc_eda[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L]
+      bgc_eda[, NewSuit := 1 - (NewSuit - 1) / 4]
+    } else {
+      bgc_eda[is.na(NewSuit) | NewSuit == 4L, NewSuit := 5L][
+        NewSuit != 5, NewSuit := 1
+      ][
+        NewSuit == 5, NewSuit := 0
+      ]
+    }
+    
+    cciss_res <- bgc_eda[,.(NewSuit = max(NewSuit)), 
+                         by = .(cellnum, ssp, gcm, run, period, Edatopic)]
+    
+    suit_area <- cciss_res[,.(Proj_Area = sum(NewSuit)), by = .(Edatopic, ssp, gcm, run, period)]
+    suit_area[mapped_suit[spp == spp_curr,], Mapped := i.MappedSuit, on = "Edatopic"]
+    suit_area[,Suit_Prop := Proj_Area/Mapped]
+    spp_res[[spp_curr]] <- suit_area
+  }
+  res <- rbindlist(spp_res, idcol = "spp")
+  res <- na.omit(res)
+  return(res)
+}
+
+#' Create a spaghetti plot for a single species over multiple edatopes
+#' @param suit_area data.table. Usually created with `spp_suit_area`
+#' @param species Character. Single species to create plot for
+#' @return NULL. Creates plot
+#' @import data.table
+#' @import ggplot2
+#' @importFrom stinepack stinterp
+#' @export
+spp_spaghettiplot <- function(suit_area, species) {
+  suit_area <- suit_area[spp == species,]
+  suit_area[,Year := as.integer(substr(period,1,4))]
+  dat_spline <- suit_area[
+    , {
+      dt <- rbind(.SD, data.table(Year = 2000, Suit_Prop = 1), fill = TRUE)
+      o <- order(dt$Year)
+      x <- dt$Year[o]
+      y <- dt$Suit_Prop[o]
+      
+      # interpolate
+      xout <- seq(min(x), max(x), length.out = 100)
+      yout <- stinterp(x, y, xout)$y
+      
+      .(Year = xout, Suit_Spline = yout)
+    },
+    by = .(Edatopic, ssp, gcm, run)
+  ]
+  
+  dat_spline[, Group := interaction(ssp, gcm, run)]
+  mean_spline <- dat_spline[
+    , .(Suit_Spline = mean(Suit_Spline)),
+    by = .(Edatopic, ssp, Year)
+  ]
+  
+  ggplot(dat_spline, aes(x = Year, y = Suit_Spline, group = Group, colour = ssp)) +
+    geom_line(alpha = 0.4) +
+    geom_line(data = mean_spline, aes(group = ssp), size = 1.4) +
+    facet_wrap(~Edatopic)+
+    theme_minimal() +
+    ylab("Proportion of Historic Suitable Area")
+  
+}
 
 
 #' Create C.R. Mahony's bubbleplot of species expansion/persistance

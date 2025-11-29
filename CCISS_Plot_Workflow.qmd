@@ -45,7 +45,7 @@ Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperi
 
 ```{r}
 
-summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2041_2060", "2061_2080", "2081_2100"),summarise = FALSE, base_folder = base_path)
+summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2041_2060", "2061_2080", "2081_2100"), max_runs_use = 5L, summarise = FALSE, base_folder = base_path)
 
 ```
 
@@ -83,4 +83,18 @@ perexp <- spp_persist_expand(edatopes = c("B2", "C4", "D6"), fractional = TRUE, 
 spp_bubbleplot(perexp, period_sel = "2081_2100", scenario = "ssp245", edatope = "C4")
 
 spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = "Pl", edatope = c("B2", "C4", "D6"), by = "edatope")
+```
+
+# Suitable Area
+
+## Calculate Relative Feasible Area
+
+```{r}
+sa <- spp_suit_area(edatopes = c("B2","C4","D6"), fractional = TRUE, spp_list = c("Fd","Pl","Cw"), bgc_mapped = bgc_template, base_folder = "cciss_spatial_vignette")
+```
+
+## Species Spaghetti Plot with indiv. Runs
+
+```{r}
+spp_spaghettiplot(sa, species = "Pl")
 ```
