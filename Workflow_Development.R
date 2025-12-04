@@ -31,11 +31,95 @@ temp_ls <- list.files("cciss_spatial_vignette/bgc_data/", pattern = "bgc_raw.*",
 bgc_all_ls <- lapply(temp_ls, FUN = fread)
 bgc_all <- rbindlist(bgc_all_ls)
 bgc_all <- bgc_all[run != "ensembleMean",]
+ssp_weights <- data.table(ssp = c("ssp126", "ssp245", "ssp370"), weight = c(0.8,1,0.8))
+bgc_all[ssp_weights, weight := i.weight, on = "ssp"]
+tot_wt <- sum(bgc_all[cellnum == cellnum[1] & period == period[1], weight])
+dat_sum <- bgc_all[,.(bgc_prop = sum(weight)/tot_wt), by = .(cellnum, period, bgc_pred)] ##need to fix this for runs
+out_folder <- paste0(base_path,"/bgc_data")
+fwrite(dat_sum, paste0(out_folder, "/bgc_summary_all.csv"), append = TRUE)
+siteseries_preds(edatopes = c("B2","C4","D6"), bgc_mapped = bgc_template, base_folder = base_path)
+
+spp_list <- c("Pl", "Fd", "Cw", "Sx","Hm")
+cciss_suitability(species = spp_list, periods = list_gcm_periods()[-1], edatopes = "C4", base_folder = base_path)
+
+temp_ls <- list.files("cciss_spatial_vignette/cciss_suit/", full.names = TRUE)
+cciss_suit <- lapply(temp_ls, FUN = fread)
+cciss_suit <- rbindlist(cciss_suit)
+cciss_spp <- cciss_suit[Spp == "Cw",]
 
 bgc_mapped <- as.data.frame(bgc_template$bgc_rast, cells = TRUE) 
 setDT(bgc_mapped)
 bgc_mapped[bgc_template$ids, bgc := i.bgc, on = "bgc_id"]
 bgc_mapped[, bgc_id := NULL]
+bgc_mapped[, zone := regmatches(bgc, regexpr("^[A-Z]+", bgc))]
+
+cciss_spp[bgc_mapped, zone := i.zone, on = c(SiteRef = "cell")]
+
+
+if(fractional) {
+  cciss_spp[,SppSuit := Newsuit]
+  cciss_spp[is.na(SppSuit) | SppSuit > 3.5, SppSuit := 5]
+  cciss_spp[, SppSuit := 1 - (SppSuit - 1) / 4]
+  
+  cciss_spp[,HistSuit := Curr]
+  cciss_spp[is.na(HistSuit) | HistSuit > 3.5, HistSuit := 5]
+  cciss_spp[, HistSuit := 1 - (HistSuit - 1) / 4]
+} else {
+  cciss_spp[,SppSuit := 0]
+  cciss_spp[Newsuit <= 3, SppSuit := 1]
+  
+  cciss_spp[,HistSuit := 0]
+  cciss_spp[Curr <= 3, HistSuit := 1]
+}
+
+
+cciss_sum <- cciss_spp[,.(SppArea = sum(SppSuit)), by = .(zone, FuturePeriod)]
+cciss_hist <- cciss_spp[,.(SppArea = sum(HistSuit)), by = .(zone, FuturePeriod)][FuturePeriod == "2021_2040",][,FuturePeriod := "1961"]
+cciss_sum <- rbind(cciss_sum, cciss_hist)
+cciss_sum[, Year := as.factor(substr(FuturePeriod,1,4))]
+
+library(ggplot2)
+library(ggalluvial)
+
+# Suppose these are your time points:
+yrs <- unique(as.integer(cciss_sum$Year))
+idx <- seq_along(yrs)
+
+midpts <- head(idx, -1) + 0.5
+
+bars <- data.frame(
+  xmin = midpts - 0.3,
+  xmax = midpts + 0.3,
+  ymin = -Inf,
+  ymax = Inf
+)
+
+zone_scheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
+                 CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
+                 CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
+                 SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
+                 CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
+                 IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
+                 MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
+                 SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
+                 BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
+                 SAS = "#92b1b6", CCH = "#7e22ca")
+
+cellarea <- (res(dem2)[2]*111)*(res(dem2)[1]*111*cos(mean(ext(dem2)[3:4]) * pi / 180))
+cciss_sum[, SppArea := SppArea * cellarea]
+
+ggplot(cciss_sum, aes(x = Year, y = SppArea, fill = zone)) +
+  geom_alluvium(aes(alluvium = zone), alpha= .9, color = "black") +
+  geom_rect(
+    data = bars,
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+    inherit.aes = FALSE,
+    fill = "white", alpha = 0.7    # adjust alpha for translucency
+  ) +
+  theme_bw() +
+  scale_fill_manual(values = zone_scheme) +
+  ylab("Species Suitable Area (Km^2)")
+
 setnames(bgc_mapped, old = "cell", new = "cellnum")
 bgc_all[bgc_mapped, bgc := i.bgc, on = "cellnum"]
 

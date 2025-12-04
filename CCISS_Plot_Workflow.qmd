@@ -16,10 +16,16 @@ library(ranger)
 library(ccissr)
 library(data.table)
 library(RColorBrewer)
+library(bcmaps)
+library(sf)
+library(climr)
 
 BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
-dem <- unwrap(climr::dem_vancouver)
-dem <- aggregate(dem, fact = 2)
+
+bumobnd <- st_read("bdy.BuMo.shp")
+dem <- cded_terra(aoi = bumobnd)
+dem <- mask(dem, vect(bumobnd))
+dem2 <- aggregate(dem, fact = 40)
 ```
 
 ## Setup parameters for model
@@ -45,7 +51,7 @@ Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperi
 
 ```{r}
 
-summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2041_2060", "2061_2080", "2081_2100"), max_runs_use = 5L, summarise = FALSE, base_folder = base_path)
+summary_preds_gcm(dem2, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2021_2040", "2041_2060", "2061_2080", "2081_2100"), max_runs_use = 3L, summarise = FALSE, base_folder = base_path)
 
 ```
 
@@ -53,7 +59,7 @@ summary_preds_gcm(dem, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2041_
 
 ```{r}
 bgcs <- vect("../Common_Files/BEC13Draft_4326.gpkg")
-bgc_template <- make_bgc_template(dem, bgcs)
+bgc_template <- make_bgc_template(dem2, bgcs)
 
 plot(bgc_template$bgc_rast)
 ```
@@ -91,10 +97,44 @@ spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = 
 
 ```{r}
 sa <- spp_suit_area(edatopes = c("B2","C4","D6"), fractional = TRUE, spp_list = c("Fd","Pl","Cw"), bgc_mapped = bgc_template, base_folder = "cciss_spatial_vignette")
+sa <- sa[Mapped != 0,]
 ```
 
 ## Species Spaghetti Plot with indiv. Runs
 
 ```{r}
-spp_spaghettiplot(sa, species = "Pl")
+spp_spaghettiplot(sa, species = "Fd")
+```
+
+# Alluvial Plot
+
+Unlike the previous plots, for the alluvial/stacked bar plot, we need the cciss projections to be summarised instead of individual runs. We could rerun `summary_preds_gcm()` with `summarised = TRUE`, but why waste the time when we already have the projections? So we'll use a helper function to summarise the raw predictions. It will create a new summarised csv in the bgc_data folder.
+
+```{r}
+
+summarise_preds(base_folder = base_path)
+```
+
+Great! Now we have that we can create the siteseries and suitability predictions. For the alluvial plots, you can only plot one species and one edatope at a time, but we'll run a bunch so we can make lots of plots quickly.
+
+```{r}
+edas <- c("B2","C4","D6")
+siteseries_preds(edatopes = edas, bgc_mapped = bgc_template, base_folder = base_path)
+spp <- c("Cw","Fd","Pl","Sx")
+cciss_suitability(species = spp, periods = list_gcm_periods()[-1], edatopes = edas, base_folder = base_path)
+```
+
+And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
+
+```{r}
+plot_spparea(spp = "Pl", edatope = "B2", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
+plot_spparea(spp = "Pl", edatope = "C4", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
+plot_spparea(spp = "Pl", edatope = "D6", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
+```
+
+Let's try a different species and by subzone:
+
+```{r}
+plot_spparea(spp = "Fd", edatope = "B2", bgc_template = bgc_template, fractional = TRUE, by_zone = FALSE, base_folder = base_path)
+plot_spparea(spp = "Fd", edatope = "C4", bgc_template = bgc_template, fractional = TRUE, by_zone = FALSE, base_folder = base_path)
 ```

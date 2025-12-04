@@ -487,3 +487,103 @@ bgc_bubbleplot <- function(persist_expand, period, scenario) {
   }
   
 }
+
+#' Create alluvial/stacked bar plot of projected area by zone/subzone
+#' @param spp Character. Single species to use for plot
+#' @param edatope Character. Single edatopic position for plot (e.g., "C4")
+#' @param bgc_template List containing SpatRaster of BGCs and id table, or data.table (must have columns `cell`,`BGC`). Usually created using `make_bgc_template`
+#' @param fractional Logical. Use fractional (suitability based) values for calculations?
+#' @param by_zone Logical. Plot by zone or subzone? Defaults to `TRUE`
+#' @param base_folder Base folder to read results from.
+#' @return NULL. Creates plot
+#' @import data.table
+#' @import ggplot2
+#' @importFrom ggalluvial geom_alluvium
+#' @export
+plot_spparea <- function(spp, edatope, bgc_template, fractional, by_zone = TRUE, base_folder) {
+  in_folder <- file.path(base_folder,"cciss_suit")
+  temp_ls <- list.files(in_folder, pattern = paste0("CCISS_.*",edatope,".csv"), full.names = TRUE)
+  cciss_suit <- lapply(temp_ls, FUN = fread)
+  cciss_suit <- rbindlist(cciss_suit)
+  cciss_spp <- cciss_suit[Spp == spp,]
+  
+  bgc_mapped <- as.data.frame(bgc_template$bgc_rast, cells = TRUE) 
+  setDT(bgc_mapped)
+  bgc_mapped[bgc_template$ids, bgc := i.bgc, on = "bgc_id"]
+  bgc_mapped[, bgc_id := NULL]
+  if(by_zone) {
+    bgc_mapped[, zone := regmatches(bgc, regexpr("^[A-Z]+", bgc))]
+  } else {
+    bgc_mapped[, zone := bgc]
+  }
+  
+  cciss_spp[bgc_mapped, zone := i.zone, on = c(SiteRef = "cell")]
+  
+  
+  if(fractional) {
+    cciss_spp[,SppSuit := Newsuit]
+    cciss_spp[is.na(SppSuit) | SppSuit > 3.5, SppSuit := 5]
+    cciss_spp[, SppSuit := 1 - (SppSuit - 1) / 4]
+    
+    cciss_spp[,HistSuit := Curr]
+    cciss_spp[is.na(HistSuit) | HistSuit > 3.5, HistSuit := 5]
+    cciss_spp[, HistSuit := 1 - (HistSuit - 1) / 4]
+  } else {
+    cciss_spp[,SppSuit := 0]
+    cciss_spp[Newsuit <= 3, SppSuit := 1]
+    
+    cciss_spp[,HistSuit := 0]
+    cciss_spp[Curr <= 3, HistSuit := 1]
+  }
+  
+  cciss_sum <- cciss_spp[,.(SppArea = sum(SppSuit)), by = .(zone, FuturePeriod)]
+  cciss_hist <- cciss_spp[,.(SppArea = sum(HistSuit)), by = .(zone, FuturePeriod)][FuturePeriod == "2021_2040",][,FuturePeriod := "1961"]
+  cciss_sum <- rbind(cciss_sum, cciss_hist)
+  cciss_sum[, Year := as.factor(substr(FuturePeriod,1,4))]
+  
+  # Suppose these are your time points:
+  yrs <- unique(as.integer(cciss_sum$Year))
+  idx <- seq_along(yrs)
+  
+  midpts <- head(idx, -1) + 0.5
+  
+  bars <- data.frame(
+    xmin = midpts - 0.3,
+    xmax = midpts + 0.3,
+    ymin = -Inf,
+    ymax = Inf
+  )
+  
+  if(by_zone) {
+    colScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
+                     CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
+                     CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
+                     SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
+                     CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
+                     IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
+                     MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
+                     SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
+                     BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
+                     SAS = "#92b1b6", CCH = "#7e22ca")
+  } else {
+    colScheme <- setNames(subzones_colours_ref$colour, subzones_colours_ref$classification)
+  }
+  
+
+  
+  cellarea <- (res(bgc_template$bgc_rast)[2]*111)*(res(bgc_template$bgc_rast)[1]*111*cos(mean(ext(bgc_template$bgc_rast)[3:4]) * pi / 180))
+  cciss_sum[, SppArea := SppArea * cellarea]
+  
+  ggplot(cciss_sum, aes(x = Year, y = SppArea, fill = zone)) +
+    geom_alluvium(aes(alluvium = zone), alpha= .9, color = "black") +
+    geom_rect(
+      data = bars,
+      aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+      inherit.aes = FALSE,
+      fill = "white", alpha = 0.7    # adjust alpha for translucency
+    ) +
+    theme_bw() +
+    scale_fill_manual(values = colScheme) +
+    ylab("Species Suitable Area (Km^2)")
+  
+}

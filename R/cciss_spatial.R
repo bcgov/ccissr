@@ -108,6 +108,30 @@ summary_preds_gcm <- function(xyz,
   cat("Done!")
 }
 
+#' Summarise raw BGC predictions
+#' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
+#' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
+#' @param base_folder Character. Name of base folder to write results to.
+#' @return NULL. Results are written to csv files in base_folder/bgc_data
+#' @import data.table
+#' @export
+summarise_preds <- function(ssp_use = c("ssp126", "ssp245", "ssp370"),
+                            ssp_w = c(0.8,1,0.8),
+                            base_folder) {
+  in_folder <- paste0(base_folder,"/bgc_data/")
+  temp_ls <- list.files(in_folder, pattern = "bgc_raw.*", full.names = TRUE)
+  bgc_all_ls <- lapply(temp_ls, FUN = fread)
+  bgc_all <- rbindlist(bgc_all_ls)
+  #bgc_all <- bgc_all[run != "ensembleMean",]
+  ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
+  bgc_all[ssp_weights, weight := i.weight, on = "ssp"]
+  tot_wt <- sum(bgc_all[cellnum == cellnum[1] & period == period[1], weight])
+  dat_sum <- bgc_all[,.(bgc_prop = sum(weight)/tot_wt), by = .(cellnum, period, bgc_pred)] ##need to fix this for runs
+  out_folder <- paste0(base_path,"/bgc_data")
+  fwrite(dat_sum, paste0(out_folder, "/bgc_summary_all.csv"))
+  return(NULL)
+}
+
 
 # summary_preds_obs <- function(raster_template, 
 #                               BGCmodel, 
@@ -158,7 +182,7 @@ siteseries_preds <- function(edatopes = c("B2", "C4", "D6"),
     bgc_all <- fread(file.path(in_folder, "bgc_summary_obs.csv"))
     obs_nm <- "obs_"
   } else {
-    temp_ls <- list.files(in_folder, full.names = TRUE)
+    temp_ls <- list.files(in_folder, pattern = "bgc_summary.*", full.names = TRUE)
     temp_ls <- temp_ls[!grepl("obs",temp_ls)]
     bgc_all_ls <- lapply(temp_ls, FUN = fread)
     bgc_all <- rbindlist(bgc_all_ls)
