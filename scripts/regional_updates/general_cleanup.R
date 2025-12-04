@@ -245,3 +245,40 @@ needs_rev<-mutate(needs_rev, Region= if_else(is.na(Region), "Coast", Region))
 
 write.csv(needs_rev, "needs_review_Nov2025.csv")
 
+
+#Bring in last reviewed units Dec 4, 2025
+#read in current table
+suit<-read.csv("tables/suitability.csv")
+suit$X<-NULL
+names(suit)
+
+#take out the US and alberta stuff because it won't match plot data
+nonBC<-filter(suit, grepl('_OC|_WC|_CA|_OR|_WA|_ID|_MT|_CA|_WY|_CO|_NV|UT|BSJP|abE|abN|abS|abC|	MGPmg|
+ MGPdm|SBAP|SASbo|BWBScmC|BWBScmE|BWBScmNW|BWBScmW|BWBSdmN|BWBSdmS|BWBSlbE|BWBSlbN|BWBSlbW|BWBSlf|BWBSnm|BWBSpp|BWBSub|BWBSuf', ss_nospace))
+
+suit<-anti_join(suit, nonBC)
+
+#remove units that were in needs_rev Nov 2025
+needs_rev<-subset(suit, is.na(mod)|mod=="inputed")
+suit<-anti_join(suit, needs_rev)
+
+updates<-read.csv("needs_review_Nov2025.csv")
+updates<-mutate(updates, mod=if_else(Notes=='imputed'& mod=="", Notes, mod))
+
+updates<-subset(updates, mod!='imputed')
+updates<-mutate(updates, newsuit= if_else(is.na(newsuit), suitability, newsuit))
+updates<-mutate(updates, outrange= ifelse(is.na(outrange), "FALSE", outrange))
+updates<-select(updates, -Notes, -Region)
+updates<-mutate(updates, mod = na_if(mod, " "))
+
+suit<-rbind(suit, updates, nonBC)
+suit<-mutate(suit, newsuit= if_else(is.na(newsuit), suitability, newsuit))
+
+#final checks on what hasn't been reviewed 
+check<-subset(suit, is.na(mod))
+check2<-filter(check, !grepl('_OC|_WC|_CA|_OR|_WA|_ID|_MT|_CA|_WY|_CO|_NV|UT|BSJP|abE|abN|abS|abC|MGPmg|
+MGPdm|SBAP|SASbo|BWBScmC|BWBScmE|BWBScmNW|BWBScmW|BWBSdmN|BWBSdmS|BWBSlbE|BWBSlbN|BWBSlbW|BWBSlf|BWBSnm|BWBSpp|BWBSub|BWBSuf', ss_nospace))
+sort(unique(check2$bgc))  
+
+#write out version
+suit<-write.csv(suit, "tables/versioned/Suitability_v13_24.csv")
