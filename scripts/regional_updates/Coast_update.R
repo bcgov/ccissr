@@ -88,4 +88,43 @@ suit$fill<-NULL
 suit<-write.csv(suit, "tables/versioned/Suitability_v13_23.csv")
 
 
+#read in current table
+suit<-read.csv("tables/versioned/Suitability_v13_23.csv")
+suit$X<-NULL
+names(suit)
+
+#take out the US and alberta stuff because it won't match plot data
+nonBC<-filter(suit, grepl('_OC|_WC|_CA|_OR|_WA|_ID|_MT|_CA|_WY|_CO|_NV|UT|BSJP|abE|abN|abS|abC|	MGPmg|
+ MGPdm|SBAP|SASbo|BWBScmC|BWBScmE|BWBScmNW|BWBScmW|BWBSdmN|BWBSdmS|BWBSlbE|BWBSlbN|BWBSlbW|BWBSlf|BWBSnm|BWBSpp|BWBSub|BWBSuf', ss_nospace))
+
+suit<-anti_join(suit, nonBC)
+
+#remove units that were in needs_rev Nov 2025
+needs_rev<-subset(suit, is.na(mod)|mod=="inputed")
+suit<-anti_join(suit, needs_rev)
+
+#Bring in last reviewed units Dec 4, 2025
+#Mostly coast but also Cariboo
+updates<-read.csv("needs_review_Nov2025.csv")
+updates<-mutate(updates, mod=if_else(Notes=='imputed'& mod=="", Notes, mod))
+updates<-subset(updates, mod!='imputed')#if imputed values not reviewed, remove from main df
+
+updates<-mutate(updates, newsuit= if_else(is.na(newsuit), suitability, newsuit))
+updates<-mutate(updates, outrange= ifelse(is.na(outrange), "FALSE", outrange))
+updates<-select(updates, -Notes, -Region)
+
+updates<-mutate(updates, mod = na_if(mod, " "))
+suit<-rbind(suit, updates, nonBC)
+suit<-mutate(suit, newsuit= if_else(is.na(newsuit), suitability, newsuit))
+#fill in missing spp codes 
+suit<-mutate(suit, spp = na_if(spp, ""))
+filter(suit, is.na(spp))
+suit<-mutate(suit, spp= if_else(is.na(spp), sppsplit, spp))
+
+#remove retired units from BEC13 CMAunp 
+suit<-filter(suit, bgc!="CMAunp")
+
+#write out version
+write.csv(suit, "tables/versioned/Suitability_v13_24.csv")
+
 
