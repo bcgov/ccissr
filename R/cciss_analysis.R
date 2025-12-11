@@ -587,3 +587,161 @@ plot_spparea <- function(spp, edatope, bgc_template, fractional, by_zone = TRUE,
     ylab("Species Suitable Area (Km^2)")
   
 }
+
+#' Create C.R. Mahony's two-panel map plot of historic suitability, suitability change, and a boxplot of change by zone
+#' @description
+#' Note that currently, this function only works correctly if the preceeding analysis has been done using an Albers grid.
+#' 
+#' @param spp Character. Species code to create plot for
+#' @param edatope Character. Edatope code to create plot for (e.g., "C4")
+#' @param period Character. Period to create plot for.
+#' @param bgc_template List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_template`
+#' @param outline SpatVector of aoi boundary.
+#' @param save_png Logical. Save plot to png? Default `TRUE`. If `FALSE`, creates plot on default plotting device.
+#' @param base_folder Base folder to read results from.
+#' @return NULL. Creates plot
+#' @import data.table
+#' @import terra
+#' @export
+plot_2panel <- function(spp, edatope, period, bgc_template, outline, save_png = TRUE, base_path) {
+  
+  zoneScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
+                 CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
+                 CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
+                 SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
+                 CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
+                 IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
+                 MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
+                 SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
+                 BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
+                 SAS = "#92b1b6", CCH = "#7e22ca")
+  spps.lookup <- copy(ccissr::T1)
+  edatope.names <- c("Poor-subxeric", "Medium-mesic", "Rich-hygric")
+  edatopes <- c("B2", "C4", "D6")
+  
+  # spp <- "Pl"
+  # edatope <- "C4"
+  # period <- "2041_2060"
+  # outline <- vect("data-raw/data_tables/bc_outline.gpkg")
+
+  if(save_png){
+    png(file=paste("./Two_Panel",spp,edatope,period,"png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=12, res=300)
+  }
+  
+  par(plt=c(0,1,0,1), bg="white")
+  plot(0, col="white", xaxt="n", yaxt="n", xlab="", ylab="")
+  Common <- as.character(spps.lookup$EnglishName[which(spps.lookup$TreeCode==spp)])
+  Latin <- as.character(spps.lookup$ScientificName[which(spps.lookup$TreeCode==spp)])
+  mtext(if(spp%in%spps.lookup$TreeCode) bquote(bold(.(spp))~"-"~.(Common)) else bquote(bold(.(spp))),
+        side=3, line=-2.5, adj=0.01, cex=0.9, font=2)
+  if(edatope %in% edatope.names) {
+    mtext(paste("Site type: ", edatope, " (", edatope.names[edatopes == edatope], ")", sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
+  } else {
+    mtext(paste("Site type: ", edatope, sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
+  }
+  mtext(paste("Time period: ", period, sep=""), side=3, line=-4.5, adj=0.01, cex=0.8, font=1)
+  
+  ##=================================
+  ###historic suitability
+  feasVals <- fread(paste0(base_path,"/cciss_suit/CCISS_", period, "_",edatope,".csv"))
+  dat_spp <- feasVals[Spp == spp,]
+  dat_spp[,FeasChange := Curr - Newsuit]
+  dat_spp[,Curr := as.integer(round(Curr))]
+  dat_spp[is.na(Curr) | Curr > 3.5, Curr := 5]
+  X <- copy(bgc_template$bgc_rast)
+  values(X) <- NA
+
+  X[dat_spp$SiteRef] <- dat_spp$Curr
+  breakseq <- c(0.5,1.5,2.5,3.5,5)
+  ColScheme <- c("darkgreen", "dodgerblue1", "gold2", "white")
+  
+  par(plt = c(0, 0.5, 0.05, 0.6),new = TRUE, xpd = TRUE)
+  
+  image(X,xlab = NA,ylab = NA,bty = "n",  xaxt="n", yaxt="n",
+        col=ColScheme, breaks=breakseq,asp = 1)
+  terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
+  legend("topleft", legend=c("1 (primary)", "2 (secondary)", "3 (tertiary)"),
+         fill=ColScheme, bty="n", cex=0.8, title="Historical feasibility", inset=c(0.1,-0.3))
+  # mtext(paste("(", letters[1],")", sep=""), side=3, line=-2.75, adj=0.05, cex=0.8, font=2)
+  
+  
+  ##=================================
+  ##mean feasibility change
+  
+  values(X) <- NA
+  X2 <- copy(X)
+  X3 <- copy(X)
+  X[dat_spp[Curr < 3.5 | Newsuit < 3.5, SiteRef]] <- dat_spp[Curr < 3.5 | Newsuit < 3.5, FeasChange]
+  X2[dat_spp[Curr > 3.5 & Newsuit < 3.5, SiteRef]] <- dat_spp[Curr > 3.5 & Newsuit < 3.5, FeasChange]
+  X3[dat_spp[Curr<4 & Newsuit>3.5, SiteRef]] <- 1
+  
+  breakpoints <- seq(-3,3,0.5); length(breakpoints)
+  labels <- c("-3","-2", "-1", "no change", "+1","+2","+3")
+  ColScheme <- c("black", brewer.pal(11,"RdBu")[c(1,2,3,4)], "grey90", "grey90", brewer.pal(11,"RdBu")[c(7,8,9,10,11)]);
+  ColScheme2 <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,4)], "grey90", colorRampPalette(c("white", "khaki1", "gold"))(6));
+  ColScheme3 <- 1
+  
+  par(plt = c(0.25, 0.95, 0.175, 1), xpd = TRUE, new = TRUE)
+  image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme, breaks=breakpoints, asp = 1)
+  image(X2, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme2, breaks=breakpoints, asp = 1)
+  image(X3, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme3, asp = 1)
+  terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
+  
+  xl <- 1600000; yb <- 1000000; xr <- 1700000; yt <- 1700000; xadj <- 10000
+  y.int <- (yt-yb)/length(ColScheme)
+  rect(xl+xadj,  head(seq(yb,yt,y.int),-1),  xr,  tail(seq(yb,yt,y.int),-1),  col=ColScheme)
+  rect(xl-diff(c(xl+xadj, xr)),  head(seq(yb,yt,y.int),-1),  xl-xadj,  tail(seq(yb,yt,y.int),-1),  col=ColScheme2)
+  rect(xl-diff(c(xl+xadj, xr)),  yb,  xl-xadj,  (yb+yt)/2,  col="white")
+  text(xl-diff(c(xl+xadj, xr))/2, yb+(yt-yb)/4, "Expansion", srt=90, cex=0.85, font=1)
+  text(rep(xr-10000,length(labels)),seq(yb,yt,(yt-yb)/(length(labels)-1)),labels,pos=4,cex=0.8,font=1)
+  text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in feasibility", sep=""), srt=90, pos=3, cex=0.85, font=2)
+  rect(xl+xadj,  yb-y.int-20000,  xr,  yb-20000,  col="black")
+  text(xr, yb-y.int/2-30000, "Loss", pos=4, cex=0.8, font=1)
+  par(xpd=F)
+
+  ##=================================
+  ## Summary by zone
+  bgc_mapped <- as.data.frame(bgc_template$bgc_rast, cells = TRUE) 
+  setDT(bgc_mapped)
+  bgc_mapped[bgc_template$ids, bgc := i.bgc, on = "bgc_id"]
+  bgc_mapped[, bgc_id := NULL]
+  bgc_mapped[, zone := regmatches(bgc, regexpr("^[A-Z]+", bgc))]
+  
+  dat_spp[bgc_mapped, zone := i.zone, on = c(SiteRef = "cell")]
+  
+  
+  par(mar=c(0,0,0,0), plt = c(0.77, 0.995, 0.001, 0.31), new = TRUE, mgp=c(1.25,0.15,0))
+  plot(0, xlim=c(0,1), ylim=c(0,1), col="white", xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
+  
+  par(mar=c(4.5,2,0.1,0.1), plt = c(0.7, 0.995, 0.08, 0.2), new = TRUE, mgp=c(1.25,0.15,0))
+  ylim=c(-3,3)
+  zones_curr <- unique(dat_spp$zone)
+  xlim=c(1, length(unique(dat_spp$zone)))
+  z <- boxplot(FeasChange~zone, data = dat_spp, ylab="", vertical = TRUE, plot=F)
+  for(i in 1:length(zones_curr)){
+    temp <- dat_spp[zone == zones_curr[i], FeasChange]
+    z$stats[c(1,5), i] <- quantile(temp[!is.na(temp)],c(0.05, 0.95))
+  }
+  bxp(z, xlim=xlim, ylim=ylim, xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
+  lines(c(-99,99), c(0,0), lwd=2, col="darkgrey")
+  bxp(z, add=T, boxfill = zoneScheme[match(zones_curr, names(zoneScheme))], xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
+  axis(1, at=1:length(zones_curr), zones_curr, tick=F, las=2, cex.axis=0.65)
+  axis(2,at=seq(ylim[1], ylim[2], 3), seq(ylim[1], ylim[2], 3), las=2, tck=0)
+  mtext("Mean change in feasibility", side=3, line=0.1, adj=.975, cex=0.65, font=2)
+  
+  if(save_png){
+    dev.off()
+  }
+} 
+
+
+# dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
+# dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
+# dat_spp[,FeasChange := round(FeasChange/0.5)*0.5]
+# dat_spp[,FeasRound := round(Newsuit)]
+# dat_spp[,CurrRound := round(Curr)]
+# dat_spp[CurrRound > 3, CurrRound := 999]
+# dat_spp[FeasRound > 3, FeasRound := 999]
+# dat_spp[,AddRet := Improve]
+# dat_spp[Decline > Improve, AddRet := -Decline]
+# dat_spp[,AddRet := round(AddRet/20)*20]
