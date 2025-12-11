@@ -62,7 +62,7 @@ BCunits<-filter(suit, !grepl('_CA|_OR|_WA|_ID|_MT|_CA|_WY|_CO|_NV|UT|BSJP|abE|ab
 AB_units<-c("BWBScmC",  "BWBScmE",  "BWBScmNW" ,"BWBScmW",  "BWBSdmN" , "BWBSdmS" , "BWBSlbE" , "BWBSlbN",  "BWBSlbW", 
             "BWBSlf",   "BWBSnm",   "BWBSpp",   "BWBSub",   "BWBSuf")  
 BCunits<-filter(BCunits, !bgc %in% AB_units) #AB units
-BCunits<-mutate(BCunits, Zone= case_when(grepl('ICH', bgc)~"ICH",grepl('SWB', bgc)~"SWB", grepl('MS', bgc)~"MS",
+BCunits<-mutate(BCunits, Zone= case_when(grepl('ICH', bgc)~"ICH",grepl('SWB', bgc)~"SWB", grepl('MS', bgc)~"MS", 
                                          grepl('SBPS', bgc)~"SBPS", grepl('BAFA', bgc)~"BAFA", grepl('CWH', bgc)~"CWH", grepl('IDF', bgc)~"IDF",
                                          grepl('BG', bgc)~"BG", grepl('ESSF', bgc)~"ESSF", grepl('CDF', bgc)~"CDF", grepl('SBS', bgc)~"SBS", 
                                          grepl('MH', bgc)~"MH", grepl('CMA', bgc)~"CMA", grepl('PP', bgc)~"PP", grepl('BWBS', bgc)~"BWBS", TRUE~ NA))
@@ -132,7 +132,7 @@ BCunits<-mutate(BCunits, Zone2= ifelse(Zone=="BG"|Zone=="PP", "BG & PP", Zone))
 # Stacked bar plot
 
 library(paletteer)
-ggplot(subset(BCunits,treetype=="Conifer"), aes(fill=Status, x=spp, y=ratings)) + 
+ggplot(subset(BCunits,treetype=="Conifer"& Zone!="BAFA"), aes(fill=Status, x=spp, y=ratings)) + 
   geom_bar(position="stack", stat="identity") + facet_wrap(~Zone2, scales="free_y", ncol=2)+theme_bw()+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "top") +ggtitle("Conifers") +
   scale_fill_paletteer_d("wesanderson::AsteroidCity3") +ylab("N ratings")
