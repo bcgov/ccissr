@@ -34,33 +34,26 @@ make_bgc_template <- function(xyz, bgcs, res = 0.0008){
   
 }
 
-#' Create summarised BGC predictions from RF model
+#' Creates BGC predictions from RF model
+#' @param dbCon Database connection
 #' @param xyz SpatRaster or data.table.
 #' @param BGCmodel Ranger random forest model of BGCs
 #' @param vars_needed Character. List of variables required for model
 #' @param gcms_use Character. List of gcms used in summarised predictions
 #' @param periods_use Character. List of time periods to create predictions for
 #' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
-#' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
-#' @param summarise Logical. Return results summarised by BGC? Defaults to `TRUE`.
-#' @param base_folder Character. Name of base folder to write results to.
 #' @return NULL. Results are written to csv files in base_folder/bgc_data
-#' @import climr data.table
+#' @import climr data.table ranger duckdb
 #' @export
-summary_preds_gcm <- function(xyz, 
+predict_bgc <- function(dbCon,
+                              xyz, 
                               BGCmodel, 
                               vars_needed, 
                               gcms_use, 
                               periods_use, 
                               ssp_use = c("ssp126", "ssp245", "ssp370"),
                               max_runs_use = 0L,
-                              ssp_w = c(0.8,1,0.8),
-                              summarise = TRUE,
-                              base_folder = "spatial",
                               start_tile = 1) {
-  
-  if(!dir.exists(paste0(base_folder,"/bgc_data"))) dir.create(paste0(base_folder,"/bgc_data"))
-  out_folder <- paste0(base_folder,"/bgc_data")
   
   if(inherits(xyz, "SpatRaster")){
     points_dat <- as.data.frame(xyz, cells=T, xy=T)
@@ -73,7 +66,6 @@ summary_preds_gcm <- function(xyz,
   }
   
   splits <- c(seq(1, nrow(points_dat), by = 10000), nrow(points_dat) + 1)
-  ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
   message("There are ", length(splits), " tiles")
   
   for (i in start_tile:(length(splits) - 1)){
@@ -93,14 +85,15 @@ summary_preds_gcm <- function(xyz,
     temp <- predict(BGCmodel, data = clim_dat, num.threads = 8)
     dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, run = clim_dat$RUN,
                       period = clim_dat$PERIOD, bgc_pred = temp$predictions)
-    if(!summarise){
-      fwrite(dat, paste0(out_folder, "/bgc_raw_",i, ".csv"), append = TRUE)
-    } else {
-      dat[ssp_weights, weight := i.weight, on = "ssp"]
-      dat_sum <- dat[,.(bgc_prop = sum(weight)/20.8), by = .(cellnum, period, bgc_pred)] ##need to fix this for runs
-      fwrite(dat_sum, paste0(out_folder, "/bgc_summary_",i, ".csv"), append = TRUE)
-      rm(dat_sum)
-    }
+    dbWriteTable(dbCon, "bgc_raw", dat, row.names = FALSE, append = TRUE)
+    # if(!summarise){
+    #   fwrite(dat, paste0(out_folder, "/bgc_raw_",i, ".csv"), append = TRUE)
+    # } else {
+    #   dat[ssp_weights, weight := i.weight, on = "ssp"]
+    #   dat_sum <- dat[,.(bgc_prop = sum(weight)/20.8), by = .(cellnum, period, bgc_pred)] ##need to fix this for runs
+    #   fwrite(dat_sum, paste0(out_folder, "/bgc_summary_",i, ".csv"), append = TRUE)
+    #   rm(dat_sum)
+    # }
 
     rm(clim_dat, dat)
     gc()
@@ -108,29 +101,6 @@ summary_preds_gcm <- function(xyz,
   cat("Done!")
 }
 
-#' Summarise raw BGC predictions
-#' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
-#' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
-#' @param base_folder Character. Name of base folder to write results to.
-#' @return NULL. Results are written to csv files in base_folder/bgc_data
-#' @import data.table
-#' @export
-summarise_preds <- function(ssp_use = c("ssp126", "ssp245", "ssp370"),
-                            ssp_w = c(0.8,1,0.8),
-                            base_folder) {
-  in_folder <- paste0(base_folder,"/bgc_data/")
-  temp_ls <- list.files(in_folder, pattern = "bgc_raw.*", full.names = TRUE)
-  bgc_all_ls <- lapply(temp_ls, FUN = fread)
-  bgc_all <- rbindlist(bgc_all_ls)
-  #bgc_all <- bgc_all[run != "ensembleMean",]
-  ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
-  bgc_all[ssp_weights, weight := i.weight, on = "ssp"]
-  tot_wt <- sum(bgc_all[cellnum == cellnum[1] & period == period[1], weight])
-  dat_sum <- bgc_all[,.(bgc_prop = sum(weight)/tot_wt), by = .(cellnum, period, bgc_pred)] ##need to fix this for runs
-  out_folder <- paste0(base_path,"/bgc_data")
-  fwrite(dat_sum, paste0(out_folder, "/bgc_summary_all.csv"))
-  return(NULL)
-}
 
 
 # summary_preds_obs <- function(raster_template, 
@@ -164,60 +134,27 @@ summarise_preds <- function(ssp_use = c("ssp126", "ssp245", "ssp370"),
 # }
 
 #' Create siteseries predictions from summarised BGC predictions
-#' @param edatopes Character. Vector of desired edatopic positions. Default is "B2", "C4", "D6" (poor, mesic, rich).
-#' @param obs Logical. Do prediction for observed period? Default FALSE
-#' @param bgc_mapped List containing SpatRaster of BGCs and id table, or data.table (must have columns `cell`,`BGC`). Usually created using `make_bgc_template`
-#' @param base_folder Base folder to write results to.
-#' @return NULL. Writes results to csvs in base_folder/ss_preds
-#' @import data.table
+#' @param dbCon Database connection to duckdb
+#' @import data.table, duckdb
 #' @export
-
-siteseries_preds <- function(edatopes = c("B2", "C4", "D6"), 
-                             obs = F, 
-                             bgc_mapped,
-                             base_folder = "spatial") {
-  in_folder <- file.path(base_folder,"bgc_data")
-  if(obs){
-    periods <- list_obs_periods()
-    bgc_all <- fread(file.path(in_folder, "bgc_summary_obs.csv"))
-    obs_nm <- "obs_"
-  } else {
-    temp_ls <- list.files(in_folder, pattern = "bgc_summary.*", full.names = TRUE)
-    temp_ls <- temp_ls[!grepl("obs",temp_ls)]
-    bgc_all_ls <- lapply(temp_ls, FUN = fread)
-    bgc_all <- rbindlist(bgc_all_ls)
-    rm(bgc_all_ls)
-    obs_nm <- ""
-  }
+siteseries_preds <- function(dbCon,
+                             obs = FALSE) {
+  bgc_all <- dbGetQuery(dbCon, "select * from bgc_summary") |> as.data.table()
+  bgc_points <- dbGetQuery(dbCon, "select * from bgc_points") |> as.data.table()
   
   periods <- unique(bgc_all$period)
   
-  if(inherits(bgc_mapped, "list")){
-    bgc_rast <- bgc_mapped$bgc_rast
-    rast_ids <- bgc_mapped$ids
-    bgc_points <- as.data.frame(bgc_rast, cells=T, xy=T) |> as.data.table()
-    bgc_points[rast_ids, BGC := i.bgc, on = "bgc_id"]
-  } else {
-    bgc_points <- bgc_mapped |> as.data.table()
-  }
-
-  
-  if(!dir.exists(paste0(base_folder,"/ss_preds"))) dir.create(paste0(base_folder,"/ss_preds"))
-  out_folder <- paste0(base_folder,"/ss_preds")
-  
-  # eda_ss <- special_ss[,.(SS_NoSpace,SpecialCode)]
-  # edatopic[eda_ss, SpecialCode := i.SpecialCode, on = "SS_NoSpace"]
-  # eda_all <- edatopic[is.na(SpecialCode),]
-  eda_all <- copy(ccissr::E1)
+  eda_all <- dbGetQuery(dbCon, "select * from edatopic") |> as.data.table()
+  edatopes <- unique(eda_all$Edatopic)
   
   for(period_curr in periods){
     bgc_sum <- bgc_all[period == period_curr,]
-    bgc_sum[bgc_points, BGC := i.BGC, on = c(cellnum = "cell")]
+    bgc_sum[bgc_points, BGC := i.bgc, on = "cellnum"]
     setcolorder(bgc_sum, c("cellnum","period","BGC","bgc_pred","bgc_prop"))
     setnames(bgc_sum, c("SiteRef","FuturePeriod","BGC","BGC.pred","BGC.prop"))
     
     for(edatope in edatopes){
-      cat(period_curr, edatope, "\n")
+      message(period_curr,", ", edatope)
       eda_table <- copy(eda_all)
       eda_table[,HasPos := if(any(Edatopic %in% edatope)) T else F, by = .(SS_NoSpace)]
       eda_table <- unique(eda_table[(HasPos),])
@@ -226,17 +163,16 @@ siteseries_preds <- function(edatopes = c("B2", "C4", "D6"),
       sites <- unique(bgc_sum$SiteRef)
       splits <- c(seq(1, length(sites), by = 200000), length(sites) + 1)
       for (i in 1:(length(splits) - 1)){
-        cat(i, "\n")
         srs <- sites[splits[i]:(splits[i+1]-1)]
         dat_sml <- bgc_sum[SiteRef %in% srs,]
         sspred <- edatopicOverlap_fast(dat_sml, E1 = eda_table)
-        fwrite(sspred, append = TRUE, paste0(out_folder, "/siteseries_",obs_nm,period_curr, "_", edatope, ".csv"))
+        dbWriteTable(dbCon, "siteseries_preds", sspred, append = TRUE, row.names = FALSE)
         rm(sspred)
         gc()
       }
     }
   }
-  message("Done!")
+  message("✓ Created table siteseries_preds !")
 }
 
 #' Create projected suitability values from site series predictions.
@@ -248,13 +184,11 @@ siteseries_preds <- function(edatopes = c("B2", "C4", "D6"),
 #' @return NULL. Writes results to csvs in base_folder/cciss_suit
 #' @import data.table
 #' @export
-cciss_suitability <- function(species,
-                              edatopes,
+cciss_suitability <- function(dbCon,
+                              species,
                               obs = FALSE,
-                              periods = list_gcm_periods(),
-                              base_folder = "spatial",
                               tile_size = 4000) {
-  feas_table <- copy(ccissr::S1)
+  feas_table <- dbGetQuery(dbCon, "select * from suitability")
   setnames(feas_table, c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR"))
  # stopifnot(all(c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR") %in% names(feas_table)))
   

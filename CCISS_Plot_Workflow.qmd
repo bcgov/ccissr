@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-# Expansion/Persistance
+# CCISS Plots!
 
 ## Load Necessary Data
 
@@ -22,12 +22,12 @@ library(climr)
 
 BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
 
-# bumobnd <- st_read("bdy.BuMo.shp")
-# dem <- cded_terra(aoi = bumobnd)
-# dem <- mask(dem, vect(bumobnd))
-# dem2 <- aggregate(dem, fact = 45)
+bumobnd <- st_read("bdy.BuMo.shp")
+dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
+dem <- mask(dem, vect(bumobnd))
+dem2 <- aggregate(dem, fact = 45)
 
-dem2 <- rast("dem_BC2kmGrid.tif")
+#dem2 <- rast("dem_BC2kmGrid.tif")
 dem_table <- climr::dem_to_table(dem2)
 #dem2 <- project(dem, "epsg:4326")
 ```
@@ -44,9 +44,23 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
                  "Tmin_sp", "Tmin_wt","CMI_an", "PPT_05","PPT_06","PPT_07","PPT_08",
                  "PPT_09","PPT_at","PPT_wt","CMD_07","CMD_an"
 )
+```
 
-dir.create("cciss_spatial_vignette")
-base_path <- "cciss_spatial_vignette"
+## Create Mapped BGC Raster
+
+```{r}
+bgcs <- vect("../Common_Files/BEC13Draft_4326.gpkg")
+bgc_template <- make_bgc_template(dem2, bgcs)
+
+plot(bgc_template$bgc_rast)
+```
+
+
+## Setup database
+
+```{r}
+con <- dbCon_cciss("./BuMoTest.duckdb", threads = 8)
+dbPopulate(con, bgc_template)
 ```
 
 ## Run Raw BGC Predictions
@@ -55,23 +69,15 @@ Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperi
 
 ```{r}
 
-summary_preds_gcm(dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2021_2040", "2041_2060", "2061_2080", "2081_2100"), max_runs_use = 3L, summarise = FALSE, base_folder = base_path)
+predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2021_2040", "2041_2060", "2061_2080", "2081_2100"), max_runs_use = 4L)
 
 ```
 
-## Create Mapped BGC Raster
-
-```{r}
-bgcs <- vect("../Common_Files/BEC13Draft_Simplified.gpkg")
-bgc_template <- make_bgc_template(dem2, bgcs)
-
-plot(bgc_template$bgc_rast)
-```
 
 ## Calculate BGC Persistance/Expansion
 
 ```{r}
-bgc_perexp <- bgc_persist_expand(bgc_template, base_folder = "cciss_spatial_vignette")
+bgc_perexp <- bgc_persist_expand(con, by_zone = FALSE)
 ```
 
 ## BGC Bubbleplot
@@ -84,13 +90,13 @@ bgc_bubbleplot(bgc_perexp, period = "2081_2100", scenario = "ssp370")
 ## Calculate Species Persistance and Expansion
 
 ```{r}
-perexp <- spp_persist_expand(edatopes = c("B2", "C4", "D6"), fractional = TRUE, bgc_mapped = bgc_template, periods = c("2041_2060","2081_2100"), species = c("Fd","Cw","Pl"), base_folder = "cciss_spatial_vignette")
+perexp <- spp_persist_expand(con, spp_list = c("Pl","Py","Lw","At","Sx","Cw","Fd"), fractional = TRUE)
 ```
 
 ## Species Bubbleplot
 
 ```{r}
-spp_bubbleplot(perexp, period_sel = "2081_2100", scenario = "ssp245", edatope = "C4")
+spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp370", edatope = "C4")
 
 spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = "Pl", edatope = c("B2", "C4", "D6"), by = "edatope")
 ```
@@ -100,30 +106,28 @@ spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = 
 ## Calculate Relative Feasible Area
 
 ```{r}
-sa <- spp_suit_area(edatopes = c("B2","C4","D6"), fractional = TRUE, spp_list = c("Fd","Pl","Cw"), bgc_mapped = bgc_template, base_folder = "cciss_spatial_vignette")
-sa <- sa[Mapped != 0,]
+sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw"))
 ```
 
 ## Species Spaghetti Plot with indiv. Runs
 
 ```{r}
-spp_spaghettiplot(sa, species = "Fd")
+spp_spaghettiplot(sa, species = "Pl")
 ```
 
 # Alluvial Plot
 
-Unlike the previous plots, for the alluvial/stacked bar plot, we need the cciss projections to be summarised instead of individual runs. We could rerun `summary_preds_gcm()` with `summarised = TRUE`, but why waste the time when we already have the projections? So we'll use a helper function to summarise the raw predictions. It will create a new summarised csv in the bgc_data folder.
+Unlike the previous plots, for the alluvial/stacked bar plot, we need the cciss projections to be summarised instead of individual runs. We'll summarise directly on the database.
 
 ```{r}
 
-summarise_preds(base_folder = base_path)
+summarise_preds(con)
 ```
 
 Great! Now we have that we can create the siteseries and suitability predictions. For the alluvial plots, you can only plot one species and one edatope at a time, but we'll run a bunch so we can make lots of plots quickly.
 
 ```{r}
-edas <- c("B2","C4","D6")
-siteseries_preds(edatopes = edas, bgc_mapped = bgc_template, base_folder = base_path)
+siteseries_preds(con)
 spp <- c("Fd","Pl","Sx")
 cciss_suitability(species = spp, periods = list_gcm_periods()[-1], edatopes = edas, base_folder = base_path)
 ```
@@ -131,12 +135,12 @@ cciss_suitability(species = spp, periods = list_gcm_periods()[-1], edatopes = ed
 And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
 
 ```{r}
-plot_spparea(spp = "Pl", edatope = "B2", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
-plot_spparea(spp = "Pl", edatope = "C4", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
-plot_spparea(spp = "Pl", edatope = "D6", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
+plot_spparea(spp = "Fd", edatope = "B2", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
+plot_spparea(spp = "Fd", edatope = "C4", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
+plot_spparea(spp = "Fd", edatope = "D6", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
 ```
 
-Let's try a different species and by subzone:
+Let's try a different species:
 
 ```{r}
 plot_spparea(spp = "Fd", edatope = "B2", bgc_template = bgc_template, fractional = TRUE, by_zone = TRUE, base_folder = base_path)

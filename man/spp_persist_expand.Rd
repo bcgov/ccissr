@@ -4,19 +4,12 @@
 \alias{spp_persist_expand}
 \title{Create table of species persistance/expansion from raw BGC projections}
 \usage{
-spp_persist_expand(
-  edatopes,
-  fractional,
-  bgc_mapped,
-  species = "auto",
-  periods = "auto",
-  base_folder
-)
+spp_persist_expand(dbCon, spp_list, fractional = TRUE)
 }
 \arguments{
-\item{edatopes}{Character. Vector of desired edatopic positions.}
-
 \item{fractional}{Logical. Use fractional (suitability based) values for calculations?}
+
+\item{edatopes}{Character. Vector of desired edatopic positions.}
 
 \item{bgc_mapped}{List containing SpatRaster of BGCs and id table, or data.table (must have columns \code{cell},\code{BGC}). Usually created using \code{make_bgc_template}}
 

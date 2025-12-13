@@ -4,14 +4,14 @@
 \alias{spp_suit_area}
 \title{Create table of species relative suitabile area}
 \usage{
-spp_suit_area(edatopes, fractional, spp_list, bgc_mapped, base_folder)
+spp_suit_area(dbCon, spp_list, fractional = TRUE)
 }
 \arguments{
-\item{edatopes}{Character. Vector of desired edatopic positions.}
+\item{spp_list}{Character vector of species to analyse}
 
 \item{fractional}{Logical. Use fractional (suitability based) values for calculations?}
 
-\item{spp_list}{Character vector of species to analyse}
+\item{edatopes}{Character. Vector of desired edatopic positions.}
 
 \item{bgc_mapped}{List containing SpatRaster of BGCs and id table, or data.table (must have columns \code{cell},\code{BGC}). Usually created using \code{make_bgc_template}}
 

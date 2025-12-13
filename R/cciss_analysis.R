@@ -450,7 +450,8 @@ spp_bubbleplot <- function(persist_expand, period_sel, scenario, species = "auto
 #' @export
 bgc_bubbleplot <- function(persist_expand, period, scenario) {
   unit.persistence.focal <- "none"
-  ColScheme <- copy(subzones_colours_ref)
+  ColScheme <- rbind(copy(subzones_colours_ref),data.table(classification = names(colScheme), colour = colScheme))
+  
   units <- unique(persist_expand$bgc)
   period_sel <- period
   

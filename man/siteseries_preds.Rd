@@ -4,24 +4,10 @@
 \alias{siteseries_preds}
 \title{Create siteseries predictions from summarised BGC predictions}
 \usage{
-siteseries_preds(
-  edatopes = c("B2", "C4", "D6"),
-  obs = F,
-  bgc_mapped,
-  base_folder = "spatial"
-)
+siteseries_preds(dbCon, obs = FALSE)
 }
 \arguments{
-\item{edatopes}{Character. Vector of desired edatopic positions. Default is "B2", "C4", "D6" (poor, mesic, rich).}
-
-\item{obs}{Logical. Do prediction for observed period? Default FALSE}
-
-\item{bgc_mapped}{List containing SpatRaster of BGCs and id table, or data.table (must have columns \code{cell},\code{BGC}). Usually created using \code{make_bgc_template}}
-
-\item{base_folder}{Base folder to write results to.}
-}
-\value{
-NULL. Writes results to csvs in base_folder/ss_preds
+\item{dbCon}{Database connection to duckdb}
 }
 \description{
 Create siteseries predictions from summarised BGC predictions
