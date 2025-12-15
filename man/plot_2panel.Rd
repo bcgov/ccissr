@@ -5,16 +5,18 @@
 \title{Create C.R. Mahony's two-panel map plot of historic suitability, suitability change, and a boxplot of change by zone}
 \usage{
 plot_2panel(
+  dbCon,
   spp,
   edatope,
   period,
   bgc_template,
   outline,
-  save_png = TRUE,
-  base_path
+  save_png = TRUE
 )
 }
 \arguments{
+\item{dbCon}{duckdb database connection}
+
 \item{spp}{Character. Species code to create plot for}
 
 \item{edatope}{Character. Edatope code to create plot for (e.g., "C4")}
@@ -26,8 +28,6 @@ plot_2panel(
 \item{outline}{SpatVector of aoi boundary.}
 
 \item{save_png}{Logical. Save plot to png? Default \code{TRUE}. If \code{FALSE}, creates plot on default plotting device.}
-
-\item{base_folder}{Base folder to read results from.}
 }
 \value{
 NULL. Creates plot

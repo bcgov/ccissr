@@ -132,7 +132,8 @@ spp_bubbleplot <- function(persist_expand, period_sel, scenario, species = "auto
 #' @export
 bgc_bubbleplot <- function(persist_expand, period, scenario) {
   unit.persistence.focal <- "none"
-  ColScheme <- rbind(copy(subzones_colours_ref),data.table(classification = names(colScheme), colour = colScheme))
+
+  ColScheme <- rbind(copy(subzones_colours_ref),copy(zones_colours_ref))
   
   units <- unique(persist_expand$bgc)
   period_sel <- period
@@ -179,28 +180,21 @@ bgc_bubbleplot <- function(persist_expand, period, scenario) {
 #' @param by_zone Logical. Plot by zone or subzone? Defaults to `TRUE`
 #' @param base_folder Base folder to read results from.
 #' @return NULL. Creates plot
-#' @import data.table
-#' @import ggplot2
+#' @import data.table duckdb ggplot2
 #' @importFrom ggalluvial geom_alluvium
 #' @export
-plot_spparea <- function(spp, edatope, bgc_template, fractional, by_zone = TRUE, base_folder) {
-  in_folder <- file.path(base_folder,"cciss_suit")
-  temp_ls <- list.files(in_folder, pattern = paste0("CCISS_.*",edatope,".csv"), full.names = TRUE)
-  cciss_suit <- lapply(temp_ls, FUN = fread)
-  cciss_suit <- rbindlist(cciss_suit)
-  cciss_spp <- cciss_suit[Spp == spp,]
+
+plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
+  cciss_spp <- dbGetQuery(dbCon, sprintf("select * from cciss_res where Spp = '%s' AND Edatope = '%s'", spp, edatope)) |> as.data.table()
+  bgc_mapped <- dbGetQuery(dbCon, "select * from bgc_points") |> as.data.table()
   
-  bgc_mapped <- as.data.frame(bgc_template$bgc_rast, cells = TRUE) 
-  setDT(bgc_mapped)
-  bgc_mapped[bgc_template$ids, bgc := i.bgc, on = "bgc_id"]
-  bgc_mapped[, bgc_id := NULL]
   if(by_zone) {
     bgc_mapped[, zone := regmatches(bgc, regexpr("^[A-Z]+", bgc))]
   } else {
     bgc_mapped[, zone := bgc]
   }
   
-  cciss_spp[bgc_mapped, zone := i.zone, on = c(SiteRef = "cell")]
+  cciss_spp[bgc_mapped, zone := i.zone, on = c(SiteRef = "cellnum")]
   
   
   if(fractional) {
@@ -224,7 +218,6 @@ plot_spparea <- function(spp, edatope, bgc_template, fractional, by_zone = TRUE,
   cciss_sum <- rbind(cciss_sum, cciss_hist)
   cciss_sum[, Year := as.factor(substr(FuturePeriod,1,4))]
   
-  # Suppose these are your time points:
   yrs <- unique(as.integer(cciss_sum$Year))
   idx <- seq_along(yrs)
   
@@ -252,10 +245,8 @@ plot_spparea <- function(spp, edatope, bgc_template, fractional, by_zone = TRUE,
     colScheme <- setNames(subzones_colours_ref$colour, subzones_colours_ref$classification)
   }
   
-
-  
-  cellarea <- (res(bgc_template$bgc_rast)[2]*111)*(res(bgc_template$bgc_rast)[1]*111*cos(mean(ext(bgc_template$bgc_rast)[3:4]) * pi / 180))
-  cciss_sum[, SppArea := SppArea * cellarea]
+  # cellarea <- (res(bgc_template$bgc_rast)[2]*111)*(res(bgc_template$bgc_rast)[1]*111*cos(mean(ext(bgc_template$bgc_rast)[3:4]) * pi / 180))
+  # cciss_sum[, SppArea := SppArea * cellarea]
   
   ggplot(cciss_sum, aes(x = Year, y = SppArea, fill = zone)) +
     geom_alluvium(aes(alluvium = zone), alpha= .9, color = "black") +
@@ -274,19 +265,17 @@ plot_spparea <- function(spp, edatope, bgc_template, fractional, by_zone = TRUE,
 #' Create C.R. Mahony's two-panel map plot of historic suitability, suitability change, and a boxplot of change by zone
 #' @description
 #' Note that currently, this function only works correctly if the preceeding analysis has been done using an Albers grid.
-#' 
+#' @param dbCon duckdb database connection
 #' @param spp Character. Species code to create plot for
 #' @param edatope Character. Edatope code to create plot for (e.g., "C4")
 #' @param period Character. Period to create plot for.
 #' @param bgc_template List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_template`
 #' @param outline SpatVector of aoi boundary.
 #' @param save_png Logical. Save plot to png? Default `TRUE`. If `FALSE`, creates plot on default plotting device.
-#' @param base_folder Base folder to read results from.
 #' @return NULL. Creates plot
-#' @import data.table
-#' @import terra
+#' @import data.table duckdb terra
 #' @export
-plot_2panel <- function(spp, edatope, period, bgc_template, outline, save_png = TRUE, base_path) {
+plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save_png = TRUE) {
   
   zoneScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
                  CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
@@ -326,8 +315,7 @@ plot_2panel <- function(spp, edatope, period, bgc_template, outline, save_png = 
   
   ##=================================
   ###historic suitability
-  feasVals <- fread(paste0(base_path,"/cciss_suit/CCISS_", period, "_",edatope,".csv"))
-  dat_spp <- feasVals[Spp == spp,]
+  dat_spp <- dbGetQuery(dbCon, sprintf("select * from cciss_res where Spp = '%s' AND FuturePeriod = '%s' AND Edatope = '%s'", spp, period, edatope)) |> as.data.table()
   dat_spp[,FeasChange := Curr - Newsuit]
   dat_spp[,Curr := as.integer(round(Curr))]
   dat_spp[is.na(Curr) | Curr > 3.5, Curr := 5]

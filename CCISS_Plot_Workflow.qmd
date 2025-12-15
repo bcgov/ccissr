@@ -22,14 +22,13 @@ library(climr)
 
 BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
 
-bumobnd <- st_read("bdy.BuMo.shp")
-dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
-dem <- mask(dem, vect(bumobnd))
-dem2 <- aggregate(dem, fact = 45)
+# bumobnd <- st_read("bdy.BuMo.shp")
+# dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
+# dem <- mask(dem, vect(bumobnd))
+# dem2 <- aggregate(dem, fact = 45)
 
-#dem2 <- rast("dem_BC2kmGrid.tif")
+dem2 <- rast("dem_BC2kmGrid.tif")
 dem_table <- climr::dem_to_table(dem2)
-#dem2 <- project(dem, "epsg:4326")
 ```
 
 ## Setup parameters for model
@@ -49,18 +48,17 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 ## Create Mapped BGC Raster
 
 ```{r}
-bgcs <- vect("../Common_Files/BEC13Draft_4326.gpkg")
+bgcs <- vect("../Common_Files/BEC13Draft_Simplified.gpkg")
 bgc_template <- make_bgc_template(dem2, bgcs)
 
 plot(bgc_template$bgc_rast)
 ```
 
-
 ## Setup database
 
 ```{r}
-con <- dbCon_cciss("./BuMoTest.duckdb", threads = 8)
-dbPopulate(con, bgc_template)
+con <- dbCon_cciss("./cciss.duckdb", threads = 8)
+#dbPopulate(con, bgc_template)
 ```
 
 ## Run Raw BGC Predictions
@@ -73,11 +71,10 @@ predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = c("
 
 ```
 
-
 ## Calculate BGC Persistance/Expansion
 
 ```{r}
-bgc_perexp <- bgc_persist_expand(con, by_zone = FALSE)
+bgc_perexp <- bgc_persist_expand(con, by_zone = TRUE)
 ```
 
 ## BGC Bubbleplot
@@ -106,13 +103,13 @@ spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = 
 ## Calculate Relative Feasible Area
 
 ```{r}
-sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw"))
+sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd"))
 ```
 
 ## Species Spaghetti Plot with indiv. Runs
 
 ```{r}
-spp_spaghettiplot(sa, species = "Pl")
+spp_spaghettiplot(sa, species = "Sx")
 ```
 
 # Alluvial Plot
@@ -129,22 +126,15 @@ Great! Now we have that we can create the siteseries and suitability predictions
 ```{r}
 siteseries_preds(con)
 spp <- c("Fd","Pl","Sx")
-cciss_suitability(species = spp, periods = list_gcm_periods()[-1], edatopes = edas, base_folder = base_path)
+cciss_suitability(con, species = spp)
 ```
 
 And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
 
 ```{r}
-plot_spparea(spp = "Fd", edatope = "B2", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
-plot_spparea(spp = "Fd", edatope = "C4", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
-plot_spparea(spp = "Fd", edatope = "D6", bgc_template = bgc_template, fractional = TRUE, base_folder = base_path)
-```
-
-Let's try a different species:
-
-```{r}
-plot_spparea(spp = "Fd", edatope = "B2", bgc_template = bgc_template, fractional = TRUE, by_zone = TRUE, base_folder = base_path)
-plot_spparea(spp = "Fd", edatope = "C4", bgc_template = bgc_template, fractional = TRUE, by_zone = TRUE, base_folder = base_path)
+plot_spparea(con, spp = "Fd", edatope = "B2", fractional = TRUE)
+plot_spparea(con, spp = "Fd", edatope = "C4", fractional = TRUE)
+plot_spparea(con, spp = "Fd", edatope = "D6", fractional = TRUE)
 ```
 
 # 2 Panel Map Plot
@@ -154,5 +144,5 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 
-plot_2panel(spp = "Pl", edatope = "C4", period = "2061_2080", bgc_template = bgc_template, outline = bc_ol, save_png = FALSE, base_path = base_path)
+plot_2panel(con, spp = "Pl", edatope = "C4", period = "2041_2060", bgc_template = bgc_template, outline = bc_ol, save_png = FALSE)
 ```

@@ -54,6 +54,10 @@ predict_bgc <- function(dbCon,
                               ssp_use = c("ssp126", "ssp245", "ssp370"),
                               max_runs_use = 0L,
                               start_tile = 1) {
+  if(duckdb_table_exists(dbCon, "bgc_raw")) {
+    message("Use cached table bgc_raw :)")
+    return(invisible(TRUE))
+  }
   
   if(inherits(xyz, "SpatRaster")){
     points_dat <- as.data.frame(xyz, cells=T, xy=T)
@@ -86,19 +90,11 @@ predict_bgc <- function(dbCon,
     dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, run = clim_dat$RUN,
                       period = clim_dat$PERIOD, bgc_pred = temp$predictions)
     dbWriteTable(dbCon, "bgc_raw", dat, row.names = FALSE, append = TRUE)
-    # if(!summarise){
-    #   fwrite(dat, paste0(out_folder, "/bgc_raw_",i, ".csv"), append = TRUE)
-    # } else {
-    #   dat[ssp_weights, weight := i.weight, on = "ssp"]
-    #   dat_sum <- dat[,.(bgc_prop = sum(weight)/20.8), by = .(cellnum, period, bgc_pred)] ##need to fix this for runs
-    #   fwrite(dat_sum, paste0(out_folder, "/bgc_summary_",i, ".csv"), append = TRUE)
-    #   rm(dat_sum)
-    # }
 
     rm(clim_dat, dat)
     gc()
   }
-  cat("Done!")
+  message("Created table bgc_raw")
 }
 
 
@@ -135,10 +131,15 @@ predict_bgc <- function(dbCon,
 
 #' Create siteseries predictions from summarised BGC predictions
 #' @param dbCon Database connection to duckdb
-#' @import data.table, duckdb
+#' @import data.table duckdb
 #' @export
 siteseries_preds <- function(dbCon,
                              obs = FALSE) {
+  if(duckdb_table_exists(dbCon, "siteseries_preds")) {
+    message("✓ Using cached table siteseries_preds")
+    return(invisible(TRUE))
+  }
+  
   bgc_all <- dbGetQuery(dbCon, "select * from bgc_summary") |> as.data.table()
   bgc_points <- dbGetQuery(dbCon, "select * from bgc_points") |> as.data.table()
   
@@ -187,6 +188,18 @@ cciss_suitability <- function(dbCon,
                               species,
                               obs = FALSE,
                               tile_size = 4000) {
+  if(duckdb_table_exists(dbCon, "cciss_res")) {
+    spp <- dbGetQuery(dbCon, "select distinct Spp from cciss_res")$Spp
+    missing_spp <- setdiff(species, spp)
+    if(length(missing_spp) == 0){
+      message("All requested species already cached :)")
+      return(invisible(TRUE))
+    } else {
+      message("Calculating CCISS for ", paste(missing_spp, collapse = ", "))
+      species <- missing_spp
+    }
+  }
+  
   feas_table <- dbGetQuery(dbCon, "select * from suitability") |> as.data.table()
   setnames(feas_table, c("BGC", "Spp","SS_NoSpace", "Feasible"))
   edatopes <- dbGetQuery(dbCon, "select distinct Edatopic from edatopic")$Edatopic
@@ -213,7 +226,7 @@ cciss_suitability <- function(dbCon,
     rm(sspreds)
     gc()
   }
-  message("✓ Created table cciss_res !")
+  message("✓ Created or updated table cciss_res !")
 }
 
 #' Create geotif rasters of projected suitabilities for each species/edatope/period

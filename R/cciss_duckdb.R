@@ -53,6 +53,7 @@ dbCon_cciss <- function(
 #' @param dbCon Database connection
 #' @param bgc_template
 #' @param edatopes Character vector of edatopes
+#' @import duckdb data.table
 #' @export
 dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
   
@@ -89,6 +90,11 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
 summarise_preds <- function(dbCon,
                             ssp_use = c("ssp126", "ssp245", "ssp370"),
                             ssp_w = c(0.8,1,0.8)) {
+  if(duckdb_table_exists(dbCon, "bgc_summary")) {
+    message("✓ Using cached table bgc_summary")
+    return(invisible(TRUE))
+  }
+  
   ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
   dbWriteTable(dbCon, "ssp_weights", ssp_weights, temporary = TRUE)
   

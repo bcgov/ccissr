@@ -4,25 +4,18 @@
 \alias{plot_spparea}
 \title{Create alluvial/stacked bar plot of projected area by zone/subzone}
 \usage{
-plot_spparea(
-  spp,
-  edatope,
-  bgc_template,
-  fractional,
-  by_zone = TRUE,
-  base_folder
-)
+plot_spparea(dbCon, spp, edatope, fractional, by_zone = TRUE)
 }
 \arguments{
 \item{spp}{Character. Single species to use for plot}
 
 \item{edatope}{Character. Single edatopic position for plot (e.g., "C4")}
 
-\item{bgc_template}{List containing SpatRaster of BGCs and id table, or data.table (must have columns \code{cell},\code{BGC}). Usually created using \code{make_bgc_template}}
-
 \item{fractional}{Logical. Use fractional (suitability based) values for calculations?}
 
 \item{by_zone}{Logical. Plot by zone or subzone? Defaults to \code{TRUE}}
+
+\item{bgc_template}{List containing SpatRaster of BGCs and id table, or data.table (must have columns \code{cell},\code{BGC}). Usually created using \code{make_bgc_template}}
 
 \item{base_folder}{Base folder to read results from.}
 }
