@@ -7,18 +7,14 @@
 cciss_suitability(dbCon, species, obs = FALSE, tile_size = 4000)
 }
 \arguments{
+\item{dbCon}{duckdb database connection}
+
 \item{species}{Character vector. Species codes to create projections for.}
 
 \item{tile_size}{Integer. Number of sites to process at once. May need to decrease if memory is limited. Default 4000}
-
-\item{edatopes}{Character vector. List of edatopes for projections. Must be a subset of the edatopes run in \code{siteseries_preds}}
-
-\item{periods}{Character. Periods to run projections for. Default is \code{list_gcm_periods()}}
-
-\item{base_folder}{Base folder to write results to.}
 }
 \value{
-NULL. Writes results to csvs in base_folder/cciss_suit
+NULL. Writes table to database
 }
 \description{
 Create projected suitability values from site series predictions.

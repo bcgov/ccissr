@@ -166,6 +166,7 @@ siteseries_preds <- function(dbCon,
         srs <- sites[splits[i]:(splits[i+1]-1)]
         dat_sml <- bgc_sum[SiteRef %in% srs,]
         sspred <- edatopicOverlap_fast(dat_sml, E1 = eda_table)
+        sspred[,Edatope := edatope]
         dbWriteTable(dbCon, "siteseries_preds", sspred, append = TRUE, row.names = FALSE)
         rm(sspred)
         gc()
@@ -176,45 +177,34 @@ siteseries_preds <- function(dbCon,
 }
 
 #' Create projected suitability values from site series predictions.
+#' @param dbCon duckdb database connection
 #' @param species Character vector. Species codes to create projections for. 
-#' @param edatopes Character vector. List of edatopes for projections. Must be a subset of the edatopes run in `siteseries_preds`
-#' @param periods Character. Periods to run projections for. Default is `list_gcm_periods()`
-#' @param base_folder Base folder to write results to.
 #' @param tile_size Integer. Number of sites to process at once. May need to decrease if memory is limited. Default 4000
-#' @return NULL. Writes results to csvs in base_folder/cciss_suit
-#' @import data.table
+#' @return NULL. Writes table to database
+#' @import data.table duckdb
 #' @export
 cciss_suitability <- function(dbCon,
                               species,
                               obs = FALSE,
                               tile_size = 4000) {
-  feas_table <- dbGetQuery(dbCon, "select * from suitability")
-  setnames(feas_table, c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR"))
+  feas_table <- dbGetQuery(dbCon, "select * from suitability") |> as.data.table()
+  setnames(feas_table, c("BGC", "Spp","SS_NoSpace", "Feasible"))
+  edatopes <- dbGetQuery(dbCon, "select distinct Edatopic from edatopic")$Edatopic
+  periods <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
  # stopifnot(all(c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR") %in% names(feas_table)))
-  
-  in_folder <- file.path(base_folder,"ss_preds")
-  if(!dir.exists(paste0(base_folder,"/cciss_suit"))) dir.create(paste0(base_folder,"/cciss_suit"))
-  out_folder <- paste0(base_folder,"/cciss_suit")
-  
-  if(obs) {
-    periods <- list_obs_periods()
-    obs_nm <- "obs_"
-  } else {
-    obs_nm <- ""
-  }
-  
   for(period in periods){
     for(edatope in edatopes){
-      sspreds <- fread(paste0(in_folder,"/siteseries_",obs_nm,period,"_",edatope,".csv"))
+      sspreds <- dbGetQuery(dbCon, sprintf("select * from siteseries_preds where FuturePeriod = '%s' AND Edatope = '%s'", period, edatope)) |> as.data.table()
       sitenums <- unique(sspreds$SiteRef)
       splits <- c(seq(1, length(sitenums), by = tile_size), length(sitenums) + 1)
       for(spp in species){
-        message(period, edatope, spp, "\n")
+        message(period, " ", edatope, " ", spp)
         for (i in 1:(length(splits) - 1)){
           temp <- sspreds[SiteRef %in% sitenums[splits[i]:(splits[i+1]-1)],]
           cciss_res <- cciss_full(temp, feas_table, spp)
           cciss_res <- na.omit(cciss_res, cols = "SiteRef")
-          fwrite(cciss_res, append = TRUE, paste0(out_folder,"/CCISS_",obs_nm,period,"_",edatope,".csv"))
+          cciss_res[,Edatope := edatope]
+          dbWriteTable(dbCon, "cciss_res", cciss_res, row.names = FALSE, append = TRUE)
         }
         rm(cciss_res)
         gc()
@@ -223,7 +213,7 @@ cciss_suitability <- function(dbCon,
     rm(sspreds)
     gc()
   }
-  cat("Done!")
+  message("✓ Created table cciss_res !")
 }
 
 #' Create geotif rasters of projected suitabilities for each species/edatope/period

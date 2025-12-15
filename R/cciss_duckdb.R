@@ -72,19 +72,19 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
   
   suit <- copy(S1) ##Suitability table
   suit <- na.omit(suit, cols = "spp")
-  suit <- suit[,.(spp,ss_nospace,newfeas)]
+  suit <- suit[,.(bgc,spp,ss_nospace,newfeas)]
   dbWriteTable(dbCon, "suitability", suit, row.names = FALSE, overwrite = TRUE)
   
   message("✓ Written bgc_points, edatopic, and suitability tables to duckdb!")
   return(invisible(TRUE))
 }
 
-#' Summarise raw BGC predictions
+#' Summarise raw BGC predictions in database
 #' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
 #' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
 #' @param base_folder Character. Name of base folder to write results to.
 #' @return NULL. Results are written to csv files in base_folder/bgc_data
-#' @import data.table
+#' @import data.table duckdb
 #' @export
 summarise_preds <- function(dbCon,
                             ssp_use = c("ssp126", "ssp245", "ssp370"),
@@ -120,12 +120,14 @@ summarise_preds <- function(dbCon,
 }
 
 
-#' Create table of BGC subzone/variant persistance/expansion from raw BGC projections
-#' @param bgc_mapped List containing SpatRaster of BGCs and id table, or data.table (must have columns `cell`,`BGC`). Usually created using `make_bgc_template`
-#' @param periods Character. Either "auto" or vector of period names. If "auto", all periods present in bgc projections will be used.
-#' @param base_folder Base folder to read results from.
+#' Create table of BGC subzone/zone persistance/expansion from raw BGC projections
+#' @details
+#' This function will cache the resulting table in the database for faster future use.
+#' 
+#' @param dbCon database connection to duckdb
+#' @param by_zone Logical. Summarise by Zone, or subzone variant? Default `TRUE`
 #' @return data.table containing persistance and expansion for each model/period/scenario/bgc
-#' @import data.table
+#' @import data.table duckdb
 #' @export
 bgc_persist_expand <- function(dbCon, by_zone = TRUE){
   if(by_zone){
@@ -231,7 +233,11 @@ calc_bgc_persist_expand <- function(dbCon, by_zone = TRUE){
   return(res)
 }
 
-
+#' Check in table exisits in current database
+#' @param dbcon duckdb connection
+#' @param table_name Character
+#' @return Logical
+#' @export
 duckdb_table_exists <- function(dbCon, table_name) {
   sql <- sprintf("
     SELECT COUNT(*) > 0 AS exists
@@ -476,6 +482,16 @@ calc_spp_persist_expand <- function(
   return(as.data.table(res))
 }
 
+#' Create table of species persistance/expansion from raw BGC projections
+#' @details
+#' The calculation of species persistance can take a while - about 15 min for a 2km grid of BC. This function uses smart caching to try and speed up workflows. The first time the function is run, it caches compute-heavy tables that can be reused, as well as caching final results. Only species that have not yet been calculated will be processed.
+#' 
+#' @param dbCon duckdb database connection
+#' @param species Character. Vector of species codes to use.
+#' @param fractional Logical. Use fractional (suitability based) values for calculations?
+#' @return data.table containing persistance and expansion for each model/period/scenario/species
+#' @import data.table duckdb
+#' @export
 spp_persist_expand <- function(dbCon, spp_list, fractional = TRUE) {
   if(fractional){
     tbl_nm <- "spp_per_exp_frac"
@@ -711,6 +727,13 @@ calc_suit_area <- function(
   return(as.data.table(res))
 }
 
+#' Create table of species relative suitabile area
+#' @param dbCon duckdb database connection
+#' @param spp_list Character vector of species to analyse
+#' @param fractional Logical. Use fractional (suitability based) values for calculations?
+#' @return data.table containing relative area for each run/model/period/scenario/species
+#' @import data.table duckdb
+#' @export
 spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
   if(fractional){
     tbl_nm <- "spp_suit_area_frac"

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cciss_duckdb.R
 \name{summarise_preds}
 \alias{summarise_preds}
-\title{Summarise raw BGC predictions}
+\title{Summarise raw BGC predictions in database}
 \usage{
 summarise_preds(
   dbCon,
@@ -21,5 +21,5 @@ summarise_preds(
 NULL. Results are written to csv files in base_folder/bgc_data
 }
 \description{
-Summarise raw BGC predictions
+Summarise raw BGC predictions in database
 }
