@@ -11,6 +11,7 @@ plot_2panel(
   period,
   bgc_template,
   outline,
+  three_panel = FALSE,
   save_png = TRUE
 )
 }

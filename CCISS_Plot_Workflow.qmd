@@ -20,7 +20,7 @@ library(bcmaps)
 library(sf)
 library(climr)
 
-BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
+#BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
 
 # bumobnd <- st_read("bdy.BuMo.shp")
 # dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
@@ -57,7 +57,7 @@ plot(bgc_template$bgc_rast)
 ## Setup database
 
 ```{r}
-con <- dbCon_cciss("./cciss.duckdb", threads = 8)
+con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
 dbPopulate(con, bgc_template)
 ```
 
@@ -103,13 +103,14 @@ spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = 
 ## Calculate Relative Feasible Area
 
 ```{r}
-sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd"))
+sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd","Cw"))
 ```
 
 ## Species Spaghetti Plot with indiv. Runs
 
 ```{r}
-spp_spaghettiplot(sa, species = "Fd")
+spp_spaghettiplot(sa, species = "Cw", use_MAT = FALSE)
+spp_spaghettiplot(sa, species = "Cw", use_MAT = TRUE)
 ```
 
 # Alluvial Plot

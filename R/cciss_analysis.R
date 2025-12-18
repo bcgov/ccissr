@@ -3,43 +3,63 @@
 #' Create a spaghetti plot for a single species over multiple edatopes
 #' @param suit_area data.table. Usually created with `spp_suit_area`
 #' @param species Character. Single species to create plot for
+#' @param use_MAT Use change in mean annual temperature as x-axis instead of time? Default to `FALSE`
 #' @return NULL. Creates plot
 #' @import data.table
 #' @import ggplot2
 #' @importFrom stinepack stinterp
 #' @export
-spp_spaghettiplot <- function(suit_area, species) {
+spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
   suit_area <- suit_area[spp == species,]
-  suit_area[,Year := as.integer(substr(period,1,4))]
+  if(use_MAT) {
+    suit_area[,xvar := MAT_diff]
+  } else {
+    suit_area[,xvar := as.integer(substr(period,1,4))]
+  }
+
   dat_spline <- suit_area[
     , {
-      dt <- rbind(.SD, data.table(Year = 2000, Suit_Prop = 1), fill = TRUE)
-      o <- order(dt$Year)
-      x <- dt$Year[o]
+      if(use_MAT){
+        dt <- rbind(.SD, data.table(xvar = 0, Suit_Prop = 1), fill = TRUE)
+      } else {
+        dt <- rbind(.SD, data.table(xvar = 2000, Suit_Prop = 1), fill = TRUE)
+      }
+      o <- order(dt$xvar)
+      x <- dt$xvar[o]
       y <- dt$Suit_Prop[o]
       
       # interpolate
       xout <- seq(min(x), max(x), length.out = 100)
       yout <- stinterp(x, y, xout)$y
       
-      .(Year = xout, Suit_Spline = yout)
+      .(xvar = xout, Suit_Spline = yout, Spline_Num = 1:100)
     },
     by = .(Edatopic, ssp, gcm, run)
   ]
-  
   dat_spline[, Group := interaction(ssp, gcm, run)]
-  mean_spline <- dat_spline[
-    , .(Suit_Spline = mean(Suit_Spline)),
-    by = .(Edatopic, ssp, Year)
-  ]
-  
-  ggplot(dat_spline, aes(x = Year, y = Suit_Spline, group = Group, colour = ssp)) +
-    geom_line(alpha = 0.4) +
-    geom_line(data = mean_spline, aes(group = ssp), size = 1.4) +
-    facet_wrap(~Edatopic)+
-    theme_minimal() +
-    ylab("Proportion of Historic Suitable Area")
-  
+  if(use_MAT){
+    mean_spline <- dat_spline[
+      , .(Suit_Spline = mean(Suit_Spline, na.rm = T), xvar = mean(xvar, na.rm = T)),
+      by = .(Edatopic, Spline_Num)
+    ]
+    ggplot(dat_spline, aes(x = xvar, y = Suit_Spline, group = Group)) +
+      geom_line(alpha = 0.4) +
+      geom_line(data = mean_spline, aes(x = xvar, y = Suit_Spline), inherit.aes = FALSE, linewidth = 1.4) +
+      facet_wrap(~Edatopic)+
+      theme_minimal() +
+      ylab("Proportion of Historic Suitable Area")
+  } else {
+    mean_spline <- dat_spline[
+      , .(Suit_Spline = mean(Suit_Spline), xvar = mean(xvar)),
+      by = .(Edatopic, ssp, Spline_Num)
+    ]
+    ggplot(dat_spline, aes(x = xvar, y = Suit_Spline, group = Group, colour = ssp)) +
+      geom_line(alpha = 0.4) +
+      geom_line(data = mean_spline, aes(group = ssp), size = 1.4) +
+      facet_wrap(~Edatopic)+
+      theme_minimal() +
+      ylab("Proportion of Historic Suitable Area")
+  }
 }
 
 

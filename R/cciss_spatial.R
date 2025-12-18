@@ -80,21 +80,44 @@ predict_bgc <- function(dbCon,
                           gcm_periods = periods_use,
                           ssps = ssp_use,
                           max_run = max_runs_use,
-                          vars = vars_needed,
+                          vars = c(vars_needed, "MAT"),
                           nthread = 6,
                           return_refperiod = FALSE)
     addVars(clim_dat)
     clim_dat <- na.omit(clim_dat)
+    
+    mat_dat <- clim_dat[,.(cellnum = id, ssp = SSP, gcm = GCM, run = RUN, period = PERIOD, MAT)]
+    dbWriteTable(dbCon, "clim_raw", mat_dat, row.names = FALSE, append = TRUE)
+    
     setnames(clim_dat, old = c("PAS_an","Tmin_an","CMI_an"), new = c("PAS","Tmin","CMI"))
     temp <- predict(BGCmodel, data = clim_dat, num.threads = 8)
     dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, run = clim_dat$RUN,
                       period = clim_dat$PERIOD, bgc_pred = temp$predictions)
     dbWriteTable(dbCon, "bgc_raw", dat, row.names = FALSE, append = TRUE)
 
-    rm(clim_dat, dat)
+    rm(clim_dat, dat, mat_dat)
     gc()
   }
-  message("Created table bgc_raw")
+  message("Created table bgc_raw and clim_raw")
+  
+  ref_clim <- climr::downscale(points_dat, which_refmap = "refmap_climr", vars = "MAT", return_refperiod = TRUE)
+  ref_clim[,PERIOD := NULL]
+  setnames(ref_clim, c("cellnum","MAT"))
+  dbWriteTable(dbCon, "clim_refperiod", ref_clim, row.names = FALSE)
+  
+  qry <- "CREATE TABLE clim_summary AS
+                      
+                      WITH clim_diff AS (
+                        select a.cellnum, ssp, gcm, run, period, (a.MAT - clim_refperiod.MAT) as MAT_diff
+                        FROM clim_raw a
+                        JOIN clim_refperiod USING (cellnum)
+                      )
+                      SELECT
+                        ssp, gcm, run, period, AVG(MAT_diff) as MAT_diff
+                      FROM clim_diff
+                      GROUP BY ssp, gcm, run, period;"
+  dbExecute(dbCon, qry)
+  message("Created table clim_refperiod and clim_summary")
 }
 
 

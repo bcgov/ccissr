@@ -4,12 +4,14 @@
 \alias{spp_spaghettiplot}
 \title{Create a spaghetti plot for a single species over multiple edatopes}
 \usage{
-spp_spaghettiplot(suit_area, species)
+spp_spaghettiplot(suit_area, species, use_MAT = FALSE)
 }
 \arguments{
 \item{suit_area}{data.table. Usually created with \code{spp_suit_area}}
 
 \item{species}{Character. Single species to create plot for}
+
+\item{use_MAT}{Use change in mean annual temperature as x-axis instead of time? Default to \code{FALSE}}
 }
 \value{
 NULL. Creates plot

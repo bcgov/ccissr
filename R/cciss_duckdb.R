@@ -85,7 +85,8 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
 #' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
 #' @param base_folder Character. Name of base folder to write results to.
 #' @return NULL. Results are written to csv files in base_folder/bgc_data
-#' @import data.table duckdb
+#' @import data.table
+#' @importFrom DBI dbExecute
 #' @export
 summarise_preds <- function(dbCon,
                             ssp_use = c("ssp126", "ssp245", "ssp370"),
@@ -96,7 +97,7 @@ summarise_preds <- function(dbCon,
   }
   
   ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
-  dbWriteTable(dbCon, "ssp_weights", ssp_weights, temporary = TRUE)
+  dbWriteTable(dbCon, "ssp_weights", ssp_weights, temporary = TRUE, overwrite = TRUE)
   
   summarised_qry <- "CREATE TABLE bgc_summary AS
                       WITH wt AS (
@@ -781,9 +782,10 @@ spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
   }
   
   res <- dbGetQuery(dbCon, sprintf("
-    SELECT *
-    FROM %s
-    WHERE spp IN (%s)
+    SELECT a.*, MAT_diff
+    FROM %s a
+    JOIN clim_summary USING (ssp, gcm, run, period)
+    WHERE a.spp IN (%s)
   ", tbl_nm, spp_sql)) |> as.data.table()
   return(res)
 }
