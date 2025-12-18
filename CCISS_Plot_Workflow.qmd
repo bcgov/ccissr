@@ -109,7 +109,7 @@ sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd"))
 ## Species Spaghetti Plot with indiv. Runs
 
 ```{r}
-spp_spaghettiplot(sa, species = "Sx")
+spp_spaghettiplot(sa, species = "Fd")
 ```
 
 # Alluvial Plot
@@ -132,9 +132,9 @@ cciss_suitability(con, species = spp)
 And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
 
 ```{r}
-plot_spparea(con, spp = "Fd", edatope = "B2", fractional = TRUE)
-plot_spparea(con, spp = "Fd", edatope = "C4", fractional = TRUE)
-plot_spparea(con, spp = "Fd", edatope = "D6", fractional = TRUE)
+plot_spparea(con, spp = "Pl", edatope = "B2", fractional = TRUE)
+plot_spparea(con, spp = "Pl", edatope = "C4", fractional = TRUE)
+plot_spparea(con, spp = "Pl", edatope = "D6", fractional = TRUE)
 ```
 
 # 2 Panel Map Plot
@@ -144,5 +144,9 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 
-plot_2panel(con, spp = "Pl", edatope = "C4", period = "2041_2060", bgc_template = bgc_template, outline = bc_ol, save_png = FALSE)
+plot_2panel(con, spp = "Fd", edatope = "C4", period = "2041_2060", bgc_template = bgc_template, outline = bc_ol, three_panel = FALSE, save_png = TRUE)
+```
+
+```{bash}
+cdo -outputtab,date,value -fldmean -daymin -selname,T2 -settaxis,2018-04-01,00:00:00,1hour -delete,timestep=1 test_precip.nc
 ```

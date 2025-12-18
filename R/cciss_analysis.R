@@ -132,7 +132,7 @@ spp_bubbleplot <- function(persist_expand, period_sel, scenario, species = "auto
 #' @export
 bgc_bubbleplot <- function(persist_expand, period, scenario) {
   unit.persistence.focal <- "none"
-
+  persist_expand <- na.omit(persist_expand, col = c("Persistance","Expansion"))
   ColScheme <- rbind(copy(subzones_colours_ref),copy(zones_colours_ref))
   
   units <- unique(persist_expand$bgc)
@@ -275,7 +275,7 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
 #' @return NULL. Creates plot
 #' @import data.table duckdb terra
 #' @export
-plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save_png = TRUE) {
+plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, three_panel = FALSE, save_png = TRUE) {
   
   zoneScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
                  CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
@@ -297,7 +297,11 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save
   # outline <- vect("data-raw/data_tables/bc_outline.gpkg")
 
   if(save_png){
-    png(file=paste("./Two_Panel",spp,edatope,period,"png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=12, res=300)
+    if(three_panel){
+      png(file=paste("./Three_Panel",spp,edatope,period,"png",sep = "."), type="cairo", units="in", width=6.5, height=2.9, pointsize=9, res=400)
+    } else {
+      png(file=paste("./Two_Panel",spp,edatope,period,"png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=12, res=300)
+    }
   }
   
   par(plt=c(0,1,0,1), bg="white")
@@ -306,8 +310,8 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save
   Latin <- as.character(spps.lookup$ScientificName[which(spps.lookup$TreeCode==spp)])
   mtext(if(spp%in%spps.lookup$TreeCode) bquote(bold(.(spp))~"-"~.(Common)) else bquote(bold(.(spp))),
         side=3, line=-2.5, adj=0.01, cex=0.9, font=2)
-  if(edatope %in% edatope.names) {
-    mtext(paste("Site type: ", edatope, " (", edatope.names[edatopes == edatope], ")", sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
+  if(edatope %in% edatopes) {
+    mtext(paste("Site type: ", edatope, " (", edatope.names[edatope == edatopes], ")", sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
   } else {
     mtext(paste("Site type: ", edatope, sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
   }
@@ -326,13 +330,17 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save
   breakseq <- c(0.5,1.5,2.5,3.5,5)
   ColScheme <- c("darkgreen", "dodgerblue1", "gold2", "white")
   
-  par(plt = c(0, 0.5, 0.05, 0.6),new = TRUE, xpd = TRUE)
+  if(three_panel){
+    par(plt = c(0, 0.3, 0, 0.6),new = TRUE, xpd = TRUE)
+  } else {
+    par(plt = c(0, 0.5, 0.05, 0.6),new = TRUE, xpd = TRUE)
+  }
   
   image(X,xlab = NA,ylab = NA,bty = "n",  xaxt="n", yaxt="n",
         col=ColScheme, breaks=breakseq,asp = 1)
-  terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
-  legend("topleft", legend=c("1 (primary)", "2 (secondary)", "3 (tertiary)"),
-         fill=ColScheme, bty="n", cex=0.8, title="Historical feasibility", inset=c(0.1,-0.3))
+  plot(outline, add=T, border="black",col = NA, lwd=0.4)
+  par(xpd = NA)
+  legend("topleft", legend=c("1 (primary)", "2 (secondary)", "3 (tertiary)"), fill=ColScheme, bty="n", cex=0.8, title="Historical feasibility", inset=c(0,-0.3))
   # mtext(paste("(", letters[1],")", sep=""), side=3, line=-2.75, adj=0.05, cex=0.8, font=2)
   
   
@@ -352,13 +360,22 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save
   ColScheme2 <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,4)], "grey90", colorRampPalette(c("white", "khaki1", "gold"))(6));
   ColScheme3 <- 1
   
-  par(plt = c(0.25, 0.95, 0.175, 1), xpd = TRUE, new = TRUE)
+  if(three_panel){
+    par(plt = c(0.25,0.75,0,1), xpd = TRUE, new = TRUE)
+  } else {
+    par(plt = c(0.25, 0.95, 0.175, 1), xpd = TRUE, new = TRUE)
+  }
+  
   image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme, breaks=breakpoints, asp = 1)
   image(X2, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme2, breaks=breakpoints, asp = 1)
   image(X3, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme3, asp = 1)
-  terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
+  plot(outline, add=T, border="black",col = NA, lwd=0.4)
   
   xl <- 1600000; yb <- 1000000; xr <- 1700000; yt <- 1700000; xadj <- 10000
+  if(three_panel) {
+    xl <- 325000; yb <- 900000; xr <- 400000; yt <- 1525000; xadj <- 10000
+  }
+  par(xpd = NA)
   y.int <- (yt-yb)/length(ColScheme)
   rect(xl+xadj,  head(seq(yb,yt,y.int),-1),  xr,  tail(seq(yb,yt,y.int),-1),  col=ColScheme)
   rect(xl-diff(c(xl+xadj, xr)),  head(seq(yb,yt,y.int),-1),  xl-xadj,  tail(seq(yb,yt,y.int),-1),  col=ColScheme2)
@@ -368,7 +385,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save
   text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in feasibility", sep=""), srt=90, pos=3, cex=0.85, font=2)
   rect(xl+xadj,  yb-y.int-20000,  xr,  yb-20000,  col="black")
   text(xr, yb-y.int/2-30000, "Loss", pos=4, cex=0.8, font=1)
-  par(xpd=F)
+  
 
   ##=================================
   ## Summary by zone
@@ -380,11 +397,15 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save
   
   dat_spp[bgc_mapped, zone := i.zone, on = c(SiteRef = "cell")]
   
+  if(three_panel){
+    par(xpd=F, mar=c(4.5,2,0.1,0.1), plt = c(0.79, 0.995, 0.1, 0.275), new = TRUE, mgp=c(1.25,0.15,0))
+  } else {
+    par(mar=c(0,0,0,0), plt = c(0.77, 0.995, 0.001, 0.31), new = TRUE, mgp=c(1.25,0.15,0))
+    plot(0, xlim=c(0,1), ylim=c(0,1), col="white", xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
+    
+    par(mar=c(4.5,2,0.1,0.1), plt = c(0.7, 0.995, 0.08, 0.2), new = TRUE, mgp=c(1.25,0.15,0))
+  }
   
-  par(mar=c(0,0,0,0), plt = c(0.77, 0.995, 0.001, 0.31), new = TRUE, mgp=c(1.25,0.15,0))
-  plot(0, xlim=c(0,1), ylim=c(0,1), col="white", xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
-  
-  par(mar=c(4.5,2,0.1,0.1), plt = c(0.7, 0.995, 0.08, 0.2), new = TRUE, mgp=c(1.25,0.15,0))
   ylim=c(-3,3)
   zones_curr <- unique(dat_spp$zone)
   xlim=c(1, length(unique(dat_spp$zone)))
@@ -394,11 +415,33 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, save
     z$stats[c(1,5), i] <- quantile(temp[!is.na(temp)],c(0.05, 0.95))
   }
   bxp(z, xlim=xlim, ylim=ylim, xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
-  lines(c(-99,99), c(0,0), lwd=2, col="darkgrey")
+  lines(c(0, length(unique(dat_spp$zone))+1), c(0,0), lwd=2, col="darkgrey")
   bxp(z, add=T, boxfill = zoneScheme[match(zones_curr, names(zoneScheme))], xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
   axis(1, at=1:length(zones_curr), zones_curr, tick=F, las=2, cex.axis=0.65)
   axis(2,at=seq(ylim[1], ylim[2], 3), seq(ylim[1], ylim[2], 3), las=2, tck=0)
   mtext("Mean change in feasibility", side=3, line=0.1, adj=.975, cex=0.65, font=2)
+  
+  if(three_panel) {
+    values(X) <- NA
+    X[dat_spp[FeasChange > 0,SiteRef]] <- dat_spp[FeasChange > 0, Improve]
+    X[dat_spp[FeasChange < 0,SiteRef]] <- 0 - dat_spp[FeasChange < 0, Decline]
+    X[X2<0.5] <- NA # remove cells where the feasibility expansion is less than 0.5 (X2 is from the mean feasibilty panel)
+    
+    breakpoints <- c(seq(-100, -50,10), seq(60, 100,10));length(breakpoints)
+    labels <- c("Decline", "Improve")
+    ColScheme <- c(brewer.pal(11,"RdBu")[c(1:4)], "grey90", "grey90", brewer.pal(11,"RdBu")[c(8:11)]); length(ColScheme)
+    
+    par(plt = c(0.6, 0.95, 0.25, 1), xpd = TRUE, new = TRUE)
+    image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme, breaks=breakpoints, asp = 1)
+    plot(outline, add=T, border="black",col = NA, lwd=0.4)
+    
+    xl <- 1600000; yb <- 1000000; xr <- 1700000; yt <- 1700000
+    rect(xl,  head(seq(yb,yt,(yt-yb)/length(ColScheme)),-1),  xr,  tail(seq(yb,yt,(yt-yb)/length(ColScheme)),-1),  col=ColScheme)
+    text(rep(xr+10000,length(labels)),seq(yb,yt,(yt-yb)/(15-1))[c(3,9)],labels,pos=4,cex=0.7,font=0.7, srt=90)
+    text(rep(xr-20000,length(labels)),seq(yb,yt,(yt-yb)/(15-1))[c(1,8,15)],c("100%", "50%", "100%"),pos=4,cex=0.7,font=1)
+    text(xl-30000, mean(c(yb,yt))-30000, paste("Ensemble agreement\n(% of GCMs)", sep=""), srt=90, pos=3, cex=0.75, font=2)
+    par(xpd=F)
+  }
   
   if(save_png){
     dev.off()
