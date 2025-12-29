@@ -138,10 +138,7 @@ Cw_spag <- spp_spaghettiplot(sa, species = "Cw", use_MAT = FALSE); Cw_spag
 
 Cw_spag2 <- spp_spaghettiplot(sa, species = "Cw", use_MAT = TRUE); Cw_spag2
 
-#Tweaks I'd like to make here:
-#   1) Customize color palette, maybe temps getting hotter?
-#   2) Make spaghettini higher alpha, so that mean lines more prominent
-#   3) More descriptive legend title; "shared socioeconomic pathways (SSPs)"
+#New MAT plot interpretation: As the MAT increases, the proportion of the historic suitable area overall increases.
 ```
 
 Save these plots to a subfolder, so they can be called into the dashboard qmd scripts:
@@ -175,10 +172,11 @@ Cw_C4_alluv <- plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE);
 Cw_D6_alluv <- plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE); Cw_D6_alluv
 
 # Things I'd like to tweak:
-#   1) y axis labels
+#   1) y axis labels -fixed already n
 #   2) increase alpha of transparent rectangles
 #   3) Show only the legend for BGC colors that the species is actually present in. It's showing all of them always now, right?
 #   4) Remove background grid
+#   5) change year to "Time period" and make the axis labels the full period
 ```
 
 Save these plots to a subfolder, so they can be called into the dashboard qmd scripts:

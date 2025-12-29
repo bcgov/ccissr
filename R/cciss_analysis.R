@@ -43,7 +43,7 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
       by = .(Edatopic, Spline_Num)
     ]
     ggplot(dat_spline, aes(x = xvar, y = Suit_Spline, group = Group)) +
-      geom_line(alpha = 0.4) +
+      geom_line(alpha = 0.05) +
       geom_line(data = mean_spline, aes(x = xvar, y = Suit_Spline), inherit.aes = FALSE, linewidth = 1.4) +
       facet_wrap(~Edatopic)+
       theme_minimal() +
