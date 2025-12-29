@@ -47,18 +47,19 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
       geom_line(data = mean_spline, aes(x = xvar, y = Suit_Spline), inherit.aes = FALSE, linewidth = 1.4) +
       facet_wrap(~Edatopic)+
       theme_minimal() +
-      ylab("Proportion of Historic Suitable Area")
+      labs(y="Proportion of Historic Suitable Area", x="Change in mean annual temperature")
   } else {
     mean_spline <- dat_spline[
       , .(Suit_Spline = mean(Suit_Spline), xvar = mean(xvar)),
       by = .(Edatopic, ssp, Spline_Num)
     ]
     ggplot(dat_spline, aes(x = xvar, y = Suit_Spline, group = Group, colour = ssp)) +
-      geom_line(alpha = 0.4) +
+      geom_line(alpha = 0.2) +
       geom_line(data = mean_spline, aes(group = ssp), size = 1.4) +
       facet_wrap(~Edatopic)+
       theme_minimal() +
-      ylab("Proportion of Historic Suitable Area")
+      labs(y="Proportion of Historic Suitable Area", x="Time Period", colour="SSPs") +
+      scale_colour_manual(values = c("#E6AB02", "#D95F02", "#7F0000"))
   }
 }
 
