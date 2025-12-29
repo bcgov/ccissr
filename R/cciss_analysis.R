@@ -275,11 +275,11 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
       data = bars,
       aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
       inherit.aes = FALSE,
-      fill = "white", alpha = 0.7    # adjust alpha for translucency
+      fill = "white", alpha = 0.9    # adjust alpha for translucency
     ) +
-    theme_bw() +
+    theme_classic() +
     scale_fill_manual(values = colScheme) +
-    ylab("Species Suitable Area (Km^2)")
+    labs(y="Species Suitable Area (Km^2)",x="Time period")
   
 }
 
