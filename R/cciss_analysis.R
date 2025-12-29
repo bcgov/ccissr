@@ -54,8 +54,8 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
       by = .(Edatopic, ssp, Spline_Num)
     ]
     ggplot(dat_spline, aes(x = xvar, y = Suit_Spline, group = Group, colour = ssp)) +
-      geom_line(alpha = 0.2) +
-      geom_line(data = mean_spline, aes(group = ssp), size = 1.4) +
+      geom_line(alpha = 0.05) +
+      geom_line(data = mean_spline, aes(group = ssp), linewidth = 1.4) +
       facet_wrap(~Edatopic)+
       theme_minimal() +
       labs(y="Proportion of Historic Suitable Area", x="Time Period", colour="SSPs") +
