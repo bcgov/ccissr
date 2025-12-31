@@ -197,7 +197,9 @@ suit$newsuit <- as.factor(suit$newsuit) # factor for barchart
 # suitability colors
 suit_cols <- c("1" = "#0B6E00", "2" = "#2196F3","3" = "#F2D200")
 
+
 # stacked bar for Cw
+
 Cw_bgc_bar <- ggplot(suit[suit$spp == "Cw"& suit$newsuit %in% c(1, 2, 3), ], 
        aes(x = reorder(bgc_all, newsuit == "1", FUN = mean), fill = factor(newsuit, levels = c("3", "2", "1")))) + #reversed level order here in order to plot E1 on the Left
   geom_bar(position = "fill") +
@@ -220,6 +222,7 @@ ggsave("Cw_histbar.png", plot = Cw_bgc_bar, path = here("tree_summaries_code", "
 
 
 
+
 # stacked bar for Pl
 Pl_bgc_bar <- ggplot(suit[suit$spp == "Pl"& suit$newsuit %in% c(1, 2, 3), ], 
                      aes(x = reorder(bgc_all, newsuit == "1", FUN = mean), fill = factor(newsuit, levels = c("3", "2", "1")))) + #reversed level order here in order to plot E1 on the Left
@@ -238,4 +241,5 @@ Pl_bgc_bar <- ggplot(suit[suit$spp == "Pl"& suit$newsuit %in% c(1, 2, 3), ],
   theme_classic(); Pl_bgc_bar
 
 ggsave("Pl_histbar.png", plot = Pl_bgc_bar, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300, bg = "white")
+
 
