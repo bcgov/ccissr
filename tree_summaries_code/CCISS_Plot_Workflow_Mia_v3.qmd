@@ -144,7 +144,9 @@ Cw_spag2 <- spp_spaghettiplot(sa, species = "Cw", use_MAT = TRUE); Cw_spag2
 Save these plots to a subfolder, so they can be called into the dashboard qmd scripts:
 
 ```{r}
-ggsave("Cw_spag.png", plot = Cw_spag, path = here("tree_summaries_code", "Mia", "Figures"),width = 8, height = 4, dpi = 300)
+ggsave("Cw_spag.png", plot = Cw_spag, path = here("tree_summaries_code", "Figures"),width = 8, height = 4, dpi = 300)
+
+ggsave("Cw_spag2.png", plot = Cw_spag2, path = here("tree_summaries_code", "Figures"),width = 8, height = 4, dpi = 300)
 ```
 
 # Alluvial Plot
@@ -172,11 +174,8 @@ Cw_C4_alluv <- plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE);
 Cw_D6_alluv <- plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE); Cw_D6_alluv
 
 # Things I'd like to tweak:
-#   1) y axis labels -fixed already n
-#   2) increase alpha of transparent rectangles
-#   3) Show only the legend for BGC colors that the species is actually present in. It's showing all of them always now, right?
-#   4) Remove background grid
-#   5) change year to "Time period" and make the axis labels the full period
+#   1) Maybe: Show only the legend for BGC colors that the species is actually present in. It's showing all of them always now, right? 
+#   2) Make the x axis labels the full time period. 2021-2040, etc
 ```
 
 Save these plots to a subfolder, so they can be called into the dashboard qmd scripts:
@@ -195,11 +194,13 @@ ggsave("Cw_D6_alluv.png", plot = Cw_D6_alluv, path = here("tree_summaries_code",
 Recreation of Colin's 2 panel plot. Note that this currently only works using an Albers grid.
 
 ```{r}
-bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
+bc_ol <- vect(here("data-raw", "data_tables", "bc_outline.gpkg"))
 
+#This isn't working now, for some reason
 plot_2panel(con, spp = "Cw", edatope = "C4", period = "2081_2100", bgc_template = bgc_template, outline = bc_ol, save_png = TRUE) #these get saved into the tree_summaries_code > Mia folder, where this .qmd is located. :) So I will manually move them into the Figures folder for now.
 
 plot_2panel(con, spp = "Cw", edatope = "B2", period = "2081_2100", bgc_template = bgc_template, outline = bc_ol, save_png = TRUE)
 
 plot_2panel(con, spp = "Cw", edatope = "D6", period = "2081_2100", bgc_template = bgc_template, outline = bc_ol, save_png = TRUE)
 ```
+
