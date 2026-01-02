@@ -43,22 +43,23 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
       by = .(Edatopic, Spline_Num)
     ]
     ggplot(dat_spline, aes(x = xvar, y = Suit_Spline, group = Group)) +
-      geom_line(alpha = 0.4) +
+      geom_line(alpha = 0.05) +
       geom_line(data = mean_spline, aes(x = xvar, y = Suit_Spline), inherit.aes = FALSE, linewidth = 1.4) +
       facet_wrap(~Edatopic)+
       theme_minimal() +
-      ylab("Proportion of Historic Suitable Area")
+      labs(y="Proportion of Historic Suitable Area", x="Change in mean annual temperature")
   } else {
     mean_spline <- dat_spline[
       , .(Suit_Spline = mean(Suit_Spline), xvar = mean(xvar)),
       by = .(Edatopic, ssp, Spline_Num)
     ]
     ggplot(dat_spline, aes(x = xvar, y = Suit_Spline, group = Group, colour = ssp)) +
-      geom_line(alpha = 0.4) +
-      geom_line(data = mean_spline, aes(group = ssp), size = 1.4) +
+      geom_line(alpha = 0.05) +
+      geom_line(data = mean_spline, aes(group = ssp), linewidth = 1.4) +
       facet_wrap(~Edatopic)+
       theme_minimal() +
-      ylab("Proportion of Historic Suitable Area")
+      labs(y="Proportion of Historic Suitable Area", x="Time Period", colour="SSPs") +
+      scale_colour_manual(values = c("#E6AB02", "#D95F02", "#7F0000"))
   }
 }
 
@@ -274,11 +275,11 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
       data = bars,
       aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
       inherit.aes = FALSE,
-      fill = "white", alpha = 0.7    # adjust alpha for translucency
+      fill = "white", alpha = 0.9    # adjust alpha for translucency
     ) +
-    theme_bw() +
+    theme_classic() +
     scale_fill_manual(values = colScheme) +
-    ylab("Species Suitable Area (Km^2)")
+    labs(y="Species Suitable Area (Km^2)",x="Time period")
   
 }
 
