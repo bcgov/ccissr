@@ -99,10 +99,10 @@ bgc_bubbleplot(bgc_perexp, period = "2081_2100", scenario = "ssp370")
 ```{r}
 
 
-DBI::dbExecute(con, "PRAGMA max_temp_directory_size='20GiB'") #Mia added 
+#DBI::dbExecute(con, "PRAGMA max_temp_directory_size='20GiB'") #Mia added 
 
-perexp <- spp_persist_expand(con, spp_list = c("Pl","Py","Lw","At","Sx","Cw","Fd"), fractional = TRUE)
-#perexp <- spp_persist_expand(con, spp_list = c("Cw"), fractional = TRUE) # try a single species
+#perexp <- spp_persist_expand(con, spp_list = c("Pl","Py","Lw","At","Sx","Cw","Fd"), fractional = TRUE)
+perexp <- spp_persist_expand(con, spp_list = c("Cw"), fractional = TRUE) # try a single species
 ```
 
 ## Species Bubbleplot
@@ -194,13 +194,10 @@ ggsave("Cw_D6_alluv.png", plot = Cw_D6_alluv, path = here("tree_summaries_code",
 Recreation of Colin's 2 panel plot. Note that this currently only works using an Albers grid.
 
 ```{r}
+library(terra)
 bc_ol <- vect(here("data-raw", "data_tables", "bc_outline.gpkg"))
 
-#This isn't working now, for some reason
-plot_2panel(con, spp = "Cw", edatope = "C4", period = "2081_2100", bgc_template = bgc_template, outline = bc_ol, save_png = TRUE) #these get saved into the tree_summaries_code > Mia folder, where this .qmd is located. :) So I will manually move them into the Figures folder for now.
+# I was getting an error running the latest version of the function from cciss_analysis.R, and decided to modify it in a new script so as to not break anything for anyone else. I then also made stand-alone plots of the historical suitability maps, and a new 2-panel plot of just the future mean change map+boxplot. 
 
-plot_2panel(con, spp = "Cw", edatope = "B2", period = "2081_2100", bgc_template = bgc_template, outline = bc_ol, save_png = TRUE)
-
-plot_2panel(con, spp = "Cw", edatope = "D6", period = "2081_2100", bgc_template = bgc_template, outline = bc_ol, save_png = TRUE)
+# --> Go to 2-panel_updates.R in ccissr>tree_summaries_code
 ```
-
