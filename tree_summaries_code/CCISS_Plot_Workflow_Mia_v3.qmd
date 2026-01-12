@@ -108,19 +108,14 @@ perexp <- spp_persist_expand(con, spp_list = c("Cw"), fractional = TRUE) # try a
 ## Species Bubbleplot
 
 ```{r}
-spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp370", edatope = "C4")
 
-spp_bubbleplot(perexp, period_sel = "2081_2100", scenario = "ssp245", species = "Cw", edatope = c("B2", "C4", "D6"), by = "edatope")
-#Cw_ssp245_bub <- spp_bubbleplot(perexp, period_sel = "2081_2100", scenario = "ssp245", species = "Cw", edatope = c("B2", "C4", "D6"), by = "edatope"); Cw_ssp245_bub 
-#why can't I save this as an object?
+png("Figures/Cw_ssp370_bub.png", width = 1800, height = 1200, res = 200)
+spp_bubbleplot(perexp, period_sel="2081_2100", scenario="ssp370", #ssp370 worst, 245 moderate, 126 optimistic
+               species="Cw", edatope=c("B2","C4","D6"), by="edatope")
+dev.off()
 ```
 
-Save these plots to a subfolder, so they can be called into the dashboard qmd scripts:
 
-```{r}
-#currently not working
-#ggsave("Cw_ssp245_bub.png", plot = Cw_ssp245_bub, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300)
-```
 
 # Suitable Area
 
@@ -128,15 +123,15 @@ Save these plots to a subfolder, so they can be called into the dashboard qmd sc
 
 ```{r}
 #sa <- spp_suit_area(con, spp_list = c("Cw","Pl","Sx","Lw","Fd"))
-sa <- spp_suit_area(con, spp_list = c("Cw")) #try only 1 spp at a time
+sa <- spp_suit_area(con, spp_list = c("Pl")) #try only 1 spp at a time
 ```
 
 ## Species Spaghetti Plot with indiv. Runs
 
 ```{r}
-Cw_spag <- spp_spaghettiplot(sa, species = "Cw", use_MAT = FALSE); Cw_spag
+Pl_spag <- spp_spaghettiplot(sa, species = "Pl", use_MAT = FALSE); Pl_spag
 
-Cw_spag2 <- spp_spaghettiplot(sa, species = "Cw", use_MAT = TRUE); Cw_spag2
+Pl_spag2 <- spp_spaghettiplot(sa, species = "Pl", use_MAT = TRUE); Pl_spag2
 
 #New MAT plot interpretation: As the MAT increases, the proportion of the historic suitable area overall increases.
 ```
@@ -144,9 +139,9 @@ Cw_spag2 <- spp_spaghettiplot(sa, species = "Cw", use_MAT = TRUE); Cw_spag2
 Save these plots to a subfolder, so they can be called into the dashboard qmd scripts:
 
 ```{r}
-ggsave("Cw_spag.png", plot = Cw_spag, path = here("tree_summaries_code", "Figures"),width = 8, height = 4, dpi = 300)
+ggsave("Pl_spag.png", plot = Pl_spag, path = here("tree_summaries_code", "Figures"),width = 8, height = 4, dpi = 300)
 
-ggsave("Cw_spag2.png", plot = Cw_spag2, path = here("tree_summaries_code", "Figures"),width = 8, height = 4, dpi = 300)
+ggsave("Pl_spag2.png", plot = Pl_spag2, path = here("tree_summaries_code", "Figures"),width = 8, height = 4, dpi = 300)
 ```
 
 # Alluvial Plot
@@ -169,23 +164,20 @@ cciss_suitability(con, species = spp)
 And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
 
 ```{r}
-Cw_B2_alluv <- plot_spparea(con, spp = "Cw", edatope = "B2", fractional = TRUE); Cw_B2_alluv
-Cw_C4_alluv <- plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE); Cw_C4_alluv
-Cw_D6_alluv <- plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE); Cw_D6_alluv
+Pl_B2_alluv <- plot_spparea(con, spp = "Pl", edatope = "B2", fractional = TRUE); Pl_B2_alluv
+Pl_C4_alluv <- plot_spparea(con, spp = "Pl", edatope = "C4", fractional = TRUE); Pl_C4_alluv
+Pl_D6_alluv <- plot_spparea(con, spp = "Pl", edatope = "D6", fractional = TRUE); Pl_D6_alluv
 
-# Things I'd like to tweak:
-#   1) Maybe: Show only the legend for BGC colors that the species is actually present in. It's showing all of them always now, right? 
-#   2) Make the x axis labels the full time period. 2021-2040, etc
 ```
 
 Save these plots to a subfolder, so they can be called into the dashboard qmd scripts:
 
 ```{r}
-ggsave("Cw_B2_alluv.png", plot = Cw_B2_alluv, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300)
+ggsave("Pl_B2_alluv.png", plot = Pl_B2_alluv, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300)
 
-ggsave("Cw_C4_alluv.png", plot = Cw_C4_alluv, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300)
+ggsave("Pl_C4_alluv.png", plot = Pl_C4_alluv, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300)
 
-ggsave("Cw_D6_alluv.png", plot = Cw_D6_alluv, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300)
+ggsave("Pl_D6_alluv.png", plot = Pl_D6_alluv, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300)
 
 ```
 
