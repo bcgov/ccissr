@@ -59,12 +59,11 @@ predict_bgc <- function(dbCon,
     periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
     if(all(periods_use %in% periods_cached)){
       message("Use cached table bgc_raw :)")
+      return(invisible(TRUE))
     } else {
       periods_needed <- setdiff(periods_use, periods_cached)
       message("Will predict missing period ", periods_needed)
     }
-    
-    return(invisible(TRUE))
   }
   
   if(inherits(xyz, "SpatRaster")){
