@@ -361,7 +361,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   
   image(X,xlab = NA,ylab = NA,bty = "n",  xaxt="n", yaxt="n",
         col=ColScheme, breaks=breakseq,asp = 1)
-  plot(outline, add=T, border="black",col = NA, lwd=0.4)
+  terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
   par(xpd = NA)
   legend("topleft", legend=c("1 (primary)", "2 (secondary)", "3 (tertiary)"), fill=ColScheme, bty="n", cex=0.8, title="Historical feasibility", inset=c(0,-0.3))
   # mtext(paste("(", letters[1],")", sep=""), side=3, line=-2.75, adj=0.05, cex=0.8, font=2)
@@ -392,7 +392,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme, breaks=breakpoints, asp = 1)
   image(X2, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme2, breaks=breakpoints, asp = 1)
   image(X3, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme3, asp = 1)
-  plot(outline, add=T, border="black",col = NA, lwd=0.4)
+  terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
   
   xl <- 1600000; yb <- 1000000; xr <- 1700000; yt <- 1700000; xadj <- 10000
   if(three_panel) {
@@ -456,7 +456,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
     
     par(plt = c(0.6, 0.95, 0.25, 1), xpd = TRUE, new = TRUE)
     image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme, breaks=breakpoints, asp = 1)
-    plot(outline, add=T, border="black",col = NA, lwd=0.4)
+    terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
     
     xl <- 1600000; yb <- 1000000; xr <- 1700000; yt <- 1700000
     rect(xl,  head(seq(yb,yt,(yt-yb)/length(ColScheme)),-1),  xr,  tail(seq(yb,yt,(yt-yb)/length(ColScheme)),-1),  col=ColScheme)
