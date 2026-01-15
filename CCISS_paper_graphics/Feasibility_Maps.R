@@ -43,7 +43,7 @@ BGCcolors <- read.csv("../ccissr/data-raw/data_tables/WNAv11_Zone_Colours.csv")
 X <- raster("C:/Users/CMAHONY/OneDrive - Government of BC/Data/DEM/BC_Raster.tif") #local data for speed
 X <- raster::setValues(X,NA)
 
-#Feasibility tables
+#suitability tables
 outline <- st_read(con,query = "select * from bc_outline")
 S1 <- setDT(dbGetQuery(sppDb,"select bgc,ss_nospace,spp,newfeas from feasorig"))
 setnames(S1,c("BGC","SS_NoSpace","Spp","Feasible"))
@@ -81,9 +81,9 @@ cppFunction('NumericVector ModelDir(NumericMatrix x, NumericVector Curr, std::st
 }
 ')
 
-##adapted feasibility function
+##adapted suitability function
 ccissMap <- function(SSPred,suit,spp_select){
-  ### generate raw feasibility ratios
+  ### generate raw suitability ratios
   
   suit <- suit[Spp == spp_select,.(BGC,SS_NoSpace,Spp,Feasible)]
   suit <- unique(suit)
@@ -210,7 +210,7 @@ for(timeperiod in timeperiods[-1]){
       ## 2 panel map
       
       # initialise plot
-      png(file=paste("./FeasibilityMaps/Two_Panel",spp,eda,timeperiod,"png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=12, res=300)
+      png(file=paste("//objectstore2.nrs.bcgov/ffec/CCISS/Results/SuitabilityMaps/Two_Panel",spp,eda,timeperiod,"png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=12, res=300)
 
       par(plt=c(0,1,0,1), bg="white")
       plot(0, col="white", xaxt="n", yaxt="n", xlab="", ylab="")
@@ -245,12 +245,12 @@ for(timeperiod in timeperiods[-1]){
             col=ColScheme, breaks=breakseq, maxpixels= ncell(X),asp = 1)
       plot(outline, add=T, border="black",col = NA, lwd=0.4)
       legend("topleft", legend=c("1 (primary)", "2 (secondary)", "3 (tertiary)"),
-             fill=ColScheme, bty="n", cex=0.8, title="Historical feasibility", inset=c(0,-0.3))
+             fill=ColScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
       # mtext(paste("(", letters[1],")", sep=""), side=3, line=-2.75, adj=0.05, cex=0.8, font=2)
 
 
       ##=================================
-      ## b. mean feasibility change
+      ## b. mean suitability change
       feasVals <- newFeas[,.(SiteRef,FeasChange)]
       X <- raster::setValues(X,NA)
       X[feasVals$SiteRef] <- feasVals$FeasChange
@@ -279,7 +279,7 @@ for(timeperiod in timeperiods[-1]){
       rect(xl-diff(c(xl+xadj, xr)),  yb,  xl-xadj,  (yb+yt)/2,  col="white")
       text(xl-diff(c(xl+xadj, xr))/2, yb+(yt-yb)/4, "Expansion", srt=90, cex=0.85, font=1)
       text(rep(xr-10000,length(labels)),seq(yb,yt,(yt-yb)/(length(labels)-1)),labels,pos=4,cex=0.8,font=1)
-      text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in feasibility", sep=""), srt=90, pos=3, cex=0.85, font=2)
+      text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in suitability", sep=""), srt=90, pos=3, cex=0.85, font=2)
       rect(xl+xadj,  yb-y.int-20000,  xr,  yb-20000,  col="black")
       text(xr, yb-y.int/2-30000, "Loss", pos=4, cex=0.8, font=1)
       par(xpd=F)
@@ -305,7 +305,7 @@ for(timeperiod in timeperiods[-1]){
       bxp(z, add=T, boxfill = as.character(BGCcolors$colour[match(levels(zone), BGCcolors$classification)]), xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
       axis(1, at=1:length(levels(zone)), levels(zone), tick=F, las=2, cex.axis=0.65)
       axis(2,at=seq(ylim[1], ylim[2], 3), seq(ylim[1], ylim[2], 3), las=2, tck=0)
-      mtext("Mean change in feasibility", side=3, line=0.1, adj=.975, cex=0.65, font=2)
+      mtext("Mean change in suitability", side=3, line=0.1, adj=.975, cex=0.65, font=2)
       # mtext(paste("(", letters[4],")", sep=""), side=3, line=1, adj=0.975, cex=0.8, font=2)
 
       dev.off()
@@ -313,10 +313,10 @@ for(timeperiod in timeperiods[-1]){
      
       
       ## ------------------------------------
-      ## 3 panel map with mean feasibility change and model agreement
+      ## 3 panel map with mean suitability change and model agreement
 
       #initialise plot
-      png(file=paste("./FeasibilityMaps/Three_Panel",spp,eda,timeperiod,"png",sep = "."), type="cairo", units="in", width=6.5, height=2.9, pointsize=9, res=300)
+      png(file=paste("//objectstore2.nrs.bcgov/ffec/CCISS/Results/SuitabilityMaps/Three_Panel",spp,eda,timeperiod,"png",sep = "."), type="cairo", units="in", width=6.5, height=2.9, pointsize=9, res=300)
 
       par(plt=c(0,1,0,1), bg="white")
       plot(0, col="white", xaxt="n", yaxt="n", xlab="", ylab="")
@@ -351,11 +351,11 @@ for(timeperiod in timeperiods[-1]){
             col=ColScheme, breaks=breakseq, maxpixels= ncell(X),asp = 1)
       plot(outline, add=T, border="black",col = NA, lwd=0.4)
       legend("topleft", legend=c("1 (primary)", "2 (secondary)", "3 (tertiary)"),
-             fill=ColScheme, bty="n", cex=0.8, title="Historical feasibility", inset=c(0,-0.3))
+             fill=ColScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
       mtext(paste("(", letters[1],")", sep=""), side=3, line=-2.75, adj=0.05, cex=0.8, font=2)
 
       ##=================================
-      ## b. mean feasibility change
+      ## b. mean suitability change
       feasVals <- newFeas[,.(SiteRef,FeasChange)]
       X <- raster::setValues(X,NA)
       X[feasVals$SiteRef] <- feasVals$FeasChange
@@ -383,7 +383,7 @@ for(timeperiod in timeperiods[-1]){
       rect(xl-diff(c(xl+xadj, xr)),  yb,  xl-xadj,  (yb+yt)/2,  col="white")
       text(xl-diff(c(xl+xadj, xr))/2, yb+(yt-yb)/4, "Expansion", srt=90, cex=0.85, font=1)
       text(rep(xr-10000,length(labels)),seq(yb,yt,(yt-yb)/(length(labels)-1)),labels,pos=4,cex=0.8,font=1)
-      text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in feasibility", sep=""), srt=90, pos=3, cex=0.85, font=2)
+      text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in suitability", sep=""), srt=90, pos=3, cex=0.85, font=2)
       rect(xl+xadj,  yb-y.int-20000,  xr,  yb-20000,  col="black")
       text(xr, yb-y.int/2-30000, "Loss", pos=4, cex=0.8, font=1)
       mtext(paste("(", letters[2],")", sep=""), side=3, line=-2.75, adj=0.095, cex=0.8, font=2)
@@ -408,7 +408,7 @@ for(timeperiod in timeperiods[-1]){
       bxp(z, add=T, boxfill = as.character(BGCcolors$colour[match(levels(zone), BGCcolors$classification)]), xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
       axis(1, at=1:length(levels(zone)), levels(zone), tick=F, las=2, cex.axis=0.65)
       axis(2,at=seq(ylim[1], ylim[2], 3), seq(ylim[1], ylim[2], 3), las=2, tck=0)
-      mtext("Mean change in feasibility", side=3, line=0.1, adj=.975, cex=0.65, font=2)
+      mtext("Mean change in suitability", side=3, line=0.1, adj=.975, cex=0.65, font=2)
       mtext(paste("(", letters[4],")", sep=""), side=3, line=1, adj=0.975, cex=0.8, font=2)
       
       
@@ -417,7 +417,7 @@ for(timeperiod in timeperiods[-1]){
       X <- raster::setValues(X,NA)
       X[newFeas$SiteRef[newFeas$FeasChange>0]] <- newFeas$Improve[newFeas$FeasChange>0]
       X[newFeas$SiteRef[newFeas$FeasChange<0]] <- 0-newFeas$Decline[newFeas$FeasChange<0]
-      values(X)[values(X2)<0.5] <- NA # remove cells where the feasibility expansion is less than 0.5 (X2 is from the mean feasibilty panel)
+      values(X)[values(X2)<0.5] <- NA # remove cells where the suitability expansion is less than 0.5 (X2 is from the mean feasibilty panel)
       
       breakpoints <- c(seq(-100, -50,10), seq(60, 100,10));length(breakpoints)
       labels <- c("Decline", "Improve")
@@ -447,9 +447,9 @@ for(timeperiod in timeperiods[-1]){
 }
 
 ### ----------------------------------
-### legend for mean feasibility change
+### legend for mean suitability change
 
-png(file=paste("./FeasibilityMaps/Legend.FeasChange.png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=14, res=400)
+png(file=paste("//objectstore2.nrs.bcgov/ffec/CCISS/Results/SuitabilityMaps/Legend.FeasChange.png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=14, res=400)
 
 par(mar=c(0,0,0,0), bg="white")
 plot(0, col="white", xaxt="n", yaxt="n", xlab="", ylab="")
@@ -471,7 +471,7 @@ rect(xl-diff(c(xl+xadj, xr)),  head(seq(yb,yt,y.int),-1),  xl-xadj,  tail(seq(yb
 rect(xl-diff(c(xl+xadj, xr)),  yb,  xl-xadj,  (yb+yt)/2,  col="white")
 text(xl-diff(c(xl+xadj, xr))/2, yb+(yt-yb)/4, "Expansion", srt=90, cex=0.85, font=1)
 text(rep(xr-10000,length(labels)),seq(yb,yt,(yt-yb)/(length(labels)-1)),labels,pos=4,cex=0.8,font=1)
-text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in feasibility", sep=""), srt=90, pos=3, cex=0.85, font=2)
+text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in suitability", sep=""), srt=90, pos=3, cex=0.85, font=2)
 rect(xl+xadj,  yb-y.int-20000,  xr,  yb-20000,  col="black")
 text(xr, yb-y.int/2-30000, "Loss", pos=4, cex=0.8, font=1)
 
