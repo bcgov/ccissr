@@ -20,7 +20,7 @@ library(bcmaps)
 library(sf)
 library(climr)
 
-#BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
+BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
 
 # bumobnd <- st_read("bdy.BuMo.shp")
 # dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
@@ -48,7 +48,7 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 ## Create Mapped BGC Raster
 
 ```{r}
-bgcs <- vect("BEC13Draft_Simplified.gpkg")
+bgcs <- vect("../Common_Files/BEC13Draft_Simplified.gpkg")
 bgc_template <- make_bgc_template(dem2, bgcs)
 
 plot(bgc_template$bgc_rast)
@@ -67,7 +67,7 @@ Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperi
 
 ```{r}
 
-predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2021_2040", "2041_2060", "2061_2080", "2081_2100"), max_runs_use = 4L)
+predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2001_2020"), max_runs_use = 4L)
 
 ```
 
@@ -126,7 +126,7 @@ Great! Now we have that we can create the siteseries and suitability predictions
 
 ```{r}
 siteseries_preds(con)
-spp <- c("Fd","Pl","Sx")
+spp <- c("Fd")
 cciss_suitability(con, species = spp)
 ```
 
@@ -145,7 +145,7 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 
-plot_2panel(con, spp = "Fd", edatope = "C4", period = "2041_2060", bgc_template = bgc_template, outline = bc_ol, three_panel = FALSE, save_png = FALSE)
+plot_2panel(con, spp = "Fd", edatope = "B2", period = "2041_2060", bgc_template = bgc_template, outline = bc_ol, three_panel = FALSE, save_png = FALSE)
 ```
 
 ```{bash}
