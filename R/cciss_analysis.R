@@ -281,7 +281,9 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
     scale_fill_manual(values = colScheme) +
     scale_x_discrete(labels=c("1961" = "1961-90", "2021" = "2021-40",
                               "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
-    labs(y="Species Suitable Area (Km^2)",x="Time period")
+    scale_y_continuous(expand=c(0,0)) #gets rid of space at bottom of plot
+    labs(y="Environmentally Suitable Area (Km^2)",x="Time period") +
+    theme(axis.ticks.x = element_blank())
   
 }
 
