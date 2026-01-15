@@ -194,7 +194,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
 ### Make plots: -----------
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 
-plot_2panel(con, spp = "Cw", edatope = "C4", period = "2021_2040", bgc_template = bgc_template, outline = bc_ol, three_panel = FALSE, save_png = TRUE)
+plot_2panel(con, spp = "Pl", edatope = "C4", period = "2021_2040", bgc_template = bgc_template, outline = bc_ol, three_panel = FALSE, save_png = TRUE)
 
 
 
@@ -260,7 +260,7 @@ plot_historical_suit_map <- function(dbCon, spp, edatope, bgc_template, outline,
   
   legend(
     "topright",
-    legend = c("1 (primary)", "2 (secondary)", "3 (tertiary)"),
+    legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"),
     fill = ColScheme[1:3],
     bty = "n",
     cex = 1.0,
@@ -272,7 +272,19 @@ plot_historical_suit_map <- function(dbCon, spp, edatope, bgc_template, outline,
 }
 
 ## Plots: --------------
-plot_historical_suit_map(dbCon = con, spp = "Cw", edatope = "D6", bgc_template = bgc_template, outline = bc_ol)
+plot_historical_suit_map(dbCon = con, spp = "Pl", edatope = "D6", bgc_template = bgc_template, outline = bc_ol)
+
+
+
+
+
+
+
+
+
+
+
+
 
 # 3) Modifications to the future-period map + boxplot ----------------------
 
@@ -580,11 +592,15 @@ plot_future_plus_boxplot <- function(
   invisible(NULL)
 }
 
+
+
+
+
 ## Plots: ------------
 plot_future_plus_boxplot(dbCon = con,
-  spp = "Cw",
-  edatope = "C4",
-  period = "2021_2040", # quick grab: 2021_2040, 2041_2060, 2061_2080, 2081_2100
+  spp = "Pl",
+  edatope = "B2",
+  period = "2081_2100", # quick grab: 2021_2040, 2041_2060, 2061_2080, 2081_2100
   bgc_template = bgc_template, outline = bc_ol,
   save_png = TRUE 
 )
