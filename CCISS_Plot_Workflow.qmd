@@ -48,7 +48,7 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 ## Create Mapped BGC Raster
 
 ```{r}
-bgcs <- vect("../Common_Files/BEC13Draft_Simplified.gpkg")
+bgcs <- vect("BEC13Draft_Simplified.gpkg")
 bgc_template <- make_bgc_template(dem2, bgcs)
 
 plot(bgc_template$bgc_rast)
@@ -145,7 +145,7 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 
-plot_2panel(con, spp = "Fd", edatope = "C4", period = "2041_2060", bgc_template = bgc_template, outline = bc_ol, three_panel = FALSE, save_png = TRUE)
+plot_2panel(con, spp = "Fd", edatope = "C4", period = "2041_2060", bgc_template = bgc_template, outline = bc_ol, three_panel = FALSE, save_png = FALSE)
 ```
 
 ```{bash}
