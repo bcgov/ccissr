@@ -343,9 +343,9 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   ##=================================
   ###historic suitability
   dat_spp <- dbGetQuery(dbCon, sprintf("select * from cciss_res where Spp = '%s' AND FuturePeriod = '%s' AND Edatope = '%s'", spp, period, edatope)) |> as.data.table()
-  dat_spp[,FeasChange := Curr - Newsuit]
   dat_spp[,Curr := as.integer(round(Curr))]
   dat_spp[is.na(Curr) | Curr > 3.5, Curr := 5]
+  dat_spp[,FeasChange := Curr - Newsuit]
   X <- copy(bgc_template$bgc_rast)
   values(X) <- NA
 
