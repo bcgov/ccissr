@@ -281,7 +281,9 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
     scale_fill_manual(values = colScheme) +
     scale_x_discrete(labels=c("1961" = "1961-90", "2021" = "2021-40",
                               "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
-    labs(y="Species Suitable Area (Km^2)",x="Time period")
+    scale_y_continuous(expand=c(0,0)) #gets rid of space at bottom of plot
+    labs(y="Environmentally Suitable Area (Km^2)",x="Time period") +
+    theme(axis.ticks.x = element_blank())
   
 }
 
@@ -363,7 +365,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
         col=ColScheme, breaks=breakseq,asp = 1)
   terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
   par(xpd = NA)
-  legend("topleft", legend=c("1 (primary)", "2 (secondary)", "3 (tertiary)"), fill=ColScheme, bty="n", cex=0.8, title="Historical feasibility", inset=c(0,-0.3))
+  legend("topleft", legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"), fill=ColScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
   # mtext(paste("(", letters[1],")", sep=""), side=3, line=-2.75, adj=0.05, cex=0.8, font=2)
   
   
@@ -378,7 +380,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   X3[dat_spp[Curr<4 & Newsuit>3.5, SiteRef]] <- 1
   
   breakpoints <- seq(-3,3,0.5); length(breakpoints)
-  labels <- c("-3","-2", "-1", "no change", "+1","+2","+3")
+  labels <- c("-3","-2", "-1", "0", "+1","+2","+3")
   ColScheme <- c("black", brewer.pal(11,"RdBu")[c(1,2,3,4)], "grey90", "grey90", brewer.pal(11,"RdBu")[c(7,8,9,10,11)]);
   ColScheme2 <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,4)], "grey90", colorRampPalette(c("white", "khaki1", "gold"))(6));
   ColScheme3 <- 1
@@ -405,7 +407,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   rect(xl-diff(c(xl+xadj, xr)),  yb,  xl-xadj,  (yb+yt)/2,  col="white")
   text(xl-diff(c(xl+xadj, xr))/2, yb+(yt-yb)/4, "Expansion", srt=90, cex=0.85, font=1)
   text(rep(xr-10000,length(labels)),seq(yb,yt,(yt-yb)/(length(labels)-1)),labels,pos=4,cex=0.8,font=1)
-  text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in feasibility", sep=""), srt=90, pos=3, cex=0.85, font=2)
+  text(xl-diff(c(xl+xadj, xr))-30000, mean(c(yb,yt))-30000, paste("Mean change in suitability", sep=""), srt=90, pos=3, cex=0.85, font=2)
   rect(xl+xadj,  yb-y.int-20000,  xr,  yb-20000,  col="black")
   text(xr, yb-y.int/2-30000, "Loss", pos=4, cex=0.8, font=1)
   
@@ -442,7 +444,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   bxp(z, add=T, boxfill = zoneScheme[match(zones_curr, names(zoneScheme))], xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
   axis(1, at=1:length(zones_curr), zones_curr, tick=F, las=2, cex.axis=0.65)
   axis(2,at=seq(ylim[1], ylim[2], 3), seq(ylim[1], ylim[2], 3), las=2, tck=0)
-  mtext("Mean change in feasibility", side=3, line=0.1, adj=.975, cex=0.65, font=2)
+  mtext("Mean change in suitability", side=3, line=0.1, adj=.975, cex=0.65, font=2)
   
   if(three_panel) {
     values(X) <- NA
