@@ -107,12 +107,14 @@ predict_bgc <- function(dbCon,
   }
   message("Created/updated table bgc_raw and clim_raw")
   
-  ref_clim <- climr::downscale(points_dat, which_refmap = "refmap_climr", vars = "MAT", return_refperiod = TRUE)
-  ref_clim[,PERIOD := NULL]
-  setnames(ref_clim, c("cellnum","MAT"))
-  dbWriteTable(dbCon, "clim_refperiod", ref_clim, row.names = FALSE)
+  if(!dbExistsTable(dbCon,"clim_refperiod")) {
+    ref_clim <- climr::downscale(points_dat, which_refmap = "refmap_climr", vars = "MAT", return_refperiod = TRUE)
+    ref_clim[,PERIOD := NULL]
+    setnames(ref_clim, c("cellnum","MAT"))
+    dbWriteTable(dbCon, "clim_refperiod", ref_clim, row.names = FALSE)
+  }
   
-  dbExecute(con, "DROP TABLE IF EXISTS clim_summary")
+  dbExecute(dbCon, "DROP TABLE IF EXISTS clim_summary")
   
   qry <- "CREATE TABLE clim_summary AS
                       
