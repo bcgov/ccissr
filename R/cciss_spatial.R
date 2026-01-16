@@ -54,9 +54,16 @@ predict_bgc <- function(dbCon,
                               ssp_use = c("ssp126", "ssp245", "ssp370"),
                               max_runs_use = 0L,
                               start_tile = 1) {
+  periods_needed <- periods_use
   if(duckdb_table_exists(dbCon, "bgc_raw")) {
-    message("Use cached table bgc_raw :)")
-    return(invisible(TRUE))
+    periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+    if(all(periods_use %in% periods_cached)){
+      message("Use cached table bgc_raw :)")
+      return(invisible(TRUE))
+    } else {
+      periods_needed <- setdiff(periods_use, periods_cached)
+      message("Will predict missing period ", periods_needed)
+    }
   }
   
   if(inherits(xyz, "SpatRaster")){
@@ -77,7 +84,7 @@ predict_bgc <- function(dbCon,
     clim_dat <- climr::downscale(points_dat[splits[i]:(splits[i+1]-1),], 
                           which_refmap = "refmap_climr",
                           gcms = gcms_use,
-                          gcm_periods = periods_use,
+                          gcm_periods = periods_needed,
                           ssps = ssp_use,
                           max_run = max_runs_use,
                           vars = c(vars_needed, "MAT"),
@@ -98,12 +105,16 @@ predict_bgc <- function(dbCon,
     rm(clim_dat, dat, mat_dat)
     gc()
   }
-  message("Created table bgc_raw and clim_raw")
+  message("Created/updated table bgc_raw and clim_raw")
   
-  ref_clim <- climr::downscale(points_dat, which_refmap = "refmap_climr", vars = "MAT", return_refperiod = TRUE)
-  ref_clim[,PERIOD := NULL]
-  setnames(ref_clim, c("cellnum","MAT"))
-  dbWriteTable(dbCon, "clim_refperiod", ref_clim, row.names = FALSE)
+  if(!dbExistsTable(dbCon,"clim_refperiod")) {
+    ref_clim <- climr::downscale(points_dat, which_refmap = "refmap_climr", vars = "MAT", return_refperiod = TRUE)
+    ref_clim[,PERIOD := NULL]
+    setnames(ref_clim, c("cellnum","MAT"))
+    dbWriteTable(dbCon, "clim_refperiod", ref_clim, row.names = FALSE)
+  }
+  
+  dbExecute(dbCon, "DROP TABLE IF EXISTS clim_summary")
   
   qry <- "CREATE TABLE clim_summary AS
                       
