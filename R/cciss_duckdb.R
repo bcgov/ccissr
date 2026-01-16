@@ -157,7 +157,25 @@ bgc_persist_expand <- function(dbCon, by_zone = TRUE){
       tbl_nm,
       new_res
     )
-  } 
+  } else {
+    periods_raw <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+    periods_perexp <- dbGetQuery(dbCon, sprintf("select distinct period from %s", tbl_nm))$period
+    missing <- setdiff(periods_raw,periods_perexp)
+    
+    new_res <- calc_bgc_persist_expand(
+      dbCon,
+      period_select = missing,
+      by_zone = by_zone
+    )
+    
+    # append to cache
+    dbWriteTable(
+      dbCon,
+      tbl_nm,
+      new_res,
+      append = TRUE
+    )
+  }
   
   res <- dbGetQuery(dbCon, sprintf("
     SELECT *
@@ -168,7 +186,7 @@ bgc_persist_expand <- function(dbCon, by_zone = TRUE){
 
 
 
-calc_bgc_persist_expand <- function(dbCon, by_zone = TRUE){
+calc_bgc_persist_expand <- function(dbCon, period_select = NULL, by_zone = TRUE){
   stopifnot(DBI::dbIsValid(dbCon))
   
   ## --- Choose grouping variables depending on level ----
@@ -182,6 +200,12 @@ calc_bgc_persist_expand <- function(dbCon, by_zone = TRUE){
     true_expr <- "p.bgc"
     tot_group <- "bgc"
   }
+  
+  period_sel <- period_select
+  if(is.null(period_select)){
+    period_sel <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+  }
+  if(length(period_sel) > 1) period_sel <- paste(sprintf("'%s'", period_sel), collapse = ",")
   
   ## Construct SQL dynamically
   sql <- sprintf("
@@ -197,7 +221,8 @@ calc_bgc_persist_expand <- function(dbCon, by_zone = TRUE){
         %s AS bgc
       FROM bgc_raw a
       LEFT JOIN bgc_points p USING (cellnum)
-      WHERE p.bgc IS NOT NULL          -- removes NA join
+      WHERE a.period IN (%s)
+      AND p.bgc IS NOT NULL          -- removes NA join
     ),
     flags AS (
       SELECT
@@ -231,7 +256,7 @@ calc_bgc_persist_expand <- function(dbCon, by_zone = TRUE){
       ON a.bgc_pred = t.bgc_true;
       ",
       # substitutions:
-      pred_expr, true_expr,
+      pred_expr, true_expr, period_sel,
       tot_group
       )
     
