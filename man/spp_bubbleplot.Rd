@@ -6,11 +6,16 @@
 \usage{
 spp_bubbleplot(
   persist_expand,
-  period_sel,
-  scenario,
+  period_sel = "2041_2060",
+  scenario = "ssp245",
   species = "auto",
-  edatope,
-  by = "species"
+  edatope = "C4",
+  by = "species",
+  xlab = "Persistence within historically suitable range",
+  ylab = "Expansion beyond historically suitable range",
+  xlabels = TRUE,
+  ylabels = TRUE,
+  mar = c(3, 4, 0.1, 0.1)
 )
 }
 \arguments{
@@ -24,7 +29,17 @@ spp_bubbleplot(
 
 \item{edatope}{Character of desired edatope to use for multiple species plot, or vector of edatopes for single species.}
 
-\item{by}{Character. Either "species", or "edatopes". If}
+\item{by}{Character. Either "species", or "edatopes".}
+
+\item{xlab}{Character. x axis title.}
+
+\item{ylab}{Character. y axis title.}
+
+\item{xlabels}{logical. x axis labels.}
+
+\item{ylabels}{logical. y axis labels.}
+
+\item{mar}{numeric. plot margins.}
 }
 \value{
 NULL. Creates plot

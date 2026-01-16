@@ -28,7 +28,8 @@ Imports:
     nloptr,
     RPostgres,
     scales,
-    terra
+    terra, 
+    plotrix
 Suggests:
     aws.s3,
     bcdata,
