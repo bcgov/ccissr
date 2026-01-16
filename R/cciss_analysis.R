@@ -70,13 +70,34 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
 #' @param scenario Character. ssp to use for plot.
 #' @param species Character vector of species or "auto" to display all available species. Default "auto".
 #' @param edatope Character of desired edatope to use for multiple species plot, or vector of edatopes for single species.
-#' @param by  Character. Either "species", or "edatopes". If 
+#' @param by  Character. Either "species", or "edatopes". 
+#' @param xlab  Character. x axis title.
+#' @param ylab  Character. y axis title.
+#' @param xlabels  logical. x axis labels.
+#' @param ylabels  logical. y axis labels.
+#' @param mar  numeric. plot margins.
 #' @return NULL. Creates plot
 #' @import data.table
 #' @importFrom car dataEllipse
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom plotrix arctext
 #' @export
-spp_bubbleplot <- function(persist_expand, period_sel, scenario, species = "auto", edatope, by = "species") {
+spp_bubbleplot <- function(persist_expand, 
+                           period_sel = "2041_2060", 
+                           scenario = "ssp245", 
+                           species = "auto", 
+                           edatope = "C4", 
+                           by = "species", 
+                           xlab = "Persistence within historically suitable range",
+                           ylab = "Expansion beyond historically suitable range", 
+                           xlabels = TRUE, 
+                           ylabels = TRUE,
+                           mar = c(3,4,0.1,0.1)
+                           ) {
+  
+  if (!requireNamespace("plotrix", quietly = TRUE)) {
+    stop("Package 'plotrix' is required for arctext() annotations.", call. = FALSE)
+  }
   
   if(species == "auto"){
     spps <- unique(persist_expand$spp)
@@ -95,21 +116,22 @@ spp_bubbleplot <- function(persist_expand, period_sel, scenario, species = "auto
     sppcolors <- c(brewer.pal(n=12, "Paired")[-11])
   }
   
-  par(mar=c(3,4,0.1,0.1), mgp=c(1.25, 0.25, 0), cex=1.5)
+  par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1)
   
   xlim <- c(0, 1.5)
   ylim <- c(-5,3)
-  plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab="Persistence within historically feasible range", ylab="")
-  axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
-  axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
+  plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab=xlab, ylab="")
+  if(xlabels) axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
+  if(ylabels) axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
   par(mgp=c(2.75, 0.25, 0))
-  title(ylab="Expansion beyond historically feasible range", cex.lab=1)
+  title(ylab=ylab, cex.lab=1.2)
   iso <- seq(0,1.2, 0.001)
   lines(1-iso, log2(iso), lty=2, lwd=2, col="darkgray")
-  #arctext(x = "Growing feasible range", center = c(-1, -28.7), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
-  #arctext(x = "Shrinking feasible range", center = c(-1, -29.3), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
+  # if(annotate){ 
+  # arctext(x = "Growing suitable range", center = c(-1, -28.7), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
+  # arctext(x = "Shrinking suitable range", center = c(-1, -29.3), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
+  # }
   #mtext(paste(edatope.names[which(edatopes==edatope)], " sites", " (", edatope, ")", sep=""), side=3, line=-1.25, adj= if(edatope=="C4") 0.025 else 0.075, cex=0.7, font=1)
-  
   
   spp.focal <- "none"
   #spps <- spps[-9]
@@ -139,7 +161,7 @@ spp_bubbleplot <- function(persist_expand, period_sel, scenario, species = "auto
     points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(spps[i]==spp.focal) 4.5 else 3, col=col.focal2)
     text(mean(x),mean(y), spps[i], cex=if(spps[i]==spp.focal) 1 else 0.7, font=2, col=col.focal2)
   }
-  
+  box()
 }
 
 
