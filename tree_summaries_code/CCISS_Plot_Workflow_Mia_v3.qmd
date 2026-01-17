@@ -164,10 +164,18 @@ cciss_suitability(con, species = spp)
 And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
 
 ```{r}
+Cw_B2_alluv <- plot_spparea(con, spp = "Cw", edatope = "B2", fractional = TRUE); Cw_B2_alluv
+Cw_C4_alluv <- plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE); Cw_C4_alluv
+Cw_D6_alluv <- plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE); Cw_D6_alluv
+
 Pl_B2_alluv <- plot_spparea(con, spp = "Pl", edatope = "B2", fractional = TRUE); Pl_B2_alluv
 Pl_C4_alluv <- plot_spparea(con, spp = "Pl", edatope = "C4", fractional = TRUE); Pl_C4_alluv
 Pl_D6_alluv <- plot_spparea(con, spp = "Pl", edatope = "D6", fractional = TRUE); Pl_D6_alluv
 
+#Mods: 
+#rectangles are super incorrect - commented them out for now
+#new zones are slightly offset to right of bar, compared to pre-existing colors. 
+#change white rectangles back to higher alpha...try 8.5.
 ```
 
 Save these plots to a subfolder, so they can be called into the dashboard qmd scripts:

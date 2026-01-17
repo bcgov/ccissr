@@ -291,20 +291,81 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
   # cellarea <- (res(bgc_template$bgc_rast)[2]*111)*(res(bgc_template$bgc_rast)[1]*111*cos(mean(ext(bgc_template$bgc_rast)[3:4]) * pi / 180))
   # cciss_sum[, SppArea := SppArea * cellarea]
   
+  # NEW: year order (makes first/last unambiguous)
+  year_levels <- c("1961","2021","2041","2061","2081")
+  cciss_sum[, Year := factor(as.character(Year), levels = year_levels)]
+  
+  # NEW: order zones by change (last - first): most decline at bottom
+  delta_by_zone <- cciss_sum[Year %in% year_levels & SppArea > 0,
+                             .(SppArea = sum(SppArea, na.rm = TRUE)),
+                             by = .(zone, Year)]
+  delta_by_zone <- dcast(delta_by_zone, zone ~ Year, value.var = "SppArea", fill = 0)
+  delta_by_zone[, delta := get(tail(year_levels, 1)) - get(head(year_levels, 1))]
+  zone_order <- delta_by_zone[order(delta), zone]
+  zone_order <- rev(zone_order) # should put declines at bottom, increases at top
+  cciss_sum[, zone := factor(zone, levels = zone_order)]
+  cciss_sum <- cciss_sum[!is.na(zone) & SppArea > 0]
+  
+  # # NEW: shoulder borders (only outside the white overlay bars) - currently not working AT ALL. Will continue troubleshooting.
+  # bar_total <- cciss_sum[, .(ymax = sum(SppArea, na.rm = TRUE)), by = Year]
+  # bar_total[, x := as.numeric(Year)]
+  # bar_total[, `:=`(full_xmin = x - 0.5, full_xmax = x + 0.5, ymin = 0)]
+  # 
+  # # bars correspond to the gaps BETWEEN years; map them to the left year index
+  # bars2 <- copy(bars)
+  # bars2$k <- seq_len(nrow(bars2))          # 1..(n_years-1)
+  # 
+  # # for year i (left of gap), shoulders are [full_xmin, bars$xmin] and [bars$xmax, full_xmax]
+  # shoulders <- rbind(
+  #   data.table(
+  #     Year = levels(cciss_sum$Year)[bars2$k],
+  #     xmin = bar_total$full_xmin[bars2$k],
+  #     xmax = bars2$xmin,
+  #     ymin = 0,
+  #     ymax = bar_total$ymax[bars2$k]
+  #   ),
+  #   data.table(
+  #     Year = levels(cciss_sum$Year)[bars2$k],
+  #     xmin = bars2$xmax,
+  #     xmax = bar_total$full_xmax[bars2$k],
+  #     ymin = 0,
+  #     ymax = bar_total$ymax[bars2$k]
+  #   )
+  # )
+  
+  # Plot
   ggplot(cciss_sum, aes(x = Year, y = SppArea, fill = zone)) +
     geom_alluvium(aes(alluvium = zone), alpha= .9, color = "black") +
+    
     geom_rect(
       data = bars,
       aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
       inherit.aes = FALSE,
-      fill = "white", alpha = 0.9    # adjust alpha for translucency
+      fill = "white", alpha = 0.8
     ) +
+    
+    # # border overlay (on top)
+    # geom_rect(
+    #   data = shoulders,
+    #   aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+    #   inherit.aes = FALSE,
+    #   fill = NA, color = "black", linewidth = 0.25
+    # ) +
+    # 
     theme_classic() +
-    scale_fill_manual(values = colScheme) +
+    
+    #legend matches stack order + drop unplotted zones
+    scale_fill_manual(
+      values = colScheme,
+      breaks = zone_order,
+      limits = zone_order,
+      drop = TRUE
+    ) +
+    
     scale_x_discrete(labels=c("1961" = "1961-90", "2021" = "2021-40",
                               "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
-    scale_y_continuous(expand=c(0,0)) + #gets rid of space at bottom of plot
-    labs(y="Environmentally Suitable Area (Km^2)",x="Time period") +
+    scale_y_continuous(expand=c(0,0)) +
+    labs(y="Environmentally Suitable Area (Km^2)",x="Time period", fill = "BGC zone") +
     theme(axis.ticks.x = element_blank())
   
 }
