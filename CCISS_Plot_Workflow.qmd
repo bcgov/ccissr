@@ -20,7 +20,10 @@ library(bcmaps)
 library(sf)
 library(climr)
 
-BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
+# dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
+# dir <- "../Common_Files/" # Kiri's location
+dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
+BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 
 # bumobnd <- st_read("bdy.BuMo.shp")
 # dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
@@ -48,7 +51,9 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 ## Create Mapped BGC Raster
 
 ```{r}
-bgcs <- vect("../Common_Files/BEC13Draft_Simplified.gpkg")
+# dir <- "../Common_Files/" # Kiri's location
+dir <- "" # local copy
+bgcs <- vect(paste0(dir, "BEC13Draft_Simplified.gpkg"))
 bgc_template <- make_bgc_template(dem2, bgcs)
 
 plot(bgc_template$bgc_rast)
@@ -80,14 +85,16 @@ bgc_perexp <- bgc_persist_expand(con, by_zone = TRUE)
 ## BGC Bubbleplot
 
 ```{r}
-bgc_bubbleplot(bgc_perexp, period = "2041_2060", scenario = "ssp245")
+bgc_bubbleplot(bgc_perexp, period = "2001_2020", scenario = "ssp245")
 bgc_bubbleplot(bgc_perexp, period = "2081_2100", scenario = "ssp370")
 ```
 
 ## Calculate Species Persistance and Expansion
 
 ```{r}
-perexp <- spp_persist_expand(con, spp_list = c("Pl","Py","Lw","At","Sx","Cw","Fd"), fractional = TRUE)
+# perexp <- spp_persist_expand(con, spp_list = c("Pl","Py","Lw","At","Sx","Cw","Fd"), fractional = TRUE)
+perexp <- spp_persist_expand(con, spp_list = c("Pl", "Fd", "Cw", "Sx", "At", "Py", "Ba", "Bl", "Bg", "Yc", "Hm", "Lw", "Hw","Dr", "Ep", "Act", "Sb", "Mb", "Ss"), fractional = TRUE)
+
 ```
 
 ## Species Bubbleplot
@@ -145,7 +152,7 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 
-plot_2panel(con, spp = "Fd", edatope = "B2", period = "2041_2060", bgc_template = bgc_template, outline = bc_ol, three_panel = FALSE, save_png = FALSE)
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "B2", period = "2041_2060", three_panel = FALSE, save_png = FALSE)
 ```
 
 ```{bash}

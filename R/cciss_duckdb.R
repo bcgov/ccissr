@@ -51,7 +51,7 @@ dbCon_cciss <- function(
 
 #' Populate database with bgc point, edatopic and suitability tables
 #' @param dbCon Database connection
-#' @param bgc_template
+#' @param bgc_template List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_template`
 #' @param edatopes Character vector of edatopes
 #' @import duckdb data.table
 #' @export

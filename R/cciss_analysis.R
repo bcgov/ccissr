@@ -164,7 +164,6 @@ spp_bubbleplot <- function(persist_expand,
   box()
 }
 
-
 #' Create C.R. Mahony's bubbleplot of bgc expansion/persistance
 #' @param persist_expand data.table. Usually created with `bgc_persist_expand`
 #' @param period Character. Period to create plot for.
@@ -173,7 +172,17 @@ spp_bubbleplot <- function(persist_expand,
 #' @import data.table
 #' @importFrom car dataEllipse
 #' @export
-bgc_bubbleplot <- function(persist_expand, period, scenario) {
+bgc_bubbleplot <- function(persist_expand, 
+                           period = "2041_2060", 
+                           scenario = "ssp245", 
+                           xlab = "Persistence within historical range",
+                           ylab = "Expansion beyond historical range", 
+                           xlabels = TRUE, 
+                           ylabels = TRUE,
+                           mar = c(3,4,0.1,0.1)
+) {
+  
+                           
   unit.persistence.focal <- "none"
   persist_expand <- na.omit(persist_expand, col = c("Persistance","Expansion"))
   ColScheme <- rbind(copy(subzones_colours_ref),copy(zones_colours_ref))
@@ -181,15 +190,15 @@ bgc_bubbleplot <- function(persist_expand, period, scenario) {
   units <- unique(persist_expand$bgc)
   period_sel <- period
   
-  par(mar=c(3,4,0.1,0.1), mgp=c(1.25, 0.25, 0), cex=1.5)
+  par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1.5)
   
   xlim <- c(0, 1.1)
   ylim <- c(-5,3)
-  plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab="Persistence within historical range", ylab="")
-  axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
-  axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
+  plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab=xlab, ylab="")
+  if(xlabels) axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
+  if(ylabels) axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
   par(mgp=c(2.75, 0.25, 0))
-  title(ylab="Expansion beyond historical range", cex.lab=1)
+  title(ylab=ylab, cex.lab=1)
   iso <- seq(0,1.2, 0.001)
   lines(1-iso, log2(iso), lty=2, lwd=2, col="darkgray")
   
@@ -212,7 +221,7 @@ bgc_bubbleplot <- function(persist_expand, period, scenario) {
     points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(unit==unit.persistence.focal) 4.5 else 3, col=col.focal2)
     text(mean(x),mean(y), unit, cex=if(unit==unit.persistence.focal) 1 else 0.7, font=2, col=col.focal2)
   }
-  
+  box()
 }
 
 #' Create alluvial/stacked bar plot of projected area by zone/subzone
@@ -374,16 +383,27 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
 #' @description
 #' Note that currently, this function only works correctly if the preceeding analysis has been done using an Albers grid.
 #' @param dbCon duckdb database connection
+#' @param bgc_template List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_template`
+#' @param outline SpatVector of aoi boundary.
 #' @param spp Character. Species code to create plot for
 #' @param edatope Character. Edatope code to create plot for (e.g., "C4")
 #' @param period Character. Period to create plot for.
-#' @param bgc_template List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_template`
-#' @param outline SpatVector of aoi boundary.
 #' @param save_png Logical. Save plot to png? Default `TRUE`. If `FALSE`, creates plot on default plotting device.
+#' @param panel_labels Logical. Add a manuscript-style label to each panel of the plot.
 #' @return NULL. Creates plot
 #' @import data.table duckdb terra
 #' @export
-plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, three_panel = FALSE, save_png = TRUE) {
+plot_SuitabilityChangeMap <- function(dbCon, 
+                        bgc_template, 
+                        outline, 
+                        spp = "Fd", 
+                        edatope = "C4", 
+                        period = "2041_2060", 
+                        three_panel = FALSE, 
+                        save_png = TRUE,
+                        panel_labels = TRUE
+                        ) 
+  {
   
   zoneScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
                  CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
@@ -429,7 +449,8 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   ###historic suitability
   dat_spp <- dbGetQuery(dbCon, sprintf("select * from cciss_res where Spp = '%s' AND FuturePeriod = '%s' AND Edatope = '%s'", spp, period, edatope)) |> as.data.table()
   dat_spp[,Curr := as.integer(round(Curr))]
-  dat_spp[is.na(Curr) | Curr > 3.5, Curr := 5]
+  dat_spp[is.na(Curr) | Curr > 3.5, Curr := 4]
+  dat_spp[is.na(Newsuit) | Newsuit > 3.5, Newsuit := 4]
   dat_spp[,FeasChange := Curr - Newsuit]
   X <- copy(bgc_template$bgc_rast)
   values(X) <- NA
@@ -449,9 +470,10 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
   par(xpd = NA)
   legend("topleft", legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"), fill=ColScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
-  # mtext(paste("(", letters[1],")", sep=""), side=3, line=-2.75, adj=0.05, cex=0.8, font=2)
   
+  if(panel_labels) mtext(paste("(", letters[1],")", sep=""), side=3, line=-8, adj=0.05, cex=0.8, font=2)
   
+
   ##=================================
   ##mean feasibility change
   
@@ -494,14 +516,18 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   rect(xl+xadj,  yb-y.int-20000,  xr,  yb-20000,  col="black")
   text(xr, yb-y.int/2-30000, "Loss", pos=4, cex=0.8, font=1)
   
-
+  if(panel_labels) mtext(paste("(", letters[2],")", sep=""), side=3, line=1, adj=0.08, cex=0.8, font=2)
+  
   ##=================================
   ## Summary by zone
+  
+  zone_order <- c("CDF", "CWH", "MH", "ESSF", "MS", "IDF", "PP", "BG", "ICH", "SBPS", "SBS", "BWBS", "SWB", "CMA", "IMA", "BAFA")
+  
   bgc_mapped <- as.data.frame(bgc_template$bgc_rast, cells = TRUE) 
   setDT(bgc_mapped)
   bgc_mapped[bgc_template$ids, bgc := i.bgc, on = "bgc_id"]
   bgc_mapped[, bgc_id := NULL]
-  bgc_mapped[, zone := regmatches(bgc, regexpr("^[A-Z]+", bgc))]
+  bgc_mapped[, zone := factor(regmatches(bgc, regexpr("^[A-Z]+", bgc)), levels = zone_order)]
   
   dat_spp[bgc_mapped, zone := i.zone, on = c(SiteRef = "cell")]
   
@@ -515,7 +541,7 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   }
   
   ylim=c(-3,3)
-  zones_curr <- unique(dat_spp$zone)
+  zones_curr <- levels(dat_spp$zone)[levels(dat_spp$zone) %in% dat_spp$zone]
   xlim=c(1, length(unique(dat_spp$zone)))
   z <- boxplot(FeasChange~zone, data = dat_spp, ylab="", vertical = TRUE, plot=F)
   for(i in 1:length(zones_curr)){
@@ -528,6 +554,8 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
   axis(1, at=1:length(zones_curr), zones_curr, tick=F, las=2, cex.axis=0.65)
   axis(2,at=seq(ylim[1], ylim[2], 3), seq(ylim[1], ylim[2], 3), las=2, tck=0)
   mtext("Mean change in suitability", side=3, line=0.1, adj=.975, cex=0.65, font=2)
+  
+  if(panel_labels) mtext(paste("(", letters[3],")", sep=""), side=3, line=1, adj=0.975, cex=0.8, font=2)
   
   if(three_panel) {
     values(X) <- NA
@@ -549,6 +577,9 @@ plot_2panel <- function(dbCon, spp, edatope, period, bgc_template, outline, thre
     text(rep(xr-20000,length(labels)),seq(yb,yt,(yt-yb)/(15-1))[c(1,8,15)],c("100%", "50%", "100%"),pos=4,cex=0.7,font=1)
     text(xl-30000, mean(c(yb,yt))-30000, paste("Ensemble agreement\n(% of GCMs)", sep=""), srt=90, pos=3, cex=0.75, font=2)
     par(xpd=F)
+    
+    if(panel_labels) mtext(paste("(", letters[4],")", sep=""), side=3, line=-3.25, adj=0.1, cex=0.8, font=2)
+    
   }
   
   if(save_png){
