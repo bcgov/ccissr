@@ -169,12 +169,22 @@ predict_bgc <- function(dbCon,
 #' @export
 siteseries_preds <- function(dbCon,
                              obs = FALSE) {
+  
+  bgc_qry <- "select * from bgc_summary"
   if(duckdb_table_exists(dbCon, "siteseries_preds")) {
-    message("✓ Using cached table siteseries_preds")
-    return(invisible(TRUE))
+    periods_raw <- dbGetQuery(dbCon, "select distinct period from bgc_summary")$period
+    periods_perexp <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
+    missing <- setdiff(periods_raw,periods_perexp)
+    
+    if(length(missing) == 0) {
+      message("✓ Using cached table siteseries_preds")
+      return(invisible(TRUE))
+    }
+    message("Updating database for missing periods: ", missing)
+    bgc_qry <- paste0("select * from bgc_summary where period in ('", paste(missing, collapse = "','"), "')")
   }
   
-  bgc_all <- dbGetQuery(dbCon, "select * from bgc_summary") |> as.data.table()
+  bgc_all <- dbGetQuery(dbCon, bgc_qry) |> as.data.table()
   bgc_points <- dbGetQuery(dbCon, "select * from bgc_points") |> as.data.table()
   
   periods <- unique(bgc_all$period)
@@ -222,22 +232,32 @@ cciss_suitability <- function(dbCon,
                               species,
                               obs = FALSE,
                               tile_size = 4000) {
+  
+  periods <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
   if(duckdb_table_exists(dbCon, "cciss_res")) {
+    periods_raw <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
+    periods_perexp <- dbGetQuery(dbCon, "select distinct FuturePeriod from cciss_res")$FuturePeriod
+    missing <- setdiff(periods_raw,periods_perexp)
+    
     spp <- dbGetQuery(dbCon, "select distinct Spp from cciss_res")$Spp
     missing_spp <- setdiff(species, spp)
-    if(length(missing_spp) == 0){
+    if(length(missing_spp) == 0 & length(missing) == 0){
       message("All requested species already cached :)")
       return(invisible(TRUE))
-    } else {
+    }
+    if(length(missing_spp) > 0) {
       message("Calculating CCISS for ", paste(missing_spp, collapse = ", "))
       species <- missing_spp
+    }
+    if(length(missing) > 0) {
+      message("Calculating CCISS for ", paste(missing, collapse = ", "))
+      periods <- missing
     }
   }
   
   feas_table <- dbGetQuery(dbCon, "select * from suitability") |> as.data.table()
   setnames(feas_table, c("BGC", "Spp","SS_NoSpace", "Feasible"))
   edatopes <- dbGetQuery(dbCon, "select distinct Edatopic from edatopic")$Edatopic
-  periods <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
  # stopifnot(all(c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR") %in% names(feas_table)))
   for(period in periods){
     for(edatope in edatopes){

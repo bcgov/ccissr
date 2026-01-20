@@ -91,9 +91,18 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
 summarise_preds <- function(dbCon,
                             ssp_use = c("ssp126", "ssp245", "ssp370"),
                             ssp_w = c(0.8,1,0.8)) {
+  
   if(duckdb_table_exists(dbCon, "bgc_summary")) {
-    message("✓ Using cached table bgc_summary")
-    return(invisible(TRUE))
+    periods_raw <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+    periods_perexp <- dbGetQuery(dbCon, "select distinct period from bgc_summary")$period
+    missing <- setdiff(periods_raw,periods_perexp)
+    
+    if(length(missing) == 0) {
+      message("✓ Using cached table bgc_summary")
+      return(invisible(TRUE))
+    }
+    message("Updating database for missing periods: ", missing)
+    dbExecute(dbCon, "drop table bgc_summary")
   }
   
   ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
@@ -162,19 +171,22 @@ bgc_persist_expand <- function(dbCon, by_zone = TRUE){
     periods_perexp <- dbGetQuery(dbCon, sprintf("select distinct period from %s", tbl_nm))$period
     missing <- setdiff(periods_raw,periods_perexp)
     
-    new_res <- calc_bgc_persist_expand(
-      dbCon,
-      period_select = missing,
-      by_zone = by_zone
-    )
-    
-    # append to cache
-    dbWriteTable(
-      dbCon,
-      tbl_nm,
-      new_res,
-      append = TRUE
-    )
+    if(length(missing) > 0) {
+      message("Update database to include ", missing)
+      new_res <- calc_bgc_persist_expand(
+        dbCon,
+        period_select = missing,
+        by_zone = by_zone
+      )
+      
+      # append to cache
+      dbWriteTable(
+        dbCon,
+        tbl_nm,
+        new_res,
+        append = TRUE
+      )
+    }
   }
   
   res <- dbGetQuery(dbCon, sprintf("
@@ -338,7 +350,8 @@ materialise_bgc_eda <- function(
 calc_spp_persist_expand <- function(
     con,
     spp_list,
-    fractional = TRUE
+    fractional = TRUE,
+    periods = NULL
 ) {
   
   stopifnot(DBI::dbIsValid(con))
@@ -350,6 +363,8 @@ calc_spp_persist_expand <- function(
   } else {
     "CASE WHEN NewSuit_code_clean <> 5 THEN 1 ELSE 0 END"
   }
+  
+  periods_use <- if(is.null(periods)) "" else sprintf("WHERE e.period IN ('%s')", paste(periods, collapse = "','"))
   
   hist_suit_expr <- if (fractional) {
     "1.0 - (HistSuit_code_clean - 1) / 4.0"
@@ -448,6 +463,7 @@ calc_spp_persist_expand <- function(
       LEFT JOIN suitability sth
         ON e.SS_NoSpace = sth.ss_nospace
         AND sth.spp = st.spp
+      %s -- optional select by single period
     ),
 
     bgc_val AS (
@@ -506,6 +522,7 @@ calc_spp_persist_expand <- function(
                  spp_sql,
                  mapped_expr,
                  spp_sql,
+                 periods_use,
                  new_suit_expr,
                  hist_suit_expr
   )
@@ -534,6 +551,29 @@ spp_persist_expand <- function(dbCon, spp_list, fractional = TRUE) {
   spp_sql <- paste(sprintf("'%s'", spp_list), collapse = ",")
   
   if(duckdb_table_exists(dbCon, tbl_nm)) {
+    periods_raw <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+    periods_perexp <- dbGetQuery(dbCon, sprintf("select distinct period from %s", tbl_nm))$period
+    missing <- setdiff(periods_raw,periods_perexp)
+    
+    if(length(missing) > 0) {
+      message("Update database to include ", missing)
+      materialise_bgc_eda(dbCon, rebuild = TRUE)
+      new_res <- calc_spp_persist_expand(
+        dbCon,
+        spp_list = spp_list,
+        fractional = fractional,
+        periods = missing
+      )
+      
+      # append to cache
+      dbWriteTable(
+        dbCon,
+        tbl_nm,
+        new_res,
+        append = TRUE
+      )
+    }
+
     cached_spp <- dbGetQuery(dbCon, sprintf("
                            SELECT DISTINCT spp
                            FROM %s
@@ -576,7 +616,8 @@ spp_persist_expand <- function(dbCon, spp_list, fractional = TRUE) {
 calc_suit_area <- function(
     con,
     spp_list,
-    fractional = TRUE
+    fractional = TRUE,
+    periods = NULL
 ) {
   
   stopifnot(DBI::dbIsValid(con))
@@ -590,6 +631,8 @@ calc_suit_area <- function(
   } else {
     "CASE WHEN NewSuit_code <> 5 THEN 1 ELSE 0 END"
   }
+  
+  periods_use <- if(is.null(periods)) "" else sprintf("AND a.period IN ('%s')", paste(periods, collapse = "','"))
   
   mapped_expr <- if (fractional) {
     "SUM( (1.0 - (Suit_code - 1) / 4.0) * BGC_Tot )"
@@ -606,6 +649,7 @@ calc_suit_area <- function(
       FROM bgc_raw a
       LEFT JOIN bgc_points p USING (cellnum)
       WHERE p.bgc IS NOT NULL
+      %s
     ),
 
     -----------------------------------------------------------------------------
@@ -749,6 +793,7 @@ calc_suit_area <- function(
       ON s.spp = m.spp AND s.Edatopic = m.Edatopic;
   ",
                  # inserts:
+                 periods_use,
                  spp_sql,
                  mapped_expr,
                  spp_sql,
@@ -776,6 +821,28 @@ spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
   spp_sql <- paste(sprintf("'%s'", spp_list), collapse = ",")
   
   if(duckdb_table_exists(dbCon, tbl_nm)) {
+    periods_raw <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+    periods_perexp <- dbGetQuery(dbCon, sprintf("select distinct period from %s", tbl_nm))$period
+    missing <- setdiff(periods_raw,periods_perexp)
+    
+    if(length(missing) > 0) {
+      message("Update database to include ", missing)
+      new_res <- calc_suit_area(
+        dbCon,
+        spp_list = spp_list,
+        fractional = fractional,
+        periods = missing
+      )
+      
+      # append to cache
+      dbWriteTable(
+        dbCon,
+        tbl_nm,
+        new_res,
+        append = TRUE
+      )
+    }
+    
     cached_spp <- dbGetQuery(dbCon, sprintf("
                            SELECT DISTINCT spp
                            FROM %s
@@ -788,7 +855,6 @@ spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
   if (length(missing_spp) > 0) {
     message("▶ Computing suitable area for: ", paste(missing_spp, collapse = ", "))
     
-    # run your existing DuckDB function on missing spp only
     new_res <- calc_suit_area(
       dbCon,
       spp_list   = missing_spp,
