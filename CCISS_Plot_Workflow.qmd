@@ -51,7 +51,7 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 ## Create Mapped BGC Raster
 
 ```{r}
-# dir <- "../Common_Files/" # Kiri's location
+dir <- "../Common_Files/" # Kiri's location
 dir <- "" # local copy
 bgcs <- vect(paste0(dir, "BEC13Draft_Simplified.gpkg"))
 bgc_template <- make_bgc_template(dem2, bgcs)
@@ -63,7 +63,7 @@ plot(bgc_template$bgc_rast)
 
 ```{r}
 con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
-#dbPopulate(con, bgc_template)
+dbPopulate(con, bgc_template)
 ```
 
 ## Run Raw BGC Predictions
