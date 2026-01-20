@@ -66,7 +66,7 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
 
 #' Create C.R. Mahony's bubbleplot of species expansion/persistance
 #' @param persist_expand data.table. Usually created with `spp_persist_expand`
-#' @param period_sel Character. Period to create plot for.
+#' @param period Character. Period to create plot for.
 #' @param scenario Character. ssp to use for plot.
 #' @param species Character vector of species or "auto" to display all available species. Default "auto".
 #' @param edatope Character of desired edatope to use for multiple species plot, or vector of edatopes for single species.
@@ -83,7 +83,7 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
 #' @importFrom plotrix arctext
 #' @export
 spp_bubbleplot <- function(persist_expand, 
-                           period_sel = "2041_2060", 
+                           period = "2041_2060", 
                            scenario = "ssp245", 
                            species = "auto", 
                            edatope = "C4", 
@@ -98,6 +98,8 @@ spp_bubbleplot <- function(persist_expand,
   if (!requireNamespace("plotrix", quietly = TRUE)) {
     stop("Package 'plotrix' is required for arctext() annotations.", call. = FALSE)
   }
+  
+  period_sel <- period
   
   if(species == "auto"){
     spps <- unique(persist_expand$spp)
