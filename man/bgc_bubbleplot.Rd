@@ -4,7 +4,16 @@
 \alias{bgc_bubbleplot}
 \title{Create C.R. Mahony's bubbleplot of bgc expansion/persistance}
 \usage{
-bgc_bubbleplot(persist_expand, period, scenario)
+bgc_bubbleplot(
+  persist_expand,
+  period = "2041_2060",
+  scenario = "ssp245",
+  xlab = "Persistence within historical range",
+  ylab = "Expansion beyond historical range",
+  xlabels = TRUE,
+  ylabels = TRUE,
+  mar = c(3, 4, 0.1, 0.1)
+)
 }
 \arguments{
 \item{persist_expand}{data.table. Usually created with \code{bgc_persist_expand}}

@@ -9,6 +9,8 @@ dbPopulate(dbCon, bgc_template, edatopes = c("B2", "C4", "D6"))
 \arguments{
 \item{dbCon}{Database connection}
 
+\item{bgc_template}{List containing SpatRaster of BGCs and id table. Usually created using \code{make_bgc_template}}
+
 \item{edatopes}{Character vector of edatopes}
 }
 \description{
