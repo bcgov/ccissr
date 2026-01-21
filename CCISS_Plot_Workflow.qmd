@@ -20,7 +20,7 @@ library(bcmaps)
 library(sf)
 library(climr)
 
-# dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
+ dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
 # dir <- "../Common_Files/" # Kiri's location
 dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
 BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
@@ -30,7 +30,8 @@ BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 # dem <- mask(dem, vect(bumobnd))
 # dem2 <- aggregate(dem, fact = 45)
 
-dem2 <- rast("dem_BC2kmGrid.tif")
+#dem2 <- rast("dem_BC2kmGrid.tif")
+dem2 <- rast("//objectstore2.nrs.bcgov/ffec/DEM/dem_BC2kmGrid.tif") #permanent location
 dem_table <- climr::dem_to_table(dem2)
 ```
 
@@ -52,7 +53,8 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 
 ```{r}
 # dir <- "../Common_Files/" # Kiri's location
-dir <- "" # local copy
+dir <- "./tree_summaries_code/" #Mia's location
+#dir <- "" # local copy
 bgcs <- vect(paste0(dir, "BEC13Draft_Simplified.gpkg"))
 bgc_template <- make_bgc_template(dem2, bgcs)
 
