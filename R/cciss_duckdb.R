@@ -887,7 +887,7 @@ spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
   ", tbl_nm, spp_sql)) |> as.data.table()
   spat_res <- dbGetQuery(dbCon, "select * from spatial_res") |> as.data.table()
   if(spat_res$projected[1]){
-    cellarea <- (spat_res$yres/1000) * (spat_res$xres/1000)
+    cellarea <- (spat_res$y_res/1000) * (spat_res$x_res/1000)
   } else {
     cellarea <- (spat_res$y_res*111)*(spat_res$x_res*111*cos(mean(c(spat_res$y_min,spat_res$y_max)) * pi / 180))
     warning("Input data is not in projected crs. Cell area calculations will be approximate.")
