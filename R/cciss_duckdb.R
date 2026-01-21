@@ -65,6 +65,13 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
   setnames(bgc_points, old = "cell", new = "cellnum")
   dbWriteTable(dbCon, "bgc_points", bgc_points, row.names = F, overwrite = TRUE)
   
+  res_tmp <- res(bgc_template$bgc_rast)
+  ext_tmp <- ext(bgc_template$bgc_rast)
+  spat_res <- data.table(y_min = ext_tmp[3], y_max = ext_tmp[4], 
+                         x_res = res_tmp[1], y_res = res_tmp[2], 
+                         projected = !same.crs(bgc_template$bgc_rast, "epsg:4326"))
+  dbWriteTable(dbCon, "spatial_res", spat_res, row.names = F, overwrite = TRUE)
+  
   eda_table <- copy(E1) ##Edatopic table
   eda_table <- eda_table[is.na(SpecialCode),]
   eda_table <- eda_table[Edatopic %in% edatopes,]
@@ -878,6 +885,15 @@ spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
     JOIN clim_summary USING (ssp, gcm, run, period)
     WHERE a.spp IN (%s)
   ", tbl_nm, spp_sql)) |> as.data.table()
+  spat_res <- dbGetQuery(dbCon, "select * from spatial_res") |> as.data.table()
+  if(spat_res$projected[1]){
+    cellarea <- (spat_res$y_res/1000) * (spat_res$x_res/1000)
+  } else {
+    cellarea <- (spat_res$y_res*111)*(spat_res$x_res*111*cos(mean(c(spat_res$y_min,spat_res$y_max)) * pi / 180))
+    warning("Input data is not in projected crs. Cell area calculations will be approximate.")
+  }
+  res[, `:=`(Proj_Area = Proj_Area * cellarea, MappedSuit = MappedSuit * cellarea)]
+  
   return(res)
 }
 
