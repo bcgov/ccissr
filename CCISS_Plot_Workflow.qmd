@@ -88,6 +88,18 @@ bgc_perexp <- bgc_persist_expand(con, by_zone = TRUE)
 bgc_bubbleplot(bgc_perexp, period = "2001_2020", scenario = "ssp245")
 bgc_bubbleplot(bgc_perexp, period = "2081_2100", scenario = "ssp370")
 ```
+# Tree species
+
+### compile the species list
+
+```{r}
+data("S1", package = "ccissr")
+data("T1", package = "ccissr")
+spps <- unique(S1$spp)
+spps.candidate <- T1$TreeCode[-which(T1$Exclude=="x")]
+spps <- spps[which(spps%in%spps.candidate)]
+
+```
 
 ## Calculate Species Persistance and Expansion
 
@@ -100,9 +112,9 @@ perexp <- spp_persist_expand(con, spp_list = c("Pl", "Fd", "Cw", "Sx", "At", "Py
 ## Species Bubbleplot
 
 ```{r}
-spp_bubbleplot(perexp, period_sel = "2001_2020", scenario = "ssp370", edatope = "C4")
+spp_bubbleplot(perexp, period = "2041_2060", scenario = "ssp370", edatope = "C4")
 
-spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = "Pl", edatope = c("B2", "C4", "D6"), by = "edatope")
+spp_bubbleplot(perexp, period = "2041_2060", scenario = "ssp245", species = "Pl", edatope = c("B2", "C4", "D6"), by = "edatope")
 ```
 
 # Suitable Area
@@ -110,7 +122,7 @@ spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = 
 ## Calculate Relative Feasible Area
 
 ```{r}
-sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd","Cw"))
+sa <- spp_suit_area(con, spp_list = spps)
 ```
 
 ## Species Spaghetti Plot with indiv. Runs
@@ -140,9 +152,9 @@ cciss_suitability(con, species = spp)
 And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
 
 ```{r}
-plot_spparea(con, spp = "Fd", edatope = "B2", fractional = TRUE)
-plot_spparea(con, spp = "Fd", edatope = "C4", fractional = TRUE)
-plot_spparea(con, spp = "Fd", edatope = "D6", fractional = TRUE)
+plot_spparea(con, spp = "Pl", edatope = "B2", fractional = TRUE)
+plot_spparea(con, spp = "Pl", edatope = "C4", fractional = TRUE)
+plot_spparea(con, spp = "Pl", edatope = "D6", fractional = TRUE)
 ```
 
 # 2 Panel Map Plot
