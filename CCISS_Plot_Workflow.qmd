@@ -21,7 +21,7 @@ library(sf)
 library(climr)
 
 # dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
-# dir <- "../Common_Files/" # Kiri's location
+dir <- "../Common_Files/" # Kiri's location
 dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
 BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 
