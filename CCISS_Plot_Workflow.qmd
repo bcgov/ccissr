@@ -122,6 +122,7 @@ spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = 
 
 ```{r}
 sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd","Cw"))
+sa <- spp_suit_area(con, spp_list = c("Cw"))
 ```
 
 ## Species Spaghetti Plot with indiv. Runs
@@ -169,7 +170,7 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Cw", edatope = "D6", period = "2001_2020", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Cw", edatope = "D6", period = "2081_2100", three_panel = FALSE, save_png = TRUE) 
 ```
 
 ```{bash}
