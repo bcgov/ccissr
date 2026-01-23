@@ -67,7 +67,7 @@ plot(bgc_template$bgc_rast)
 
 ```{r}
 con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
-dbPopulate(con, bgc_template)
+#dbPopulate(con, bgc_template)
 ```
 
 ## Run Raw BGC Predictions

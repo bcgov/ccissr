@@ -312,6 +312,7 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
   # NEW: year order (makes first/last unambiguous) (KIRI: I don't like this being hardcoded :()
   # year_levels <- c("1961","2001", "2021","2041","2061","2081")
   # cciss_sum[, Year := factor(as.character(Year), levels = year_levels)]
+  year_levels <- sort(as.character(cciss_sum$Year))
   
   # NEW: order zones by change (last - first): most decline at bottom
   delta_by_zone <- cciss_sum[SppArea > 0,
