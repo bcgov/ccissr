@@ -31,7 +31,7 @@ BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 # dem <- mask(dem, vect(bumobnd))
 # dem2 <- aggregate(dem, fact = 45)
 
-#dem2 <- rast("dem_BC2kmGrid.tif")
+dem2 <- rast(file.path(dir,"dem_BC2kmGrid.tif"))
 dem2 <- rast("//objectstore2.nrs.bcgov/ffec/DEM/dem_BC2kmGrid.tif") #permanent location
 dem_table <- climr::dem_to_table(dem2)
 ```
