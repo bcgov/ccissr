@@ -20,9 +20,9 @@ library(bcmaps)
 library(sf)
 library(climr)
 
-# dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
-dir <- "../Common_Files/" # Kiri's location
-dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
+dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
+#dir <- "../Common_Files/" # Kiri's location
+#dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
 
 BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 
@@ -30,8 +30,7 @@ BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 # dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
 # dem <- mask(dem, vect(bumobnd))
 # dem2 <- aggregate(dem, fact = 45)
-
-dem2 <- rast(file.path(dir,"dem_BC2kmGrid.tif"))
+#dem2 <- rast(file.path(dir,"dem_BC2kmGrid.tif"))
 dem2 <- rast("//objectstore2.nrs.bcgov/ffec/DEM/dem_BC2kmGrid.tif") #permanent location
 dem_table <- climr::dem_to_table(dem2)
 ```
@@ -53,7 +52,7 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 ## Create Mapped BGC Raster
 
 ```{r}
-# dir <- "../Common_Files/" # Kiri's location
+dir <- "../Common_Files/" # Kiri's location
 dir <- "./tree_summaries_code/" #Mia's location
 #dir <- "" # local copy
 
@@ -169,8 +168,7 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
-
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Cw", edatope = "D6", period = "2081_2100", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Cw", edatope = "C4", period = "2001_2020", three_panel = FALSE, save_png = FALSE)  
 ```
 
 ```{bash}
