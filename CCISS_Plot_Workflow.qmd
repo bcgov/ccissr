@@ -20,9 +20,10 @@ library(bcmaps)
 library(sf)
 library(climr)
 
- dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
-# dir <- "../Common_Files/" # Kiri's location
-#dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
+# dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
+dir <- "../Common_Files/" # Kiri's location
+dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
+
 BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 
 # bumobnd <- st_read("bdy.BuMo.shp")
@@ -30,7 +31,7 @@ BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 # dem <- mask(dem, vect(bumobnd))
 # dem2 <- aggregate(dem, fact = 45)
 
-#dem2 <- rast("dem_BC2kmGrid.tif")
+dem2 <- rast(file.path(dir,"dem_BC2kmGrid.tif"))
 dem2 <- rast("//objectstore2.nrs.bcgov/ffec/DEM/dem_BC2kmGrid.tif") #permanent location
 dem_table <- climr::dem_to_table(dem2)
 ```
@@ -66,7 +67,7 @@ plot(bgc_template$bgc_rast)
 
 ```{r}
 con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
-dbPopulate(con, bgc_template)
+#dbPopulate(con, bgc_template)
 ```
 
 ## Run Raw BGC Predictions
