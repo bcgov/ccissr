@@ -272,7 +272,7 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
   cciss_sum <- rbind(cciss_sum, cciss_hist)
   cciss_sum[, Year := as.factor(substr(FuturePeriod,1,4))]
   
-  yrs <- unique(as.integer(cciss_sum$Year))
+  yrs <- sort(unique(as.integer(cciss_sum$Year)))
   idx <- seq_along(yrs)
   
   midpts <- head(idx, -1) + 0.5
@@ -299,15 +299,23 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
     colScheme <- setNames(subzones_colours_ref$colour, subzones_colours_ref$classification)
   }
   
-  # cellarea <- (res(bgc_template$bgc_rast)[2]*111)*(res(bgc_template$bgc_rast)[1]*111*cos(mean(ext(bgc_template$bgc_rast)[3:4]) * pi / 180))
-  # cciss_sum[, SppArea := SppArea * cellarea]
+  spat_res <- dbGetQuery(dbCon, "select * from spatial_res") |> as.data.table()
+  if(spat_res$projected[1]){
+    cellarea <- (spat_res$y_res/1000) * (spat_res$x_res/1000)
+  } else {
+    cellarea <- (spat_res$y_res*111)*(spat_res$x_res*111*cos(mean(c(spat_res$y_min,spat_res$y_max)) * pi / 180))
+    warning("Input data is not in projected crs. Cell area calculations will be approximate.")
+  }
   
-  # NEW: year order (makes first/last unambiguous)
-  year_levels <- c("1961","2021","2041","2061","2081")
-  cciss_sum[, Year := factor(as.character(Year), levels = year_levels)]
+  cciss_sum[, SppArea := SppArea * cellarea]
+
+  # NEW: year order (makes first/last unambiguous) (KIRI: I don't like this being hardcoded :()
+  # year_levels <- c("1961","2001", "2021","2041","2061","2081")
+  # cciss_sum[, Year := factor(as.character(Year), levels = year_levels)]
+  year_levels <- sort(as.character(cciss_sum$Year))
   
   # NEW: order zones by change (last - first): most decline at bottom
-  delta_by_zone <- cciss_sum[Year %in% year_levels & SppArea > 0,
+  delta_by_zone <- cciss_sum[SppArea > 0,
                              .(SppArea = sum(SppArea, na.rm = TRUE)),
                              by = .(zone, Year)]
   delta_by_zone <- dcast(delta_by_zone, zone ~ Year, value.var = "SppArea", fill = 0)
@@ -316,6 +324,17 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
   zone_order <- rev(zone_order) # should put declines at bottom, increases at top
   cciss_sum[, zone := factor(zone, levels = zone_order)]
   cciss_sum <- cciss_sum[!is.na(zone) & SppArea > 0]
+  
+  ## NEW: fill in with zeros
+  grid <- CJ(
+    zone   = sort(unique(cciss_sum$zone)),
+    Year = sort(unique(cciss_sum$Year)),
+    unique = TRUE
+  )
+  
+  # left join onto grid, then fill missing with 0
+  cciss_sum_full <- cciss_sum[grid, on = .(zone, Year)]
+  cciss_sum_full[is.na(SppArea), SppArea := 0]
   
   # # NEW: shoulder borders (only outside the white overlay bars) - currently not working AT ALL. Will continue troubleshooting.
   # bar_total <- cciss_sum[, .(ymax = sum(SppArea, na.rm = TRUE)), by = Year]
@@ -345,7 +364,7 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
   # )
   
   # Plot
-  ggplot(cciss_sum, aes(x = Year, y = SppArea, fill = zone)) +
+  ggplot(cciss_sum_full, aes(x = Year, y = SppArea, fill = zone)) +
     geom_alluvium(aes(alluvium = zone), alpha= .9, color = "black") +
     
     geom_rect(
@@ -373,7 +392,7 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
       drop = TRUE
     ) +
     
-    scale_x_discrete(labels=c("1961" = "1961-90", "2021" = "2021-40",
+    scale_x_discrete(labels=c("1961" = "1961-90", "2001" = "2001-20", "2021" = "2021-40",
                               "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
     scale_y_continuous(expand=c(0,0)) +
     labs(y="Environmentally Suitable Area (Km^2)",x="Time period", fill = "BGC zone") +
