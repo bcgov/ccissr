@@ -1,0 +1,176 @@
+---
+title: "CCISS_Plot_Workflow"
+format: html
+editor: visual
+---
+
+# CCISS Plots!
+
+## Load Necessary Data
+
+We'll use the high resolution dem for the lower mainland. It's small enough that we can run the analysis quickly.
+
+```{r}
+library(terra)
+library(ranger)
+library(ccissr)
+library(data.table)
+library(RColorBrewer)
+library(bcmaps)
+library(sf)
+library(climr)
+
+# dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
+dir <- "../Common_Files/" # Kiri's location
+dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
+
+BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
+
+# bumobnd <- st_read("bdy.BuMo.shp")
+# dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
+# dem <- mask(dem, vect(bumobnd))
+# dem2 <- aggregate(dem, fact = 45)
+dem2 <- rast(file.path(dir,"dem_BC2kmGrid.tif"))
+dem2 <- rast("//objectstore2.nrs.bcgov/ffec/DEM/dem_BC2kmGrid.tif") #permanent location
+dem_table <- climr::dem_to_table(dem2)
+```
+
+## Setup parameters for model
+
+```{r}
+gcms_cciss <- c("ACCESS-ESM1-5", "CNRM-ESM2-1", "EC-Earth3", "GFDL-ESM4",
+                "GISS-E2-1-G", "MIROC6", "MPI-ESM1-2-HR", "MRI-ESM2-0")
+
+vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT", 
+                 "MWMT", "NFFD_sm", "NFFD_sp", "PAS_an", "PAS_sp", "SHM", "Tave_sm", 
+                 "Tave_sp", "Tmax_sm", "Tmax_sp", "Tmin_an", "Tmin_at", "Tmin_sm", 
+                 "Tmin_sp", "Tmin_wt","CMI_an", "PPT_05","PPT_06","PPT_07","PPT_08",
+                 "PPT_09","PPT_at","PPT_wt","CMD_07","CMD_an"
+)
+```
+
+## Create Mapped BGC Raster
+
+```{r}
+dir <- "../Common_Files/" # Kiri's location
+dir <- "./tree_summaries_code/" #Mia's location
+#dir <- "" # local copy
+
+bgcs <- vect(paste0(dir, "BEC13Draft_Simplified.gpkg"))
+bgc_template <- make_bgc_template(dem2, bgcs)
+
+plot(bgc_template$bgc_rast)
+```
+
+## Setup database
+
+```{r}
+con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
+#dbPopulate(con, bgc_template)
+```
+
+## Run Raw BGC Predictions
+
+Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperiod. We do this by simply passing `summarise = FALSE`.
+
+```{r}
+
+predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = list_gcm_periods(), max_runs_use = 4L)
+
+```
+
+## Calculate BGC Persistance/Expansion
+
+```{r}
+bgc_perexp <- bgc_persist_expand(con, by_zone = TRUE)
+```
+
+## BGC Bubbleplot
+
+```{r}
+bgc_bubbleplot(bgc_perexp, period = "2001_2020", scenario = "ssp245")
+bgc_bubbleplot(bgc_perexp, period = "2081_2100", scenario = "ssp370")
+```
+
+## Calculate Species Persistance and Expansion
+
+```{r}
+# perexp <- spp_persist_expand(con, spp_list = c("Pl","Py","Lw","At","Sx","Cw","Fd"), fractional = TRUE)
+
+#perexp <- spp_persist_expand(con, spp_list = c("Pl", "Fd", "Cw", "Sx", "At", "Py", "Ba", "Bl", "Bg", "Yc", "Hm", "Lw", "Hw","Dr", "Ep", "Act", "Sb", "Mb", "Ss"), fractional = TRUE)
+
+DBI::dbExecute(con, "PRAGMA max_temp_directory_size='20GiB'") #if needed
+perexp <- spp_persist_expand(con, spp_list = c("Cw"), fractional = TRUE) #run for one species at a time if machine can't handle more
+
+```
+
+## Species Bubbleplot
+
+```{r}
+spp_bubbleplot(perexp, period_sel = "2001_2020", scenario = "ssp370", edatope = "C4")
+
+spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = "Cw", edatope = c("B2", "C4", "D6"), by = "edatope") #throwing errors for Mia currently, need to troubleshoot
+
+
+#To-do: add save_png to this function so that plots can be saved easily
+```
+
+# Suitable Area
+
+## Calculate Relative Feasible Area
+
+```{r}
+sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd","Cw"))
+```
+
+## Species Spaghetti Plot with indiv. Runs
+
+```{r}
+spp_spaghettiplot(sa, species = "Cw", use_MAT = FALSE) #Mia: This plot looks weird now, with the added data. Could we start the x axis at 1961, to more smoothly show what I think is the drop between then and 2000?
+spp_spaghettiplot(sa, species = "Cw", use_MAT = TRUE)
+#Mia Q: why does the MAT plot mean line not extend all the way to end of x axis (i.e., 6 degrees)?
+
+
+#To-do: add save_png to this function so that plots can be saved easily
+```
+
+# Alluvial Plot
+
+Unlike the previous plots, for the alluvial/stacked bar plot, we need the cciss projections to be summarised instead of individual runs. We'll summarise directly on the database.
+
+```{r}
+
+summarise_preds(con)
+```
+
+Great! Now we have that we can create the siteseries and suitability predictions. For the alluvial plots, you can only plot one species and one edatope at a time, but we'll run a bunch so we can make lots of plots quickly.
+
+```{r}
+siteseries_preds(con)
+spp <- c("Cw")
+cciss_suitability(con, species = spp)
+```
+
+And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
+
+```{r}
+plot_spparea(con, spp = "Cw", edatope = "B2", fractional = TRUE)
+plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE)
+plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE)
+
+#To-do: add save_png to this function so that plots can be saved easily
+```
+
+# 2 Panel Map Plot
+
+Recreation of Colin's 2 panel plot. Note that this currently only works using an Albers grid.
+
+```{r}
+bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Cw", edatope = "C4", period = "2001_2020", three_panel = FALSE, save_png = FALSE) #For Mia, there is currently no data showing. Not sure why, need to troubleshoot.
+
+```
+
+```{bash}
+cdo -outputtab,date,value -fldmean -daymin -selname,T2 -settaxis,2018-04-01,00:00:00,1hour -delete,timestep=1 test_precip.nc
+```
