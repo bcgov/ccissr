@@ -75,7 +75,7 @@ Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperi
 
 ```{r}
 
-predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = c("2001_2020"), max_runs_use = 4L)
+predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = list_gcm_periods(), max_runs_use = 4L)
 
 ```
 
@@ -96,7 +96,11 @@ bgc_bubbleplot(bgc_perexp, period = "2081_2100", scenario = "ssp370")
 
 ```{r}
 # perexp <- spp_persist_expand(con, spp_list = c("Pl","Py","Lw","At","Sx","Cw","Fd"), fractional = TRUE)
-perexp <- spp_persist_expand(con, spp_list = c("Pl", "Fd", "Cw", "Sx", "At", "Py", "Ba", "Bl", "Bg", "Yc", "Hm", "Lw", "Hw","Dr", "Ep", "Act", "Sb", "Mb", "Ss"), fractional = TRUE)
+
+#perexp <- spp_persist_expand(con, spp_list = c("Pl", "Fd", "Cw", "Sx", "At", "Py", "Ba", "Bl", "Bg", "Yc", "Hm", "Lw", "Hw","Dr", "Ep", "Act", "Sb", "Mb", "Ss"), fractional = TRUE)
+
+DBI::dbExecute(con, "PRAGMA max_temp_directory_size='20GiB'") #if needed
+perexp <- spp_persist_expand(con, spp_list = c("Cw"), fractional = TRUE) #run for one species at a time if machine can't handle more
 
 ```
 
@@ -164,7 +168,7 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Cw", edatope = "B2", period = "2001_2020", three_panel = FALSE, save_png = TRUE) #For Mia, there is currently no data showing. Not sure why, need to troubleshoot.
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Cw", edatope = "D6", period = "2001_2020", three_panel = FALSE, save_png = TRUE) 
 ```
 
 ```{bash}
