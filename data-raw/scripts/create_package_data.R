@@ -12,6 +12,9 @@ S1[,V1 := NULL]
 setnames(S1, old = c("suitability","newsuit"), new = c("feasible","newfeas"))
 use_data(S1, overwrite = TRUE)
 
+THLB_Exclude <- fread("thlb_topupdate.csv")
+use_data(THLB_Exclude, overwrite = TRUE)
+
 N1 <- fread("site_series.csv", encoding = "Latin-1")
 N1[RealmClass == "", RealmClass := NA]
 N1 <- N1[,.(SS_NoSpace,SiteSeriesLongName,RealmClass)]
