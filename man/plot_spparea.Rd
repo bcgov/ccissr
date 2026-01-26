@@ -11,8 +11,8 @@ plot_spparea(
   fractional,
   by_zone = TRUE,
   save_png = TRUE,
-  width = 6,
-  height = 7,
+  width = 7,
+  height = 5.5,
   res = 300
 )
 }
