@@ -245,8 +245,8 @@ plot_spparea <- function(dbCon,
                          fractional, 
                          by_zone = TRUE, 
                          save_png = TRUE, 
-                         width = 6, 
-                         height = 7, 
+                         width = 7, 
+                         height = 5.5, 
                          res = 300) {
   cciss_spp <- dbGetQuery(dbCon, sprintf("select * from cciss_res where Spp = '%s' AND Edatope = '%s'", spp, edatope)) |> as.data.table()
   bgc_mapped <- dbGetQuery(dbCon, "select * from bgc_points") |> as.data.table()
@@ -357,22 +357,24 @@ plot_spparea <- function(dbCon,
       data = bars,
       aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
       inherit.aes = FALSE,
-      fill = "white", alpha = 0.88
+      fill = "white", alpha = 0.8
     ) +
     
     #add lines bordering each column
     geom_col(
-      data = cciss_sum_full,
-      aes(x = Year, y = SppArea, group = zone),
+      data = cciss_sum_full |>
+        dplyr::group_by(Year) |>
+        dplyr::summarise(total = sum(SppArea), .groups = "drop"),
+      aes(x = Year, y = total),
       position = "stack",
-      width = 0.9,
+      width = 0.4, 
       fill = NA,
       color = "black",
-      linewidth = 0.4,
+      linewidth = 1.5,
       inherit.aes = FALSE
     ) +
     
-    theme_classic() +
+    theme_classic(base_size = 12) +
     
     #legend matches stack order + drop unplotted zones
     scale_fill_manual(
