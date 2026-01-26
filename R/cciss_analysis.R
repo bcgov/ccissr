@@ -235,7 +235,7 @@ bgc_bubbleplot <- function(persist_expand,
 #' @param by_zone Logical. Plot by zone or subzone? Defaults to `TRUE`
 #' @param base_folder Base folder to read results from.
 #' @return NULL. Creates plot
-#' @import data.table duckdb ggplot2
+#' @import data.table duckdb ggplot2 scales
 #' @importFrom ggalluvial geom_alluvium
 #' @export
 
@@ -351,23 +351,27 @@ plot_spparea <- function(dbCon,
   
   # Plot
   ggplot(cciss_sum_full, aes(x = Year, y = SppArea, fill = zone)) +
-    geom_alluvium(aes(alluvium = zone), alpha= .9, color = "black") +
+    geom_alluvium(aes(alluvium = zone), alpha= 1, color = "black") +
     
     geom_rect(
       data = bars,
       aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
       inherit.aes = FALSE,
-      fill = "white", alpha = 0.85
+      fill = "white", alpha = 0.88
     ) +
     
-    # # border overlay (on top)
-    # geom_rect(
-    #   data = shoulders,
-    #   aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
-    #   inherit.aes = FALSE,
-    #   fill = NA, color = "black", linewidth = 0.25
-    # ) +
-    # 
+    #add lines bordering each column
+    geom_col(
+      data = cciss_sum_full,
+      aes(x = Year, y = SppArea, group = zone),
+      position = "stack",
+      width = 0.9,
+      fill = NA,
+      color = "black",
+      linewidth = 0.4,
+      inherit.aes = FALSE
+    ) +
+    
     theme_classic() +
     
     #legend matches stack order + drop unplotted zones
@@ -380,7 +384,7 @@ plot_spparea <- function(dbCon,
     
     scale_x_discrete(labels=c("1961" = "1961-90", "2001" = "2001-20", "2021" = "2021-40",
                               "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
-    scale_y_continuous(expand=c(0,0)) +
+    scale_y_continuous(labels = scales::comma, expand=c(0,0)) +
     labs(y="Environmentally Suitable Area (Km^2)",x="Time period", fill = "BGC zone") +
     theme(axis.ticks.x = element_blank())
   
