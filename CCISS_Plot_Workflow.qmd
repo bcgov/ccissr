@@ -19,6 +19,8 @@ library(RColorBrewer)
 library(bcmaps)
 library(sf)
 library(climr)
+library(here)
+library(ggplot2)
 
 dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
 #dir <- "../Common_Files/" # Kiri's location
@@ -120,7 +122,7 @@ spp_bubbleplot(perexp, period_sel = "2041_2060", scenario = "ssp245", species = 
 ## Calculate Relative Feasible Area
 
 ```{r}
-sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd","Cw"))
+#sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd","Cw"))
 sa <- spp_suit_area(con, spp_list = c("Cw"))
 ```
 
@@ -159,8 +161,20 @@ plot_spparea(con, spp = "Cw", edatope = "B2", fractional = TRUE, save_png = TRUE
 plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE, save_png = TRUE)
 plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE, save_png = TRUE)
 
-#To-do: add save_png to this function so that plots can be saved easily
+#To-do: add save_png to this function so that plots can be saved easily. I (Mia) tried to do this but it's not working and I'm not sure why. For now, I've added my old ggsave code below. If you figure out what I did incorrectly in cciss_analysis, please let me know! It would be great to save them that way since the file names can be automated.
 ```
+For now, if you want to save the plots to the Figures folder:
+```{r}
+Cw_B2_alluv <- plot_spparea(con, spp = "Cw", edatope = "B2", fractional = TRUE); Cw_B2_alluv
+Cw_C4_alluv <- plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE); Cw_C4_alluv
+Cw_D6_alluv <- plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE); Cw_D6_alluv
+
+ggsave("Cw_B2_alluv.png", plot = Cw_B2_alluv, path = here("tree_summaries_code", "Figures"),width = 7, height = 5, dpi = 300)
+ggsave("Cw_C4_alluv.png", plot = Cw_C4_alluv, path = here("tree_summaries_code", "Figures"),width = 7, height = 5, dpi = 300)
+ggsave("Cw_D6_alluv.png", plot = Cw_D6_alluv, path = here("tree_summaries_code", "Figures"),width = 7, height = 5, dpi = 300)
+```
+
+
 
 # 2 Panel Map Plot
 
