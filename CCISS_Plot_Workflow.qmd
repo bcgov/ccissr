@@ -52,7 +52,7 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 ## Create Mapped BGC Raster
 
 ```{r}
-dir <- "../Common_Files/" # Kiri's location
+#dir <- "../Common_Files/" # Kiri's location
 dir <- "./tree_summaries_code/" #Mia's location
 #dir <- "" # local copy
 
@@ -155,9 +155,9 @@ cciss_suitability(con, species = spp)
 And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
 
 ```{r}
-plot_spparea(con, spp = "Cw", edatope = "B2", fractional = TRUE)
-plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE)
-plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE)
+plot_spparea(con, spp = "Cw", edatope = "B2", fractional = TRUE, save_png = TRUE)
+plot_spparea(con, spp = "Cw", edatope = "C4", fractional = TRUE, save_png = TRUE)
+plot_spparea(con, spp = "Cw", edatope = "D6", fractional = TRUE, save_png = TRUE)
 
 #To-do: add save_png to this function so that plots can be saved easily
 ```
