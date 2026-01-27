@@ -83,7 +83,16 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
   suit <- suit[,.(bgc,spp,ss_nospace,newfeas)]
   dbWriteTable(dbCon, "suitability", suit, row.names = FALSE, overwrite = TRUE)
   
-  message("✓ Written bgc_points, edatopic, and suitability tables to duckdb!")
+  thlb <- copy(THLB_Exclude)
+  thlb[, in_thlb := TRUE][
+    Exclude == "x",
+    in_thlb := FALSE
+  ]
+  thlb[,Exclude := NULL]
+  setnames(thlb, old = "BGC", new = "bgc")
+  dbWriteTable(dbCon, "thlb_bgcs", thlb, row.names = FALSE, overwrite = TRUE)
+  
+  message("✓ Written bgc_points, thlb_bgcs, edatopic, and suitability tables to duckdb!")
   return(invisible(TRUE))
 }
 
@@ -371,7 +380,7 @@ calc_spp_persist_expand <- function(
     "CASE WHEN NewSuit_code_clean <> 5 THEN 1 ELSE 0 END"
   }
   
-  periods_use <- if(is.null(periods)) "" else sprintf("WHERE e.period IN ('%s')", paste(periods, collapse = "','"))
+  periods_use <- if(is.null(periods)) "" else sprintf("AND e.period IN ('%s')", paste(periods, collapse = "','"))
   
   hist_suit_expr <- if (fractional) {
     "1.0 - (HistSuit_code_clean - 1) / 4.0"
@@ -391,9 +400,11 @@ calc_spp_persist_expand <- function(
     -- 3. Compute mapped historic suitability
     ---------------------------------------------------------------------
     WITH bgc_sum AS (
-      SELECT bgc, COUNT(*) AS BGC_Tot
+      SELECT bgc_points.bgc, COUNT(*) AS BGC_Tot
       FROM bgc_points
-      GROUP BY bgc
+      JOIN thlb_bgcs using (bgc) 
+      WHERE thlb_bgcs.in_thlb
+      GROUP BY bgc_points.bgc
     ),
 
     mapped_raw AS (
@@ -462,7 +473,7 @@ calc_spp_persist_expand <- function(
           WHEN sth.newfeas IS NULL OR sth.newfeas = 4 THEN 5
           ELSE sth.newfeas
         END AS HistSuit_code_clean
-      FROM bgc_eda_mat e
+      FROM bgc_eda_mat e 
       JOIN suitability st
         ON e.SS_Pred = st.ss_nospace
         AND st.spp IN (%s)
@@ -470,6 +481,8 @@ calc_spp_persist_expand <- function(
       LEFT JOIN suitability sth
         ON e.SS_NoSpace = sth.ss_nospace
         AND sth.spp = st.spp
+        
+      WHERE e.bgc_true IN (SELECT bgc from thlb_bgcs WHERE in_thlb)
       %s -- optional select by single period
     ),
 
@@ -656,6 +669,7 @@ calc_suit_area <- function(
       FROM bgc_raw a
       LEFT JOIN bgc_points p USING (cellnum)
       WHERE p.bgc IS NOT NULL
+      AND p.bgc IN (SELECT bgc FROM thlb_bgcs WHERE in_thlb)
       %s
     ),
 
@@ -676,9 +690,10 @@ calc_suit_area <- function(
     -- 3. Compute mapped historic suitability per species × edatopic
     -----------------------------------------------------------------------------
     bgc_sum AS (
-      SELECT bgc, COUNT(*) AS BGC_Tot
+      SELECT bgc_points.bgc, COUNT(*) AS BGC_Tot
       FROM bgc_points
-      GROUP BY bgc
+      WHERE bgc_points.bgc IN (SELECT bgc FROM thlb_bgcs WHERE in_thlb)
+      GROUP BY bgc_points.bgc
     ),
 
     mapped_raw AS (
