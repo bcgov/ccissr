@@ -6,6 +6,15 @@ library(usethis)
 library(readxl)
 library(ccissr)
 
+##update ccissr suitability tables
+S1 <- fread("tables/versioned/suitability_v13_24.csv")
+S1[,V1 := NULL]
+setnames(S1, old = c("suitability","newsuit"), new = c("feasible","newfeas"))
+use_data(S1, overwrite = TRUE)
+
+THLB_Exclude <- fread("thlb_topupdate.csv")
+use_data(THLB_Exclude, overwrite = TRUE)
+
 N1 <- fread("site_series.csv", encoding = "Latin-1")
 N1[RealmClass == "", RealmClass := NA]
 N1 <- N1[,.(SS_NoSpace,SiteSeriesLongName,RealmClass)]
@@ -56,7 +65,7 @@ setnames(dat2,c("classification","colour"))
 fwrite(dat2, "WNAv13_ZoneCols.csv")
 
 E1 <- fread("tables/versioned/Edatopic_v13_5.csv")
-S1 <- fread("tables/suitability.csv")
+S1 <- fread("tables/versioned/suitability_v13_24.csv")
 N1 <- fread("./data-raw/data_tables/SiteSeries_names_v12_15.csv", encoding = "Latin-1")
 #N1[,SiteSeriesLongName := gsub(pattern = "[\x80-\xff]", "",SiteSeriesLongName, perl = T)]
 
@@ -65,7 +74,7 @@ SS <- fread("tables/versioned/Special_SS_v13_1.csv")
 
 covMat <- read.csv("data-raw/Feas_CovMat.csv", header = TRUE, row.names = 1)
 
-S1[,Confirmed := NULL]
+
 S1 <- S1[!is.na(Feasible),]
 setnames(S1, old = "SppVar",new = "Spp")
 S1[Spp %in% c("Fdi","Fdc"),Spp := "Fd"]

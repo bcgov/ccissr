@@ -1,57 +1,82 @@
 
 #' Create raster and id table of BGCs based on vector data
-#' @param raster_template SpatRaster.
+#' @param xyz SpatRaster or data.table of points (must have lat, lon, id).
 #' @param bgcs SpatVector or sf object of bgc bondaries with column "BGC" specifying name.
-#' @return List containinng resultant SpatRaster and data.table of ids.
+#' @return List containing resultant SpatRaster and data.table of ids (or single data.table if input is a data.table).
 #' @import data.table
 #' @importFrom terra project vect rasterize
 #' @importFrom sf st_transform
 #' @export
-make_bgc_raster <- function(raster_template, bgcs){
+make_bgc_template <- function(xyz, bgcs, res = 0.0008){
   if(inherits(bgcs,"SpatVector")){
-    bgcs <- project(bgcs, crs(raster_template))
+    #bgcs <- project(bgcs, "epsg:4326")
     bgcs$bgc_id <- as.numeric(as.factor(bgcs$BGC))
   } else {
-    bgcs <- st_transform(bgcs, crs(raster_template))
+    #bgcs <- st_transform(bgcs, 4326)
     bgcs$bgc_id <- as.numeric(as.factor(bgcs$BGC))
     bgcs <- vect(bgcs)
   }
-  bgc_ids <- unique(data.table(bgc = bgcs$BGC, bgc_id = bgcs$bgc_id))
-
-  bc_bgc <- rasterize(bgcs, raster_template, field = "bgc_id")
-  return(list(bgc_rast = bc_bgc, ids = bgc_ids))
+  if(inherits(xyz,"SpatRaster")){
+    bgc_ids <- unique(data.table(bgc = bgcs$BGC, bgc_id = bgcs$bgc_id))
+    bc_bgc <- rasterize(bgcs, xyz, field = "bgc_id")
+    return(list(bgc_rast = bc_bgc, ids = bgc_ids))
+  } else {
+    bgcs$id <- 1:nrow(bgcs)
+    temp_pts <- vect(xyz, crs = "epsg:4326")
+    bgcs_small <- crop(bgcs, temp_pts)
+    temp_r <- rast(bgcs_small, res = res)
+    bgc_id <- rasterize(bgcs_small, temp_r, field = "id")
+    pnt_id <- extract(bgc_id, temp_pts)
+    
+    res <- data.table(cell = xyz$id, BGC = bgcs$BGC[pnt_id$id])
+    return(res)
+  }
+  
 }
 
-#' Create summarised BGC predictions from RF model
-#' @param raster_template SpatRaster.
+#' Creates BGC predictions from RF model
+#' @param dbCon Database connection
+#' @param xyz SpatRaster or data.table.
 #' @param BGCmodel Ranger random forest model of BGCs
 #' @param vars_needed Character. List of variables required for model
 #' @param gcms_use Character. List of gcms used in summarised predictions
 #' @param periods_use Character. List of time periods to create predictions for
 #' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
-#' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
-#' @param base_folder Character. Name of base folder to write results to.
 #' @return NULL. Results are written to csv files in base_folder/bgc_data
-#' @import climr data.table
+#' @import climr data.table ranger duckdb
 #' @export
-summary_preds_gcm <- function(raster_template, 
+predict_bgc <- function(dbCon,
+                              xyz, 
                               BGCmodel, 
                               vars_needed, 
                               gcms_use, 
                               periods_use, 
                               ssp_use = c("ssp126", "ssp245", "ssp370"),
-                              ssp_w = c(0.8,1,0.8),
-                              base_folder = "spatial",
+                              max_runs_use = 0L,
                               start_tile = 1) {
+  periods_needed <- periods_use
+  if(duckdb_table_exists(dbCon, "bgc_raw")) {
+    periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+    if(all(periods_use %in% periods_cached)){
+      message("Use cached table bgc_raw :)")
+      return(invisible(TRUE))
+    } else {
+      periods_needed <- setdiff(periods_use, periods_cached)
+      message("Will predict missing period ", periods_needed)
+    }
+  }
   
-  if(!dir.exists(paste0(base_folder,"/bgc_data"))) dir.create(paste0(base_folder,"/bgc_data"))
-  out_folder <- paste0(base_folder,"/bgc_data")
+  if(inherits(xyz, "SpatRaster")){
+    points_dat <- as.data.frame(xyz, cells=T, xy=T)
+    colnames(points_dat) <- c("id", "lon", "lat", "elev")
+    #points_dat <- points_dat[,c(2,3,4,1)] #restructure for climr input
+  } else if(!all(c("lon", "lat", "elev", "id") %in% names(xyz))){
+    stop("xyz must have columns lon, lat, elev, and id if it is a dataframe")
+  } else {
+    points_dat <- copy(xyz)
+  }
   
-  points_dat <- as.data.frame(raster_template, cells=T, xy=T)
-  colnames(points_dat) <- c("id", "lon", "lat", "elev")
-  points_dat <- points_dat[,c(2,3,4,1)] #restructure for climr input
   splits <- c(seq(1, nrow(points_dat), by = 10000), nrow(points_dat) + 1)
-  ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
   message("There are ", length(splits), " tiles")
   
   for (i in start_tile:(length(splits) - 1)){
@@ -59,27 +84,53 @@ summary_preds_gcm <- function(raster_template,
     clim_dat <- climr::downscale(points_dat[splits[i]:(splits[i+1]-1),], 
                           which_refmap = "refmap_climr",
                           gcms = gcms_use,
-                          gcm_periods = periods_use,
+                          gcm_periods = periods_needed,
                           ssps = ssp_use,
-                          max_run = 0L,
-                          vars = vars_needed,
+                          max_run = max_runs_use,
+                          vars = c(vars_needed, "MAT"),
                           nthread = 6,
                           return_refperiod = FALSE)
     addVars(clim_dat)
     clim_dat <- na.omit(clim_dat)
+    
+    mat_dat <- clim_dat[,.(cellnum = id, ssp = SSP, gcm = GCM, run = RUN, period = PERIOD, MAT)]
+    dbWriteTable(dbCon, "clim_raw", mat_dat, row.names = FALSE, append = TRUE)
+    
     setnames(clim_dat, old = c("PAS_an","Tmin_an","CMI_an"), new = c("PAS","Tmin","CMI"))
     temp <- predict(BGCmodel, data = clim_dat, num.threads = 8)
-    dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, 
+    dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, run = clim_dat$RUN,
                       period = clim_dat$PERIOD, bgc_pred = temp$predictions)
-    dat[ssp_weights, weight := i.weight, on = "ssp"]
-    dat_sum <- dat[,.(bgc_prop = sum(weight)/20.8), by = .(cellnum, period, bgc_pred)]
-    
-    fwrite(dat_sum, paste0(out_folder, "/bgc_summary_",i, ".csv"), append = TRUE)
-    rm(clim_dat, dat, dat_sum)
+    dbWriteTable(dbCon, "bgc_raw", dat, row.names = FALSE, append = TRUE)
+
+    rm(clim_dat, dat, mat_dat)
     gc()
   }
-  cat("Done!")
+  message("Created/updated table bgc_raw and clim_raw")
+  
+  if(!dbExistsTable(dbCon,"clim_refperiod")) {
+    ref_clim <- climr::downscale(points_dat, which_refmap = "refmap_climr", vars = "MAT", return_refperiod = TRUE)
+    ref_clim[,PERIOD := NULL]
+    setnames(ref_clim, c("cellnum","MAT"))
+    dbWriteTable(dbCon, "clim_refperiod", ref_clim, row.names = FALSE)
+  }
+  
+  dbExecute(dbCon, "DROP TABLE IF EXISTS clim_summary")
+  
+  qry <- "CREATE TABLE clim_summary AS
+                      
+                      WITH clim_diff AS (
+                        select a.cellnum, ssp, gcm, run, period, (a.MAT - clim_refperiod.MAT) as MAT_diff
+                        FROM clim_raw a
+                        JOIN clim_refperiod USING (cellnum)
+                      )
+                      SELECT
+                        ssp, gcm, run, period, AVG(MAT_diff) as MAT_diff
+                      FROM clim_diff
+                      GROUP BY ssp, gcm, run, period;"
+  dbExecute(dbCon, qry)
+  message("Created table clim_refperiod and clim_summary")
 }
+
 
 
 # summary_preds_obs <- function(raster_template, 
@@ -113,55 +164,42 @@ summary_preds_gcm <- function(raster_template,
 # }
 
 #' Create siteseries predictions from summarised BGC predictions
-#' @param edatopes Character. Vector of desired edatopic positions. Default is "B2", "C4", "D6" (poor, mesic, rich).
-#' @param obs Logical. Do prediction for observed period? Default FALSE
-#' @param bgc_raster_list List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_raster`
-#' @param base_folder Base folder to write results to.
-#' @return NULL. Writes results to csvs in base_folder/ss_preds
-#' @import data.table
+#' @param dbCon Database connection to duckdb
+#' @import data.table duckdb
 #' @export
-
-siteseries_preds <- function(edatopes = c("B2", "C4", "D6"), 
-                             obs = F, 
-                             bgc_raster_list,
-                             base_folder = "spatial") {
-  in_folder <- file.path(base_folder,"bgc_data")
-  if(obs){
-    periods <- list_obs_periods()
-    bgc_all <- fread(file.path(in_folder, "bgc_summary_obs.csv"))
-    obs_nm <- "obs_"
-  } else {
-    temp_ls <- list.files(in_folder, full.names = TRUE)
-    temp_ls <- temp_ls[!grepl("obs",temp_ls)]
-    bgc_all_ls <- lapply(temp_ls, FUN = fread)
-    bgc_all <- rbindlist(bgc_all_ls)
-    rm(bgc_all_ls)
-    obs_nm <- ""
+siteseries_preds <- function(dbCon,
+                             obs = FALSE) {
+  
+  bgc_qry <- "select * from bgc_summary"
+  if(duckdb_table_exists(dbCon, "siteseries_preds")) {
+    periods_raw <- dbGetQuery(dbCon, "select distinct period from bgc_summary")$period
+    periods_perexp <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
+    missing <- setdiff(periods_raw,periods_perexp)
+    
+    if(length(missing) == 0) {
+      message("✓ Using cached table siteseries_preds")
+      return(invisible(TRUE))
+    }
+    message("Updating database for missing periods: ", missing)
+    bgc_qry <- paste0("select * from bgc_summary where period in ('", paste(missing, collapse = "','"), "')")
   }
+  
+  bgc_all <- dbGetQuery(dbCon, bgc_qry) |> as.data.table()
+  bgc_points <- dbGetQuery(dbCon, "select * from bgc_points") |> as.data.table()
   
   periods <- unique(bgc_all$period)
   
-  bgc_rast <- bgc_raster_list$bgc_rast
-  rast_ids <- bgc_raster_list$ids
-  bgc_points <- as.data.frame(bgc_rast, cells=T, xy=T) |> as.data.table()
-  bgc_points[rast_ids, BGC := i.bgc, on = "bgc_id"]
-  
-  if(!dir.exists(paste0(base_folder,"/ss_preds"))) dir.create(paste0(base_folder,"/ss_preds"))
-  out_folder <- paste0(base_folder,"/ss_preds")
-  
-  # eda_ss <- special_ss[,.(SS_NoSpace,SpecialCode)]
-  # edatopic[eda_ss, SpecialCode := i.SpecialCode, on = "SS_NoSpace"]
-  # eda_all <- edatopic[is.na(SpecialCode),]
-  eda_all <- copy(ccissr::E1)
+  eda_all <- dbGetQuery(dbCon, "select * from edatopic") |> as.data.table()
+  edatopes <- unique(eda_all$Edatopic)
   
   for(period_curr in periods){
     bgc_sum <- bgc_all[period == period_curr,]
-    bgc_sum[bgc_points, BGC := i.BGC, on = c(cellnum = "cell")]
+    bgc_sum[bgc_points, BGC := i.bgc, on = "cellnum"]
     setcolorder(bgc_sum, c("cellnum","period","BGC","bgc_pred","bgc_prop"))
     setnames(bgc_sum, c("SiteRef","FuturePeriod","BGC","BGC.pred","BGC.prop"))
     
     for(edatope in edatopes){
-      cat(period_curr, edatope, "\n")
+      message(period_curr,", ", edatope)
       eda_table <- copy(eda_all)
       eda_table[,HasPos := if(any(Edatopic %in% edatope)) T else F, by = .(SS_NoSpace)]
       eda_table <- unique(eda_table[(HasPos),])
@@ -170,61 +208,70 @@ siteseries_preds <- function(edatopes = c("B2", "C4", "D6"),
       sites <- unique(bgc_sum$SiteRef)
       splits <- c(seq(1, length(sites), by = 200000), length(sites) + 1)
       for (i in 1:(length(splits) - 1)){
-        cat(i, "\n")
         srs <- sites[splits[i]:(splits[i+1]-1)]
         dat_sml <- bgc_sum[SiteRef %in% srs,]
         sspred <- edatopicOverlap_fast(dat_sml, E1 = eda_table)
-        fwrite(sspred, append = TRUE, paste0(out_folder, "/siteseries_",obs_nm,period_curr, "_", edatope, ".csv"))
+        sspred[,Edatope := edatope]
+        dbWriteTable(dbCon, "siteseries_preds", sspred, append = TRUE, row.names = FALSE)
         rm(sspred)
         gc()
       }
     }
   }
-  message("Done!")
+  message("✓ Created table siteseries_preds !")
 }
 
 #' Create projected suitability values from site series predictions.
+#' @param dbCon duckdb database connection
 #' @param species Character vector. Species codes to create projections for. 
-#' @param edatopes Character vector. List of edatopes for projections. Must be a subset of the edatopes run in `siteseries_preds`
-#' @param periods Character. Periods to run projections for. Default is `list_gcm_periods()`
-#' @param base_folder Base folder to write results to.
 #' @param tile_size Integer. Number of sites to process at once. May need to decrease if memory is limited. Default 4000
-#' @return NULL. Writes results to csvs in base_folder/cciss_suit
-#' @import data.table
+#' @return NULL. Writes table to database
+#' @import data.table duckdb
 #' @export
-cciss_suitability <- function(species,
-                              edatopes,
+cciss_suitability <- function(dbCon,
+                              species,
                               obs = FALSE,
-                              periods = list_gcm_periods(),
-                              base_folder = "spatial",
                               tile_size = 4000) {
-  feas_table <- copy(ccissr::S1)
-  setnames(feas_table, c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR"))
- # stopifnot(all(c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR") %in% names(feas_table)))
   
-  in_folder <- file.path(base_folder,"ss_preds")
-  if(!dir.exists(paste0(base_folder,"/cciss_suit"))) dir.create(paste0(base_folder,"/cciss_suit"))
-  out_folder <- paste0(base_folder,"/cciss_suit")
-  
-  if(obs) {
-    periods <- list_obs_periods()
-    obs_nm <- "obs_"
-  } else {
-    obs_nm <- ""
+  periods <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
+  if(duckdb_table_exists(dbCon, "cciss_res")) {
+    periods_raw <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
+    periods_perexp <- dbGetQuery(dbCon, "select distinct FuturePeriod from cciss_res")$FuturePeriod
+    missing <- setdiff(periods_raw,periods_perexp)
+    
+    spp <- dbGetQuery(dbCon, "select distinct Spp from cciss_res")$Spp
+    missing_spp <- setdiff(species, spp)
+    if(length(missing_spp) == 0 & length(missing) == 0){
+      message("All requested species already cached :)")
+      return(invisible(TRUE))
+    }
+    if(length(missing_spp) > 0) {
+      message("Calculating CCISS for ", paste(missing_spp, collapse = ", "))
+      species <- missing_spp
+    }
+    if(length(missing) > 0) {
+      message("Calculating CCISS for ", paste(missing, collapse = ", "))
+      periods <- missing
+    }
   }
   
+  feas_table <- dbGetQuery(dbCon, "select * from suitability") |> as.data.table()
+  setnames(feas_table, c("BGC", "Spp","SS_NoSpace", "Feasible"))
+  edatopes <- dbGetQuery(dbCon, "select distinct Edatopic from edatopic")$Edatopic
+ # stopifnot(all(c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR") %in% names(feas_table)))
   for(period in periods){
     for(edatope in edatopes){
-      sspreds <- fread(paste0(in_folder,"/siteseries_",obs_nm,period,"_",edatope,".csv"))
+      sspreds <- dbGetQuery(dbCon, sprintf("select * from siteseries_preds where FuturePeriod = '%s' AND Edatope = '%s'", period, edatope)) |> as.data.table()
       sitenums <- unique(sspreds$SiteRef)
       splits <- c(seq(1, length(sitenums), by = tile_size), length(sitenums) + 1)
       for(spp in species){
-        message(period, edatope, spp, "\n")
+        message(period, " ", edatope, " ", spp)
         for (i in 1:(length(splits) - 1)){
           temp <- sspreds[SiteRef %in% sitenums[splits[i]:(splits[i+1]-1)],]
           cciss_res <- cciss_full(temp, feas_table, spp)
           cciss_res <- na.omit(cciss_res, cols = "SiteRef")
-          fwrite(cciss_res, append = TRUE, paste0(out_folder,"/CCISS_",obs_nm,period,"_",edatope,".csv"))
+          cciss_res[,Edatope := edatope]
+          dbWriteTable(dbCon, "cciss_res", cciss_res, row.names = FALSE, append = TRUE)
         }
         rm(cciss_res)
         gc()
@@ -233,7 +280,7 @@ cciss_suitability <- function(species,
     rm(sspreds)
     gc()
   }
-  cat("Done!")
+  message("✓ Created or updated table cciss_res !")
 }
 
 #' Create geotif rasters of projected suitabilities for each species/edatope/period
@@ -265,7 +312,7 @@ cciss_rasterize <- function(raster_template, base_folder = "spatial") {
         rfinal <- copy(raster_template)
         values(rfinal) <- NA
         rfinal[dat_spp$SiteRef] <- dat_spp$Newsuit
-        writeRaster(rfinal,file.path(out_folder,paste0("CCISS_",period,"_", eda,"_",spp,".tif")))
+        writeRaster(rfinal,file.path(out_folder,paste0("CCISS_",period,"_", eda,"_",spp,".tif")), overwrite=TRUE)
       }
     }
   }
@@ -274,17 +321,17 @@ cciss_rasterize <- function(raster_template, base_folder = "spatial") {
 #' Function to create rasters of historic (mapped) suitability by species and edatopic position
 #' @param species Character. Vector of species codes to map
 #' @param edatopes Character. Vector of edatopes (e.g., "C4")
-#' @param bgc_raster_list List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_raster`
+#' @param bgc_template_list List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_template`
 #' @param base_folder Base folder to write results to.
 #' @return NULL. Writes tifs to "base_folder/historic_suit"
 #' @export
-mapped_suit <- function(species, edatopes, bgc_raster_list, base_folder) {
+mapped_suit <- function(species, edatopes, bgc_template_list, base_folder) {
   if(!dir.exists(paste0(base_folder,"/historic_suit"))) dir.create(paste0(base_folder,"/historic_suit"))
   out_folder <- paste0(base_folder,"/historic_suit")
   for(eda_sel in edatopes){
     for(spp_sel in species) {
-      bgc_ids <- copy(bgc_raster_list$ids)
-      bgc_rast <- copy(bgc_raster_list$bgc_rast)
+      bgc_ids <- copy(bgc_template_list$ids)
+      bgc_rast <- copy(bgc_template_list$bgc_rast)
       eda_sub <- copy(ccissr::E1)[Edatopic == eda_sel & is.na(SpecialCode),]
       suit_sub <- copy(ccissr::S1)[spp == spp_sel,]
       eda_sub[suit_sub, suit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]
