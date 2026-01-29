@@ -128,7 +128,7 @@ spp_bubbleplot <- function(persist_expand,
     sppcolors <- c(brewer.pal(n=12, "Paired")[-11])
   }
   
-  period.names <- c("2001-2020", "2020-2040", "2041-2060", "2061-2080", "2081-2100")
+  period.names <- c("2001-2020", "2021-2040", "2041-2060", "2061-2080", "2081-2100")
   
   par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1)
   
@@ -207,8 +207,8 @@ spp_bubbleplot <- function(persist_expand,
     } else lines(x2, y2, col=1, lwd=1.5, lty=1)
     
     points(x2,y2, pch=21, bg=1, cex=1)
-    text(x2[2],y2[2], period.names[1], pos=4, cex=0.75, font=2)
-    text(x2[6],y2[6], period.names[5], pos=2, cex=0.75, font=2)
+    text(x2[2],y2[2], period.names[1], pos=4, cex=0.75, font=2, offset=0.3)
+    text(x2[6],y2[6], period.names[5], pos=2, cex=0.75, font=2, offset=0.3)
     
     # -----------------------
     # label
