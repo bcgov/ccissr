@@ -287,16 +287,30 @@ bgc_bubbleplot <- function(persist_expand,
 #' @param edatope Character. Single edatopic position for plot (e.g., "C4")
 #' @param bgc_template List containing SpatRaster of BGCs and id table, or data.table (must have columns `cell`,`BGC`). Usually created using `make_bgc_template`
 #' @param fractional Logical. Use fractional (suitability based) values for calculations?
+#' @param save_png Logical. Save plot to png? Default `TRUE`. If `FALSE`, creates plot on default plotting device.
 #' @param by_zone Logical. Plot by zone or subzone? Defaults to `TRUE`
 #' @param base_folder Base folder to read results from.
 #' @return NULL. Creates plot
-#' @import data.table duckdb ggplot2
+#' @import data.table duckdb ggplot2 scales
 #' @importFrom ggalluvial geom_alluvium
 #' @export
 
-plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
+plot_spparea <- function(dbCon, 
+                         spp, 
+                         edatope, 
+                         fractional, 
+                         by_zone = TRUE, 
+                         save_png = TRUE, 
+                         width = 7, 
+                         height = 5.5, 
+                         res = 300) {
   cciss_spp <- dbGetQuery(dbCon, sprintf("select * from cciss_res where Spp = '%s' AND Edatope = '%s'", spp, edatope)) |> as.data.table()
   bgc_mapped <- dbGetQuery(dbCon, "select * from bgc_points") |> as.data.table()
+  
+  if (save_png) {
+    png(file = paste("./alluv", spp, edatope, "png", sep = "."), type = "cairo", units = "in", width = width, height = height, res = res)
+    on.exit(dev.off(), add = TRUE)
+  }
   
   if(by_zone) {
     bgc_mapped[, zone := regmatches(bgc, regexpr("^[A-Z]+", bgc))]
@@ -365,12 +379,9 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
   
   cciss_sum[, SppArea := SppArea * cellarea]
 
-  # NEW: year order (makes first/last unambiguous) (KIRI: I don't like this being hardcoded :()
-  # year_levels <- c("1961","2001", "2021","2041","2061","2081")
-  # cciss_sum[, Year := factor(as.character(Year), levels = year_levels)]
   year_levels <- sort(as.character(cciss_sum$Year))
   
-  # NEW: order zones by change (last - first): most decline at bottom
+  # order zones by change (last - first): most decline at bottom
   delta_by_zone <- cciss_sum[SppArea > 0,
                              .(SppArea = sum(SppArea, na.rm = TRUE)),
                              by = .(zone, Year)]
@@ -381,7 +392,7 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
   cciss_sum[, zone := factor(zone, levels = zone_order)]
   cciss_sum <- cciss_sum[!is.na(zone) & SppArea > 0]
   
-  ## NEW: fill in with zeros
+  ## fill in with zeros
   grid <- CJ(
     zone   = sort(unique(cciss_sum$zone)),
     Year = sort(unique(cciss_sum$Year)),
@@ -392,36 +403,11 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
   cciss_sum_full <- cciss_sum[grid, on = .(zone, Year)]
   cciss_sum_full[is.na(SppArea), SppArea := 0]
   
-  # # NEW: shoulder borders (only outside the white overlay bars) - currently not working AT ALL. Will continue troubleshooting.
-  # bar_total <- cciss_sum[, .(ymax = sum(SppArea, na.rm = TRUE)), by = Year]
-  # bar_total[, x := as.numeric(Year)]
-  # bar_total[, `:=`(full_xmin = x - 0.5, full_xmax = x + 0.5, ymin = 0)]
-  # 
-  # # bars correspond to the gaps BETWEEN years; map them to the left year index
-  # bars2 <- copy(bars)
-  # bars2$k <- seq_len(nrow(bars2))          # 1..(n_years-1)
-  # 
-  # # for year i (left of gap), shoulders are [full_xmin, bars$xmin] and [bars$xmax, full_xmax]
-  # shoulders <- rbind(
-  #   data.table(
-  #     Year = levels(cciss_sum$Year)[bars2$k],
-  #     xmin = bar_total$full_xmin[bars2$k],
-  #     xmax = bars2$xmin,
-  #     ymin = 0,
-  #     ymax = bar_total$ymax[bars2$k]
-  #   ),
-  #   data.table(
-  #     Year = levels(cciss_sum$Year)[bars2$k],
-  #     xmin = bars2$xmax,
-  #     xmax = bar_total$full_xmax[bars2$k],
-  #     ymin = 0,
-  #     ymax = bar_total$ymax[bars2$k]
-  #   )
-  # )
+  
   
   # Plot
   ggplot(cciss_sum_full, aes(x = Year, y = SppArea, fill = zone)) +
-    geom_alluvium(aes(alluvium = zone), alpha= .9, color = "black") +
+    geom_alluvium(aes(alluvium = zone), alpha= 1, color = "black") +
     
     geom_rect(
       data = bars,
@@ -430,15 +416,21 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
       fill = "white", alpha = 0.8
     ) +
     
-    # # border overlay (on top)
-    # geom_rect(
-    #   data = shoulders,
-    #   aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
-    #   inherit.aes = FALSE,
-    #   fill = NA, color = "black", linewidth = 0.25
-    # ) +
-    # 
-    theme_classic() +
+    #add lines bordering each column
+    geom_col(
+      data = cciss_sum_full |>
+        dplyr::group_by(Year) |>
+        dplyr::summarise(total = sum(SppArea), .groups = "drop"),
+      aes(x = Year, y = total),
+      position = "stack",
+      width = 0.4, 
+      fill = NA,
+      color = "black",
+      linewidth = 1.5,
+      inherit.aes = FALSE
+    ) +
+    
+    theme_classic(base_size = 12) +
     
     #legend matches stack order + drop unplotted zones
     scale_fill_manual(
@@ -450,7 +442,7 @@ plot_spparea <- function(dbCon, spp, edatope, fractional, by_zone = TRUE) {
     
     scale_x_discrete(labels=c("1961" = "1961-90", "2001" = "2001-20", "2021" = "2021-40",
                               "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
-    scale_y_continuous(expand=c(0,0)) +
+    scale_y_continuous(labels = scales::comma, expand=c(0,0)) +
     labs(y="Environmentally Suitable Area (Km^2)",x="Time period", fill = "BGC zone") +
     theme(axis.ticks.x = element_blank())
   
