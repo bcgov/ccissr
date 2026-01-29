@@ -70,6 +70,7 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
 #' @param scenario Character. ssp to use for plot. Must be one of climr::list_spps(). 
 #' @param species Character vector of species or "auto" to display all available species. Default "auto".
 #' @param species.focal Character A single species for which to display time evolution and ensemble variation. Must be an element of the vector defined in the 'species' parameter. Default NULL.
+#' @param focal.color Character A color for the focal species data points. 
 #' @param edatope Character of desired edatope to use for multiple species plot, or vector of edatopes for single species.
 #' @param by Character. Either "species", to display multiple species for one edatope, or "edatopes", to display multiple edatopes for one species. 
 #' @param xlab  Character. x axis title.
@@ -85,11 +86,13 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
 #' @importFrom stinepack stinterp
 #' @importFrom climr list_gcm_periods
 #' @export
+#' 
 spp_bubbleplot <- function(persist_expand, 
                            period = "2041_2060", 
                            scenario = "ssp245", 
                            species = "auto", 
                            species.focal = NULL,
+                           focal.color = "lightskyblue2",
                            edatope = "C4", 
                            by = "species", 
                            xlab = "Persistence within historically suitable range",
@@ -126,15 +129,17 @@ spp_bubbleplot <- function(persist_expand,
     sppcolors <- c(brewer.pal(n=12, "Paired")[-11])
   }
   
+  period.names <- c("2001-2020", "2020-2040", "2041-2060", "2061-2080", "2081-2100")
+  
   par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1)
   
-  xlim <- c(0, 1.5)
+  xlim <- c(0, 1.25)
   ylim <- c(-5,3)
   plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab=xlab, ylab="")
   if(xlabels) axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
   if(ylabels) axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
   par(mgp=c(2.75, 0.25, 0))
-  title(ylab=ylab, cex.lab=1.2)
+  title(ylab=ylab, cex.lab=1)
   iso <- seq(0,1.2, 0.001)
   lines(1-iso, log2(iso), lty=2, lwd=2, col="darkgray")
   # if(annotate){ 
@@ -152,7 +157,7 @@ spp_bubbleplot <- function(persist_expand,
       spp_sel <- species[1]
       eda_sel <- spps[i]
     }
-    col.focal <- if(is.null(species.focal)) sppcolors[i] else if(spp_sel==species.focal) sppcolors[i] else "lightgray"
+    col.focal <- if(is.null(species.focal)) sppcolors[i] else if(spp_sel==species.focal) focal.color else "lightgray"
     col.focal2 <- if(is.null(species.focal)) "black" else if(spp_sel==species.focal) "black" else "darkgray"
     x <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
     y <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
@@ -186,7 +191,7 @@ spp_bubbleplot <- function(persist_expand,
     y <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
     y[y<2^(ylim[1])] <- 2^(ylim[1])
     y <- log2(y)
-    points(x,y, pch=21, bg=sppcolors[which(spps==spp_sel)], cex=1)
+    points(x,y, pch=21, bg=focal.color, cex=1)
     
     # -----------------------
     # line for ensemble mean trajectory
@@ -204,17 +209,20 @@ spp_bubbleplot <- function(persist_expand,
       x3 <- if(unique(sign(diff(x2)))==-1) rev(x2) else x2
       y3 <- if(unique(sign(diff(x2)))==-1) rev(y2) else y2
       s <- stinterp(x3,y3, seq(min(x3),max(x3), diff(xlim)/500)) # way better than interpSpline, not prone to oscillations
-      lines(s, col=1, lwd=1.5)
-    } else lines(x2, y2, col=1, lwd=1.5)
+      lines(s, col=1, lwd=1.5, lty=1)
+    } else lines(x2, y2, col=1, lwd=1.5, lty=1)
     
     points(x2,y2, pch=21, bg=1, cex=1)
+    text(x2[2],y2[2], period.names[1], pos=4, cex=0.75, font=2)
+    text(x2[6],y2[6], period.names[5], pos=2, cex=0.75, font=2)
     
     # -----------------------
     # label
     
     j <- which(list_gcm_periods() == period_sel) + 1 #add one because there is an origin (baseline) in the vector
-    points(x2[j],y2[j], pch=21, bg=sppcolors[which(spps==spp_sel)], cex=3.5, col=1)
+    points(x2[j],y2[j], pch=21, bg=focal.color, cex=3.5, col=1)
     text(x2[j],y2[j], species.focal, cex=0.8, font=2, col=1)
+    
     
   }
   

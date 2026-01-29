@@ -10,6 +10,7 @@ spp_bubbleplot(
   scenario = "ssp245",
   species = "auto",
   species.focal = NULL,
+  focal.color = "lightskyblue2",
   edatope = "C4",
   by = "species",
   xlab = "Persistence within historically suitable range",
@@ -29,6 +30,8 @@ spp_bubbleplot(
 \item{species}{Character vector of species or "auto" to display all available species. Default "auto".}
 
 \item{species.focal}{Character A single species for which to display time evolution and ensemble variation. Must be an element of the vector defined in the 'species' parameter. Default NULL.}
+
+\item{focal.color}{Character A color for the focal species data points.}
 
 \item{edatope}{Character of desired edatope to use for multiple species plot, or vector of edatopes for single species.}
 
