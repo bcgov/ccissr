@@ -66,11 +66,12 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
 
 #' Create C.R. Mahony's bubbleplot of species expansion/persistance
 #' @param persist_expand data.table. Usually created with `spp_persist_expand`
-#' @param period Character. Period to create plot for.
-#' @param scenario Character. ssp to use for plot.
+#' @param period Character. Period to create plot for. Must be one of climr::list_gcm_periods(). 
+#' @param scenario Character. ssp to use for plot. Must be one of climr::list_spps(). 
 #' @param species Character vector of species or "auto" to display all available species. Default "auto".
+#' @param species.focal Character A single species for which to display time evolution and ensemble variation. Must be an element of the vector defined in the 'species' parameter. Default NULL.
 #' @param edatope Character of desired edatope to use for multiple species plot, or vector of edatopes for single species.
-#' @param by  Character. Either "species", or "edatopes". 
+#' @param by Character. Either "species", to display multiple species for one edatope, or "edatopes", to display multiple edatopes for one species. 
 #' @param xlab  Character. x axis title.
 #' @param ylab  Character. y axis title.
 #' @param xlabels  logical. x axis labels.
@@ -81,11 +82,14 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
 #' @importFrom car dataEllipse
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom plotrix arctext
+#' @importFrom stinepack stinterp
+#' @importFrom climr list_gcm_periods
 #' @export
 spp_bubbleplot <- function(persist_expand, 
                            period = "2041_2060", 
                            scenario = "ssp245", 
                            species = "auto", 
+                           species.focal = NULL,
                            edatope = "C4", 
                            by = "species", 
                            xlab = "Persistence within historically suitable range",
@@ -95,8 +99,12 @@ spp_bubbleplot <- function(persist_expand,
                            mar = c(3,4,0.1,0.1)
                            ) {
   
+  
   if (!requireNamespace("plotrix", quietly = TRUE)) {
     stop("Package 'plotrix' is required for arctext() annotations.", call. = FALSE)
+  }
+  if (!requireNamespace("stinepack", quietly = TRUE)) {
+    stop("Package 'stinepack' is required for stinterp() splines", call. = FALSE)
   }
   
   period_sel <- period
@@ -135,7 +143,6 @@ spp_bubbleplot <- function(persist_expand,
   # }
   #mtext(paste(edatope.names[which(edatopes==edatope)], " sites", " (", edatope, ")", sep=""), side=3, line=-1.25, adj= if(edatope=="C4") 0.025 else 0.075, cex=0.7, font=1)
   
-  spp.focal <- "none"
   #spps <- spps[-9]
   for(i in 1:length(spps)){
     if(by == "species") {
@@ -145,25 +152,74 @@ spp_bubbleplot <- function(persist_expand,
       spp_sel <- species[1]
       eda_sel <- spps[i]
     }
-    col.focal <- if(spp.focal=="none") sppcolors[i] else "lightgray"
-    col.focal2 <- if(spp.focal=="none") "black" else "darkgray"
+    col.focal <- if(is.null(species.focal)) sppcolors[i] else if(spp_sel==species.focal) sppcolors[i] else "lightgray"
+    col.focal2 <- if(is.null(species.focal)) "black" else if(spp_sel==species.focal) "black" else "darkgray"
     x <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
     y <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
+    y.mean <- mean(y) #need to calculate ensemble mean prior to log-transformation
     y[y<2^(ylim[1])] <- 2^(ylim[1])
     y <- log2(y)
+    y.mean[y.mean<2^(ylim[1])] <- 2^(ylim[1])
+    y.mean <- log2(y.mean)
     
     # points(x,y)
     if(length(x)>1 & var(x)>0){
       if(var(y)==0) {
         lines(range(x), range(y), col=col.focal)
       }  else {
-        dataEllipse(x, y, levels=0.5, center.pch=21, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
+        dataEllipse(x, y, levels=0.5, center.pch=NULL, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
       } 
     }
-    points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(spps[i]==spp.focal) 4.5 else 3, col=col.focal2)
-    text(mean(x),mean(y), spps[i], cex=if(spps[i]==spp.focal) 1 else 0.7, font=2, col=col.focal2)
+    points(mean(x),y.mean, pch=21, bg=col.focal, cex=if(spps[i]==species.focal) 3.5 else 3, col=col.focal2)
+    text(mean(x),y.mean, spps[i], cex=if(spps[i]==species.focal) 0.8 else 0.7, font=2, col=col.focal2)
+    
   }
+  
+  if(!is.null(species.focal)){
+    
+    spp_sel <- species.focal
+    
+    # -----------------------
+    # points for ensemble runs
+    
+    x <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
+    y <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
+    y[y<2^(ylim[1])] <- 2^(ylim[1])
+    y <- log2(y)
+    points(x,y, pch=21, bg=sppcolors[which(spps==spp_sel)], cex=1)
+    
+    # -----------------------
+    # line for ensemble mean trajectory
+    
+    x2 <- persist_expand[ssp == scenario & Edatopic == eda_sel & spp == spp_sel, mean(Persistance), by = period][order(period), V1]
+    y2 <- persist_expand[ssp == scenario & Edatopic == eda_sel & spp == spp_sel, mean(Expansion), by = period][order(period), V1]
+    y2[y2<2^(ylim[1])] <- 2^(ylim[1])
+    y2 <- log2(y2)
+    
+    # add an origin point
+    x2 <- c(1, x2)
+    y2 <- c(ylim[1]-1, y2)
+    
+    if(length(unique(sign(diff(x2))))==1 & sum(diff(x2))!=0){
+      x3 <- if(unique(sign(diff(x2)))==-1) rev(x2) else x2
+      y3 <- if(unique(sign(diff(x2)))==-1) rev(y2) else y2
+      s <- stinterp(x3,y3, seq(min(x3),max(x3), diff(xlim)/500)) # way better than interpSpline, not prone to oscillations
+      lines(s, col=1, lwd=1.5)
+    } else lines(x2, y2, col=1, lwd=1.5)
+    
+    points(x2,y2, pch=21, bg=1, cex=1)
+    
+    # -----------------------
+    # label
+    
+    j <- which(list_gcm_periods() == period_sel) + 1 #add one because there is an origin (baseline) in the vector
+    points(x2[j],y2[j], pch=21, bg=sppcolors[which(spps==spp_sel)], cex=3.5, col=1)
+    text(x2[j],y2[j], species.focal, cex=0.8, font=2, col=1)
+    
+  }
+  
   box()
+  
 }
 
 #' Create C.R. Mahony's bubbleplot of bgc expansion/persistance

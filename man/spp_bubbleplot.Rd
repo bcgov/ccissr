@@ -9,6 +9,7 @@ spp_bubbleplot(
   period = "2041_2060",
   scenario = "ssp245",
   species = "auto",
+  species.focal = NULL,
   edatope = "C4",
   by = "species",
   xlab = "Persistence within historically suitable range",
@@ -21,15 +22,17 @@ spp_bubbleplot(
 \arguments{
 \item{persist_expand}{data.table. Usually created with \code{spp_persist_expand}}
 
-\item{period}{Character. Period to create plot for.}
+\item{period}{Character. Period to create plot for. Must be one of climr::list_gcm_periods().}
 
-\item{scenario}{Character. ssp to use for plot.}
+\item{scenario}{Character. ssp to use for plot. Must be one of climr::list_spps().}
 
 \item{species}{Character vector of species or "auto" to display all available species. Default "auto".}
 
+\item{species.focal}{Character A single species for which to display time evolution and ensemble variation. Must be an element of the vector defined in the 'species' parameter. Default NULL.}
+
 \item{edatope}{Character of desired edatope to use for multiple species plot, or vector of edatopes for single species.}
 
-\item{by}{Character. Either "species", or "edatopes".}
+\item{by}{Character. Either "species", to display multiple species for one edatope, or "edatopes", to display multiple edatopes for one species.}
 
 \item{xlab}{Character. x axis title.}
 
