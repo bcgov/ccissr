@@ -86,7 +86,7 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
 #' @importFrom stinepack stinterp
 #' @importFrom climr list_gcm_periods
 #' @export
-#' 
+
 spp_bubbleplot <- function(persist_expand, 
                            period = "2041_2060", 
                            scenario = "ssp245", 
@@ -101,7 +101,6 @@ spp_bubbleplot <- function(persist_expand,
                            ylabels = TRUE,
                            mar = c(3,4,0.1,0.1)
                            ) {
-  
   
   if (!requireNamespace("plotrix", quietly = TRUE)) {
     stop("Package 'plotrix' is required for arctext() annotations.", call. = FALSE)
@@ -134,7 +133,7 @@ spp_bubbleplot <- function(persist_expand,
   par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1)
   
   xlim <- c(0, 1.25)
-  ylim <- c(-5,3)
+  ylim <- c(-4,3)
   plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab=xlab, ylab="")
   if(xlabels) axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
   if(ylabels) axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
@@ -147,6 +146,10 @@ spp_bubbleplot <- function(persist_expand,
   # arctext(x = "Shrinking suitable range", center = c(-1, -29.3), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
   # }
   #mtext(paste(edatope.names[which(edatopes==edatope)], " sites", " (", edatope, ")", sep=""), side=3, line=-1.25, adj= if(edatope=="C4") 0.025 else 0.075, cex=0.7, font=1)
+  
+  # log-transform Expansion values
+  persist_expand[Expansion<2^(ylim[1]-1)] <- 2^(ylim[1]-1)
+  persist_expand[, Expansion := log2(Expansion)]
   
   #spps <- spps[-9]
   for(i in 1:length(spps)){
@@ -161,11 +164,6 @@ spp_bubbleplot <- function(persist_expand,
     col.focal2 <- if(is.null(species.focal)) "black" else if(spp_sel==species.focal) "black" else "darkgray"
     x <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
     y <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
-    y.mean <- mean(y) #need to calculate ensemble mean prior to log-transformation
-    y[y<2^(ylim[1])] <- 2^(ylim[1])
-    y <- log2(y)
-    y.mean[y.mean<2^(ylim[1])] <- 2^(ylim[1])
-    y.mean <- log2(y.mean)
     
     # points(x,y)
     if(length(x)>1 & var(x)>0){
@@ -175,8 +173,8 @@ spp_bubbleplot <- function(persist_expand,
         dataEllipse(x, y, levels=0.5, center.pch=NULL, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
       } 
     }
-    points(mean(x),y.mean, pch=21, bg=col.focal, cex=if(spps[i]==species.focal) 3.5 else 3, col=col.focal2)
-    text(mean(x),y.mean, spps[i], cex=if(spps[i]==species.focal) 0.8 else 0.7, font=2, col=col.focal2)
+    points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(spps[i]==species.focal) 3.5 else 3, col=col.focal2)
+    text(mean(x),mean(y), spps[i], cex=if(spps[i]==species.focal) 0.8 else 0.7, font=2, col=col.focal2)
     
   }
   
@@ -189,8 +187,6 @@ spp_bubbleplot <- function(persist_expand,
     
     x <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
     y <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
-    y[y<2^(ylim[1])] <- 2^(ylim[1])
-    y <- log2(y)
     points(x,y, pch=21, bg=focal.color, cex=1)
     
     # -----------------------
@@ -198,8 +194,6 @@ spp_bubbleplot <- function(persist_expand,
     
     x2 <- persist_expand[ssp == scenario & Edatopic == eda_sel & spp == spp_sel, mean(Persistance), by = period][order(period), V1]
     y2 <- persist_expand[ssp == scenario & Edatopic == eda_sel & spp == spp_sel, mean(Expansion), by = period][order(period), V1]
-    y2[y2<2^(ylim[1])] <- 2^(ylim[1])
-    y2 <- log2(y2)
     
     # add an origin point
     x2 <- c(1, x2)
@@ -222,7 +216,6 @@ spp_bubbleplot <- function(persist_expand,
     j <- which(list_gcm_periods() == period_sel) + 1 #add one because there is an origin (baseline) in the vector
     points(x2[j],y2[j], pch=21, bg=focal.color, cex=3.5, col=1)
     text(x2[j],y2[j], species.focal, cex=0.8, font=2, col=1)
-    
     
   }
   
