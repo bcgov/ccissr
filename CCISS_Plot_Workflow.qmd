@@ -102,7 +102,7 @@ bgc_bubbleplot(bgc_perexp, period = "2081_2100", scenario = "ssp370")
 #perexp <- spp_persist_expand(con, spp_list = c("Pl", "Fd", "Cw", "Sx", "At", "Py", "Ba", "Bl", "Bg", "Yc", "Hm", "Lw", "Hw","Dr", "Ep", "Act", "Sb", "Mb", "Ss"), fractional = TRUE)
 
 DBI::dbExecute(con, "PRAGMA max_temp_directory_size='20GiB'") #if needed
-perexp <- spp_persist_expand(con, spp_list = c("Pl"), fractional = TRUE) #run for one species at a time if machine can't handle more
+perexp <- spp_persist_expand(con, spp_list = c("Fd"), fractional = TRUE) #run for one species at a time if machine can't handle more
 
 ```
 
@@ -111,11 +111,13 @@ perexp <- spp_persist_expand(con, spp_list = c("Pl"), fractional = TRUE) #run fo
 ```{r}
 #spp_bubbleplot(perexp, period = "2001_2020", scenario = "ssp370", edatope = "C4")
 
-png("Pl_ssp245_bub.png", width = 1800, height = 1200, res = 300)
-spp_bubbleplot(perexp, period = "2081_2100", scenario = "ssp245", species = "Pl", edatope = c("B2", "C4", "D6"), by = "edatope")
+png("Fd_ssp245_bub.png", width = 1800, height = 1200, res = 300)
+spp_bubbleplot(perexp, period = "2081_2100", scenario = "ssp245", species = "Fd", edatope = c("B2", "C4", "D6"), by = "edatope")
 dev.off()
 
-#To-do: add save_png to this function so that plots can be saved easily
+#To-do: 
+# add save_png to this function so that plots can be saved easily
+# reduce axis text size so that the y axis label isn't cut off. Also x and y text show up as different sizes.
 
 ```
 
@@ -125,14 +127,14 @@ dev.off()
 
 ```{r}
 #sa <- spp_suit_area(con, spp_list = c("Pl","Sx","Lw","Fd","Cw"))
-sa <- spp_suit_area(con, spp_list = c("Pl"))
+sa <- spp_suit_area(con, spp_list = c("Fd"))
 ```
 
 ## Species Spaghetti Plot with indiv. Runs
 
 ```{r}
-spp_spaghettiplot(sa, species = "Pl", use_MAT = FALSE) #Mia: This plot looks weird now, with the added data. Could we start the x axis at 1961, to more smoothly show what I think is the drop between then and 2000?
-spp_spaghettiplot(sa, species = "Pl", use_MAT = TRUE)
+spp_spaghettiplot(sa, species = "Fd", use_MAT = FALSE) #Mia: This plot looks weird now, with the added data. Could we start the x axis at 1961, to more smoothly show what I think is the drop between then and 2000?
+spp_spaghettiplot(sa, species = "Fd", use_MAT = TRUE)
 #Mia Q: why does the MAT plot mean line not extend all the way to end of x axis (i.e., 6 degrees)?
 
 
@@ -152,16 +154,16 @@ Great! Now we have that we can create the siteseries and suitability predictions
 
 ```{r}
 siteseries_preds(con)
-spp <- c("Pl")
+spp <- c("Fd")
 cciss_suitability(con, species = spp)
 ```
 
 And now, we can finally create the plot. The basic input parameters are just species and edatope, and then there are a couple of parameters than can be change - namely, whether to use fractional suitability, and whether to group by subzone or zone.
 
 ```{r}
-plot_spparea(con, spp = "Pl", edatope = "B2", fractional = TRUE, save_png = TRUE)
-plot_spparea(con, spp = "Pl", edatope = "C4", fractional = TRUE, save_png = TRUE)
-plot_spparea(con, spp = "Pl", edatope = "D6", fractional = TRUE, save_png = TRUE)
+plot_spparea(con, spp = "Fd", edatope = "B2", fractional = TRUE, save_png = TRUE)
+plot_spparea(con, spp = "Fd", edatope = "C4", fractional = TRUE, save_png = TRUE)
+plot_spparea(con, spp = "Fd", edatope = "D6", fractional = TRUE, save_png = TRUE)
 
 #To-do: add save_png to this function so that plots can be saved easily. I (Mia) tried to do this but it's not working and I'm not sure why. For now, I've added my old ggsave code below. If you figure out what I did incorrectly in cciss_analysis, please let me know! It would be great to save them that way since the file names can be automated.
 ```
@@ -175,14 +177,6 @@ ggsave("Cw_B2_alluv.png", plot = Cw_B2_alluv, path = here("tree_summaries_code",
 ggsave("Cw_C4_alluv.png", plot = Cw_C4_alluv, path = here("tree_summaries_code", "Figures"),width = 7, height = 5, dpi = 300)
 ggsave("Cw_D6_alluv.png", plot = Cw_D6_alluv, path = here("tree_summaries_code", "Figures"),width = 7, height = 5, dpi = 300)
 
-
-Pl_B2_alluv <- plot_spparea(con, spp = "Pl", edatope = "B2", fractional = TRUE)
-Pl_C4_alluv <- plot_spparea(con, spp = "Pl", edatope = "C4", fractional = TRUE)
-Pl_D6_alluv <- plot_spparea(con, spp = "Pl", edatope = "D6", fractional = TRUE)
-
-ggsave("Pl_B2_alluv.png", plot = Pl_B2_alluv, path = here("tree_summaries_code", "Figures"),width = 7, height = 5, dpi = 300)
-ggsave("Pl_C4_alluv.png", plot = Pl_C4_alluv, path = here("tree_summaries_code", "Figures"),width = 7, height = 5, dpi = 300)
-ggsave("Pl_D6_alluv.png", plot = Pl_D6_alluv, path = here("tree_summaries_code", "Figures"),width = 7, height = 5, dpi = 300)
 ```
 
 
@@ -193,29 +187,29 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "C4", period = "2001_2020", three_panel = FALSE, save_png = FALSE)  
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "C4", period = "2001_2020", three_panel = FALSE, save_png = FALSE)  
 ```
 To create a whole set of maps for a species, run this whole chunk:
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 #C4
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "C4", period = "2001_2020", three_panel = FALSE, save_png = TRUE)  
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "C4", period = "2021_2040", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "C4", period = "2041_2060", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "C4", period = "2061_2080", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "C4", period = "2081_2100", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "C4", period = "2001_2020", three_panel = FALSE, save_png = TRUE)  
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "C4", period = "2021_2040", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "C4", period = "2041_2060", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "C4", period = "2061_2080", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "C4", period = "2081_2100", three_panel = FALSE, save_png = TRUE) 
 #B2
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "B2", period = "2001_2020", three_panel = FALSE, save_png = TRUE)  
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "B2", period = "2021_2040", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "B2", period = "2041_2060", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "B2", period = "2061_2080", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "B2", period = "2081_2100", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "B2", period = "2001_2020", three_panel = FALSE, save_png = TRUE)  
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "B2", period = "2021_2040", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "B2", period = "2041_2060", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "B2", period = "2061_2080", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "B2", period = "2081_2100", three_panel = FALSE, save_png = TRUE) 
 #D6
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "D6", period = "2001_2020", three_panel = FALSE, save_png = TRUE)  
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "D6", period = "2021_2040", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "D6", period = "2041_2060", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "D6", period = "2061_2080", three_panel = FALSE, save_png = TRUE) 
-plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Pl", edatope = "D6", period = "2081_2100", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "D6", period = "2001_2020", three_panel = FALSE, save_png = TRUE)  
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "D6", period = "2021_2040", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "D6", period = "2041_2060", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "D6", period = "2061_2080", three_panel = FALSE, save_png = TRUE) 
+plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "D6", period = "2081_2100", three_panel = FALSE, save_png = TRUE) 
 
 ```
 
