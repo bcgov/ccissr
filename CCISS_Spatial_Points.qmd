@@ -1,0 +1,143 @@
+---
+title: "CCISS Spatial Workflow (datatable version)"
+author: "Kiri Daust"
+format: html
+editor: visual
+---
+
+# Introduction
+
+Welcome! The purpose of this vignette is to give a brief example of using CCISS in a spatial workflow (e.g., to create maps of projected suitability for cedar in the 2050s). It follows the same process we used to create the maps shown in CCISS Spatial in the online CCISS tool. We decided to include these functions in the `ccissr` package to facilitate other people creating custom maps. All you need to start is:
+
+1.  The BGC random forest model (this is too big to include in the package, so you'll need to get it from us).
+2.  A dem (elevation model) at the resolution you want the results to be in.
+3.  A vector map of BGC linework
+
+That's it! Everything else is included in the package data.
+
+In this example, we'll be creating some projected suitability maps at a high resolution for the lower mainland.
+
+## Design Choices
+
+In general, it's considered good practice to create functions that don't have side effects - that is, they take input, a return the output, and don't do anything else. That's not how this workflow is setup. Most of the functions here don't return anything - instead, they write the results to files. There a couple of reasons we did this:
+
+1.  This analysis can get very large and quickly overwhelm memory/crash in the middle of a function. It makes more sense to save results to disk as we go, so that we can clear up memory space, and we don't lose everything if the function crashes.
+2.  There isn't a single "endpoint" that we need to get to - the results of various stages can be used. Someone may want just the raw BGC projections, while another person may want the full species suitabilities.
+
+Let's get started!
+
+# Example
+
+## Load Necessary Data
+
+We'll use the high resolution dem for the lower mainland. It's small enough that we can run the analysis quickly. To demonstrate the data.table workflow, we'll project it to BC Albers, and then extract the cell coordinates.
+
+```{r}
+library(terra)
+library(ranger)
+library(ccissr)
+library(data.table)
+
+BGCmodel <- readRDS("../Common_Files/BGCmodel_WNA_V2.1.rds")
+dem <- unwrap(climr::dem_vancouver)
+dem <- project(dem, "epsg:3005")
+plot(dem)
+
+points_in <- as.data.frame(dem, xy = TRUE, na.rm = TRUE, cells = TRUE)
+coords_4326 <- project(as.matrix(points_in[,c("x","y")]), from = "epsg:3005", to= "epsg:4326")
+points <- data.table(id = points_in$cell,lon = coords_4326[,1], lat = coords_4326[,2], elev = points_in$WNA_DEM_SRT_30m)
+```
+
+We'll also setup some parameters: the GCMs we want to use, the climate variables required for the BGC model, and the edatopic positions we want to run the model for. For speed, we'll also just create projections for the 2030s and 2050s. Finally - we need a folder to put the results in.
+
+### A word on Edatopes
+
+Hang on, what's an edatopic position? In short, the BGC system uses what we call and "Edatopic Grid" to specify site type. The edatopic grid has two axes: one specifies soil moisture regime, and the other specifies soil nutrient regime. For example, C4 is moderate moisture and moderate nutrients - so the centre of the grid. This would be typical for a zonal site. For more info on the edatopic system, see our [documentation](https://bcgov-ffec.ca/cciss-docs/Methods.html#aligning-site-series-edatopic-overlap).
+
+Site series each cover different locations in the edatopic grid, and almost always span multiple grid cells. In this example, we'll just use the zonal edatopic position (C4).
+
+```{r}
+gcms_cciss <- c("ACCESS-ESM1-5", "CNRM-ESM2-1", "EC-Earth3", "GFDL-ESM4",
+                "GISS-E2-1-G", "MIROC6", "MPI-ESM1-2-HR", "MRI-ESM2-0")
+
+vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT", 
+                 "MWMT", "NFFD_sm", "NFFD_sp", "PAS_an", "PAS_sp", "SHM", "Tave_sm", 
+                 "Tave_sp", "Tmax_sm", "Tmax_sp", "Tmin_an", "Tmin_at", "Tmin_sm", 
+                 "Tmin_sp", "Tmin_wt","CMI_an", "PPT_05","PPT_06","PPT_07","PPT_08",
+                 "PPT_09","PPT_at","PPT_wt","CMD_07","CMD_an"
+)
+
+eda <- c("C4")
+
+periods <- c("2021_2040","2041_2060")
+
+dir.create("cciss_spatial_vignette")
+base_path <- "cciss_spatial_vignette"
+```
+
+## Run Summarised BGC Predictions
+
+First, we use `climr` to downscale climate data from each GCM to the provided dem. Then, we use the random forest model to project BGCs at each gridpoint. Finally, we summarise that into the proportion of models projecting each BGC at each gridcell. Note that to avoid lost time due to crashing, the function saves the data in "tiles" as it goes.
+
+```{r}
+summary_preds_gcm(points, BGCmodel, vars_needed, gcms_cciss, periods_use = periods, base_folder = base_path)
+
+```
+
+Now we have the BGC projections in "cciss_spatial_vignette/bgc_data". Let's look at the first tile.
+
+```{r}
+bgc_proj <- fread(file.path(base_path,"bgc_data","bgc_summary_1.csv"))
+bgc_proj
+```
+
+## Create Site Series Predictions
+
+We now have the predicted BGCs, but our species suitability ratings are by site series within BGC. So before we can apply those, we need to convert the BGC projections into site series projections. This is where the edatopic space we specified earlier comes in - we essentially assume that each grid point is on a C4 site, and then run the edatopic overlap to determine what site type it would be on in a future projected climate. The following function will automatically read in the BGC projections from the folder, and save the site series projections in a folder called "ss_preds".
+
+However, the edatopic overlap needs to know what the current (mapped) BGC is at each location. To do this, we'll read in a BGC vector file, and create a raster based on the template dem.
+
+```{r}
+bgcs <- vect("../Common_Files/BEC13Draft_4326.gpkg")
+pts_bgc <- make_bgc_template(points, bgcs)
+```
+
+Looks good. Now we can pass that to the edatopic overlap function.
+
+```{r}
+siteseries_preds(edatopes = eda, bgc_mapped = pts_bgc, base_folder = base_path)
+```
+
+If we have a look at the data we just created, we'll see it now has projections on a site series level.
+
+```{r}
+ss_proj <- fread(file.path(base_path,"ss_preds","siteseries_2041_2060_C4.csv"))
+ss_proj
+```
+
+## Create CCISS Results
+
+Now that we have the siteseries predictions, we can combine these with the species environmental suitability ratings to get projected suitabilities. Here we can again specify edatopes and species of interest. Let's run this for western redcedar and Douglas fir.
+
+```{r}
+spp <- c("Cw","Fd")
+cciss_suitability(species = spp, periods = periods, edatopes = eda, base_folder = base_path)
+```
+
+The resulting files now contain the results of the CCISS analysis - projected suitability at each timeperiod, model agreement, % of model suggesting improvement or decline. Let's have a look.
+
+```{r}
+cciss <- fread(file.path(base_path,"cciss_suit","CCISS_2041_2060_C4.csv"))
+cciss
+```
+
+## Create Maps
+
+```{r}
+cciss_2041 <- fread(file.path(base_path,"cciss_suit","CCISS_2041_2060_C4.csv"))
+cw_2041 <- cciss_2041[Spp == "Cw",]
+cw_rast <- copy(dem)
+values(cw_rast) <- NA
+cw_rast[cw_2041$SiteRef] <- cw_2041$Newsuit
+plot(cw_rast)
+```
