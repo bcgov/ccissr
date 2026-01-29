@@ -115,9 +115,15 @@ png("Fd_ssp245_bub.png", width = 1800, height = 1200, res = 300)
 spp_bubbleplot(perexp, period = "2081_2100", scenario = "ssp245", species = "Fd", edatope = c("B2", "C4", "D6"), by = "edatope")
 dev.off()
 
+
+spp_bubbleplot(perexp, period = "2081_2100", scenario = "ssp245", species.focal = "Fd", edatope = c("C4"))
 #To-do: 
 # add save_png to this function so that plots can be saved easily
 # reduce axis text size so that the y axis label isn't cut off. Also x and y text show up as different sizes.
+#new: 
+  #could we add labels to the time points?
+  # would we still want to show all three edatopes? Either in one plot, or as tabs?
+  #for Fd, the points to the left are clustered around where the D6 edatope was plotted - what is the relationship between these specific models and the D6 edatope, if any? Is this interesting? 
 
 ```
 
