@@ -318,31 +318,76 @@ cciss_rasterize <- function(raster_template, base_folder = "spatial") {
   }
 }
 
-#' Function to create rasters of historic (mapped) suitability by species and edatopic position
+#' Function to create create table of reference species suitability by BGC for given edatopic positions
+#' @param dbCon duckdb database connection
 #' @param species Character. Vector of species codes to map
 #' @param edatopes Character. Vector of edatopes (e.g., "C4")
-#' @param bgc_template_list List containing SpatRaster of BGCs and id table. Usually created using `make_bgc_template`
-#' @param base_folder Base folder to write results to.
-#' @return NULL. Writes tifs to "base_folder/historic_suit"
+#' @importFrom glue glue_sql
+#' @importFrom data.table as.data.table
+#' @import duckdb
+#' @return Data.table of species x edatope x bgc suitabilities
 #' @export
-mapped_suit <- function(species, edatopes, bgc_template_list, base_folder) {
-  if(!dir.exists(paste0(base_folder,"/historic_suit"))) dir.create(paste0(base_folder,"/historic_suit"))
-  out_folder <- paste0(base_folder,"/historic_suit")
-  for(eda_sel in edatopes){
-    for(spp_sel in species) {
-      bgc_ids <- copy(bgc_template_list$ids)
-      bgc_rast <- copy(bgc_template_list$bgc_rast)
-      eda_sub <- copy(ccissr::E1)[Edatopic == eda_sel & is.na(SpecialCode),]
-      suit_sub <- copy(ccissr::S1)[spp == spp_sel,]
-      eda_sub[suit_sub, suit := i.newfeas, on = c(SS_NoSpace = "ss_nospace")]
-      eda_sub[is.na(suit), suit := 5]
-      eda_sub <- eda_sub[,.(suit = mean(suit)), by = .(BGC)]
-      bgc_ids[eda_sub, suit := i.suit, on = c(bgc = "BGC")]
-      suit_rast <- subst(bgc_rast, from = bgc_ids$bgc_id, to = bgc_ids$suit)
-      writeRaster(suit_rast, file.path(out_folder, paste0("HistoricSuit_",spp_sel,"_",eda_sel,".tif")))
-    }
-  }
+ref_suit <- function(dbCon, species, edatopes) {
+  qry <- glue_sql("
+                  WITH
+                  -- 1) compute suit per (bgc, edatope, spp) from edatopic + suitability
+                  eda_suit AS (
+                    SELECT
+                      e.BGC AS bgc,
+                      e.Edatopic,
+                      s.spp,
+                      CASE WHEN s.newfeas IS NULL OR s.newfeas = 4 THEN 5 ELSE s.newfeas END AS suit
+                    FROM edatopic e
+                    LEFT JOIN suitability s
+                      ON e.SS_NoSpace = s.ss_nospace
+                     AND s.spp IN ({species*})
+                    WHERE e.Edatopic IN ({edatopes*})
+                  ),
+                  
+                  -- 2) average suit per BGC (mirrors your data.table mean)
+                  suit_mean AS (
+                    SELECT
+                      bgc,
+                      Edatopic,
+                      spp,
+                      AVG(suit) AS suit
+                    FROM eda_suit
+                    GROUP BY bgc, Edatopic, spp
+                  ),
+                  
+                  -- 3) all BGCs you want to output
+                  bgc_units AS (
+                    SELECT DISTINCT bgc
+                    FROM bgc_points
+                  ),
+                  
+                  -- 4) build full grid: (bgc × edatope × spp)
+                  grid AS (
+                    SELECT
+                      b.bgc,
+                      e.Edatopic,
+                      s.spp
+                    FROM bgc_units b
+                    CROSS JOIN (SELECT UNNEST([{edatopes*}]) AS Edatopic) e
+                    CROSS JOIN (SELECT UNNEST([{species*}])  AS spp) s
+                  )
+                  
+                  -- 5) left join computed suits onto full grid; fill missing with 5
+                  SELECT
+                    g.bgc,
+                    g.Edatopic,
+                    g.spp,
+                    COALESCE(sm.suit, 5) AS suit
+                  FROM grid g
+                  LEFT JOIN suit_mean sm
+                    ON sm.bgc = g.bgc
+                   AND sm.Edatopic = g.Edatopic
+                   AND sm.spp = g.spp
+", .con = dbCon)
+  dat <- dbGetQuery(dbCon, qry) |> as.data.table()
+  return(dat)
 }
+
 
 
 #' Internal function to create cciss projections from site series predictions. Calculates projected suitability for each period, as well as other CCISS statistics.
