@@ -52,11 +52,11 @@
 #' of specific analogs for visualization (`analog.focal`).
 #' 
 #'  
-#' @param clim.targets data.table. Climate variables for which the analogs were 
-#' identified
-#' @param clim.analogs data.table. Climate variables of at least 50 locations 
+#' @param clim.targets data.table. Climate values for which the analogs were 
+#' identified. Must include variables specified in `vars`. 
+#' @param clim.analogs data.table. Climate values of at least 50 locations 
 #' representing the spatial variation in the reference period (historical) climate
-#' of each analog in the analog pool. 
+#' of each analog in the analog pool. Must include variables specified in `vars`. 
 #' @param label.targets character. Vector of the analog IDs identified for the 
 #' climatic conditions listed in `clim.targets`. Length equals number of records 
 #' in `clim.targets`.  
@@ -64,6 +64,8 @@
 #' conditions listed in `clim.analogs`. Length equals number of records in
 #' `clim.analogs`.  
 #' @param vars character. Climate variables to use in the novelty measurement. 
+#' @param clim.point data.table. Climate values of a single location of interest. 
+#' Must include variables specified in `vars`. 
 #' @param clim.icvs data.table. Time series of climate variables at the geographic
 #' centroids of each analog in the analog pool. If not null, this interannual climatic
 #' variability will be pooled with the spatial variation of the analog to calculate 
@@ -111,6 +113,7 @@
 #' @export
 
 analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.analogs, vars,
+                           clim.point = NULL, 
                            clim.icvs = NULL, label.icvs = NULL, weight.icv = 0.5, sigma = TRUE,
                            analog.focal = NULL, threshold = 0.95, pcs = NULL, logVars = TRUE, 
                            plotScree = FALSE, 
@@ -122,32 +125,37 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
   novelty <- rep(NA, length(label.targets)) # initiate a vector to store the sigma dissimilarities
   
   for(analog in analogs){ # loop through all of the analogs used to describe the target climates. 
-    clim.analog <- clim.analogs[label.analogs==analog, ..vars]
-    clim.target <- clim.targets[label.targets==analog, ..vars]
-    if(!is.null(clim.icvs)) clim.icv <- clim.icvs[label.icvs==analog, ..vars]
-    if(plot3d.candidates) clim.analogs.all <- clim.analogs[, ..vars]
-      
+    clim.analog <- clim.analogs[label.analogs==analog, vars, with = FALSE]
+    clim.target <- clim.targets[label.targets==analog, vars, with = FALSE]
+    if(!is.null(clim.point)) clim.point <- clim.point[, vars, with = FALSE]
+    if(!is.null(clim.icvs)) clim.icv <- clim.icvs[label.icvs==analog, vars, with = FALSE]
+    if(plot3d.candidates) clim.analogs.all <- clim.analogs[, vars, with = FALSE]
+
     ## data cleaning
     clim.analog <- clim.analog[complete.cases(clim.analog)] # remove rows without data
     clim.analog <- clim.analog[, .SD, .SDcols = which(sapply(clim.analog, function(x) var(x, na.rm = TRUE) > 0))]  # Remove zero-variance columns
     clim.target <- clim.target[, .SD, .SDcols = names(clim.analog)]
+    if(!is.null(clim.point)) clim.point <- clim.point[, .SD, .SDcols = names(clim.analog)]
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[complete.cases(clim.icv)]
     if(!is.null(clim.icvs)) clim.icv <- clim.icv[, .SD, .SDcols = names(clim.analog)]
     if(plot3d.candidates){
+      label.analogs <- label.analogs[complete.cases(clim.analogs.all)]
       clim.analogs.all <- clim.analogs.all[complete.cases(clim.analogs.all)]
-    clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.analog)]
+      clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.analog)]
     }
     
     ## log-transform ratio variables
     if(logVars){
       clim.analog <- logVars(clim.analog, zero_adjust = TRUE)
       clim.target <- logVars(clim.target, zero_adjust = TRUE)
+      if(!is.null(clim.point)) clim.point <- logVars(clim.point, zero_adjust = TRUE)
       if(!is.null(clim.icvs)) clim.icv <- logVars(clim.icv, zero_adjust = TRUE)
       if(plot3d.candidates) clim.analogs.all <- logVars(clim.analogs.all, zero_adjust = TRUE)
       
       ## remove variables with non-finite values in the target population (this is an edge case that occurs when the target population has a variable (typically CMD) with only zeroes)
       clim.target <- clim.target[, lapply(.SD, function(x) if (all(is.finite(x))) x else NULL)]
       clim.analog <- clim.analog[, .SD, .SDcols = names(clim.target)]
+      if(!is.null(clim.point)) clim.point <- clim.point[, .SD, .SDcols = names(clim.target)]
       if(!is.null(clim.icvs)) clim.icv <- clim.icv[, .SD, .SDcols = names(clim.target)]
       if(plot3d.candidates) clim.analogs.all <- clim.analogs.all[, .SD, .SDcols = names(clim.target)]
     }
@@ -159,6 +167,9 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
       (get(col) - unlist(clim.mean)[col]) / unlist(clim.sd)[col]
     })]
     clim.target[, (names(clim.target)) := lapply(names(clim.target), function(col) {
+      (get(col) - unlist(clim.mean)[col]) / unlist(clim.sd)[col]
+    })]
+    if(!is.null(clim.point)) clim.point[, (names(clim.point)) := lapply(names(clim.point), function(col) {
       (get(col) - unlist(clim.mean)[col]) / unlist(clim.sd)[col]
     })]
     if(!is.null(clim.icvs)) clim.icv[, (names(clim.icv)) := lapply(names(clim.icv), function(col) {
@@ -174,6 +185,7 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     pca <- prcomp(rbind(clim.analog, clim.target.sample), scale=FALSE)
     pcs.analog <- data.table(predict(pca, clim.analog))
     pcs.target <- data.table(predict(pca, clim.target))
+    if(!is.null(clim.point)) pcs.point <- data.table(predict(pca, clim.point))
     if(!is.null(clim.icvs)) pcs.icv <- data.table(predict(pca, clim.icv))
     
     if(is.null(pcs)){
@@ -196,8 +208,11 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     pcs.target[, (names(pcs.target)) := lapply(names(pcs.target), function(col) {
       (get(col) - unlist(pcs.mean.analog)[col]) / unlist(pcs.sd.use)[col]
     })]
+    if(!is.null(clim.point)) pcs.point[, (names(pcs.point)) := lapply(names(pcs.point), function(col) {
+      (get(col) - unlist(pcs.mean.analog)[col]) / unlist(pcs.sd.use)[col]
+    })]
     if(!is.null(clim.icvs)) pcs.icv[, (names(pcs.icv)) := lapply(names(pcs.icv), function(col) {
-      (get(col) - unlist(pcs.icv[, lapply(.SD, mean, na.rm = TRUE)])[col]) / unlist(pcs.sd.use)[col] # separately centering on the ICV mean becuase sometime the ICV is not centred on the centroid, and we want it to be. 
+      (get(col) - unlist(pcs.icv[, lapply(.SD, mean, na.rm = TRUE)])[col]) / unlist(pcs.sd.use)[col] # separately centering on the ICV mean because sometime the ICV is not centered on the centroid, and we want it to be. 
     })]
     
     ## create a combined covariance matrix for spatial variation and ICV
@@ -271,6 +286,7 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
       }
       points(a, col="dodgerblue", pch=16)
       mtext(paste(analog, "\n", pcs, "PCs"), line=-2.5, adj = 0.05, )
+      mtext(paste0("(", letters[i], ")"), side=3, line=-1, adj = -0.065, font=2)
     }
   }
   
@@ -281,6 +297,10 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     a <- predict(pca, clim.analog)
     b <- predict(pca, clim.target)
     b <- sweep(b, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation.
+    if(!is.null(clim.point)) { # predict and centre the selected point. need to do this here because we centre the analogs at the end of this code block. 
+      f <- predict(pca, clim.point)
+      f <- sweep(f, 2, apply(a, 2, mean), '-') # shift the target data so that the analog centroid is at zero. this is done at a later stage than the pca in the distance calculation.
+    }
     if(plot3d.candidates){
       d <- predict(pca, clim.analogs.all)
       d <- sweep(d, 2, apply(a, 2, mean), '-') # shift the candidate data so that the analog centroid is at zero. 
@@ -320,6 +340,17 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
           marker = list(size = 4, color = "black", opacity = 1),
           hoverinfo = "none", # Turn off hover labels
           name = "ICV"
+        )
+    }
+    # Add selected point if it exists
+    if(!is.null(clim.point)) {
+      plot <- plot %>%
+        add_trace(
+          x = f[, plot3d.pcs[1]], y = f[, plot3d.pcs[2]], z = f[, plot3d.pcs[3]],
+          type = "scatter3d", mode = "markers",
+          marker = list(size = 20, color = "black", opacity = 1, symbol = 'cross'),
+          hoverinfo = "none", # Turn off hover labels
+          name = "Selected location"
         )
     }
     # Add candidate analogs

@@ -321,7 +321,21 @@ st_write(bgc2,"BGC_v13_Fixed.gpkg")
 library(terra)
 library(data.table)
 library(sf)
+library(bcmaps)
 bgc <- vect("../Common_Files/BEC13Draft_4326.gpkg")
+bc_ol <- bcmaps::bc_bound_hres()
+bc_ol <- st_transform(bc_ol, 4326)
+bc2 <- vect(bc_ol)
+
+bgc_crop <- terra::mask(bgc, bc2)
+bgc_crop2 <- terra::intersect(bgc, bc2)
+writeVector(bgc_crop2,"BEC13_Clipped.shp")
+bgc_crop2 <- vect("BEC13_Clipped.shp")
+temp <- bgc_crop2[,"BGC"]
+bgc_crop <- terra::aggregate(temp, by = "BGC", count = F)
+writeVector(bgc_crop, "BEC13_Mar9.geojson", filetype = "GeoJSON")
+
+
 hex <- fread("../Common_Files/Hex_Points_Elev.csv")
 hex <- hex[!is.na(elev),]
 hexsf <- st_as_sf(hex, coords = c("lon","lat"), crs = 4326)

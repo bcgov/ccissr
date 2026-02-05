@@ -14,6 +14,7 @@ using namespace std;
 //' @param dir Improve or Decline
 //' @return NumericVector
 // [[Rcpp::export]]
+
 NumericVector ModelDir(NumericMatrix x, NumericVector Curr, std::string dir){
  int n = x.nrow();
  NumericVector res(n);
