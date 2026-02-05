@@ -100,3 +100,22 @@ suitx<-left_join(suit, NAs)%>%subset(is.na(X))%>%select(-X)
 
 #write as new version
 write.csv(suitx, "tables/versioned/suitability_v13_16.csv")
+
+
+#Dec 2025
+#update to ESSFwc3 101s-> ESSFwc7 
+
+#read in current version
+suit<-read.csv("tables/versioned/suitability_v13_24.csv")
+suit$X<-NULL
+
+suit$ss_nospace[suit$ss_nospace == "ESSFwc3/101"] <- "ESSFwc7/101"  
+suit$ss_nospace[suit$ss_nospace == "ESSFwc3/102"] <- "ESSFwc7/102"  
+suit$ss_nospace[suit$ss_nospace == "ESSFwc3/103"] <- "ESSFwc7/103"  
+suit$ss_nospace[suit$ss_nospace == "ESSFwc3/110"] <- "ESSFwc7/110"  
+suit$ss_nospace[suit$ss_nospace == "ESSFwc3/111"] <- "ESSFwc7/111"  
+
+suit<-dplyr::mutate(suit, bgc=ifelse(grepl("ESSFwc7", ss_nospace), "ESSFwc7", bgc))  
+
+#write as new version
+write.csv(suit, "tables/versioned/suitability_v13_25.csv")
