@@ -173,8 +173,8 @@ spp_bubbleplot <- function(persist_expand,
         dataEllipse(x, y, levels=0.5, center.pch=NULL, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
       } 
     }
-    points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(spps[i]==species.focal) 3.5 else 3, col=col.focal2)
-    text(mean(x),mean(y), spps[i], cex=if(spps[i]==species.focal) 0.8 else 0.7, font=2, col=col.focal2)
+    points(mean(x),mean(y), pch=21, bg=col.focal, cex=3, col=col.focal2)
+    text(mean(x),mean(y), spps[i], cex=0.7, font=2, col=col.focal2)
     
   }
   
