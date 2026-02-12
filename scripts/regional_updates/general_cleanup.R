@@ -135,12 +135,39 @@ library(paletteer)
 ggplot(subset(BCunits,treetype=="Conifer"& Zone!="BAFA"), aes(fill=Status, x=spp, y=ratings)) + 
   geom_bar(position="stack", stat="identity") + facet_wrap(~Zone2, scales="free_y", ncol=2)+theme_bw()+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "top") +ggtitle("Conifers") +
-  scale_fill_paletteer_d("wesanderson::AsteroidCity3") +ylab("N ratings")
+  scale_fill_paletteer_d("wesanderson::AsteroidCity3") +ylab("N ratings")+ xlab("")+
+   theme(strip.text = element_text(color="black", size=18, face="bold"),
+        plot.title = element_text(color="black", size=18, face="bold"),
+        axis.title.x = element_text("none"),
+        axis.title.y = element_text(color="black", size=18, face="bold"),
+        plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"),
+        panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        rect = element_rect(fill = "transparent"),
+        axis.text.y = element_text(size = 14, colour = "black", face = "bold"),
+        axis.text.x = element_text(size = 14, colour = "black", face = "bold"), 
+        legend.text = element_text(size = 12, colour = "black", face = "bold"), 
+        legend.title = element_text(size = 12, colour = "black", face = "bold"))
+
 
 ggplot(subset(BCunits,treetype=="Broadleaf"), aes(fill=Status, x=sppsplit, y=ratings)) + 
   geom_bar(position="stack", stat="identity") + facet_wrap(~Zone, scales="free_y", ncol=3)+ theme_bw()+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "top") +ggtitle("Broadleaves")+ ylab("N ratings")+
-  scale_fill_paletteer_d("wesanderson::AsteroidCity3")
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.position = "top") +ggtitle("Broadleaves")+ 
+  ylab("N ratings")+ xlab("")+
+  scale_fill_paletteer_d("wesanderson::AsteroidCity3")+
+  theme(strip.text = element_text(color="black", size=18, face="bold"),
+    plot.title = element_text(color="black", size=18, face="bold"),
+    axis.title.x = element_text("none"),
+    axis.title.y = element_text(color="black", size=18, face="bold"),
+    plot.margin = margin(1, 1, 1, 1, "cm"),
+    panel.background = element_rect(fill='transparent'),
+    plot.background = element_rect(fill='transparent', color=NA),
+    rect = element_rect(fill = "transparent"),
+    axis.text.y = element_text(size = 18, colour = "black", face = "bold"),
+    axis.text.x = element_text(size = 14, colour = "black", face = "bold"), 
+    legend.text = element_text(size = 12, colour = "black", face = "bold"), 
+    legend.title = element_text(size = 12, colour = "black", face = "bold"))
+
 
 
 #August 2025
