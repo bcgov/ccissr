@@ -912,3 +912,114 @@ spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
   return(res)
 }
 
+
+#' Create table of species relative suitabile area
+#' @param con duckdb database connection
+#' @param edatope Character. Edatopic position to use. Default `C4` (zonal)
+#' @param fut_wt Numeric vector of length 5, corresponding to weight of each period for future period calculation. Default `c(0,0,0,0.5,0.5,0)`, which is average of 2041-2060 and 2061-2080 periods.
+#' @param curr_wt Numeric vector of length 5, corresponding to weight of each period for current period calculation. Default `c(0.5,0.5,0,0,0,0)`, which is average of refperiod and 2001-2020 periods.
+#' @param periods Character vector of length 5 with names of periods. Must match names in table `cciss_res`. Default `c("Curr","2001_2020","2021_2040","2041_2060","2061_2080","2081_2100")`
+#' @return data.table containing loss and gain proportion by Spp and BGC
+#' @import data.table duckdb
+#' @importFrom glue glue_sql
+#' @export
+spp_loss_gain <- function(
+    con,
+    edatope = "C4",
+    fut_wt  = c(0,0,0,0.5,0.5,0),
+    curr_wt = c(0.5,0.5,0,0,0,0),
+    periods = c("Curr","2001_2020","2021_2040","2041_2060","2061_2080","2081_2100")
+) {
+  stopifnot(length(fut_wt) == length(periods), length(curr_wt) == length(periods))
+  
+  # create a TEMP weights table in DuckDB
+  wts <- data.frame(
+    period  = periods,
+    fut_wt  = as.numeric(fut_wt),
+    curr_wt = as.numeric(curr_wt)
+  )
+  dbExecute(con, "DROP TABLE IF EXISTS period_weights;")
+  dbWriteTable(con, "period_weights", wts, temporary = TRUE)
+  
+  sql <- glue_sql("
+    WITH base AS (
+      SELECT
+        SiteRef,
+        FuturePeriod,
+        Spp,
+        Curr,
+        Newsuit
+      FROM cciss_res
+      WHERE Edatope = {edatope}
+    ),
+
+    curr_rows AS (
+      SELECT
+        SiteRef,
+        Spp,
+        'Curr'::VARCHAR AS period,
+        MAX(Curr) AS suit
+      FROM base
+      GROUP BY SiteRef, Spp
+    ),
+    
+    -- future rows already one per (SiteRef,Spp,FuturePeriod) in your filtered base
+    future_rows AS (
+      SELECT
+        SiteRef,
+        Spp,
+        FuturePeriod AS period,
+        Newsuit      AS suit
+      FROM base
+    ),
+    
+    long AS (
+      SELECT * FROM curr_rows
+      UNION ALL
+      SELECT * FROM future_rows
+    ),
+
+    scored AS (
+      SELECT
+        l.SiteRef,
+        l.Spp,
+        SUM(l.suit * w.fut_wt)  AS FutSuit,
+        SUM(l.suit * w.curr_wt) AS CurrSuit
+      FROM long l
+      JOIN period_weights w
+        ON w.period = l.period
+      GROUP BY l.SiteRef, l.Spp
+    ),
+
+    flags AS (
+      SELECT
+        s.*,
+        (s.CurrSuit < 3 AND s.FutSuit > 3.5) AS Loss,
+        (s.CurrSuit > 3.5 AND s.FutSuit <= 3) AS Gain
+      FROM scored s
+    ),
+
+    with_bgc AS (
+      SELECT
+        f.*,
+        b.bgc AS BGC
+      FROM flags f
+      LEFT JOIN bgc_points b
+        ON b.cellnum = f.SiteRef
+    )
+
+    SELECT
+      BGC,
+      Spp,
+      SUM(CASE WHEN Loss THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS LossProp,
+      SUM(CASE WHEN Gain THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS GainProp
+    FROM with_bgc
+    GROUP BY BGC, Spp
+    ORDER BY BGC, Spp;
+  ", .con = con)
+  
+  res <- dbGetQuery(con, sql)
+  data.table::as.data.table(res)
+}
+
+
