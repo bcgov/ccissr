@@ -16,7 +16,7 @@ spp_spaghettiplot <- function(suit_area, species, use_MAT = FALSE) {
   } else {
     suit_area[,xvar := as.integer(substr(period,1,4))]
   }
-
+  
   dat_spline <- suit_area[
     , {
       if(use_MAT){
@@ -100,7 +100,7 @@ spp_bubbleplot <- function(persist_expand,
                            xlabels = TRUE, 
                            ylabels = TRUE,
                            mar = c(3,4,0.1,0.1)
-                           ) {
+) {
   
   if (!requireNamespace("plotrix", quietly = TRUE)) {
     stop("Package 'plotrix' is required for arctext() annotations.", call. = FALSE)
@@ -227,6 +227,12 @@ spp_bubbleplot <- function(persist_expand,
 #' @param persist_expand data.table. Usually created with `bgc_persist_expand`
 #' @param period Character. Period to create plot for.
 #' @param scenario Character. ssp to use for plot.
+#' @param xlab  Character. x axis title.
+#' @param ylab  Character. y axis title.
+#' @param xlabels  logical. x axis labels.
+#' @param ylabels  logical. y axis labels.
+#' @param mar numeric. plot margins.
+#' @param mar numeric. par(plt) parameters for overlaying into an existing plot window. 
 #' @return NULL. Creates plot
 #' @import data.table
 #' @importFrom car dataEllipse
@@ -238,10 +244,11 @@ bgc_bubbleplot <- function(persist_expand,
                            ylab = "Expansion beyond historical range", 
                            xlabels = TRUE, 
                            ylabels = TRUE,
-                           mar = c(3,4,0.1,0.1)
+                           mar = c(3,4,0.1,0.1), 
+                           plt = NULL
 ) {
   
-                           
+  
   unit.persistence.focal <- "none"
   persist_expand <- na.omit(persist_expand, col = c("Persistance","Expansion"))
   ColScheme <- rbind(copy(subzones_colours_ref),copy(zones_colours_ref))
@@ -249,7 +256,9 @@ bgc_bubbleplot <- function(persist_expand,
   units <- unique(persist_expand$bgc)
   period_sel <- period
   
-  par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1.5)
+  par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1)
+  
+  if(!is.null(plt)) par(plt = plt, new = TRUE)
   
   xlim <- c(0, 1.1)
   ylim <- c(-5,3)
@@ -277,7 +286,7 @@ bgc_bubbleplot <- function(persist_expand,
         dataEllipse(x, y, levels=0.5, center.pch=21, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
       } 
     }
-    points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(unit==unit.persistence.focal) 4.5 else 3, col=col.focal2)
+    points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(unit==unit.persistence.focal) 4.5 else 3.5, col=col.focal2)
     text(mean(x),mean(y), unit, cex=if(unit==unit.persistence.focal) 1 else 0.7, font=2, col=col.focal2)
   }
   box()
@@ -357,15 +366,15 @@ plot_spparea <- function(dbCon,
   
   if(by_zone) {
     colScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
-                     CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
-                     CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
-                     SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
-                     CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
-                     IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
-                     MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
-                     SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
-                     BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
-                     SAS = "#92b1b6", CCH = "#7e22ca")
+                   CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
+                   CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
+                   SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
+                   CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
+                   IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
+                   MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
+                   SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
+                   BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
+                   SAS = "#92b1b6", CCH = "#7e22ca")
   } else {
     colScheme <- setNames(subzones_colours_ref$colour, subzones_colours_ref$classification)
   }
@@ -379,7 +388,7 @@ plot_spparea <- function(dbCon,
   }
   
   cciss_sum[, SppArea := SppArea * cellarea]
-
+  
   year_levels <- sort(as.character(cciss_sum$Year))
   
   # order zones by change (last - first): most decline at bottom
@@ -464,27 +473,27 @@ plot_spparea <- function(dbCon,
 #' @import data.table duckdb terra
 #' @export
 plot_SuitabilityChangeMap <- function(dbCon, 
-                        bgc_template, 
-                        outline, 
-                        spp = "Fd", 
-                        edatope = "C4", 
-                        period = "2041_2060", 
-                        three_panel = FALSE, 
-                        save_png = TRUE,
-                        panel_labels = TRUE
-                        ) 
-  {
+                                      bgc_template, 
+                                      outline, 
+                                      spp = "Fd", 
+                                      edatope = "C4", 
+                                      period = "2041_2060", 
+                                      three_panel = FALSE, 
+                                      save_png = TRUE,
+                                      panel_labels = TRUE
+) 
+{
   
   zoneScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
-                 CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
-                 CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
-                 SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
-                 CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
-                 IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
-                 MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
-                 SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
-                 BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
-                 SAS = "#92b1b6", CCH = "#7e22ca")
+                  CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
+                  CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
+                  SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
+                  CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
+                  IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
+                  MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
+                  SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
+                  BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
+                  SAS = "#92b1b6", CCH = "#7e22ca")
   spps.lookup <- copy(ccissr::T1)
   edatope.names <- c("Poor-subxeric", "Medium-mesic", "Rich-hygric")
   edatopes <- c("B2", "C4", "D6")
@@ -493,7 +502,7 @@ plot_SuitabilityChangeMap <- function(dbCon,
   # edatope <- "C4"
   # period <- "2041_2060"
   # outline <- vect("data-raw/data_tables/bc_outline.gpkg")
-
+  
   if(save_png){
     if(three_panel){
       png(file=paste("./Three_Panel",spp,edatope,period,"png",sep = "."), type="cairo", units="in", width=6.5, height=2.9, pointsize=9, res=400)
@@ -524,7 +533,7 @@ plot_SuitabilityChangeMap <- function(dbCon,
   dat_spp[,FeasChange := Curr - Newsuit]
   X <- copy(bgc_template$bgc_rast)
   values(X) <- NA
-
+  
   X[dat_spp$SiteRef] <- dat_spp$Curr
   breakseq <- c(0.5,1.5,2.5,3.5,5)
   ColScheme <- c("darkgreen", "dodgerblue1", "gold2", "white")
@@ -543,7 +552,7 @@ plot_SuitabilityChangeMap <- function(dbCon,
   
   if(panel_labels) mtext(paste("(", letters[1],")", sep=""), side=3, line=-8, adj=0.05, cex=0.8, font=2)
   
-
+  
   ##=================================
   ##mean feasibility change
   
@@ -668,3 +677,95 @@ plot_SuitabilityChangeMap <- function(dbCon,
 # dat_spp[,AddRet := Improve]
 # dat_spp[Decline > Improve, AddRet := -Decline]
 # dat_spp[,AddRet := round(AddRet/20)*20]
+
+
+#' Create a map of biogeoclimatic units with the standard BGC colour scheme
+#' @description
+#' This is a utility function that plots a basic map
+#' @param X SpatRaster. A template raster.
+#' @param dat data.table with first column indicating template raster cell ID and second column the BGC subzone/variant. 
+#' @param zone logical. Plot with BGC zone colours. 
+#' @param boundary SpatVector. Optional study area boundary.
+#' @param mask logical. Remove values outside the study area boundary.
+#' @param legend logical. Plot a legend. 
+#' @param mask_alpine logical. Plot alpine BGC units as white.
+#' @param label_exotic numeric. Minimum number of grid cells required to plot a label for exotic (non-BC) BGC units. 
+#' @param q_exotic numeric. Quantile of cell numbers for positioning the label for exotic BGC units. Acceptable values are between 0 and 1. 
+#' @param title character. Title for the plot, left justified at top. 
+#' @param add logical. Add the map to an existing plot.
+#' @import data.table terra
+#' @export
+
+bgc_map <- function(X, 
+                    dat, 
+                    zone = TRUE, 
+                    boundary = NULL, 
+                    mask = TRUE, 
+                    legend = FALSE, 
+                    mask_alpine = TRUE, 
+                    label_exotic = NULL, 
+                    q_exotic = 0.5, 
+                    title = "",
+                    add = FALSE 
+){
+  
+  if(mask_alpine){
+    zones.bc <- c("BG", "BWBS", "CDF", "CWH", "ESSF", "ICH", "IDF", "MH", "MS", "PP", "SBPS", "SBS", "SWB")
+  } else {
+    zones.bc <- c("BG", "BWBS", "CDF", "CWH", "ESSF", "ICH", "IDF", "MH", "MS", "PP", "SBPS", "SBS", "SWB", "BAFA", "CMA", "IMA")
+  }
+  
+  #extract a vector of bgc labels for each cell
+  bgc <- dat[,2]
+  
+  if(mask_alpine) bgc[grep("IMA|CMA|BAFA", bgc)] <- NA
+  
+  #convert to zone and factorize
+  if(zone){
+    bgc <- sub("^([A-Z]+).*", "\\1", bgc)
+    bgc <- factor(bgc, levels = zones_colours_ref$classification)
+  } else {
+    bgc <- factor(bgc, levels = subzones_colours_ref$classification)
+  }
+  
+  values(X) <- NA
+  X[dat[,1]] <- bgc
+  if(!is.null(boundary)){if(mask) X <- terra::mask(X, boundary)}
+  X[1:length(levels(bgc))] <- 1:length(levels(bgc))
+  
+  ColScheme <- if(zone) zones_colours_ref$colour else subzones_colours_ref$colour
+  
+  image(X, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
+
+  X.mask <- X
+  values(X.mask)[-(1:length(levels(bgc)))] <- NA # cover up the color bar
+  terra::plot(X.mask, add=T, col="white", legend=FALSE) # cover up the color bar
+  
+  if(!is.null(boundary)) terra::plot(boundary, add=T, border=1, lwd=0.4)
+  
+  if(legend){
+    if(mask_alpine){
+      legend("bottomleft", legend=c(zones.bc, "Alpine"), pch = 22, pt.cex = 1.5, cex = 0.9, pt.bg=c(zones_colours_ref[match(zones.bc, zones_colours_ref$classification), colour], "white"), bty="n", y.intersp = 1.75, x.intersp = 1.25)
+    } else {
+      legend("bottomleft", legend=zones.bc, pch = 22, pt.cex = 1.5, cex = 0.9, pt.bg=zones_colours_ref[match(zones.bc, zones_colours_ref$classification), colour], bty="n", y.intersp = 1.75, x.intersp = 1.25)
+    }
+  }
+  
+  if(!is.null(label_exotic)){
+    exotic <- table(bgc[-which(sub("^([A-Z]+).*", "\\1", bgc)%in%zones.bc)])
+    exotic <- exotic[exotic>150]
+    exotic <- exotic[rev(order(exotic))]
+    
+    exotic.pct <- round(as.numeric(formatC(signif(exotic/length(bgc)*100,digits=3), digits=3,format="fg", flag="#")),2)
+    
+    bgcs.exotic <- names(exotic)
+    for(bgc.exotic in bgcs.exotic){
+      pts <- which(levels(bgc)[values(X)]==bgc.exotic)
+      q <- q_exotic
+      pt <- xyFromCell(X, pts[min(which(pts >= quantile(pts, q)))])
+      points(pt, pch=21, bg=as.character(ColScheme[which(levels(bgc)==bgc.exotic)]), cex=1, lwd=0.8)
+      text(pt-c(0, 0), bgc.exotic, pos=4, cex=0.7, font=2, offset=0.3)
+      # print(q)
+    }
+  }
+}

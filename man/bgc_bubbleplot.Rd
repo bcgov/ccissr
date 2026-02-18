@@ -12,7 +12,8 @@ bgc_bubbleplot(
   ylab = "Expansion beyond historical range",
   xlabels = TRUE,
   ylabels = TRUE,
-  mar = c(3, 4, 0.1, 0.1)
+  mar = c(3, 4, 0.1, 0.1),
+  plt = NULL
 )
 }
 \arguments{
@@ -21,6 +22,16 @@ bgc_bubbleplot(
 \item{period}{Character. Period to create plot for.}
 
 \item{scenario}{Character. ssp to use for plot.}
+
+\item{xlab}{Character. x axis title.}
+
+\item{ylab}{Character. y axis title.}
+
+\item{xlabels}{logical. x axis labels.}
+
+\item{ylabels}{logical. y axis labels.}
+
+\item{mar}{numeric. par(plt) parameters for overlaying into an existing plot window.}
 }
 \value{
 NULL. Creates plot
