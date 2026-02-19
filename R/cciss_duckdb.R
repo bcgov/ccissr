@@ -96,6 +96,34 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
   return(invisible(TRUE))
 }
 
+#' Add natural resource districts to database
+#' @param dbCon duckdb database connection
+#' @param raster_template raster used to populate database
+#' @param districts sf object containing district boundaries (we suggest using `bcmaps::nr_districts()`)
+#' @return NULL. Writes table to database
+#' @importFrom terra vect same.crs project rasterize
+#' @importFrom data.table as.data.table setnames
+#' @importFrom duckdb dbWriteTable
+#' @export
+dbAddDistricts <- function(dbCon, raster_template, districts) {
+  if(duckdb_table_exists(dbCon, "dist_points")){
+    message("Using cached table dist_points :)")
+    return(invisible(TRUE))
+  }
+  dist_v <- vect(districts["ORG_UNIT"])
+  if(!same.crs(raster_template, dist_v)){
+    warning("CRS of provided districts does not match raster template. Will try projecting.")
+    dist_v <- project(dist_v, raster_template)
+  }
+  dist_v$ORG_UNIT <- as.factor(dist_v$ORG_UNIT)
+  dist_rast <- rasterize(dist_v,raster_template, field = "ORG_UNIT")
+  dist_points <- as.data.frame(dist_rast, cells=T) |> as.data.table()
+  setnames(dist_points, c("cellnum","district"))
+  dbWriteTable(dbCon, "dist_points", dist_points, row.names = F)
+  message("Written table dist_points to duckdb :)")
+  return(invisible(TRUE))
+}
+
 #' Summarise raw BGC predictions in database
 #' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
 #' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
@@ -919,6 +947,7 @@ spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
 #' @param fut_wt Numeric vector of length 5, corresponding to weight of each period for future period calculation. Default `c(0,0,0,0.5,0.5,0)`, which is average of 2041-2060 and 2061-2080 periods.
 #' @param curr_wt Numeric vector of length 5, corresponding to weight of each period for current period calculation. Default `c(0.5,0.5,0,0,0,0)`, which is average of refperiod and 2001-2020 periods.
 #' @param periods Character vector of length 5 with names of periods. Must match names in table `cciss_res`. Default `c("Curr","2001_2020","2021_2040","2041_2060","2061_2080","2081_2100")`
+#' @param BGCxDistrict Logical. Should summary be by BGC (default) or by BGC and natural resource district?
 #' @return data.table containing loss and gain proportion by Spp and BGC
 #' @import data.table duckdb
 #' @importFrom glue glue_sql
@@ -933,6 +962,12 @@ spp_loss_gain <- function(
 ) {
   stopifnot(length(fut_wt) == length(periods), length(curr_wt) == length(periods))
   
+  if(BGCxDistrict) {
+    if(!duckdb_table_exists(con, "dist_points")){
+      stop("District table does not exist in database! Please add it using the dbAddDistricts function.")
+    }
+  }
+  
   # create a TEMP weights table in DuckDB
   wts <- data.frame(
     period  = periods,
@@ -941,6 +976,27 @@ spp_loss_gain <- function(
   )
   dbExecute(con, "DROP TABLE IF EXISTS period_weights;")
   dbWriteTable(con, "period_weights", wts, temporary = TRUE)
+  
+  if(BGCxDistrict){
+    bgc_qry <- glue_sql("SELECT
+                f.*,
+                b.bgc AS BGC,
+                d.district AS District
+              FROM flags f
+              LEFT JOIN bgc_points b
+                ON b.cellnum = f.SiteRef
+              LEFT JOIN dist_points d
+                ON d.cellnum = f.SiteRef",.con = con)
+    group <- glue_sql("BGC, District, Spp",.con = con)
+  } else {
+    bgc_qry <- glue_sql("SELECT
+                f.*,
+                b.bgc AS BGC
+              FROM flags f
+              LEFT JOIN bgc_points b
+                ON b.cellnum = f.SiteRef",.con = con)
+    group <- glue_sql("BGC, Spp",.con = con)
+  }
   
   sql <- glue_sql("
     WITH base AS (
@@ -1001,26 +1057,18 @@ spp_loss_gain <- function(
     ),
 
     with_bgc AS (
-      SELECT
-        f.*,
-        b.bgc AS BGC
-      FROM flags f
-      LEFT JOIN bgc_points b
-        ON b.cellnum = f.SiteRef
+        {bgc_qry}
     )
 
     SELECT
-      BGC,
-      Spp,
+      {group},
       SUM(CASE WHEN Loss THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS LossProp,
       SUM(CASE WHEN Gain THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS GainProp
     FROM with_bgc
-    GROUP BY BGC, Spp
-    ORDER BY BGC, Spp;
+    GROUP BY {group}
+    ORDER BY {group};
   ", .con = con)
   
   res <- dbGetQuery(con, sql)
   data.table::as.data.table(res)
 }
-
-

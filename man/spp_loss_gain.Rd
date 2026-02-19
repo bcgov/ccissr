@@ -23,6 +23,8 @@ spp_loss_gain(
 \item{curr_wt}{Numeric vector of length 5, corresponding to weight of each period for current period calculation. Default \code{c(0.5,0.5,0,0,0,0)}, which is average of refperiod and 2001-2020 periods.}
 
 \item{periods}{Character vector of length 5 with names of periods. Must match names in table \code{cciss_res}. Default \code{c("Curr","2001_2020","2021_2040","2041_2060","2061_2080","2081_2100")}}
+
+\item{BGCxDistrict}{Logical. Should summary be by BGC (default) or by BGC and natural resource district?}
 }
 \value{
 data.table containing loss and gain proportion by Spp and BGC
