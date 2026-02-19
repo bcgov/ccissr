@@ -928,7 +928,8 @@ spp_loss_gain <- function(
     edatope = "C4",
     fut_wt  = c(0,0,0,0.5,0.5,0),
     curr_wt = c(0.5,0.5,0,0,0,0),
-    periods = c("Curr","2001_2020","2021_2040","2041_2060","2061_2080","2081_2100")
+    periods = c("Curr","2001_2020","2021_2040","2041_2060","2061_2080","2081_2100"),
+    BGCxDistrict = FALSE
 ) {
   stopifnot(length(fut_wt) == length(periods), length(curr_wt) == length(periods))
   
@@ -963,7 +964,7 @@ spp_loss_gain <- function(
       GROUP BY SiteRef, Spp
     ),
     
-    -- future rows already one per (SiteRef,Spp,FuturePeriod) in your filtered base
+    -- future rows 
     future_rows AS (
       SELECT
         SiteRef,

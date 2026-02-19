@@ -12,6 +12,7 @@ predict_bgc(
   gcms_use,
   periods_use,
   ssp_use = c("ssp126", "ssp245", "ssp370"),
+  obs_2001_2020 = FALSE,
   max_runs_use = 0L,
   start_tile = 1
 )
@@ -30,6 +31,10 @@ predict_bgc(
 \item{periods_use}{Character. List of time periods to create predictions for}
 
 \item{ssp_use}{Character. List of ssps to use. Default \code{c("ssp126", "ssp245", "ssp370")}}
+
+\item{obs_2001_2020}{Logical. Also predict for 2001 - 2020 observed climate? Default \code{FALSE}}
+
+\item{max_runs_use}{Integer. Number of individual runs for each GCM. Default \code{0} (only use ensembleMean)}
 }
 \value{
 NULL. Results are written to csv files in base_folder/bgc_data
