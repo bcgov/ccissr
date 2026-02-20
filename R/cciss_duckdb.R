@@ -261,7 +261,7 @@ calc_bgc_persist_expand <- function(dbCon, period_select = NULL, by_zone = TRUE)
   if(is.null(period_select)){
     period_sel <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
   }
-  if(length(period_sel) > 1) period_sel <- paste(sprintf("'%s'", period_sel), collapse = ",")
+  period_sel <- paste(sprintf("'%s'", period_sel), collapse = ",")
   
   ## Construct SQL dynamically
   sql <- sprintf("
