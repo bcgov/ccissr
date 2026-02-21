@@ -132,8 +132,8 @@ spp_bubbleplot <- function(persist_expand,
   
   par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1)
   
-  xlim <- c(0, 1.25)
-  ylim <- c(-4,3)
+  xlim <- c(0, 1.15)
+  ylim <- c(-5,3)
   plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab=xlab, ylab="")
   if(xlabels) axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
   if(ylabels) axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
