@@ -1072,3 +1072,482 @@ spp_loss_gain <- function(
   res <- dbGetQuery(con, sql)
   data.table::as.data.table(res)
 }
+
+#' Calculate CCISS results using duckdb (single species)
+#' @details
+#' This function uses the same logic as `cciss_full`, but is orders of magnitude faster as it does all computation in duckdb, with all periods and edatopes at once. Eventually we will replace `cciss_full` with this function.
+#' 
+#' @param con duckdb connection
+#' @param spp character. Single species code to calculate for.
+#' @param table_name table name to create/append to in database. Default is "cciss_res"
+#' @return NULL. Writes table to database.
+#' @importFrom glue glue_sql
+#' @importFrom duckdb dbExecute
+#' @export
+cciss_full_species <- function(con, spp, table_name = "cciss_res") {
+  
+  query_body <- glue_sql(
+    "WITH
+-- 1) Filter suit to species and clean
+suit_filtered AS (
+  SELECT DISTINCT
+    bgc as BGC,
+    ss_nospace AS SS_NoSpace,
+    spp AS Spp,
+    newfeas AS Feasible
+  FROM suitability
+  WHERE spp = {spp}          -- spp_select
+    AND newfeas IS NOT NULL
+),
+
+-- 2) Filter and clean SSPred / siteseries_preds
+pred_filtered AS (
+  SELECT
+    SiteRef,
+    FuturePeriod,
+    BGC,
+    SS_NoSpace,
+    \"SS.pred\" as SS_pred,
+    SSprob,
+    Edatope
+  FROM siteseries_preds
+  WHERE
+    SS_NoSpace IS NOT NULL
+    AND \"SS.pred\" IS NOT NULL
+    AND SSprob IS NOT NULL
+    AND NOT regexp_matches(SS_NoSpace, '[0-9][abc]$')
+    AND NOT regexp_matches(SS_NoSpace, '\\\\.(1|2|3)$')
+),
+
+-- 3) Join suitability on predicted SS to get feasibility
+suit_merge AS (
+  SELECT
+    p.SiteRef,
+    p.FuturePeriod,
+    p.BGC,
+    -- keep original mapped SS as SS_NoSpace
+    p.SS_NoSpace AS SS_NoSpace,
+    p.SS_pred,
+    p.SSprob,
+    p.Edatope,
+    -- if suit record exists, keep its Spp,Feasible; otherwise use spp_select & 5
+    COALESCE(s.Spp,       {spp}  ) AS Spp,
+    COALESCE(s.Feasible,  5   ) AS Feasible
+  FROM pred_filtered p
+  LEFT JOIN suit_filtered s
+    ON s.SS_NoSpace = p.SS_pred
+),
+
+-- 4) dcast: votes per feasible class via conditional sums
+votes AS (
+  SELECT
+    SiteRef,
+    Spp,
+    FuturePeriod,
+    SS_NoSpace,
+    Edatope,
+    SUM(CASE WHEN Feasible = 1 THEN SSprob ELSE 0 END) AS f1,
+    SUM(CASE WHEN Feasible = 2 THEN SSprob ELSE 0 END) AS f2,
+    SUM(CASE WHEN Feasible = 3 THEN SSprob ELSE 0 END) AS f3,
+    SUM(CASE WHEN Feasible = 4 THEN SSprob ELSE 0 END) AS f4,
+    SUM(CASE WHEN Feasible = 5 THEN SSprob ELSE 0 END) AS f5
+  FROM suit_merge
+  GROUP BY SiteRef, Spp, FuturePeriod, Edatope, SS_NoSpace
+),
+
+-- 5) X = (1 - sum of probs) + mass from 4 and 5
+votes_x AS (
+  SELECT
+    SiteRef,
+    Spp,
+    FuturePeriod,
+    SS_NoSpace,
+    Edatope,
+    f1,
+    f2,
+    f3,
+    -- we keep 1,2,3 and collapse 4,5 into X
+    (1 - (f1 + f2 + f3)) AS X
+  FROM votes
+),
+
+-- 6) Add current (mapped) suit: Curr from suit table, fill NA with 5, then Curr>3.5 -> 4
+curr_suit AS (
+  SELECT
+    SS_NoSpace,
+    Feasible AS Curr
+  FROM suit_filtered
+),
+
+with_curr AS (
+  SELECT
+    v.SiteRef,
+    v.Spp,
+    v.FuturePeriod,
+    v.SS_NoSpace,
+    v.Edatope,
+    CASE
+      WHEN c.Curr IS NULL THEN 5
+      WHEN c.Curr > 3.5 THEN 4
+      ELSE c.Curr
+    END AS Curr,
+    v.f1,
+    v.f2,
+    v.f3,
+    v.X
+  FROM votes_x v
+  LEFT JOIN curr_suit c
+    ON v.SS_NoSpace = c.SS_NoSpace
+),
+
+-- 7) Sum 1,2,3,X by site/period/SS/Spp/Curr
+summed AS (
+  SELECT
+    SiteRef,
+    FuturePeriod,
+    Edatope,
+    SS_NoSpace,
+    Spp,
+    Curr,
+    SUM(f1) AS p1,
+    SUM(f2) AS p2,
+    SUM(f3) AS p3,
+    SUM(X)  AS pX
+  FROM with_curr
+  GROUP BY SiteRef, FuturePeriod, Edatope, SS_NoSpace, Spp, Curr
+),
+
+-- 8) Compute Newsuit and final averages per SiteRef/FuturePeriod/Spp
+scored AS (
+  SELECT
+    SiteRef,
+    FuturePeriod,
+    Edatope,
+    Spp,
+    Curr,
+    -- Newsuit = 1*P1 + 2*P2 + 3*P3 + 5*PX
+    (p1*1 + p2*2 + p3*3 + pX*5) AS Newsuit,
+    p1 AS Prop1,
+    p2 AS Prop2,
+    p3 AS Prop3
+  FROM summed
+)
+
+SELECT
+  SiteRef,
+  FuturePeriod,
+  Edatope,
+  Spp,
+  AVG(Curr)    AS Curr,
+  AVG(Newsuit) AS Newsuit,
+  AVG(Prop1)   AS Prop1,
+  AVG(Prop2)   AS Prop2,
+  AVG(Prop3)   AS Prop3
+FROM scored
+GROUP BY Edatope, FuturePeriod, SiteRef, Spp
+ORDER BY Edatope, FuturePeriod, SiteRef, Spp;", .con = con)
+
+if (!duckdb_table_exists(con, table_name)) {
+  # first species: create table
+  sql <- glue_sql("
+      CREATE TABLE {table_name} AS
+      {query_body}
+    ", .con = con)
+} else {
+  sql <- glue_sql("
+      INSERT INTO {table_name}
+      {query_body}
+    ", .con = con)
+}
+
+dbExecute(con, sql)
+}
+
+
+#' Calculate BGC persistance and expansion by region 
+#' @param con duckdb connection
+#' @param region_table character. Name of table with regions and corresponding cellnum
+#' @param region_name character. Name of column in region table to group by
+#' @param by_zone logica. Summarise by zone or subzone/variant? Default `TRUE`.
+#' @param table_name table name to create/append to in database. Default is "bgc_per_exp_region"
+#' @return NULL. Writes table to database.
+#' @importFrom glue glue_sql
+#' @importFrom duckdb dbExecute dbGetQuery
+#' @export
+bgc_persist_expand_region <- function(con, region_table, region_name, by_zone = TRUE, table_name = "bgc_per_exp_region") {
+  if (by_zone) {
+    pred_expr <- "regexp_extract(a.bgc_pred, '^[A-Z]+')"
+    true_expr <- "regexp_extract(p.bgc,      '^[A-Z]+')"
+    tot_group <- "regexp_extract(bgc, '^[A-Z]+')"
+  } else {
+    pred_expr <- "a.bgc_pred"
+    true_expr <- "p.bgc"
+    tot_group <- "bgc"
+  }
+  
+  period_sel <- dbGetQuery(con, "select distinct period from bgc_raw")$period
+  region_name <- DBI::SQL(region_name)
+  region_table <- DBI::SQL(region_table)
+  table_name <- DBI::SQL(table_name)
+  
+  ## Construct SQL dynamically
+  sql <- glue_sql("
+    CREATE TABLE {table_name} AS
+    WITH
+    joined AS (
+      SELECT
+        a.cellnum,
+        {region_name},
+        a.ssp,
+        a.gcm,
+        a.run,
+        a.period,
+        {pred_expr} AS bgc_pred,
+        {true_expr} AS bgc
+      FROM bgc_raw a
+      LEFT JOIN bgc_points p USING (cellnum)
+      JOIN {region_table} USING (cellnum)
+      WHERE a.period IN ({period_sel*})
+      AND p.bgc IS NOT NULL          -- removes NA join
+    ),
+    flags AS (
+      SELECT
+        *,
+        CASE WHEN bgc_pred = bgc THEN 1 ELSE 0 END AS Persist,
+        CASE WHEN bgc_pred <> bgc THEN 1 ELSE 0 END AS Expand
+      FROM joined
+    ),
+    agg AS (
+      SELECT
+        {region_name}, ssp, gcm, run, period, bgc_pred,
+        SUM(Persist) AS Persist_Tot,
+        SUM(Expand)  AS Expand_Tot
+      FROM flags
+      GROUP BY {region_name}, ssp, gcm, run, period, bgc_pred
+    ),
+    bgc_tot AS (
+      SELECT
+        {region_name},
+        {tot_group} AS bgc_true,
+        COUNT(*) AS BGC_Tot
+      FROM bgc_points
+      JOIN {region_table} USING (cellnum)
+      GROUP BY {region_name}, bgc_true
+    )
+    SELECT
+      a.*,
+      t.BGC_Tot,
+      (Persist_Tot * 1.0) / t.BGC_Tot AS Persistance,
+      (Expand_Tot  * 1.0) / t.BGC_Tot AS Expansion
+    FROM agg a
+    LEFT JOIN bgc_tot t
+      ON a.bgc_pred = t.bgc_true;
+      ", .con = con)
+  
+  dbExecute(con, sql)
+  
+}
+
+#' Calculate species persistance and expansion by region 
+#' @param con duckdb connection
+#' @param spp_list character vector of species to use.
+#' @param region_table character. Name of table with regions and corresponding cellnum
+#' @param region_name character. Name of column in region table to group by
+#' @param fractional logical. Summarise by fractional or binary suitability? Default `TRUE`.
+#' @param table_name table name to create/append to in database. Default is "spp_per_exp_region"
+#' @return NULL. Writes table to database.
+#' @importFrom glue glue_sql
+#' @importFrom duckdb dbExecute dbGetQuery
+#' @export
+spp_persist_expand_region <- function(con, spp_list, region_table, region_name, 
+                                      fractional = TRUE, table_name = "spp_per_exp_region"){
+  region_table <- DBI::SQL(region_table)
+  region_name <- DBI::SQL(region_name)
+  
+  new_suit_expr <- if (fractional) {
+    DBI::SQL("1.0 - (NewSuit_code_clean - 1) / 4.0") 
+  } else {
+    DBI::SQL("CASE WHEN NewSuit_code_clean <> 5 THEN 1 ELSE 0 END")
+  }
+  
+  hist_suit_expr <- if (fractional) {
+    DBI::SQL("1.0 - (HistSuit_code_clean - 1) / 4.0")
+  } else {
+    DBI::SQL("CASE WHEN HistSuit_code_clean <> 5 THEN 1 ELSE 0 END")
+  }
+  
+  mapped_expr <- if (fractional) {
+    DBI::SQL("SUM( (1.0 - (Suit_code - 1) / 4.0) * BGC_Tot )")
+  } else {
+    DBI::SQL("SUM( (CASE WHEN Suit_code = 5 THEN 0 ELSE 1 END) * BGC_Tot )")
+  }
+  materialise_bgc_eda(con)
+  
+  sql <- glue_sql("
+    ---------------------------------------------------------------------
+    -- 3. Compute mapped historic suitability
+    ---------------------------------------------------------------------
+    WITH bgc_sum AS (
+      SELECT bgc_points.bgc, {region_name}, COUNT(*) AS BGC_Tot
+      FROM bgc_points
+      JOIN thlb_bgcs using (bgc) 
+      JOIN {region_table} using (cellnum)
+      WHERE thlb_bgcs.in_thlb
+      GROUP BY bgc_points.bgc, {region_name}
+    ),
+
+    mapped_raw AS (
+      SELECT
+        bs.bgc,
+        bs.{region_name},
+        bs.BGC_Tot,
+        e.Edatopic,
+        e.SS_NoSpace,
+        s.spp,
+        s.newfeas
+      FROM bgc_sum bs
+      LEFT JOIN edatopic e ON bs.bgc = e.BGC
+      LEFT JOIN suitability s ON e.SS_NoSpace = s.ss_nospace
+      WHERE s.spp IN ({spp_list*})
+    ),
+
+    mapped_clean AS (
+      SELECT
+        spp,
+        bgc,
+        {region_name},
+        BGC_Tot,
+        Edatopic,
+        CASE WHEN newfeas IS NULL OR newfeas = 4 THEN 5 ELSE newfeas END AS Suit_code
+      FROM mapped_raw
+    ),
+
+    mapped_min AS (
+      SELECT
+        spp, bgc, {region_name}, BGC_Tot, Edatopic,
+        MIN(Suit_code) AS Suit_code
+      FROM mapped_clean
+      GROUP BY spp, bgc, {region_name}, BGC_Tot, Edatopic
+    ),
+
+    mapped_suit AS (
+      SELECT
+        spp, Edatopic, {region_name},
+        {mapped_expr} AS MappedSuit --fractional or binary
+      FROM mapped_min
+      GROUP BY spp, Edatopic, {region_name}
+    ),
+
+    ---------------------------------------------------------------------
+    -- 4. Assign BOTH historic and projected suitability
+    ---------------------------------------------------------------------
+    bgc_spp AS (
+      SELECT
+        st.spp,
+        e.cellnum,
+        e.ssp,
+        e.gcm,
+        e.run,
+        e.period,
+        e.Edatopic,
+        --
+        -- NewSuit raw
+        --
+        CASE
+          WHEN st.newfeas IS NULL OR st.newfeas = 4 THEN 5
+          ELSE st.newfeas
+        END AS NewSuit_code_clean,
+        --
+        -- Historic Suit (based on bgc_true)
+        --
+        CASE
+          WHEN sth.newfeas IS NULL OR sth.newfeas = 4 THEN 5
+          ELSE sth.newfeas
+        END AS HistSuit_code_clean
+      FROM bgc_eda_mat e 
+      JOIN suitability st
+        ON e.SS_Pred = st.ss_nospace
+        AND st.spp IN ({spp_list*})
+        
+      LEFT JOIN suitability sth
+        ON e.SS_NoSpace = sth.ss_nospace
+        AND sth.spp = st.spp
+        
+      WHERE e.bgc_true IN (SELECT bgc from thlb_bgcs WHERE in_thlb)
+    ),
+
+    bgc_val AS (
+      SELECT
+        spp, cellnum, ssp, gcm, run, period, Edatopic,
+        {new_suit_expr} AS NewSuit_val, --fractional or binary
+        {hist_suit_expr} AS HistSuit_val
+      FROM bgc_spp
+    ),
+
+    ---------------------------------------------------------------------
+    -- 5. Max suitability per location
+    ---------------------------------------------------------------------
+    bgc_best AS (
+      SELECT
+        spp, cellnum, ssp, gcm, run, period, Edatopic,
+        MAX(NewSuit_val)  AS NewSuit,
+        MAX(HistSuit_val) AS HistSuit
+      FROM bgc_val
+      GROUP BY spp, cellnum, ssp, gcm, run, period, Edatopic
+    ),
+
+    ---------------------------------------------------------------------
+    -- 6. Persistence + Expansion
+    ---------------------------------------------------------------------
+    perexp_raw AS (
+      SELECT
+        cellnum, spp, Edatopic, ssp, gcm, run, period,
+        CASE WHEN HistSuit > 0 THEN NewSuit ELSE 0 END AS Persist,
+        CASE WHEN HistSuit = 0 THEN NewSuit ELSE 0 END AS Expand
+      FROM bgc_best
+    ),
+
+    perexp_tot AS (
+      SELECT
+        {region_name}, spp, Edatopic, ssp, gcm, run, period,
+        SUM(Persist) AS Persist_Tot,
+        SUM(Expand)  AS Expand_Tot
+      FROM perexp_raw
+      JOIN {region_table} USING (cellnum)
+      GROUP BY {region_name}, spp, Edatopic, ssp, gcm, run, period
+    )
+
+    ---------------------------------------------------------------------
+    -- 7. Join with MappedSuit and normalise
+    ---------------------------------------------------------------------
+    SELECT
+      p.{region_name} AS region,
+      p.spp,
+      p.Edatopic,
+      p.ssp,
+      p.period,
+      m.MappedSuit,
+      p.Persist_Tot / m.MappedSuit AS Persistance,
+      p.Expand_Tot  / m.MappedSuit AS Expansion
+    FROM perexp_tot p
+    JOIN mapped_suit m
+      ON p.spp = m.spp AND p.Edatopic = m.Edatopic AND p.{region_name} = m.{region_name};
+    ", .con = con)
+  
+  if (!duckdb_table_exists(con, table_name)) {
+    # first species: create table
+    sql <- glue_sql("
+      CREATE TABLE {table_name} AS
+      {sql}
+    ", .con = con)
+  } else {
+    sql <- glue_sql("
+      INSERT INTO {table_name}
+      {sql}
+    ", .con = con)
+  }
+  
+  dbExecute(con, sql)
+  return(invisible(TRUE))
+}
+
