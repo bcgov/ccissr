@@ -1082,7 +1082,7 @@ spp_loss_gain <- function(
 #' @param table_name table name to create/append to in database. Default is "cciss_res"
 #' @return NULL. Writes table to database.
 #' @importFrom glue glue_sql
-#' @importFrom duckdb dbExecute
+#' @importFrom DBI dbExecute
 #' @export
 cciss_full_species <- function(con, spp, table_name = "cciss_res") {
   
@@ -1272,17 +1272,17 @@ dbExecute(con, sql)
 #' @param table_name table name to create/append to in database. Default is "bgc_per_exp_region"
 #' @return NULL. Writes table to database.
 #' @importFrom glue glue_sql
-#' @importFrom duckdb dbExecute dbGetQuery
+#' @importFrom DBI dbExecute dbGetQuery
 #' @export
 bgc_persist_expand_region <- function(con, region_table, region_name, by_zone = TRUE, table_name = "bgc_per_exp_region") {
   if (by_zone) {
-    pred_expr <- "regexp_extract(a.bgc_pred, '^[A-Z]+')"
-    true_expr <- "regexp_extract(p.bgc,      '^[A-Z]+')"
-    tot_group <- "regexp_extract(bgc, '^[A-Z]+')"
+    pred_expr <- DBI::SQL("regexp_extract(a.bgc_pred, '^[A-Z]+')")
+    true_expr <- DBI::SQL("regexp_extract(p.bgc,      '^[A-Z]+')")
+    tot_group <- DBI::SQL("regexp_extract(bgc, '^[A-Z]+')")
   } else {
-    pred_expr <- "a.bgc_pred"
-    true_expr <- "p.bgc"
-    tot_group <- "bgc"
+    pred_expr <- DBI::SQL("a.bgc_pred")
+    true_expr <- DBI::SQL("p.bgc")
+    tot_group <- DBI::SQL("bgc")
   }
   
   period_sel <- dbGetQuery(con, "select distinct period from bgc_raw")$period
@@ -1319,7 +1319,7 @@ bgc_persist_expand_region <- function(con, region_table, region_name, by_zone = 
     ),
     agg AS (
       SELECT
-        {region_name}, ssp, gcm, run, period, bgc_pred,
+        {region_name} AS region, ssp, gcm, run, period, bgc_pred,
         SUM(Persist) AS Persist_Tot,
         SUM(Expand)  AS Expand_Tot
       FROM flags
@@ -1327,7 +1327,7 @@ bgc_persist_expand_region <- function(con, region_table, region_name, by_zone = 
     ),
     bgc_tot AS (
       SELECT
-        {region_name},
+        {region_name} AS region,
         {tot_group} AS bgc_true,
         COUNT(*) AS BGC_Tot
       FROM bgc_points
@@ -1341,7 +1341,8 @@ bgc_persist_expand_region <- function(con, region_table, region_name, by_zone = 
       (Expand_Tot  * 1.0) / t.BGC_Tot AS Expansion
     FROM agg a
     LEFT JOIN bgc_tot t
-      ON a.bgc_pred = t.bgc_true;
+      ON a.bgc_pred = t.bgc_true
+      AND a.region = t.region;
       ", .con = con)
   
   dbExecute(con, sql)
@@ -1357,7 +1358,7 @@ bgc_persist_expand_region <- function(con, region_table, region_name, by_zone = 
 #' @param table_name table name to create/append to in database. Default is "spp_per_exp_region"
 #' @return NULL. Writes table to database.
 #' @importFrom glue glue_sql
-#' @importFrom duckdb dbExecute dbGetQuery
+#' @importFrom DBI dbExecute dbGetQuery
 #' @export
 spp_persist_expand_region <- function(con, spp_list, region_table, region_name, 
                                       fractional = TRUE, table_name = "spp_per_exp_region"){

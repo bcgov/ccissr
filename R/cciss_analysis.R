@@ -97,6 +97,8 @@ spp_bubbleplot <- function(persist_expand,
                            by = "species", 
                            xlab = "Persistence within historically suitable range",
                            ylab = "Expansion beyond historically suitable range", 
+                           xlim = c(0, 1.15),
+                           ylim = c(-5,3),
                            xlabels = TRUE, 
                            ylabels = TRUE,
                            mar = c(3,4,0.1,0.1)
@@ -132,8 +134,6 @@ spp_bubbleplot <- function(persist_expand,
   
   par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1)
   
-  xlim <- c(0, 1.15)
-  ylim <- c(-5,3)
   plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab=xlab, ylab="")
   if(xlabels) axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
   if(ylabels) axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
@@ -162,8 +162,8 @@ spp_bubbleplot <- function(persist_expand,
     }
     col.focal <- if(is.null(species.focal)) sppcolors[i] else if(spp_sel==species.focal) focal.color else "lightgray"
     col.focal2 <- if(is.null(species.focal)) "black" else if(spp_sel==species.focal) "black" else "darkgray"
-    x <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
-    y <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
+    x <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
+    y <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
     
     # points(x,y)
     if(length(x)>1 & var(x)>0){
@@ -185,15 +185,15 @@ spp_bubbleplot <- function(persist_expand,
     # -----------------------
     # points for ensemble runs
     
-    x <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
-    y <- persist_expand[ssp == scenario & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
+    x <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
+    y <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
     points(x,y, pch=21, bg=focal.color, cex=1)
     
     # -----------------------
     # line for ensemble mean trajectory
     
-    x2 <- persist_expand[ssp == scenario & Edatopic == eda_sel & spp == spp_sel, mean(Persistance), by = period][order(period), V1]
-    y2 <- persist_expand[ssp == scenario & Edatopic == eda_sel & spp == spp_sel, mean(Expansion), by = period][order(period), V1]
+    x2 <- persist_expand[(ssp == scenario | is.na(ssp)) & Edatopic == eda_sel & spp == spp_sel, mean(Persistance), by = period][order(period), V1]
+    y2 <- persist_expand[(ssp == scenario | is.na(ssp)) & Edatopic == eda_sel & spp == spp_sel, mean(Expansion), by = period][order(period), V1]
     
     # add an origin point
     x2 <- c(1, x2)
@@ -273,8 +273,8 @@ bgc_bubbleplot <- function(persist_expand,
   for(unit in units){
     col.focal <- if(unit.persistence.focal=="none") ColScheme$colour[which(ColScheme$classification==unit)] else "lightgray"
     col.focal2 <- if(unit.persistence.focal=="none") "black" else "darkgray"
-    x <- persist_expand[ssp == scenario & period == period_sel & bgc_pred == unit, Persistance]
-    y <- persist_expand[ssp == scenario & period == period_sel & bgc_pred == unit, Expansion]
+    x <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & bgc_pred == unit, Persistance]
+    y <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & bgc_pred == unit, Expansion]
     y[y<2^(ylim[1])] <- 2^(ylim[1])
     y <- log2(y)
     
@@ -418,6 +418,116 @@ plot_spparea <- function(dbCon,
   # Plot
   ggplot(cciss_sum_full, aes(x = Year, y = SppArea, fill = zone)) +
     geom_alluvium(aes(alluvium = zone), alpha= 1, color = "black") +
+    
+    geom_rect(
+      data = bars,
+      aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+      inherit.aes = FALSE,
+      fill = "white", alpha = 0.8
+    ) +
+    
+    #add lines bordering each column
+    geom_col(
+      data = cciss_sum_full |>
+        dplyr::group_by(Year) |>
+        dplyr::summarise(total = sum(SppArea), .groups = "drop"),
+      aes(x = Year, y = total),
+      position = "stack",
+      width = 0.4, 
+      fill = NA,
+      color = "black",
+      linewidth = 1.5,
+      inherit.aes = FALSE
+    ) +
+    
+    theme_classic(base_size = 12) +
+    
+    #legend matches stack order + drop unplotted zones
+    scale_fill_manual(
+      values = colScheme,
+      breaks = zone_order,
+      limits = zone_order,
+      drop = TRUE
+    ) +
+    
+    scale_x_discrete(labels=c("1961" = "1961-90", "2001" = "2001-20", "2021" = "2021-40",
+                              "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
+    scale_y_continuous(labels = scales::comma, expand=c(0,0)) +
+    labs(y="Environmentally Suitable Area (Km^2)",x="Time period", fill = "BGC zone") +
+    theme(axis.ticks.x = element_blank())
+  
+}
+
+#' Create alluvial/stacked bar plot of projected area by zone/subzone
+#' @param dat data.table of species area data from 'alluvial_area' table
+#' @param spp Character. Single species to use for plot
+#' @param edatope Character. Single edatopic position for plot (e.g., "C4")
+#' @param by_zone Logical. Plot by zone or subzone? Defaults to `TRUE`
+#' @return NULL. Creates plot
+#' @import data.table ggplot2 scales
+#' @importFrom ggalluvial geom_alluvium
+#' @export
+plot_alluvial <- function(dat, spp, edatope, by_zone = T, cellarea = 4) {
+  dat <- dat[Spp == spp & Edatope == edatope,]
+  dat[, Year := as.factor(substr(FuturePeriod,1,4))]
+  
+  yrs <- sort(unique(as.integer(dat$Year)))
+  idx <- seq_along(yrs)
+  
+  midpts <- head(idx, -1) + 0.5
+  
+  bars <- data.frame(
+    xmin = midpts - 0.3,
+    xmax = midpts + 0.3,
+    ymin = -Inf,
+    ymax = Inf
+  )
+  
+  if(by_zone) {
+    colScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
+                   CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
+                   CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
+                   SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
+                   CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
+                   IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
+                   MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
+                   SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
+                   BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
+                   SAS = "#92b1b6", CCH = "#7e22ca")
+  } else {
+    colScheme <- setNames(subzones_colours_ref$colour, subzones_colours_ref$classification)
+  }
+  
+  dat[, SppArea := SppArea * cellarea]
+  
+  year_levels <- sort(as.character(dat$Year))
+  
+  # order zones by change (last - first): most decline at bottom
+  delta_by_zone <- dat[,.(SppArea = sum(SppArea, na.rm = TRUE)),
+                             by = .(bgc, Year)]
+  delta_by_zone <- dcast(delta_by_zone, bgc ~ Year, value.var = "SppArea", fill = 0)
+  delta_by_zone[, delta := get(tail(year_levels, 1)) - get(head(year_levels, 1))]
+  zone_order <- delta_by_zone[order(delta), bgc]
+  zone_order <- rev(zone_order) # should put declines at bottom, increases at top
+  dat[, bgc := factor(bgc, levels = zone_order)]
+  dat <- dat[!is.na(bgc) & SppArea > 0]
+  
+  ## fill in with zeros
+  grid <- CJ(
+    bgc   = sort(unique(dat$bgc)),
+    Year = sort(unique(dat$Year)),
+    unique = TRUE
+  )
+  
+  # left join onto grid, then fill missing with 0
+  cciss_sum_full <- dat[grid, on = .(bgc, Year)]
+  cciss_sum_full[is.na(SppArea), SppArea := 0]
+  
+  
+  
+  # Plot
+  ggplot(cciss_sum_full, aes(x = Year, y = SppArea, fill = bgc)) +
+    geom_alluvium(aes(alluvium = bgc), alpha= 1, color = "black") +
     
     geom_rect(
       data = bars,
