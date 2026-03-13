@@ -242,14 +242,16 @@ bgc_bubbleplot <- function(persist_expand,
                            scenario = "ssp245", 
                            xlab = "Persistence within historical range",
                            ylab = "Expansion beyond historical range", 
+                           unit.focal = NULL,
+                           focal.color = "lightskyblue2",
+                           xlim = c(0, 1.1),
+                           ylim = c(-5,3),
                            xlabels = TRUE, 
                            ylabels = TRUE,
                            mar = c(3,4,0.1,0.1), 
                            plt = NULL
 ) {
   
-  
-  unit.persistence.focal <- "none"
   persist_expand <- na.omit(persist_expand, col = c("Persistance","Expansion"))
   ColScheme <- rbind(copy(subzones_colours_ref),copy(zones_colours_ref))
   
@@ -257,11 +259,10 @@ bgc_bubbleplot <- function(persist_expand,
   period_sel <- period
   
   par(mar=mar, mgp=c(1.25, 0.25, 0), cex=1)
+  period.names <- c("2001-2020", "2021-2040", "2041-2060", "2061-2080", "2081-2100")
   
   if(!is.null(plt)) par(plt = plt, new = TRUE)
   
-  xlim <- c(0, 1.1)
-  ylim <- c(-5,3)
   plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab=xlab, ylab="")
   if(xlabels) axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
   if(ylabels) axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
@@ -270,13 +271,14 @@ bgc_bubbleplot <- function(persist_expand,
   iso <- seq(0,1.2, 0.001)
   lines(1-iso, log2(iso), lty=2, lwd=2, col="darkgray")
   
+  persist_expand[Expansion<2^(ylim[1]-1)] <- 2^(ylim[1]-1)
+  persist_expand[, Expansion := log2(Expansion)]
+  
   for(unit in units){
-    col.focal <- if(unit.persistence.focal=="none") ColScheme$colour[which(ColScheme$classification==unit)] else "lightgray"
-    col.focal2 <- if(unit.persistence.focal=="none") "black" else "darkgray"
-    x <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & bgc_pred == unit, Persistance]
-    y <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & bgc_pred == unit, Expansion]
-    y[y<2^(ylim[1])] <- 2^(ylim[1])
-    y <- log2(y)
+    col.focal <- if(is.null(unit.focal) || unit == unit.focal) ColScheme$colour[which(ColScheme$classification==unit)] else "lightgray"
+    col.focal2 <- if(is.null(unit.focal) || unit == unit.focal) "black" else "darkgray"
+    x <- persist_expand[(ssp == scenario) & period == period_sel & bgc_pred == unit, Persistance]
+    y <- persist_expand[(ssp == scenario) & period == period_sel & bgc_pred == unit, Expansion]
     
     # points(x,y)
     if(length(x)>1 & var(x) > 0){
@@ -286,8 +288,49 @@ bgc_bubbleplot <- function(persist_expand,
         dataEllipse(x, y, levels=0.5, center.pch=21, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
       } 
     }
-    points(mean(x),mean(y), pch=21, bg=col.focal, cex=if(unit==unit.persistence.focal) 4.5 else 3.5, col=col.focal2)
-    text(mean(x),mean(y), unit, cex=if(unit==unit.persistence.focal) 1 else 0.7, font=2, col=col.focal2)
+    points(mean(x),mean(y), pch=21, bg=col.focal, cex= 3.5, col=col.focal2)
+    text(mean(x),mean(y), unit, cex= 0.7, font=2, col=col.focal2)
+  }
+  
+  if(!is.null(unit.focal)){
+    
+    unit <- unit.focal
+    
+    # -----------------------
+    # points for ensemble runs
+    
+    x <- persist_expand[(ssp == scenario) & period == period_sel & bgc_pred == unit, Persistance]
+    y <- persist_expand[(ssp == scenario) & period == period_sel & bgc_pred == unit, Expansion]
+    points(x,y, pch=21, bg=focal.color, cex=1)
+    
+    # -----------------------
+    # line for ensemble mean trajectory
+    
+    x2 <- persist_expand[(ssp == scenario) & bgc_pred == unit, mean(Persistance), by = period][order(period), V1]
+    y2 <- persist_expand[(ssp == scenario) & bgc_pred == unit, mean(Expansion), by = period][order(period), V1]
+    
+    # add an origin point
+    x2 <- c(1, x2)
+    y2 <- c(ylim[1]-1, y2)
+    
+    if(length(unique(sign(diff(x2))))==1 & sum(diff(x2))!=0){
+      x3 <- if(unique(sign(diff(x2)))==-1) rev(x2) else x2
+      y3 <- if(unique(sign(diff(x2)))==-1) rev(y2) else y2
+      s <- stinterp(x3,y3, seq(min(x3),max(x3), diff(xlim)/500))
+      lines(s, col=1, lwd=1.5, lty=1)
+    } else lines(x2, y2, col=1, lwd=1.5, lty=1)
+    
+    points(x2,y2, pch=21, bg=1, cex=1)
+    text(x2[2],y2[2], period.names[1], pos=4, cex=0.75, font=2, offset=0.3)
+    text(x2[6],y2[6], period.names[5], pos=2, cex=0.75, font=2, offset=0.3)
+    
+    # -----------------------
+    # label
+    
+    j <- which(list_gcm_periods() == period_sel) + 1 #add one because there is an origin (baseline) in the vector
+    points(x2[j],y2[j], pch=21, bg=focal.color, cex=3.5, col=1)
+    text(x2[j],y2[j], unit, cex=0.8, font=2, col=1)
+    
   }
   box()
 }
@@ -484,19 +527,11 @@ plot_alluvial <- function(dat, spp, edatope, by_zone = T, cellarea = 4) {
   )
   
   if(by_zone) {
-    colScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
-                   CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
-                   CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
-                   SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
-                   CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
-                   IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
-                   MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
-                   SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
-                   BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
-                   SAS = "#92b1b6", CCH = "#7e22ca")
+    colScheme <- setNames(zones_colours_ref$colour, zones_colours_ref$classification)
   } else {
     colScheme <- setNames(subzones_colours_ref$colour, subzones_colours_ref$classification)
   }
+  colScheme <- colScheme[names(colScheme) %in% unique(dat[SppArea > 0,bgc])]
   
   dat[, SppArea := SppArea * cellarea]
   
@@ -509,6 +544,7 @@ plot_alluvial <- function(dat, spp, edatope, by_zone = T, cellarea = 4) {
   delta_by_zone[, delta := get(tail(year_levels, 1)) - get(head(year_levels, 1))]
   zone_order <- delta_by_zone[order(delta), bgc]
   zone_order <- rev(zone_order) # should put declines at bottom, increases at top
+  zone_order <- zone_order[zone_order %in% unique(dat[SppArea > 0,bgc])]
   dat[, bgc := factor(bgc, levels = zone_order)]
   dat <- dat[!is.na(bgc) & SppArea > 0]
   
@@ -522,8 +558,7 @@ plot_alluvial <- function(dat, spp, edatope, by_zone = T, cellarea = 4) {
   # left join onto grid, then fill missing with 0
   cciss_sum_full <- dat[grid, on = .(bgc, Year)]
   cciss_sum_full[is.na(SppArea), SppArea := 0]
-  
-  
+  cciss_sum_full[,bgc := factor(as.character(bgc), levels = zone_order)]
   
   # Plot
   ggplot(cciss_sum_full, aes(x = Year, y = SppArea, fill = bgc)) +
@@ -563,7 +598,7 @@ plot_alluvial <- function(dat, spp, edatope, by_zone = T, cellarea = 4) {
     scale_x_discrete(labels=c("1961" = "1961-90", "2001" = "2001-20", "2021" = "2021-40",
                               "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
     scale_y_continuous(labels = scales::comma, expand=c(0,0)) +
-    labs(y="Environmentally Suitable Area (Km^2)",x="Time period", fill = "BGC zone") +
+    labs(y=expression("Environmentally suitable area (km"^2*")"), x="Time period", fill = "BGC zone") +
     theme(axis.ticks.x = element_blank())
   
 }

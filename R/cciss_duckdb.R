@@ -96,31 +96,33 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
   return(invisible(TRUE))
 }
 
-#' Add natural resource districts to database
+#' Add region table to duckdb for grouping
 #' @param dbCon duckdb database connection
 #' @param raster_template raster used to populate database
-#' @param districts sf object containing district boundaries (we suggest using `bcmaps::nr_districts()`)
+#' @param regions SpatVect object containing district boundaries (we suggest using `bcmaps::nr_districts()`)
+#' @param region_name Name of column in `regions` containing names/codes
+#' @param table_name character. Name of table to populate in database
 #' @return NULL. Writes table to database
 #' @importFrom terra vect same.crs project rasterize
 #' @importFrom data.table as.data.table setnames
 #' @importFrom duckdb dbWriteTable
 #' @export
-dbAddDistricts <- function(dbCon, raster_template, districts) {
-  if(duckdb_table_exists(dbCon, "dist_points")){
-    message("Using cached table dist_points :)")
+dbAddRegions <- function(dbCon, raster_template, regions, region_name, table_name) {
+  if(duckdb_table_exists(dbCon, table_name)){
+    message("Using cached table ", table_name)
     return(invisible(TRUE))
   }
-  dist_v <- vect(districts["ORG_UNIT"])
+  dist_v <- regions[region_name]
   if(!same.crs(raster_template, dist_v)){
-    warning("CRS of provided districts does not match raster template. Will try projecting.")
+    warning("CRS of provided regions does not match raster template. Will try projecting.")
     dist_v <- project(dist_v, raster_template)
   }
-  dist_v$ORG_UNIT <- as.factor(dist_v$ORG_UNIT)
-  dist_rast <- rasterize(dist_v,raster_template, field = "ORG_UNIT")
+  dist_v[[region_name]] <- as.factor(dist_v[[region_name]][,1])
+  dist_rast <- rasterize(dist_v,raster_template, field = region_name)
   dist_points <- as.data.frame(dist_rast, cells=T) |> as.data.table()
-  setnames(dist_points, c("cellnum","district"))
-  dbWriteTable(dbCon, "dist_points", dist_points, row.names = F)
-  message("Written table dist_points to duckdb :)")
+  setnames(dist_points, c("cellnum","region"))
+  dbWriteTable(dbCon, table_name, dist_points, row.names = F)
+  message("Written table ",table_name, " to duckdb :)")
   return(invisible(TRUE))
 }
 
@@ -1062,8 +1064,9 @@ spp_loss_gain <- function(
 
     SELECT
       {group},
-      SUM(CASE WHEN Loss THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS LossProp,
-      SUM(CASE WHEN Gain THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS GainProp
+      SUM(CASE WHEN Loss THEN 1 ELSE 0 END) AS LossArea,
+      SUM(CASE WHEN Gain THEN 1 ELSE 0 END) AS GainArea,
+      COUNT(*) as TotalArea
     FROM with_bgc
     GROUP BY {group}
     ORDER BY {group};
