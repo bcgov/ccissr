@@ -4,7 +4,12 @@
 \alias{cciss_full_species}
 \title{Calculate CCISS results using duckdb (single species)}
 \usage{
-cciss_full_species(con, spp, table_name = "cciss_res")
+cciss_full_species(
+  con,
+  spp,
+  table_name = "cciss_res",
+  suitability_name = "suitability"
+)
 }
 \arguments{
 \item{con}{duckdb connection}

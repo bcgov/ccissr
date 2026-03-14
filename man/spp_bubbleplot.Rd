@@ -16,7 +16,7 @@ spp_bubbleplot(
   xlab = "Persistence within historically suitable range",
   ylab = "Expansion beyond historically suitable range",
   xlim = c(0, 1.15),
-  ylim = c(-5, 3),
+  ylim = c(-6, 4),
   xlabels = TRUE,
   ylabels = TRUE,
   mar = c(3, 4, 0.1, 0.1)

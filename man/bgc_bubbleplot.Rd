@@ -13,7 +13,7 @@ bgc_bubbleplot(
   unit.focal = NULL,
   focal.color = "lightskyblue2",
   xlim = c(0, 1.1),
-  ylim = c(-5, 3),
+  ylim = c(-6, 4),
   xlabels = TRUE,
   ylabels = TRUE,
   mar = c(3, 4, 0.1, 0.1),
