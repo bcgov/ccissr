@@ -1087,7 +1087,8 @@ spp_loss_gain <- function(
 #' @importFrom glue glue_sql
 #' @importFrom DBI dbExecute
 #' @export
-cciss_full_species <- function(con, spp, table_name = "cciss_res") {
+cciss_full_species <- function(con, spp, table_name = "cciss_res", suitability_name = "suitability") {
+  
   
   query_body <- glue_sql(
     "WITH
@@ -1098,7 +1099,7 @@ suit_filtered AS (
     ss_nospace AS SS_NoSpace,
     spp AS Spp,
     newfeas AS Feasible
-  FROM suitability
+  FROM {suitability_name}
   WHERE spp = {spp}          -- spp_select
     AND newfeas IS NOT NULL
 ),

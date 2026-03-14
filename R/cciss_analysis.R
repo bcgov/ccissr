@@ -98,7 +98,7 @@ spp_bubbleplot <- function(persist_expand,
                            xlab = "Persistence within historically suitable range",
                            ylab = "Expansion beyond historically suitable range", 
                            xlim = c(0, 1.15),
-                           ylim = c(-5,3),
+                           ylim = c(-6,4),
                            xlabels = TRUE, 
                            ylabels = TRUE,
                            mar = c(3,4,0.1,0.1)
@@ -111,6 +111,7 @@ spp_bubbleplot <- function(persist_expand,
     stop("Package 'stinepack' is required for stinterp() splines", call. = FALSE)
   }
   
+  persist_expand <- copy(na.omit(persist_expand, col = c("Persistance","Expansion")))
   period_sel <- period
   
   if(species == "auto"){
@@ -148,7 +149,7 @@ spp_bubbleplot <- function(persist_expand,
   #mtext(paste(edatope.names[which(edatopes==edatope)], " sites", " (", edatope, ")", sep=""), side=3, line=-1.25, adj= if(edatope=="C4") 0.025 else 0.075, cex=0.7, font=1)
   
   # log-transform Expansion values
-  persist_expand[Expansion<2^(ylim[1]-1)] <- 2^(ylim[1]-1)
+  persist_expand[Expansion<2^(ylim[1]-1), Expansion := 2^(ylim[1]-1)] 
   persist_expand[, Expansion := log2(Expansion)]
   
   #spps <- spps[-9]
@@ -173,8 +174,12 @@ spp_bubbleplot <- function(persist_expand,
         dataEllipse(x, y, levels=0.5, center.pch=NULL, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
       } 
     }
-    points(mean(x),mean(y), pch=21, bg=col.focal, cex=3, col=col.focal2)
-    text(mean(x),mean(y), spps[i], cex=0.7, font=2, col=col.focal2)
+    xuse <- mean(x) 
+    yuse <- mean(y)
+    xuse[xuse > (xlim[2] - 0.1)] <- xlim[2] - 0.1
+    yuse[yuse > (ylim[2] - 0.1)] <- ylim[2] - 0.1
+    points(xuse,yuse, pch=21, bg=col.focal, cex=3, col=col.focal2)
+    text(xuse,yuse, spps[i], cex=0.7, font=2, col=col.focal2)
     
   }
   
@@ -245,7 +250,7 @@ bgc_bubbleplot <- function(persist_expand,
                            unit.focal = NULL,
                            focal.color = "lightskyblue2",
                            xlim = c(0, 1.1),
-                           ylim = c(-5,3),
+                           ylim = c(-6,4),
                            xlabels = TRUE, 
                            ylabels = TRUE,
                            mar = c(3,4,0.1,0.1), 
@@ -271,14 +276,14 @@ bgc_bubbleplot <- function(persist_expand,
   iso <- seq(0,1.2, 0.001)
   lines(1-iso, log2(iso), lty=2, lwd=2, col="darkgray")
   
-  persist_expand[Expansion<2^(ylim[1]-1)] <- 2^(ylim[1]-1)
+  persist_expand[Expansion<2^(ylim[1]-1), Expansion := 2^(ylim[1]-1)]
   persist_expand[, Expansion := log2(Expansion)]
   
   for(unit in units){
     col.focal <- if(is.null(unit.focal) || unit == unit.focal) ColScheme$colour[which(ColScheme$classification==unit)] else "lightgray"
     col.focal2 <- if(is.null(unit.focal) || unit == unit.focal) "black" else "darkgray"
-    x <- persist_expand[(ssp == scenario) & period == period_sel & bgc_pred == unit, Persistance]
-    y <- persist_expand[(ssp == scenario) & period == period_sel & bgc_pred == unit, Expansion]
+    x <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & bgc_pred == unit, Persistance]
+    y <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & bgc_pred == unit, Expansion]
     
     # points(x,y)
     if(length(x)>1 & var(x) > 0){
@@ -288,8 +293,12 @@ bgc_bubbleplot <- function(persist_expand,
         dataEllipse(x, y, levels=0.5, center.pch=21, add=T, col=col.focal, fill=T, lwd=0.5, plot.points=F)
       } 
     }
-    points(mean(x),mean(y), pch=21, bg=col.focal, cex= 3.5, col=col.focal2)
-    text(mean(x),mean(y), unit, cex= 0.7, font=2, col=col.focal2)
+    xuse <- mean(x) 
+    yuse <- mean(y)
+    xuse[xuse > (xlim[2] - 0.1)] <- xlim[2] - 0.1
+    yuse[yuse > (ylim[2] - 0.1)] <- ylim[2] - 0.1
+    points(xuse,yuse, pch=21, bg=col.focal, cex= 3.5, col=col.focal2)
+    text(xuse,yuse, unit, cex= 0.7, font=2, col=col.focal2)
   }
   
   if(!is.null(unit.focal)){

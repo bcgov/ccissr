@@ -538,3 +538,183 @@ cciss_full <- function(SSPred,suit,spp_select){
   suitRes <- suitVotes[,.(Curr = mean(Curr),Newsuit = mean(Newsuit), Improve = mean(Improve), Decline = mean(Decline), Prop1 = mean(`1`), Prop2 = mean(`2`), Prop3 = mean(`3`)), by = .(SiteRef,FuturePeriod,Spp)]
   return(suitRes)
 }
+
+
+map_reference_suit <- function(con,
+                              raster_template,
+                              species,
+                              edatope,
+                              period) {
+  final_dem <- copy(raster_template)
+  breakpoints.suit <- c(1,2,3,999)
+  palette.suit <-   c("#006400", "#1E90FF", "#EEC900", "#FFFFFF")
+  breakpoints.change <- c(c(seq(-2.5,2.5,0.5),-10,10,20,30) + 15, 999)
+  palette.change <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,5,6)], brewer.pal(11,"RdBu")[c(7,8,9,10,11)],"#000000", brewer.pal(9,"YlOrRd")[1:3],"#FFFFFF") # nolint
+  breakpoints.binary <- seq(-1,1,0.2)
+  palette.binary <- c(brewer.pal(11,"RdBu")[c(1:4,6,6)], brewer.pal(11,"RdBu")[c(6,8:11)])
+  
+  ##feas colours
+  suit_cols <- data.table(value = breakpoints.suit,Colour = palette.suit)
+  
+  ##mean change colours
+  change_cols <- data.table(value = breakpoints.change, Colour = palette.change)
+  change_cols[value == 15, Colour := "#DFDFDF"]
+  ##addret colours
+  #addret_cols <- data.table(value = breakpoints.binary*100, Colour = palette.binary)
+  
+  if(obs) {
+    periods <- list_obs_periods()
+    obs_nm <- "obs_"
+  } else {
+    obs_nm <- ""
+  }
+  
+  for(period in periods){
+    for(edatope in edatopes){
+      dat <- fread(paste0(in_folder,"/CCISS_",obs_nm,period,"_",edatope,".csv"))
+      for(spp in species){
+        cat(period, edatope, spp, "\n")
+        dat_spp <- dat[Spp == spp,]
+        dat_spp <- dat_spp[Curr < 3.5 | Newsuit < 3.5,]
+        dat_spp[,FeasChange := Curr - Newsuit]
+        dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
+        dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
+        dat_spp[,FeasChange := round(FeasChange/0.5)*0.5]
+        dat_spp[,FeasRound := round(Newsuit)]
+        dat_spp[,CurrRound := round(Curr)]
+        dat_spp[CurrRound > 3, CurrRound := 999]
+        dat_spp[FeasRound > 3, FeasRound := 999]
+        dat_spp[,AddRet := Improve]
+        dat_spp[Decline > Improve, AddRet := -Decline]
+        dat_spp[,AddRet := round(AddRet/20)*20]
+        
+        #historic feasibility
+        # if(period == "2001_2020" & !obs){
+        #     values(final_dem) <- NA
+        #     final_dem[!is.na(raster_template)] <- 999
+        #     final_dem[dat_spp$SiteRef] <- dat_spp$CurrRound
+        #     coltab(final_dem) <- suit_cols
+        #     final_rgb <- colorize(final_dem, to = "rgb", alpha = TRUE)
+        #     writeRaster(final_rgb, paste0(out_folder,"/HistoricFeas_",period,"_",edatope,"_",spp,".tif"), overwrite = T)
+        # }
+        
+        ##new feasibility
+        values(final_dem) <- NA
+        final_dem[!is.na(raster_template)] <- 999
+        final_dem[dat_spp$SiteRef] <- dat_spp$FeasRound
+        coltab(final_dem) <- suit_cols
+        final_rgb <- colorize(final_dem, to = "rgb", alpha = TRUE)
+        writeRaster(final_rgb, paste0(out_folder,"/NewFeas_",obs_nm,period,"_",edatope,"_",spp,".tif"), overwrite = T)
+        
+        ## raw rasters
+        trast <- copy(final_dem)
+        values(trast) <- NA
+        trast[dat_spp$SiteRef] <- dat_spp$FeasRound
+        trast[trast == 999] <- NA
+        trast <- as.int(trast * 10)
+        writeRaster(trast, paste0(out_folder_raw,"/Feasibility_",obs_nm,period,"_",edatope,"_",spp,".tif"),overwrite = T, datatype = "INT2U")
+        
+        ##mean change
+        values(final_dem) <- NA
+        final_dem[!is.na(raster_template)] <- 999
+        final_dem[dat_spp$SiteRef] <- dat_spp$FeasChange + 15
+        final_rgb <- subst(final_dem, change_cols$value, t(col2rgb(change_cols$Colour,alpha = TRUE)),names = c("red","green", "blue","alpha"))
+        writeRaster(final_rgb, paste0(out_folder,"/MeanChange_",obs_nm,period,"_",edatope,"_",spp,".tif"),overwrite = T)
+        
+        trast <- copy(final_dem)
+        values(trast) <- NA
+        trast[dat_spp$SiteRef] <- dat_spp$FeasChange
+        trast[trast == 999] <- NA
+        trast <- as.int(trast * 10)
+        writeRaster(trast, paste0(out_folder_raw,"/MeanChange_",period,"_",edatope,"_",spp,".tif"),overwrite = T, datatype = "INT4S")
+        
+        gc()
+      }
+    }
+  }
+}
+
+map_reference_suit <- function(con,
+                               raster_template,
+                               species,
+                               edatope,
+                               table_name = "cciss_res",
+                               return_raw = FALSE) {
+  final_dem <- copy(raster_template)
+  breakpoints.suit <- c(1,2,3,999)
+  palette.suit <-   c("#006400", "#1E90FF", "#EEC900", "#FFFFFF")
+  breakpoints.change <- c(c(seq(-2.5,2.5,0.5),-10,10,20,30) + 15, 999)
+  palette.change <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,5,6)], brewer.pal(11,"RdBu")[c(7,8,9,10,11)],"#000000", brewer.pal(9,"YlOrRd")[1:3],"#FFFFFF") # nolint
+  breakpoints.binary <- seq(-1,1,0.2)
+  palette.binary <- c(brewer.pal(11,"RdBu")[c(1:4,6,6)], brewer.pal(11,"RdBu")[c(6,8:11)])
+  
+  ##feas colours
+  suit_cols <- data.table(value = breakpoints.suit,Colour = palette.suit)
+  dat_spp <- dbGetQuery(con, glue_sql("select * from {table_name} where 
+                                  Spp = {species} 
+                                  and Edatope = {edatope} 
+                                  and FuturePeriod = '2041_2060'", .con = con))
+  
+  setDT(dat_spp)
+  dat_spp <- dat_spp[Curr < 3.5 | Newsuit < 3.5,]
+  dat_spp[,FeasChange := Curr - Newsuit]
+  dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
+  dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
+  dat_spp[,FeasChange := round(FeasChange/0.5)*0.5]
+  dat_spp[,FeasRound := round(Newsuit)]
+  dat_spp[,CurrRound := round(Curr)]
+  dat_spp[CurrRound > 3, CurrRound := 999]
+  dat_spp[FeasRound > 3, FeasRound := 999]
+  
+  values(final_dem) <- NA
+  if(return_raw) {
+    final_dem[!is.na(raster_template)] <- 5
+    final_dem[dat_spp$SiteRef] <- dat_spp$Curr
+    return(final_dem)
+  }
+  
+  final_dem[!is.na(raster_template)] <- 999
+  final_dem[dat_spp$SiteRef] <- dat_spp$CurrRound
+  coltab(final_dem) <- suit_cols
+  final_rgb <- colorize(final_dem, to = "rgb", alpha = TRUE)
+  return(final_rgb)
+}
+
+map_change_suit <- function(con,
+                               raster_template,
+                               species,
+                               edatope,
+                               period, 
+                           table_name = "cciss_res") {
+  final_dem <- copy(raster_template)
+  breakpoints.change <- c(c(seq(-2.5,2.5,0.5),-10,10,20,30) + 15, 999)
+  palette.change <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,5,6)], brewer.pal(11,"RdBu")[c(7,8,9,10,11)],"#000000", brewer.pal(9,"YlOrRd")[1:3],"#FFFFFF") # nolint
+  
+  ##mean change colours
+  change_cols <- data.table(value = breakpoints.change, Colour = palette.change)
+  change_cols[value == 15, Colour := "#DFDFDF"]
+  
+  dat_spp <- dbGetQuery(con, glue_sql("select * from {table_name} where 
+                                  Spp = {species} 
+                                  and Edatope = {edatope} 
+                                  and FuturePeriod = {period}", .con = con))
+  setDT(dat_spp)
+  dat_spp <- dat_spp[Curr < 3.5 | Newsuit < 3.5,]
+  dat_spp[,FeasChange := Curr - Newsuit]
+  dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
+  dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
+  dat_spp[,FeasChange := round(FeasChange/0.5)*0.5]
+  dat_spp[,FeasRound := round(Newsuit)]
+  dat_spp[,CurrRound := round(Curr)]
+  dat_spp[CurrRound > 3, CurrRound := 999]
+  dat_spp[FeasRound > 3, FeasRound := 999]
+  
+  ##mean change
+  values(final_dem) <- NA
+  final_dem[!is.na(raster_template)] <- 999
+  final_dem[dat_spp$SiteRef] <- dat_spp$FeasChange + 15
+  final_rgb <- subst(final_dem, change_cols$value, t(col2rgb(change_cols$Colour,alpha = TRUE)),
+                     names = c("red","green", "blue","alpha"))
+  
+  return(final_rgb)
+}
