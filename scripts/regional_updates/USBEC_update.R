@@ -1,3 +1,5 @@
+library(tidyverse)
+#Suitability----
 #read in current table
 suit<-read.csv("tables/versioned/Suitability_v13_25.csv")
 suit$X<-NULL
@@ -37,3 +39,24 @@ suit<-rbind(suit, USBEC_update2)
 #write out new version
 write.csv(suit, "tables/versioned/Suitability_v13_26.csv")
 
+
+#Edatopic----
+edat<-read.csv("tables/versioned/Edatopic_v13_11.csv") 
+
+#read in update
+Edat_update<-read.csv("tables/regional_updates/Edatopic_USBEC_DVM_4Jan2026.csv")
+Edat_update<-subset(Edat_update, Source=="Add_2026"|Source=="USA_2026")
+
+#Remove anything already in table for overwrite
+check<-unique(Edat_update$SS_NoSpace)
+edat<-subset(edat, !SS_NoSpace %in% check)
+
+#bind back to table
+edat<-rbind(edat, Edat_update)
+
+#change stats
+#72 edatopes updated  
+#138 edatopes added
+
+#write out updated table
+write.csv(edat, "tables/versioned/Edatopic_v13_12.csv")
