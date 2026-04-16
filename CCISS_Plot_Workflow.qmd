@@ -22,9 +22,9 @@ library(climr)
 library(here)
 library(ggplot2)
 
-dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
+# dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
 #dir <- "../Common_Files/" # Kiri's location
-#dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
+dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/ccissv13_workingfiles/BGC_modelling/Trained_Models/" # CCISS sharepoint
 
 BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 
@@ -32,8 +32,9 @@ BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V2.1.rds"))
 # dem <- cded_terra(aoi = bumobnd, check_tiles = FALSE)
 # dem <- mask(dem, vect(bumobnd))
 # dem2 <- aggregate(dem, fact = 45)
-dem2 <- rast("BC_DEM_200m.tif")
-dem2 <- rast("//objectstore2.nrs.bcgov/ffec/DEM/dem_BC2kmGrid.tif") #permanent location
+# dem2 <- rast("BC_DEM_200m.tif")
+# dem2 <- rast("//objectstore2.nrs.bcgov/ffec/DEM/dem_BC2kmGrid.tif") #permanent location
+dem2 <- rast("dem_BC2kmGrid.tif")
 dem_table <- climr::dem_to_table(dem2)
 ```
 
@@ -54,9 +55,9 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 ## Create Mapped BGC Raster
 
 ```{r}
-dir <- "../Common_Files/" # Kiri's location
-dir <- "./tree_summaries_code/" #Mia's location
-#dir <- "" # local copy
+# dir <- "../Common_Files/" # Kiri's location
+# dir <- "./tree_summaries_code/" #Mia's location
+dir <- "C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/CCISSv13_latest_tool_materials/" # local copy
 
 bgcs <- vect(paste0(dir, "BEC13Draft_4326.gpkg"))
 bgc_template <- make_bgc_template(dem2, bgcs)
@@ -84,7 +85,7 @@ Create raw (not summarised) predictions - one for each gcm/scenario/run/timeperi
 
 ```{r}
 
-predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = list_gcm_periods(), max_runs_use = 4L)
+predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = list_gcm_periods(), max_runs_use = 4L, obs_2001_2020 = TRUE)
 
 ```
 
@@ -202,7 +203,9 @@ Recreation of Colin's 2 panel plot. Note that this currently only works using an
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 plot_SuitabilityChangeMap(con, bgc_template = bgc_template, outline = bc_ol, spp = "Fd", edatope = "C4", period = "2001_2020", three_panel = FALSE, save_png = FALSE)  
 ```
+
 To create a whole set of maps for a species, run this whole chunk:
+
 ```{r}
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
 #C4
