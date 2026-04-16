@@ -242,57 +242,139 @@ cciss_suitability <- function(dbCon,
                               species,
                               obs = FALSE,
                               tile_size = 4000) {
+  # periods we *could* run (from siteseries_preds)
+  periods <- dbGetQuery(
+    dbCon,
+    "select distinct FuturePeriod from siteseries_preds"
+  )$FuturePeriod
   
-  periods <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
-  if(duckdb_table_exists(dbCon, "cciss_res")) {
-    periods_raw <- dbGetQuery(dbCon, "select distinct FuturePeriod from siteseries_preds")$FuturePeriod
-    periods_perexp <- dbGetQuery(dbCon, "select distinct FuturePeriod from cciss_res")$FuturePeriod
-    missing <- setdiff(periods_raw,periods_perexp)
+  # edatopes we care about
+  edatopes_raw <- dbGetQuery(
+    dbCon,
+    "select distinct Edatopic from edatopic"
+  )$Edatopic
+  
+  # we'll call the combo column Edatope to match cciss_res
+  edatopes <- edatopes_raw
+  
+  # Build the full set of requested combos: period × edatope × species
+  # (only those you *want* to compute)
+  full_combos <- data.table::CJ(
+    FuturePeriod = periods,
+    Edatope      = edatopes,
+    Spp          = species,
+    unique       = TRUE
+  )
+  
+  # Figure out which combos are already cached, if cciss_res exists
+  if (duckdb_table_exists(dbCon, "cciss_res")) {
+    existing_combos <- DBI::dbGetQuery(
+      dbCon,
+      "select distinct FuturePeriod, Edatope, Spp from cciss_res"
+    ) |>
+      data.table::as.data.table()
     
-    spp <- dbGetQuery(dbCon, "select distinct Spp from cciss_res")$Spp
-    missing_spp <- setdiff(species, spp)
-    if(length(missing_spp) == 0 & length(missing) == 0){
-      message("All requested species already cached :)")
+    # Anti-join: combos we still need to compute
+    missing_combos <- full_combos[
+      !existing_combos,
+      on = c("FuturePeriod", "Edatope", "Spp")
+    ]
+    
+    if (nrow(missing_combos) == 0L) {
+      message("All requested species/period/edatope combinations already cached :)")
       return(invisible(TRUE))
     }
-    if(length(missing_spp) > 0) {
-      message("Calculating CCISS for ", paste(missing_spp, collapse = ", "))
-      species <- missing_spp
-    }
-    if(length(missing) > 0) {
-      message("Calculating CCISS for ", paste(missing, collapse = ", "))
-      periods <- missing
+    
+    message(
+      "Found ", nrow(existing_combos), " cached combos, ",
+      nrow(missing_combos), " remaining to compute."
+    )
+  } else {
+    # Table doesn't exist yet: everything is missing
+    missing_combos <- full_combos
+    message(
+      "Table cciss_res does not exist yet; will compute all ",
+      nrow(missing_combos), " species/period/edatope combinations."
+    )
+  }
+  
+  # Suitability (feasibility) lookup
+  feas_table <- DBI::dbGetQuery(dbCon, "select * from suitability") |>
+    data.table::as.data.table()
+  data.table::setnames(feas_table, c("BGC", "Spp", "SS_NoSpace", "Feasible"))
+  
+  # For efficiency, loop over unique (period, edatope) pairs that still
+  # have at least one missing species; within those, loop over the
+  # missing species only.
+  missing_periods  <- unique(missing_combos$FuturePeriod)
+  
+  for (period in missing_periods) {
+    missing_edatopes <- unique(
+      missing_combos[FuturePeriod == period, Edatope]
+    )
+    
+    for (edatope in missing_edatopes) {
+      # Only species that are actually missing for this (period, edatope)
+      spp_to_run <- missing_combos[
+        FuturePeriod == period & Edatope == edatope,
+        unique(Spp)
+      ]
+      
+      # Pull all preds for this period/edatope once
+      sspreds <- DBI::dbGetQuery(
+        dbCon,
+        sprintf(
+          "select * from siteseries_preds
+           where FuturePeriod = '%s' AND Edatope = '%s'",
+          period, edatope
+        )
+      ) |>
+        data.table::as.data.table()
+      
+      sitenums <- unique(sspreds$SiteRef)
+      splits <- c(
+        seq(1, length(sitenums), by = tile_size),
+        length(sitenums) + 1
+      )
+      
+      for (spp in spp_to_run) {
+        message("Computing: ", period, " / ", edatope, " / ", spp)
+        
+        for (i in seq_len(length(splits) - 1L)) {
+          idx <- splits[i]:(splits[i + 1L] - 1L)
+          temp_sitenums <- sitenums[idx]
+          
+          if (length(temp_sitenums) == 0L) next
+          
+          temp <- sspreds[SiteRef %in% temp_sitenums]
+          
+          if (nrow(temp) == 0L) next
+          
+          cciss_res <- cciss_full(temp, feas_table, spp)
+          cciss_res <- na.omit(cciss_res, cols = "SiteRef")
+          cciss_res[, Edatope := edatope]
+          
+          DBI::dbWriteTable(
+            dbCon,
+            "cciss_res",
+            cciss_res,
+            row.names = FALSE,
+            append   = TRUE
+          )
+        }
+        
+        rm(cciss_res)
+        gc()
+      }
+      
+      rm(sspreds)
+      gc()
     }
   }
   
-  feas_table <- dbGetQuery(dbCon, "select * from suitability") |> as.data.table()
-  setnames(feas_table, c("BGC", "Spp","SS_NoSpace", "Feasible"))
-  edatopes <- dbGetQuery(dbCon, "select distinct Edatopic from edatopic")$Edatopic
- # stopifnot(all(c("BGC","SS_NoSpace","Sppsplit","FeasOrig","Spp","Feasible","Mod","OR") %in% names(feas_table)))
-  for(period in periods){
-    for(edatope in edatopes){
-      sspreds <- dbGetQuery(dbCon, sprintf("select * from siteseries_preds where FuturePeriod = '%s' AND Edatope = '%s'", period, edatope)) |> as.data.table()
-      sitenums <- unique(sspreds$SiteRef)
-      splits <- c(seq(1, length(sitenums), by = tile_size), length(sitenums) + 1)
-      for(spp in species){
-        message(period, " ", edatope, " ", spp)
-        for (i in 1:(length(splits) - 1)){
-          temp <- sspreds[SiteRef %in% sitenums[splits[i]:(splits[i+1]-1)],]
-          cciss_res <- cciss_full(temp, feas_table, spp)
-          cciss_res <- na.omit(cciss_res, cols = "SiteRef")
-          cciss_res[,Edatope := edatope]
-          dbWriteTable(dbCon, "cciss_res", cciss_res, row.names = FALSE, append = TRUE)
-        }
-        rm(cciss_res)
-        gc()
-      } 
-    }
-    rm(sspreds)
-    gc()
-  }
   message("✓ Created or updated table cciss_res !")
+  invisible(TRUE)
 }
-
 #' Create geotif rasters of projected suitabilities for each species/edatope/period
 #' @param raster_template Template SpatRaster. Must be the same raster used throughout process
 #' @param base_folder Base folder to write results to.
@@ -455,4 +537,184 @@ cciss_full <- function(SSPred,suit,spp_select){
   suitVotes <- merge(suitVotes, datRot, by = c('SiteRef','FuturePeriod','SS_NoSpace','Spp'),all = T)
   suitRes <- suitVotes[,.(Curr = mean(Curr),Newsuit = mean(Newsuit), Improve = mean(Improve), Decline = mean(Decline), Prop1 = mean(`1`), Prop2 = mean(`2`), Prop3 = mean(`3`)), by = .(SiteRef,FuturePeriod,Spp)]
   return(suitRes)
+}
+
+
+map_reference_suit <- function(con,
+                              raster_template,
+                              species,
+                              edatope,
+                              period) {
+  final_dem <- copy(raster_template)
+  breakpoints.suit <- c(1,2,3,999)
+  palette.suit <-   c("#006400", "#1E90FF", "#EEC900", "#FFFFFF")
+  breakpoints.change <- c(c(seq(-2.5,2.5,0.5),-10,10,20,30) + 15, 999)
+  palette.change <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,5,6)], brewer.pal(11,"RdBu")[c(7,8,9,10,11)],"#000000", brewer.pal(9,"YlOrRd")[1:3],"#FFFFFF") # nolint
+  breakpoints.binary <- seq(-1,1,0.2)
+  palette.binary <- c(brewer.pal(11,"RdBu")[c(1:4,6,6)], brewer.pal(11,"RdBu")[c(6,8:11)])
+  
+  ##feas colours
+  suit_cols <- data.table(value = breakpoints.suit,Colour = palette.suit)
+  
+  ##mean change colours
+  change_cols <- data.table(value = breakpoints.change, Colour = palette.change)
+  change_cols[value == 15, Colour := "#DFDFDF"]
+  ##addret colours
+  #addret_cols <- data.table(value = breakpoints.binary*100, Colour = palette.binary)
+  
+  if(obs) {
+    periods <- list_obs_periods()
+    obs_nm <- "obs_"
+  } else {
+    obs_nm <- ""
+  }
+  
+  for(period in periods){
+    for(edatope in edatopes){
+      dat <- fread(paste0(in_folder,"/CCISS_",obs_nm,period,"_",edatope,".csv"))
+      for(spp in species){
+        cat(period, edatope, spp, "\n")
+        dat_spp <- dat[Spp == spp,]
+        dat_spp <- dat_spp[Curr < 3.5 | Newsuit < 3.5,]
+        dat_spp[,FeasChange := Curr - Newsuit]
+        dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
+        dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
+        dat_spp[,FeasChange := round(FeasChange/0.5)*0.5]
+        dat_spp[,FeasRound := round(Newsuit)]
+        dat_spp[,CurrRound := round(Curr)]
+        dat_spp[CurrRound > 3, CurrRound := 999]
+        dat_spp[FeasRound > 3, FeasRound := 999]
+        dat_spp[,AddRet := Improve]
+        dat_spp[Decline > Improve, AddRet := -Decline]
+        dat_spp[,AddRet := round(AddRet/20)*20]
+        
+        #historic feasibility
+        # if(period == "2001_2020" & !obs){
+        #     values(final_dem) <- NA
+        #     final_dem[!is.na(raster_template)] <- 999
+        #     final_dem[dat_spp$SiteRef] <- dat_spp$CurrRound
+        #     coltab(final_dem) <- suit_cols
+        #     final_rgb <- colorize(final_dem, to = "rgb", alpha = TRUE)
+        #     writeRaster(final_rgb, paste0(out_folder,"/HistoricFeas_",period,"_",edatope,"_",spp,".tif"), overwrite = T)
+        # }
+        
+        ##new feasibility
+        values(final_dem) <- NA
+        final_dem[!is.na(raster_template)] <- 999
+        final_dem[dat_spp$SiteRef] <- dat_spp$FeasRound
+        coltab(final_dem) <- suit_cols
+        final_rgb <- colorize(final_dem, to = "rgb", alpha = TRUE)
+        writeRaster(final_rgb, paste0(out_folder,"/NewFeas_",obs_nm,period,"_",edatope,"_",spp,".tif"), overwrite = T)
+        
+        ## raw rasters
+        trast <- copy(final_dem)
+        values(trast) <- NA
+        trast[dat_spp$SiteRef] <- dat_spp$FeasRound
+        trast[trast == 999] <- NA
+        trast <- as.int(trast * 10)
+        writeRaster(trast, paste0(out_folder_raw,"/Feasibility_",obs_nm,period,"_",edatope,"_",spp,".tif"),overwrite = T, datatype = "INT2U")
+        
+        ##mean change
+        values(final_dem) <- NA
+        final_dem[!is.na(raster_template)] <- 999
+        final_dem[dat_spp$SiteRef] <- dat_spp$FeasChange + 15
+        final_rgb <- subst(final_dem, change_cols$value, t(col2rgb(change_cols$Colour,alpha = TRUE)),names = c("red","green", "blue","alpha"))
+        writeRaster(final_rgb, paste0(out_folder,"/MeanChange_",obs_nm,period,"_",edatope,"_",spp,".tif"),overwrite = T)
+        
+        trast <- copy(final_dem)
+        values(trast) <- NA
+        trast[dat_spp$SiteRef] <- dat_spp$FeasChange
+        trast[trast == 999] <- NA
+        trast <- as.int(trast * 10)
+        writeRaster(trast, paste0(out_folder_raw,"/MeanChange_",period,"_",edatope,"_",spp,".tif"),overwrite = T, datatype = "INT4S")
+        
+        gc()
+      }
+    }
+  }
+}
+
+map_reference_suit <- function(con,
+                               raster_template,
+                               species,
+                               edatope,
+                               table_name = "cciss_res",
+                               return_raw = FALSE) {
+  final_dem <- copy(raster_template)
+  breakpoints.suit <- c(1,2,3,999)
+  palette.suit <-   c("#006400", "#1E90FF", "#EEC900", "#FFFFFF")
+  breakpoints.change <- c(c(seq(-2.5,2.5,0.5),-10,10,20,30) + 15, 999)
+  palette.change <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,5,6)], brewer.pal(11,"RdBu")[c(7,8,9,10,11)],"#000000", brewer.pal(9,"YlOrRd")[1:3],"#FFFFFF") # nolint
+  breakpoints.binary <- seq(-1,1,0.2)
+  palette.binary <- c(brewer.pal(11,"RdBu")[c(1:4,6,6)], brewer.pal(11,"RdBu")[c(6,8:11)])
+  
+  ##feas colours
+  suit_cols <- data.table(value = breakpoints.suit,Colour = palette.suit)
+  dat_spp <- dbGetQuery(con, glue_sql("select * from {table_name} where 
+                                  Spp = {species} 
+                                  and Edatope = {edatope} 
+                                  and FuturePeriod = '2041_2060'", .con = con))
+  
+  setDT(dat_spp)
+  dat_spp <- dat_spp[Curr < 3.5 | Newsuit < 3.5,]
+  dat_spp[,FeasChange := Curr - Newsuit]
+  dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
+  dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
+  dat_spp[,FeasChange := round(FeasChange/0.5)*0.5]
+  dat_spp[,FeasRound := round(Newsuit)]
+  dat_spp[,CurrRound := round(Curr)]
+  dat_spp[CurrRound > 3, CurrRound := 999]
+  dat_spp[FeasRound > 3, FeasRound := 999]
+  
+  values(final_dem) <- NA
+  if(return_raw) {
+    final_dem[!is.na(raster_template)] <- 5
+    final_dem[dat_spp$SiteRef] <- dat_spp$Curr
+    return(final_dem)
+  }
+  
+  final_dem[!is.na(raster_template)] <- 999
+  final_dem[dat_spp$SiteRef] <- dat_spp$CurrRound
+  coltab(final_dem) <- suit_cols
+  final_rgb <- colorize(final_dem, to = "rgb", alpha = TRUE)
+  return(final_rgb)
+}
+
+map_change_suit <- function(con,
+                               raster_template,
+                               species,
+                               edatope,
+                               period, 
+                           table_name = "cciss_res") {
+  final_dem <- copy(raster_template)
+  breakpoints.change <- c(c(seq(-2.5,2.5,0.5),-10,10,20,30) + 15, 999)
+  palette.change <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,5,6)], brewer.pal(11,"RdBu")[c(7,8,9,10,11)],"#000000", brewer.pal(9,"YlOrRd")[1:3],"#FFFFFF") # nolint
+  
+  ##mean change colours
+  change_cols <- data.table(value = breakpoints.change, Colour = palette.change)
+  change_cols[value == 15, Colour := "#DFDFDF"]
+  
+  dat_spp <- dbGetQuery(con, glue_sql("select * from {table_name} where 
+                                  Spp = {species} 
+                                  and Edatope = {edatope} 
+                                  and FuturePeriod = {period}", .con = con))
+  setDT(dat_spp)
+  dat_spp <- dat_spp[Curr < 3.5 | Newsuit < 3.5,]
+  dat_spp[,FeasChange := Curr - Newsuit]
+  dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
+  dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
+  dat_spp[,FeasChange := round(FeasChange/0.5)*0.5]
+  dat_spp[,FeasRound := round(Newsuit)]
+  dat_spp[,CurrRound := round(Curr)]
+  dat_spp[CurrRound > 3, CurrRound := 999]
+  dat_spp[FeasRound > 3, FeasRound := 999]
+  
+  ##mean change
+  values(final_dem) <- NA
+  final_dem[!is.na(raster_template)] <- 999
+  final_dem[dat_spp$SiteRef] <- dat_spp$FeasChange + 15
+  final_rgb <- subst(final_dem, change_cols$value, t(col2rgb(change_cols$Colour,alpha = TRUE)),
+                     names = c("red","green", "blue","alpha"))
+  
+  return(final_rgb)
 }
