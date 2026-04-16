@@ -9,251 +9,99 @@
 # 778-288-4008
 # July 21, 2019
 
-
-require (RGtk2)
-require(plyr)
-require (rChoiceDialogs)
-require (data.table)
-require(doBy)
-require (utils)
-require(labdsv)
-require(tools )
-require(svDialogs)
-require(tcltk)
-require(randomForest)
-require(foreach)
-require(dplyr)
-require(reshape2)
-require(reshape)
-library(doParallel)
-require(data.table)
-library(MASS)   
-library(scales)
-library(stats)
-library(rgl)
-library(RColorBrewer)
-library(FNN)
-library(igraph)
-library(raster)
-library(maps)
-library(mapdata)
-library(maptools)
-library(sp)
-library(colorRamps)
-library(rgeos)
-library(rgdal)
-library(foreign)
+library(magick)
+library(tweenr)
+library(animation)
 
 
 #===============================================================================
 # Set analysis Parameters
 #===============================================================================
 
+source("./_CCISS_Packages.R") ## packages required
+source("./_CCISS_Functions.R") ## common functions
+source("./_CCISS_Parameters.R") ## settings used through all scripts
 
-setwd("C:\\Colin\\Projects\\2019_CCISS")
-
-grid <- "BC2kmGrid"
-hist.years <- c(1995, 2004, 2005, 2009, 2014, 2017)
-hist.year.name <- c("1991-2000", "1991-2017", "2001-2010", "2001-2017","2011-2017", "2017")
-
-GCMs <-  c("ACCESS1-0","CanESM2","CCSM4","CESM1-CAM5","CNRM-CM5","CSIRO-Mk3-6-0", "GFDL-CM3","GISS-E2R", "HadGEM2-ES", "INM-CM4", "IPSL-CM5A-MR", "MIROC-ESM", "MIROC5", "MPI-ESM-LR","MRI-CGCM3")    
-# GCMs <-  GCMs[1:2] #XXX for testing purposes
-
-BGCcolors <- read.csv("C:\\Colin\\Projects\\Projects\\2019_CCISS\\InputData\\BGCzone_Colorscheme.csv")
-
-# Knowledge Tables
-treesuit="TreeSpp_ESuit_v11_18"
-SiteSeries_Use <-read.csv(paste("InputData/","SiteSeries_Use_5",".csv",sep=""),stringsAsFactors=FALSE,na.strings=".")
-spps.lookup <- read.csv("InputData\\Tree speciesand codes_2.0_2May2019.csv")
-
-#===============================================================================
-# create a dem from the climateBC input data
-#===============================================================================
-
-## create a dem from the climateBC input data
-points <- read.csv(paste("InputData\\",grid,".csv", sep=""))
-dim(points)
-
-# points <- points[order(points$lon, points$lat),]
-# head(points)
-
-# transform latlon points to albers (this only works because the points were originally in albers)
-P4S.latlon <- CRS("+proj=longlat +datum=WGS84")
-P4S.albers <- CRS("+proj=aea +lat_1=50 +lat_2=58.5 +lat_0=45 +lon_0=-126 +x_0=1000000 +y_0=0 +datum=NAD83 +units=m +no_defs")
-pts <- points[,4:3]
-coordinates(pts) <- pts
-projection(pts) <- P4S.latlon
-pts.albers <- spTransform(pts, P4S.albers) #reproject the gridpoints
-
-## assemble a simple spatial data frame of the points (seems awkward, but this is how i got the raster to work properly)
-pts.df <- as.data.frame(pts.albers)
-pts.df<- round(pts.df[,3:4],1)
-df = data.frame(z = 1:dim(points)[1],
-                xc = pts.df[,1],
-                yc = pts.df[,2])
-coordinates(df) = ~xc+yc
-gridded(df) = TRUE
-df = as(df, "SpatialGridDataFrame") # to full grid
-plotOrder <- df$z #plotting order relative to input data
-
-## rasterize
-dem <- raster(df)
-projection(dem) <- P4S.albers
-par(mfrow=c(1,1))
-plot(dem)
-sum(!is.na(values(dem)))
-
-X <- dem
-values(X) <- points$el[df$z]
-plot(X)
-
-#===============================================================================
-# generate the vector of mapped BGCs
-#===============================================================================
-
+## non-THLB BGCs for exclusion from results
+points <- read.csv(paste("inputs\\",grid,".csv", sep=""))
 BGC <- points$ID2
-table(BGC)
-
 BGC <- gsub(" ","",BGC)
-table(BGC)
-sort(table(BGC))
-
-# merge small units
-BGC[which(BGC=="CMAwh")] <- "CMAun"
-BGC[which(BGC=="MHun")] <- "MHunp"
-BGC[which(BGC=="ESSFxvw")] <- "ESSFxvp"
-BGC[which(BGC=="ESSFdcp")] <- "ESSFdcw"
-
-#BGC zones
-BGCcolors <- read.csv("C:\\Colin\\Projects\\2019_CCISS\\InputData\\BGCzone_Colorscheme.csv")
-zone <- rep(NA, length(BGC))
-for(i in BGCcolors$zone){ zone[grep(i,BGC)] <- i }
-table(zone)
+BGCs_notin_THLB <- BGCs_notin_THLB$BGC[which(BGCs_notin_THLB$Exlude=="x")]
+exclude <- which(BGC%in%BGCs_notin_THLB)
 
 #===============================================================================
-# generic spatial data
+# Import suitability tables
 #===============================================================================
-### admin boundaries
-bdy.bc <- readOGR("InputData\\BC_AB_US_Shp\\ProvincialOutline.shp")
+S1 <- treesuit
+S1 <- unique(S1)[,-5]
+dim(S1)
+S1 <- unique(S1)
+dim(S1)
 
 
 #===============================================================================
-# climate data for reference period
+# calculate mean MAT change for each model prediction
 #===============================================================================
 
-setwd("C:\\Colin\\Projects\\2019_CCISS")
-
-fplot=paste("InputData\\", grid, "_Normal_1961_1990MSY.csv", sep="")
-
-Columns = c("ID1", "ID2", "Latitude", "Longitude", "Elevation", "AHM", "bFFP",
-            "CMD07","DD5_sp","EMT","Eref_sm","EXT","FFP","MCMT","MSP",
-            "PPT07","PPT08", "PPT05","PPT06","PPT09", "SHM","TD","Tmax_sp","Tmin_at",
-            "Tmin_sm","Tmin_wt", "PPT_at","PPT_wt", "PAS","eFFP",
-            "Eref09","MAT","Tmin_sp","CMD")
-
-Y0 <- fread(fplot, select = Columns, stringsAsFactors = FALSE, data.table = FALSE) #fread is faster than read.csv
-
-Y0 <- Y0[!is.na(Y0[,2]),]
-
-#####generate some additional variables
-Y0$PPT_MJ <- Y0$PPT05 + Y0$PPT06 # MaY/June precip
-Y0$PPT_JAS <- Y0$PPT07 + Y0$PPT08 + Y0$PPT09 # July/Aug/Sept precip
-Y0$PPT.dormant <- Y0$PPT_at + Y0$PPT_wt # for calculating spring deficit
-Y0$CMD.def <- 500 - (Y0$PPT.dormant)# start of growing season deficit original value was 400 but 500 seems better
-Y0$CMD.def [Y0$CMD.def < 0] <- 0 #negative values set to zero = no deficit
-Y0$CMDMax <- Y0$CMD07
-Y0$CMD.total <- Y0$CMD.def + Y0$CMD
-
+fplot=paste("inputs\\", grid, "_Normal_1961_1990MSY.csv", sep="")
+Y0 <- fread(fplot, select = "MAT", stringsAsFactors = FALSE, data.table = FALSE) #fread is faster than read.csv
 MAT.ref <- Y0$MAT
-MSP.ref <- Y0$MSP
-PPT_wt.ref <- Y0$PPT_wt
 MAT.mean.ref <- mean(MAT.ref, na.rm=T)
-MSP.mean.ref <- mean(MSP.ref, na.rm=T)
-PPT_wt.mean.ref <- mean(PPT_wt.ref, na.rm=T)
 
+for(hist.year in hist.years){
+  Y0 <- fread(paste("inputs\\", grid, "_", hist.year, "_BioVars.csv", sep=""), select = "MAT", stringsAsFactors = FALSE, data.table = FALSE) #fread is faster than read.csv
+  assign(paste("MAT", hist.year, sep="."), Y0$MAT)
+  assign(paste("MAT.change", hist.year, sep="."), mean(Y0$MAT, na.rm=T)-MAT.mean.ref)
+  print(hist.year)
+}
 
-#===============================================================================
-# climate data for future periods
-#===============================================================================
-rcp="rcp45"
-GCM=GCMs[1]
-rcps <- c("rcp45", "rcp85")
-
-  for(GCM in GCMs){
-    Y1 <- fread(paste("InputData\\", grid, "_", GCM, "_BioVars.csv", sep=""), stringsAsFactors = FALSE, data.table = FALSE)
-    Y1 <- Y1[!is.na(Y1[,2]),]
-    
-    #####generate some additional variables
-    Y1$PPT_MJ <- Y1$PPT05 + Y1$PPT06 # MaY/June precip
-    Y1$PPT_JAS <- Y1$PPT07 + Y1$PPT08 + Y1$PPT09 # July/Aug/Sept precip
-    Y1$PPT.dormant <- Y1$PPT_at + Y1$PPT_wt # for calculating spring deficit
-    Y1$CMD.def <- 500 - (Y1$PPT.dormant)# start of growing season deficit original value was 400 but 500 seems better
-    Y1$CMD.def [Y1$CMD.def < 0] <- 0 #negative values set to zero = no deficit
-    Y1$CMDMax <- Y1$CMD07
-    Y1$CMD.total <- Y1$CMD.def + Y1$CMD
-    
-    ## assign single vectors to RCPs and proj.years
-    Ystr <- strsplit(Y1[,1], "_")
-    Y4 <- matrix(unlist(Ystr), ncol=3, byrow=TRUE)
-    proj.years <- unique(Y4[,3])
-    for(rcp in rcps){
-      for(proj.year in proj.years){
+for(GCM in GCMs){
+  Y1 <- fread(paste("inputs\\", grid, "_", GCM, ".csv", sep=""), select = c("Year", "MAT"), stringsAsFactors = FALSE, data.table = FALSE)
+  ## assign single vectors to RCPs and proj.years
+  Ystr <- strsplit(Y1[,1], "_")
+  Y4 <- matrix(unlist(Ystr), ncol=3, byrow=TRUE)
+  Y4[,3] <- gsub(".gcm","",Y4[,3])
+  for(rcp in rcps){
+    for(proj.year in proj.years){
       assign(paste("MAT", GCM, rcp, proj.year, sep="."), Y1$MAT[which(Y4[,2]==rcp & Y4[,3]==proj.year)])
-      assign(paste("MSP", GCM, rcp, proj.year, sep="."), Y1$MSP[which(Y4[,2]==rcp & Y4[,3]==proj.year)])
-      assign(paste("PPT_wt", GCM, rcp, proj.year, sep="."), Y1$PPT_wt[which(Y4[,2]==rcp & Y4[,3]==proj.year)])
     }
-      print(rcp)
-    }
-    print(GCM)
+    # print(rcp)
   }
-
+  print(GCM)
+}
 
 # calculate mean climate values for each GCM/year/rcp
 for(rcp in rcps){
   for(proj.year in proj.years){
     MAT.change.mean <- rep(NA, length(GCMs))
-    MSP.change.mean <- rep(NA, length(GCMs))
-    PPT_wt.change.mean <- rep(NA, length(GCMs))
     for(GCM in GCMs){
       MAT <- get(paste("MAT", GCM, rcp, proj.year, sep="."))
-      MSP <- get(paste("MSP", GCM, rcp, proj.year, sep="."))
-      PPT_wt <- get(paste("PPT_wt", GCM, rcp, proj.year, sep="."))
       MAT.change <- MAT-MAT.mean.ref
-      MSP.change <- MSP/MSP.mean.ref
-      PPT_wt.change <- PPT_wt/PPT_wt.mean.ref
       MAT.change.mean[which(GCMs==GCM)] <- mean(MAT.change, na.rm=T)
-      MSP.change.mean[which(GCMs==GCM)] <- mean(MSP.change, na.rm=T)
-      PPT_wt.change.mean[which(GCMs==GCM)] <- mean(PPT_wt.change, na.rm=T)
     }
     assign(paste("MAT.change", rcp, proj.year, sep="."), MAT.change.mean)
-    assign(paste("MSP.change", rcp, proj.year, sep="."), MSP.change.mean)
-    assign(paste("PPT_wt.change", rcp, proj.year, sep="."), PPT_wt.change.mean)
     print(proj.year)
   }
   print(rcp)
 }
 
 
+# Compile the MAT for all time periods/scenarios into a single vector
+MAT.change <- vector()
+for(rcp in rcps){
+  for(proj.year in proj.years){
+    MAT.change <- c(MAT.change, get(paste("MAT.change", rcp, proj.year, sep=".")))
+    # print(proj.year)
+  }
+  # print(rcp)
+}
+
 #===============================================================================
 # Spp suitability metrics relative to temperature change
 #===============================================================================
-edatopes<- c("B2", "C4", "D6")
-
-edatope.name <- c("Subxeric-poor", "Mesic-medium", "Hygric-rich")
-proj.year.name=c("2020s", "2050s", "2080s")
-rcp.name=c("RCP4.5", "RCP8.5")
-rcp=rcps[1]
-proj.year=proj.years[2]
-edatope="C4"
-
-# Import suitability tables
-wd="InputData"
-treesuit2=paste(wd,"/",treesuit,".csv",sep="")
-S1 <- read.csv(treesuit2,stringsAsFactors=F,na.strings=".")
-S1 <- unique(S1)
 
 ## non-THLB BGCs for exclusion from results
-BGCs_notin_THLB <- read.csv("InputData\\BGCs_notin_THLB.csv")
+BGCs_notin_THLB <- read.csv("inputs\\BGCs_notin_THLB.csv")
 BGCs_notin_THLB <- BGCs_notin_THLB$BGC[which(BGCs_notin_THLB$Exlude=="x")]
 exclude <- which(BGC%in%BGCs_notin_THLB)
 
@@ -281,16 +129,16 @@ edatope=edatopes[2]
 for(edatope in edatopes){
   for(spp in spps){
     
-    Suit.ref <- read.csv(paste("OutputData\\Suit.ref", grid, spp, edatope, "csv", sep="."))[-exclude,1]
-    # Suit.ref <- read.csv(paste("OutputData\\Suit.ref", grid, spp, edatope, "csv", sep="."))[,1]
+    Suit.ref <- read.csv(paste("outputs\\Suit.ref", grid, spp, edatope, "csv", sep="."))[-exclude,1]
+    # Suit.ref <- read.csv(paste("outputs\\Suit.ref", grid, spp, edatope, "csv", sep="."))[,1]
     Suit.ref[Suit.ref==5] <- NA
     outRange.ref <- is.na(Suit.ref)
     Suit.ref[is.na(Suit.ref)] <- 5
     Suit.ref <- 1-(Suit.ref-1)/4
     
     for(hist.year in hist.years){
-      Suit.proj <- read.csv(paste("OutputData\\Suit", grid, hist.year, spp, edatope, "csv", sep="."))[-exclude,1]
-      # Suit.proj <- read.csv(paste("OutputData\\Suit", grid, hist.year, spp, edatope, "csv", sep="."))[,1]
+      Suit.proj <- read.csv(paste("outputs\\Suit", grid, hist.year, spp, edatope, "csv", sep="."))[-exclude,1]
+      # Suit.proj <- read.csv(paste("outputs\\Suit", grid, hist.year, spp, edatope, "csv", sep="."))[,1]
       changeSuit <- Suit.ref-Suit.proj
       outRange <- outRange.ref
       outRange[which(changeSuit!=0)] <- FALSE
@@ -318,8 +166,8 @@ for(edatope in edatopes){
 
         for(GCM in GCMs){
 
-          Suit.proj <- read.csv(paste("OutputData\\Suit", grid, GCM, rcp, proj.year, spp, edatope, "csv", sep="."))[-exclude,1]
-          # Suit.proj <- read.csv(paste("OutputData\\Suit", grid, GCM, rcp, proj.year, spp, edatope, "csv", sep="."))[,1]
+          Suit.proj <- read.csv(paste("outputs\\Suit", grid, GCM, rcp, proj.year, spp, edatope, "csv", sep="."))[-exclude,1]
+          # Suit.proj <- read.csv(paste("outputs\\Suit", grid, GCM, rcp, proj.year, spp, edatope, "csv", sep="."))[,1]
           changeSuit <- Suit.ref-Suit.proj
           outRange <- outRange.ref
           outRange[which(changeSuit!=0)] <- FALSE
@@ -382,24 +230,14 @@ for(spp in spps){
 print(edatope)
 }
 
-# Compile the MAT for all time periods/scenarios into a single vector
-
-MAT.change <- vector()
-for(rcp in rcps){
-  for(proj.year in proj.years){
-    MAT.change <- c(MAT.change, get(paste("MAT.change", rcp, proj.year, sep=".")))
-    # print(proj.year)
-  }
-  # print(rcp)
-}
-
 
   
   ################
   ## manuscript figure
   ################
   library(msir)
-  
+library(plotrix)
+
     #vectors of projection specs. 
   seq.rcp <- NA
   seq.proj.year <-  NA
@@ -414,14 +252,15 @@ for(rcp in rcps){
     }
   }
 
-  for(spp.focal in spps){
-    
-  # spp.focal <- "Hw"
-  rcp="rcp45"
+  spp.focal <- "Ss"
+  # for(spp.focal in spps){
+ 
+    rcp="rcp45"
   proj.year=proj.years[2]
   # for(rcp in rcps){
   # for(proj.year in proj.years){
-  png(filename=paste("Results\\Manu_BubblePlots\\CCISS.manu.ExpansionVsPersistence.THLB",spp.focal, proj.year, rcp,"png",sep="."), type="cairo", units="in", width=6.5, height=6.75, pointsize=13, res=400)
+  png(filename=paste("results\\Manu_BubblePlots\\CCISS.manu.ExpansionVsPersistence.THLB",spp.focal, proj.year, rcp,"png",sep="."), type="cairo", units="in", width=6.5, height=6.75, pointsize=13, res=400)
+  # pdf(file=paste("Results\\CCISS.Fig6.BubblePlot",spp.focal, proj.year, rcp,"pdf",sep="."), width=6.5, height=6.75, pointsize=13)
   mat <- matrix(c(1,2,3,4,4,4,5,5,6,5,5,7,9,9,9,8,8,8),6, byrow=T)   #define the plotting order
   layout(mat, widths=c(1,1,1), heights=c(0.8,0.15,1,1,0.07,0.1))   #set up the multipanel plot
   
@@ -431,7 +270,7 @@ for(rcp in rcps){
   ColScheme=c(2,1,3)
   
   metrics <- c("persistence", "expansion", "SuitChange")
-  metric.names <- c("Persistence", "Expansion", "Suitable area (range)")
+  metric.names <- c("Persistence", "Expansion", "feasible area (range)")
   par(mar=c(1.25,4,0.1,0.1), mgp=c(2.5,0.25,0))
   
   for(metric in metrics){
@@ -447,7 +286,7 @@ for(rcp in rcps){
     axis(2,at=seq(ylim[1], ylim[2], 0.5), labels=paste(seq(ylim[1], ylim[2], 0.5)*100,"%", sep=""), las=2, tck=0)
     Common <- as.character(spps.lookup$EnglishName[which(spps.lookup$TreeCode==spp.focal)])
     Latin <- as.character(spps.lookup$ScientificName[which(spps.lookup$TreeCode==spp.focal)])
-    panel <- paste("(", LETTERS[which(metrics==metric)],")", sep="")
+    panel <- paste("(", letters[which(metrics==metric)],")", sep="")
     mtext(panel, side=3, line=-1.25, adj=0.05, cex=0.7, font=1)
     mtext(bquote(.(Common)~"("*.(spp.focal)*")"), side=3, line=-1.45, adj=0.955, cex=0.7, font=1)
     
@@ -494,27 +333,37 @@ for(rcp in rcps){
   set.seed(2)
   ColScheme <- c(brewer.pal(n=12, "Paired"),sample(colors,length(spps)-12))
   
-  
   for(edatope in edatopes[c(2,1,3)]){
     
     if(edatope=="C4") par(mar=c(0.1,3.5,0.1,0.1), mgp=c(2.5, 0.25, 0)) else par(mar=c(0.1,0.1,0.1,0.1), mgp=c(2.5, 0.25, 0))
       
-    xlim <- c(0,1.05)
+    xlim <- c(0,1.1)
     ylim <- c(-5,3)
     plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab="", ylab="")
     par(xpd=T)
     if(edatope!="B2") axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
     par(xpd=F)
     if(edatope=="C4") axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
-    title(ylab="Expansion beyond historically suitable range", cex.lab=1.2)
+    title(ylab="Expansion beyond historically feasible range", cex.lab=1.2)
     iso <- seq(0,1.2, 0.001)
     lines(1-iso, log2(iso), lty=2, lwd=2, col="darkgray")
     if(edatope=="C4"){
-      text(0.15, log2( 0.85), "Growing suit. range", pos=3, srt=-60/(ylim[2]/xlim[2])/2, col="darkgray", font=2)
-      text(0.15, log2( 0.85), "Shrinking suit. range", pos=1, srt=-60/(ylim[2]/xlim[2])/2, col="darkgray", font=2)
+      # # for(z in seq(-2,0, 0.1)){
+      #   draw.circle(x = -1, y = -30, radius = 4.6)
+      #   for(z2 in seq(0.01,2, 0.01)){
+      #     arctext(x = as.character(z2), center = c(-1, -30), radius = 4.6, start = z2*pi , cex = 0.8, stretch = 1.2)
+      #   }
+      # # }
+      # for(z in seq(0,2, 0.01)){
+      # arctext(x = as.character(z), center = c(-0.5, -31.45), radius = 3.45, start = z*pi , cex = 0.8, stretch = 1.2)
+      # }
+      arctext(x = "Growing feasible range", center = c(-1, -28.7), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
+      arctext(x = "Shrinking feasible range", center = c(-1, -29.3), radius = 4.6, start = 0.431*pi , cex = 0.8, stretch = 1.05, col="darkgray", font=2)
+      # text(0.15, log2( 0.85), "Growing feasible range", pos=3, srt=-60/(ylim[2]/xlim[2])/2, col="darkgray", font=2)
+      # text(0.15, log2( 0.85), "Shrinking feasible range", pos=1, srt=-60/(ylim[2]/xlim[2])/2, col="darkgray", font=2)
     }
-    panel <- paste("(", LETTERS[4:6][which(edatopes[c(2,1,3)]==edatope)],")", sep="")
-    mtext(paste(panel," ", edatope," edatope", " (", edatope.name[which(edatopes==edatope)], " sites)", sep=""), side=3, line=-1.25, adj= if(edatope=="C4") 0.025 else 0.075, cex=0.7, font=1)
+    panel <- paste("(", letters[4:6][which(edatopes[c(2,1,3)]==edatope)],")", sep="")
+    mtext(paste(panel," ", edatope.name[which(edatopes==edatope)], " sites", " (", edatope, ")", sep=""), side=3, line=-1.25, adj= if(edatope=="C4") 0.025 else 0.075, cex=0.7, font=1)
     
     
     for(spp in spps){
@@ -537,15 +386,17 @@ for(rcp in rcps){
   
   par(mar=c(0,0,0,0))
   plot(1, type="n", axes=F, xlab="", ylab="")  
-  text(1,1, "Persistence within historically suitable range",cex=1.2)  
+  text(1,1, "Persistence within historically feasible range",cex=1.2)  
   
   dev.off()
+
   
   print(proj.year)
   # }
   print(rcp)
   # }
-}
+  print(spp.focal)
+  # }
   
   
   
@@ -634,7 +485,7 @@ for(rcp in rcps){
   # for(edatope in edatopes[c(2,1,3)]){
   for(j in 1:nframes){
   
-  png(filename=paste("Results\\BubbleGIF\\ExpansionVsPersistence",100+j,"png",sep="."), type="cairo", units="in", width=6.5, height=6.5, pointsize=13, res=300)
+  png(filename=paste("results\\BubbleGIF\\ExpansionVsPersistence",100+j,"png",sep="."), type="cairo", units="in", width=6.5, height=6.5, pointsize=13, res=300)
   par(mar=c(3,4.5,0.1,0.1), mgp=c(2.75, 0.25, 0), xpd=F)
   
   xlim <- c(0,1.05)
@@ -642,16 +493,16 @@ for(rcp in rcps){
   plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab="", ylab="")
   axis(1,at=seq(xlim[1], xlim[2], 0.2), labels=paste(seq(xlim[1], xlim[2], 0.2)*100,"%", sep=""), tck=0)
   axis(2,at=seq(ylim[1], ylim[2]), labels=paste(round(2^(seq(ylim[1], ylim[2]))*100),"%", sep=""), las=2, tck=0)
-  title(ylab="Expansion beyond historically suitable range", cex.lab=1.2)
+  title(ylab="Expansion beyond historically feasible range", cex.lab=1.2)
   par(mgp=c(1.5, 0.25, 0))
-  title(xlab="Persistence within historically suitable range", cex.lab=1.2)
+  title(xlab="Persistence within historically feasible range", cex.lab=1.2)
   iso <- seq(0,1.2, 0.001)
   lines(1-iso, log2(iso), lty=2, lwd=2, col="darkgray")
   if(edatope=="C4"){
     text(0.15, log2( 0.85), "Growing suit. range", pos=3, srt=-60/(ylim[2]/xlim[2])/2, col="darkgray", font=2)
     text(0.15, log2( 0.85), "Shrinking suit. range", pos=1, srt=-60/(ylim[2]/xlim[2])/2, col="darkgray", font=2)
   }
-  panel <- paste("(", LETTERS[4:6][which(edatopes[c(2,1,3)]==edatope)],")", sep="")
+  panel <- paste("(", letters[4:6][which(edatopes[c(2,1,3)]==edatope)],")", sep="")
   # mtext(paste(panel," ", edatope," edatope", " (", edatope.name[which(edatopes==edatope)], " sites)", sep=""), side=3, line=-1.25, adj= if(edatope=="C4") 0.025 else 0.075, cex=0.7, font=1)
   
   for(spp in spps){
@@ -680,49 +531,49 @@ for(rcp in rcps){
   print(j)
   }
   
-  # setwd("C:\\Colin\\Projects\\2019_CCISS\\Results\\BubbleGIF")
+  # setwd("C:\\GitHub\\2019_CCISS\\results\\BubbleGIF")
   # ## compile the gif
   # library(magick)
   # library(animation)
-  # ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.8-Q16\\magick.exe')
+  # ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.10-Q16-HDRI\\magick.exe')
   # system("magick -loop 1 -delay 0 *.png test.gif")
   
-  setwd("C:\\Colin\\Projects\\2019_CCISS\\Results\\BubbleGIF_2000s")
+  setwd("C:\\GitHub\\2019_CCISS\\results\\BubbleGIF\\BubbleGIF_2000s")
   ## compile the gif
   library(magick)
-  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.8-Q16\\magick.exe')
+  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.10-Q16-HDRI\\magick.exe')
   library(animation)
   system("magick -loop 1 -delay 0 *.png test.gif")
   
-  setwd("C:\\Colin\\Projects\\2019_CCISS\\Results\\BubbleGIF_2020s")
+  setwd("C:\\GitHub\\2019_CCISS\\results\\BubbleGIF\\BubbleGIF_2020s")
   ## compile the gif
   library(magick)
-  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.8-Q16\\magick.exe')
+  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.10-Q16-HDRI\\magick.exe')
   library(animation)
   system("magick -loop 1 -delay 0 *.png test.gif")
   
-  setwd("C:\\Colin\\Projects\\2019_CCISS\\Results\\BubbleGIF_2050s")
+  setwd("C:\\GitHub\\2019_CCISS\\results\\BubbleGIF\\BubbleGIF_2050s")
   ## compile the gif
   library(magick)
-  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.8-Q16\\magick.exe')
+  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.10-Q16-HDRI\\magick.exe')
   library(animation)
   system("magick -loop 1 -delay 0 *.png test.gif")
   
-  setwd("C:\\Colin\\Projects\\2019_CCISS\\Results\\BubbleGIF_2080s")
+  setwd("C:\\GitHub\\2019_CCISS\\results\\BubbleGIF\\BubbleGIF_2080s")
   ## compile the gif
   library(magick)
   library(animation)
-  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.8-Q16\\magick.exe')
+  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.10-Q16-HDRI\\magick.exe')
   system("magick -loop 1 -delay 0 *.png test.gif")
   
-  setwd("C:\\Colin\\Projects\\2019_CCISS\\Results\\BubbleGIF_RCP85")
+  setwd("C:\\GitHub\\2019_CCISS\\results\\BubbleGIF\\BubbleGIF_RCP85")
   ## compile the gif
   library(magick)
-  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.8-Q16\\magick.exe')
+  ani.options(convert = 'C:\\Program Files\\ImageMagick-7.0.10-Q16-HDRI\\magick.exe')
   library(animation)
   system("magick -loop 1 -delay 0 *.png test.gif")
   
-  setwd("C:\\Colin\\Projects\\2019_CCISS")
+  setwd("C:\\GitHub\\2019_CCISS")
   
 
   
