@@ -4,20 +4,22 @@ library(compareDF)
 #read in current table
 BGC_list<-read.csv("tables/WNA_BGCs.csv")
 names(BGC_list)
+BGC_list$X<-NULL
 #remove columns no longer using
-BGC_list$Retire<-NULL
-BGC_list$SS_class<-NULL
-BGC_list$BGC_Label<-NULL
+#BGC_list$Retire<-NULL
+#BGC_list$SS_class<-NULL
+#BGC_list$BGC_Label<-NULL
 
 #read in updated table
-BGC_update<-read.csv("tables/versioned/WNA_BGCs_v13_3.csv")
+BGC_update<-read.csv("tables/versioned/WNA_BGCs_v13_4.csv")
+BGC_update$X<-NULL
 
 #run diff and write out report 
 diff <- compareDF::compare_df(BGC_update, BGC_list, group_col = c("BGC", "BGCName"), stop_on_error = FALSE)
 diff$change_summary
 diffrept<-diff$comparison_df
 
-write.csv(diffrept, "tables/versioned/tracked_changes/BGCs/diff_report_v13_3.csv") #rename with version to match update 
+write.csv(diffrept, "tables/versioned/tracked_changes/BGCs/diff_report_v13_4.csv") #rename with version to match update 
 
 #overwrite current table with updated table 
 #indicate in git commit 
@@ -28,7 +30,7 @@ write.csv(BGC_update, "tables/WNA_BGCs.csv")
 path <- "tables/README.md"
 updated_readme<- c("# Current table versions ",  "Suitability v13_26",        ""               ,
                    "Edatopic v13_11 ",    ""               ,
-                   "WNA BGCs v13_3 ",     ""               ,
+                   "WNA BGCs v13_4 ",     ""               ,
                    "Site series v13_2")     #update version #s 
 # Write the updated content back to the README
 writeLines(updated_readme, path)

@@ -77,3 +77,68 @@ edat$X<-NULL
 old<-c("BGmk_ID","GOun_CO" ,"ICHvk_ID" ,"JPWdm_WY" ,"JPWdw_UT" ,"JPWmk_WY" ,"JPWwm_CO" ,"JPWxh_CA" ,"JPWxw_NV", "OWdm_OR" ,"OWun_CA" )
 edat<-subset(edat, !BGC %in% old)
 write.csv(edat, "tables/versioned/Edatopic_v13_14.csv")
+
+
+#BEC Info----
+#libraries 
+#library(tidyverse)
+library(dplyr)
+library(stringr)
+#load WNA BGCs list
+WNA_BGC_list<-read.csv("tables/WNA_BGCs.csv")
+WNA_BGC_list$X<-NULL
+
+#read in US 2026 info  
+US2026<-read.csv("tables/regional_updates/USA_2026_BGCs.csv")
+US2026<-subset(US2026, BGCName!="") #remove zone headers
+
+#filter out of main BGC list 
+US_BGC_list<-subset(WNA_BGC_list, BGC %in% US2026$BGC) #135 
+US_BGC_list<-tidyr::separate(US_BGC_list, Subzone, into = c("Subzone"), sep = "_", remove = F) #clean up 
+
+new_US_BGC_list<-subset(US2026, !BGC %in% WNA_BGC_list$BGC) #28 added in 2026
+new_US_BGC_list$Source<- "USA_2026"
+
+#overwrite names/info to 2026 naming convention 
+US2026<-rename(US2026, ZoneName2=ZoneName, BGCName2=BGCName, General.Location2=General.Location, SubzoneName2=SubzoneName)
+US_BGC_list<-left_join(US_BGC_list, US2026)
+
+US_BGC_list$BGCName<-US_BGC_list$BGCName2
+US_BGC_list$ZoneName<-US_BGC_list$ZoneName2
+US_BGC_list$SubzoneName<-US_BGC_list$SubzoneName2
+US_BGC_list$General.Location<-US_BGC_list$General.Location2
+
+US_BGC_list<-select(US_BGC_list, -General.Location2, -ZoneName2, -BGCName2, -SubzoneName2)
+names(US_BGC_list)
+names(new_US_BGC_list)
+
+new_US_BGC_list$SubzoneGroup<- ""
+new_US_BGC_list$OldSubzoneLabel<- ""
+new_US_BGC_list$Notes<-""
+new_US_BGC_list$DataSet<-"USA"
+new_US_BGC_list$VariantName<- ""
+
+new_US_BGC_list<-tidyr::separate(new_US_BGC_list, BGC, into =  c("X", "State"), sep = "_", remove = F)
+new_US_BGC_list$X<-NULL
+
+new_US_BGC_list$SubzoneGroup[new_US_BGC_list$Zone=='ESSF'& grepl('Dry', new_US_BGC_list$SubzoneName)] <-  'ESSF_dry'
+new_US_BGC_list$SubzoneGroup[new_US_BGC_list$Zone=='ESSF'& grepl('Moist', new_US_BGC_list$SubzoneName)] <-  'ESSF_meso'
+new_US_BGC_list$SubzoneGroup[new_US_BGC_list$Zone=='ESSF'& grepl('Wet', new_US_BGC_list$SubzoneName)] <-  'ESSF_wet'
+new_US_BGC_list$SubzoneGroup[new_US_BGC_list$Zone=='MH'& grepl('Submaritime', new_US_BGC_list$SubzoneName)] <-  'MH_submaritme'
+new_US_BGC_list$SubzoneGroup[new_US_BGC_list$Zone=='MH'& grepl('Maritime', new_US_BGC_list$SubzoneName)] <-  'MH_maritme'
+
+new_US_BGC_list<-mutate(new_US_BGC_list, SubzoneGroup=if_else(SubzoneGroup=="", Zone, SubzoneGroup))
+new_US_BGC_list<-mutate(new_US_BGC_list, VariantName=if_else(VariantName=="", State, VariantName))
+
+new_US_BGC_list<- select(new_US_BGC_list, Source,Zone, SubzoneGroup, Subzone,BGC,    BGCName,ZoneName,        
+                         SubzoneName, VariantName, General.Location, OldSubzoneLabel,  DataSet,State,Notes)   
+
+US_BGC_list<-rbind(US_BGC_list, new_US_BGC_list)
+
+#remove US units from WNA_BGC list and replace with new un
+WNA_BGC_list<-subset(WNA_BGC_list, !grepl('USA', Source))#remove them
+WNA_BGC_list<-subset(WNA_BGC_list, BGC!="FGff" & BGC!="SBAPfp") #remove two from AB updated here 
+
+WNA_BGC_list<-rbind(WNA_BGC_list, US_BGC_list)#add back in
+
+write.csv(WNA_BGC_list, "tables/versioned/WNA_BGCs_v13_4.csv")

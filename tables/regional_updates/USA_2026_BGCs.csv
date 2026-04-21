@@ -1,0 +1,194 @@
+BGC,Subzone,Zone,ZoneName,BGCName,SubzoneName,General Location
+BG,BG,BG,Bunchgrass,,,
+BGdh_OR,BGdh,BG,Bunchgrass,Dry Hot Oregon BG,Dry Hot,"SE Oregon, S Idaho, N Nevada"
+BGdw_OR,BGdw,BG,Bunchgrass,Dry Warm Oregon BG,Dry Warm,NE Oregon
+BGdw_WA,BGdw,BG,Bunchgrass,Dry Warm Washington BG,Dry Warm,C Washington
+BGmk_MT,BGmk,BG,Bunchgrass,Moist Cool Montana BG,Moist Cool,"SW Montana, EC Idaho"
+BGmk_NV,BGmk,BG,Bunchgrass,Moist Cool Nevada BG,Moist Cool,"N Nevada, S Oregon, S Idaho"
+BGmm_MT,BGmm,BG,Bunchgrass,Moist Mild Montana BG,Moist Mild,"E Wyoming, S Montana"
+BGmw_OR,BGmw,BG,Bunchgrass,Moist Warm Oregon BG,Moist Warm,NE Oregon
+BGmw_WA,BGmw,BG,Bunchgrass,Moist Warm Washington BG,Moist Warm,C Washington
+BGwm_WA,BGwm,BG,Bunchgrass,Wet Mild Washington BG,Wet Mild,C Washington
+BGxh_WA,BGxh,BG,Bunchgrass,Very Dry Hot Washington BG,Very Dry Hot,C Washington
+BGxx_WY,BGxx,BG,Bunchgrass,Very Dry Very Hot Wyoming BG,Very Dry Very Hot,SW Wyoming
+BGxxx_WY,BGxxx,BG,Bunchgrass,Very Very Dry Very Hot Wyoming BG,Very Very Dry Very Hot,C & NC Wyoming
+CCH,CCH,CCH,California Chaparral ,,,
+CCHun_CA,CCHun,CCH,California Chaparral ,California CCH,,WC & SW California 
+CDF,CDF,CDF,Coastal Douglas-fir,,,
+CDFmm_OR,CDFmm,CDF,Coastal Douglas-fir,Moist Maritime Oregon CDF,Moist Maritime,W Oregon
+CDFmm_WA,CDFmm,CDF,Coastal Douglas-fir,Moist Maritime Washington CDF,Moist Maritime,NW Washington
+CDFxm_CA,CDFxm,CDF,Coastal Douglas-fir,Very Dry Maritime California CDF,Very Dry Maritime,"SW Oregon, N California"
+CMA,CMA,CMA,Coastal Mountain-heather Alpine,,,
+CMAun_CA,CMAun,CMA,Coastal Mountain-heather Alpine,California CMA,,EC California
+CMAun_OR,CMAun,CMA,Coastal Mountain-heather Alpine,Oregon CMA,,W Oregon
+CMAun_WA,CMAun,CMA,Coastal Mountain-heather Alpine,Washington CMA,,W Washington
+CMX,CMX,CMX,Coastal Mixed Evergreen,,,
+CMXdm_OR,CMXdm,CMX,Coastal Mixed Evergreen,Dry Maritime Oregon CMX,Dry Maritime,"SW Oregon, NW California"
+CMXmm_OR,CMXmm,CMX,Coastal Mixed Evergreen,Moist Maritime Oregon CMX,Moist Maritime,"SW Oregon, NW California"
+CMXwm_OR,CMXwm,CMX,Coastal Mixed Evergreen,Wet Maritime Oregon CMX,Wet Maritime,"SW Oregon, NW California"
+CMXxm_CA,CMXxm,CMX,Coastal Mixed Evergreen,Very Dry Maritime California CMX,Very Dry Maritime,C & N California
+CRF,CRF,CRF,Coastal Redwood Forest,,,
+CRFdh_CA,CRFdh,CRF,Coastal Redwood Forest,Dry Hypermaritime California CRF,Dry Hypermaritime,N & C California
+CRFmh_CA,CRFmh,CRF,Coastal Redwood Forest,Moist Hypermaritime California CRF,Moist Hypermaritime,N California
+CVG,CVG,CVG,Central Valley Grassland ,,,
+CVGdm_CA,CVGdm,CVG,Central Valley Grassland ,Dry Mild CVG,Dry Mild,C California
+CWF,CWF,CWF,Coastal White Fir,,,
+CWFdm_OR,CWFdm,CWF,Coastal White Fir,Dry Maritime Oregon CWF,Dry Maritime,"SW Oregon, NW & EC California"
+CWFds_CA,CWFds,CWF,Coastal White Fir,Dry Submaritime California CWF,Dry Submaritime,EC California
+CWFmm_OR,CWFmm,CWF,Coastal White Fir,Moist Maritime Oregon CWF,Moist Maritime,SW Oregon
+CWFwm_OR,CWFwm,CWF,Coastal White Fir,Wet Maritime Oregon CWF,Wet Maritime,"SW Oregon, NW California"
+CWH,CWH,CWH,Coastal Western Hemlock,,,
+CWHdm_OC,CWHdm,CWH,Coastal Western Hemlock,Dry Maritime Oregon Coast CWH,Dry Maritime,Coastal Oregon
+CWHdm_OR,CWHdm,CWH,Coastal Western Hemlock,Dry Maritime Oregon CWH,Dry Maritime,W Oregon
+CWHdm_WA,CWHdm,CWH,Coastal Western Hemlock,Dry Maritime Washington CWH,Dry Maritime,W Washington
+CWHdm_WC,CWHdm,CWH,Coastal Western Hemlock,Dry Maritime Washington Coast CWH,Dry Maritime,Coastal Washington
+CWHds_WA,CWHds,CWH,Coastal Western Hemlock,Dry Submaritime Washington CWH,Dry Submaritime,NW Washington
+CWHmh_OR,CWHmh,CWH,Coastal Western Hemlock,Moist Hypermaritime Oregon CWH,Moist Hypermaritime,SW Coastal Oregon & N Coastal California
+CWHms_OR,CWHms,CWH,Coastal Western Hemlock,Moist Submaritime Oregon CWH,Moist Submaritime,W Oregon
+CWHms_WA,CWHms,CWH,Coastal Western Hemlock,Moist Submaritime Washington CWH,Moist Submaritime,W Washington
+CWHvh_WA,CWHvh,CWH,Coastal Western Hemlock,Very Wet Hypermaritime Washington CWH,Very Wet Hypermaritime,W Coastal Washington
+CWHvm_OR,CWHvm,CWH,Coastal Western Hemlock,Very Wet Maritime Oregon CWH,Very Wet Maritime,SW Washington & W Oregon
+CWHvm_WA,CWHvm,CWH,Coastal Western Hemlock,Very Wet Maritime Washington CWH,Very Wet Maritime,W Washington
+CWHwh_OR,CWHwh,CWH,Coastal Western Hemlock,Wet Hypermaritime Oregon CWH,Wet Hypermaritime,Coastal Oregon
+CWHwh_WA,CWHwh,CWH,Coastal Western Hemlock,Wet Hypermaritime Washington CWH,Wet Hypermaritime,Coastal Washington
+CWHxm_OR,CWHxm,CWH,Coastal Western Hemlock,Very Dry Maritime Oregon CWH,Very Dry Maritime,W Oregon
+CWHxm_WA,CWHxm,CWH,Coastal Western Hemlock,Very Dry Maritime Washington CWH,Very Dry Maritime,W Washington and NW Oregon
+ESSF,ESSF,ESSF,Engelmann Spruce – Subalpine Fir,,,
+ESSFdh_WA,ESSFdh,ESSF,Engelmann Spruce – Subalpine Fir,Dry Hot Washington ESSF,Dry Hot,NW Washington (E Cascades)
+ESSFdk_MT,ESSFdk,ESSF,Engelmann Spruce – Subalpine Fir,Dry Cool Montana ESSF,Dry Cool,NW Montana
+ESSFdkp_MT,ESSFdkp,ESSF,Engelmann Spruce – Subalpine Fir,Dry Cool Montana Parkland ESSF,Dry Cool,NW Montana
+ESSFdm_ID,ESSFdm,ESSF,Engelmann Spruce – Subalpine Fir,Dry Mild Idaho ESSF,Dry Mild,C Idaho & WC Montana
+ESSFdmp_ID,ESSFdmp,ESSF,Engelmann Spruce – Subalpine Fir,Dry Mild Idaho Parkland ESSF,Dry Mild,C Idaho & WC Montana
+ESSFdw_ID,ESSFdw,ESSF,Engelmann Spruce – Subalpine Fir,Dry Warm Idaho ESSF,Dry Warm,NE Idaho & NW Montana
+ESSFmw_WA,ESSFmw,ESSF,Engelmann Spruce – Subalpine Fir,Moist Warm Washington ESSF,Moist Warm,NW Washington (E Cascades)
+ESSFmwp_WA,ESSFmwp,ESSF,Engelmann Spruce – Subalpine Fir,Moist Warm Washington Parkland ESSF,Moist Warm,NW Washington (E Cascades)
+ESSFwh_MT,ESSFwh,ESSF,Engelmann Spruce – Subalpine Fir,Wet Hot Montana ESSF,Wet Hot,"NE Washington, N Idaho, NW Montana"
+ESSFwm_MT,ESSFwm,ESSF,Engelmann Spruce – Subalpine Fir,Wet Mild Montana ESSF,Wet Mild,"NE Washington, N Idaho, NW Montana"
+ESSFwmp_MT,ESSFwmp,ESSF,Engelmann Spruce – Subalpine Fir,Wet Mild Montana Parkland ESSF,Wet Mild,"NE Washington, N Idaho, NW Montana"
+ESSFxc_CO,ESSFxc,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cold Colorado ESSF,Very Dry Cold,W & C Colorado
+ESSFxc_WA,ESSFxc,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cold Washington ESSF,Very Dry Cold,NC Washington
+ESSFxcp_CO,ESSFxcp,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cold Colorado Parkland ESSF,Very Dry Cold,W & C Colorado
+ESSFxcp_WA,ESSFxcp,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cold Washington Parkland ESSF,Very Dry Cold,NC Washington
+ESSFxh_WA,ESSFxh,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Hot Washington ESSF,Very Dry Hot,"NE Washington [N Idaho, NW Montana]"
+ESSFxk_MT,ESSFxk,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cool Montana ESSF,Very Dry Cool,WC Montana & EC Idaho
+ESSFxk_UT,ESSFxk,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cool Utah ESSF,Very Dry Cool,"SW, C, & NE Utah"
+ESSFxk_WY,ESSFxk,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cool Wyoming ESSF,Very Dry Cool,"W Wyoming, SW Montana, C Idaho"
+ESSFxkp_MT,ESSFxkp,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cool Montana Parkland ESSF,Very Dry Cool,WC Montana & EC Idaho
+ESSFxkp_UT,ESSFxkp,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cool Utah Parkland ESSF,Very Dry Cool,"SW, C, & NE Utah"
+ESSFxkp_WY,ESSFxkp,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Cool Wyoming Parkland ESSF,Very Dry Cool,"W Wyoming, SW Montana, C Idaho"
+ESSFxw_OR,ESSFxw,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Warm Oregon ESSF,Very Dry Warm,NE Oregon & WC Idaho
+ESSFxwp_OR,ESSFxwp,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Warm Oregon Parkland ESSF,Very Dry Warm,NE Oregon & WC Idaho
+ESSFxx_WY,ESSFxx,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Very Hot Wyoming ESSF,Very Dry Very Hot,W & NC Wyoming
+ESSFxxp_WY,ESSFxxp,ESSF,Engelmann Spruce – Subalpine Fir,Very Dry Very Hot Wyoming ESSF Parkland,Very Dry Very Hot,W & NC Wyoming
+FG,FG,FG,Fescue Grassland,,,
+FGff,FGff,FG,Fescue Grassland,Foothills Fescue FG,,"NW Montana, to AB border"
+GBD,GBD,GBD,Great Basin Desert,,,
+GBDdw_UT,GBDdw,GBD,Great Basin Desert,Dry Warm Utah GBD,Dry Warm,"Utah, E Nevada, WC Wyoming"
+GBDxh_NV,GBDxh,GBD,Great Basin Desert,Very Dry Hot Nevada GBD,Very Dry Hot,"Nevada, NE California"
+GBDxx_UT,GBDxx,GBD,Great Basin Desert,Very Dry Very Hot Utah GBD,Very Dry Very Hot,SE Utah
+ICH,ICH,ICH,Interior Cedar – Hemlock,,,
+ICHdh_ID,ICHdh,ICH,Interior Cedar – Hemlock,Dry Hot Idaho ICH,Dry Hot,NEd Idaho & NW Montana
+ICHdw_ID,ICHdw,ICH,Interior Cedar – Hemlock,Dry Warm Idaho ICH,Dry Warm,"NE Washington, N Idaho, NW Montana"
+ICHmh_MT,ICHmh,ICH,Interior Cedar – Hemlock,Moist Hot Montana ICH,Moist Hot,NW Montana
+ICHmw_MT,ICHmw,ICH,Interior Cedar – Hemlock,Moist Warm Montana ICH,Moist Warm,NW Montana [N Idaho]
+ICHxh_ID,ICHxh,ICH,Interior Cedar – Hemlock,Very Dry Hot Idaho ICH,Very Dry Hot,N Idaho [W Montana]
+ICHxw_ID,ICHxw,ICH,Interior Cedar – Hemlock,Very Dry Warm Idaho ICH,Very Dry Warm,NC Idaho
+ICHxw_WA,ICHxw,ICH,Interior Cedar – Hemlock,Very Dry Warm Washington ICH,Very Dry Warm,"NE Washington, N Idaho"
+IDF,IDF,IDF,Interior Douglas-fir,,,
+IDFdh_MT,IDFdh,IDF,Interior Douglas-fir,Dry Hot Montana IDF,Dry Hot,NW Montana
+IDFdh_UT,IDFdh,IDF,Interior Douglas-fir,Dry Hot Utah IDF,Dry Hot,"Utah, E Nevada, W Colorado"
+IDFdh_WA,IDFdh,IDF,Interior Douglas-fir,Dry Hot Washington IDF,Dry Hot,"NE Washington, NW Idaho"
+IDFdk_MT,IDFdk,IDF,Interior Douglas-fir,Dry Cool Montana IDF,Dry Cool,W Montana
+IDFdk_WA,IDFdk,IDF,Interior Douglas-fir,Dry Cool Washington IDF,Dry Cool,NC Washington
+IDFdkx_MT,IDFdkx,IDF,Interior Douglas-fir,Dry Cool/Mild Montana IDF,Dry Cool Mild,"SW Montana, S Idaho, NW Wyoming"
+IDFdm_MT,IDFdm,IDF,Interior Douglas-fir,Dry Mild Montana IDF,Dry Mild,NW Montana
+IDFdm_WA,IDFdm,IDF,Interior Douglas-fir,Dry Mild Washington IDF,Dry Mild,NE Washington
+IDFdx_MT,IDFdx,IDF,Interior Douglas-fir,Dry Very Hot Montana IDF,Dry Very Hot,"SW Montana, EC Idaho, NW Wyoming"
+IDFdxx_WY,IDFdxx,IDF,Interior Douglas-fir,Dry Very Hot Wyoming IDF,Dry Very Hot,"NC & SE Wyoming, SC Montana"
+IDFxh_ID,IDFxh,IDF,Interior Douglas-fir,Very Dry Hot Idaho IDF,Very Dry Hot,"C Idaho, NE Oregon, SE Washington"
+IDFxh_OR,IDFxh,IDF,Interior Douglas-fir,Very Dry Hot Oregon IDF,Very Dry Hot,C & NE Oregon
+IDFxh_WA,IDFxh,IDF,Interior Douglas-fir,Very Dry Hot Washington IDF,Very Dry Hot,NC & C Washington
+IDFxm_CO,IDFxm,IDF,Interior Douglas-fir,Very Dry Mild Colorado IDF,Very Dry Mild,W & C Colorado [SE Wyoming]
+IDFxx_MT,IDFxx,IDF,Interior Douglas-fir,Very Dry Very Hot Montana IDF,Very Dry Very Hot,NW Montana
+IDFxx_WA,IDFxx,IDF,Interior Douglas-fir,Very Dry Very Hot Washington IDF,Very Dry Very Hot,SC Washington & NC Oregon
+IGF,IGF,IGF,Interior Grand Fir,,,
+IGFdk_WA,IGFdk,IGF,Interior Grand Fir,Dry Cool Washington IGF,Dry Cool,WC Washington
+IGFdw_OR,IGFdw,IGF,Interior Grand Fir,Dry Warm Oregon IGF,Dry Warm,NC Oregon & SC Washington
+IGFmh_OR,IGFmh,IGF,Interior Grand Fir,Moist Hot Oregon IGF,Moist Hot,NE Oregon
+IGFmm_OR,IGFmm,IGF,Interior Grand Fir,Moist Mild Oregon IGF,Moist Mild,"NE Oregon, C & NW Idaho, SE Washington"
+IGFxm_OR,IGFxm,IGF,Interior Grand Fir,Very Dry Mild Oregon IGF,Very Dry Mild,"NE Oregon, C & NW Idaho, SE Washington"
+IMA,IMA,IMA,Interior Mountain-heather Alpine,,,
+IMAun_CO,IMAun,IMA,Interior Mountain-heather Alpine,Colorado IMA,,E Utah & W Colorado
+IMAun_ID,IMAun,IMA,Interior Mountain-heather Alpine,Idaho IMA,,C & EC Idaho
+IMAun_MT,IMAun,IMA,Interior Mountain-heather Alpine,Montana IMA,,W Montana
+IMAun_OR,IMAun,IMA,Interior Mountain-heather Alpine,Oregon IMA,,NE Oregon & WC Idaho
+IMAun_WA,IMAun,IMA,Interior Mountain-heather Alpine,Washington IMA,,WC Washington
+IMAun_WY,IMAun,IMA,Interior Mountain-heather Alpine,Wyoming IMA,,"WC Wyoming, EC Idaho, & SW Montana"
+IWF,IWF,IWF,Interior White Fir,,,
+IWFdm_CO,IWFdm,IWF,Interior White Fir,Dry Mild Colorado IWF,Dry Mild,SW & SC Colorado
+IWFdw_OR,IWFdw,IWF,Interior White Fir,Dry Warm Oregon IWF,Dry Warm,"SC Oregon, NE California"
+IWFxk_NV,IWFxk,IWF,Interior White Fir,Very Dry Cool Nevada IWF,Very Dry Cool,E Nevada
+IWFxm_CA,IWFxm,IWF,Interior White Fir,Very Dry Mild Nevada IWF,Very Dry Mild,"NE California, W Nevada, near Lake Tahoe"
+MDCH,MDCH,MDCH,Madrean Chaparral,,,
+MDCHun_NV,MDCHun,MDCH,Madrean Chaparral,Nevada MDCH,,"SE Nevada, SW Utah [NW & C Arizona]"
+MGP,MGP,MGP,Mixed-grass Prairie,,,
+MGPmw_MT,MGPmw,MGP,Mixed-grass Prairie,Moist Warm Montana MGP,Moist Warm,"N & E Montana, E Wyoming, C & NC Colorado"
+MH,MH,MH,Mountain Hemlock,,,
+MHdm_OR,MHdm,MH,Mountain Hemlock,Dry Maritime Oregon MH,Dry Maritime,NW & WC Oregon
+MHdmp_OR,MHdmp,MH,Mountain Hemlock,Dry Maritime Oregon Parkland MH,Dry Maritime,NW & WC Oregon
+MHds_OR,MHds,MH,Mountain Hemlock,Dry Submaritime Oregon MH,Dry Submaritime,W Oregon
+MHds_WA,MHds,MH,Mountain Hemlock,Dry Submaritime Washington MH,Dry Submaritime,SW Washington
+MHmm_WA,MHmm,MH,Mountain Hemlock,Moist Maritime Washington MH,Moist Maritime,W Washington
+MHmmp_WA,MHmmp,MH,Mountain Hemlock,Moist Maritime Washington Parkland MH,Moist Maritime,W Washington
+MHms_WA,MHms,MH,Mountain Hemlock,Moist Submaritime Washington MH,Moist Submaritime,NW & WC Washington
+MHmsp_WA,MHmsp,MH,Mountain Hemlock,Moist Submaritime Washington Parkland MH,Moist Submaritime,NW & WC Washington
+MHRF,MHRF,MHRF,Mountain Hemlock – Shasta Red Fir,,,
+MHRFdm_OR,MHRFdm,MHRF,Mountain Hemlock – Shasta Red Fir,Dry Maritime Oregon MHRF,Dry Maritime,"SW Oregon, N California"
+MHRFdmp_OR,MHRFdmp,MHRF,Mountain Hemlock – Shasta Red Fir,Dry Maritime Oregon Parkland MHRF,Dry Maritime,"SW Oregon, N California"
+MHRFds_CA,MHRFds,MHRF,Mountain Hemlock – Shasta Red Fir,Dry Submaritime California MHRF,Dry Submaritime,"SW Oregon, N & EC California"
+MHRFdsp_CA,MHRFdsp,MHRF,Mountain Hemlock – Shasta Red Fir,Dry Submaritime California Parkland MHRF,Dry Submaritime,"SW Oregon, N & EC California"
+MHRFmm_OR,MHRFmm,MHRF,Mountain Hemlock – Shasta Red Fir,Moist Maritime Oregon MHRF,Moist Maritime,SW Oregon
+MHRFmmp_OR,MHRFmmp,MHRF,Mountain Hemlock – Shasta Red Fir,Moist Maritime Oregon Parkland MHRF,Moist Maritime,SW Oregon
+MMM,MMM,MMM, Montane Mountain Mahogany ,,,
+MMMdk_NV,MMMdk,MMM, Montane Mountain Mahogany ,Dry Cool Nevada MMM,Dry Cool,C & N Nevada
+MS,MS,MS,Montane Spruce ,,,
+MSdh_MT,MSdh,MS,Montane Spruce ,Dry Hot Montana MS,Dry Hot,W Montana [EC Idaho]
+MSdh_UT,MSdh,MS,Montane Spruce ,Dry Hot Utah MS,Dry Hot,"Utah, E Nevada [W Colorado]"
+MSdh_WY,MSdh,MS,Montane Spruce ,Dry Hot Wyoming MS,Dry Hot,"SE Idaho, SW Montana, W Wyoming"
+MSdk_CO,MSdk,MS,Montane Spruce ,Dry Cool Colorado MS,Dry Cool,SW & SC Colorado
+MSdm_WA,MSdm,MS,Montane Spruce ,Dry Mild Washington MS,Dry Mild,NC & NE Washington
+MSdw_MT,MSdw,MS,Montane Spruce ,Dry Warm Montana MS,Dry Warm,NW Montana
+MSmm_ID,MSmm,MS,Montane Spruce ,Moist Mild Idaho MS,Moist Mild,"C Idaho, WC Montana"
+MSSD,MSSD,MSSD,Mojave – Sonoran Semi-Desert,,,
+MSSDun_NV,MSSDun,MSSD,Mojave – Sonoran Semi-Desert,Nevada MSSD,,"SE California, S Nevada"
+MSxh_OR,MSxh,MS,Montane Spruce ,Very Dry Hot Oregon MS,Very Dry Hot,"NE Oregon, SE Washington"
+MSxk_WA,MSxk,MS,Montane Spruce ,Very Dry Cool Washington MS,Very Dry Cool,NC & C Washington
+MSxm_CO,MSxm,MS,Montane Spruce ,Very Dry Mild Colorado MS,Very Dry Mild,"C & N Colorado, SE Wyoming [E Utah]"
+MSxx_NV,MSxx,MS,Montane Spruce ,Very Dry Very Hot Nevada MS,Very Dry Very Hot,C & EC Nevada
+OW,OW,OW,Oak Woodland,,,
+OWdm_CA,OWdm,OW,Oak Woodland,Dry Maritime California OW,Dry Maritime,C & N California
+OWmm_OR,OWmm,OW,Oak Woodland,Moist Maritime Oregon OW,Moist Maritime,"SW Oregon, N California"
+OWwm_OR,OWwm,OW,Oak Woodland,Wet Maritime Oregon OW,Wet Maritime,SW Oregon
+OWxm_CA,OWxm,OW,Oak Woodland,Very Dry Maritime California OW,Very Dry Maritime,S California
+PP,PP,PP,Ponderosa Pine,,,
+PPJW,PPJW,PPJW,Pinyon Pine – Juniper Woodland,,,
+PPJWdm_WY,PPJWdm,PPJW,Pinyon Pine – Juniper Woodland,Dry Mild Wyoming PPJW,Dry Mild,"Wyoming [NE Utah, NW Colorado]"
+PPJWdw_UT,PPJWdw,PPJW,Pinyon Pine – Juniper Woodland,Dry Warm Utah PPJW,Dry Warm,"Utah, W Colorado [SE Idaho]"
+PPJWmw_UT,PPJWmw,PPJW,Pinyon Pine – Juniper Woodland,Moist Warm Utah PPJW,Moist Warm,"E Utah, W Colorado"
+PPJWwm_CO,PPJWwm,PPJW,Pinyon Pine – Juniper Woodland,Wet Mild Colorado PPJW,Wet Mild,EC & SE Colorado
+PPJWxh_CA,PPJWxh,PPJW,Pinyon Pine – Juniper Woodland,Very Dry Hot California PPJW,Very Dry Hot,S California
+PPJWxw_NV,PPJWxw,PPJW,Pinyon Pine – Juniper Woodland,Very Dry Warm Nevada PPJW,Very Dry Warm,"Nevada, E California, W Utah, S Idaho"
+PPmx_WY,PPmx,PP,Ponderosa Pine,Moist Very Hot Wyoming PP,Moist Very Hot,NE Wyoming [SE Montana]
+PPxh_CO,PPxh,PP,Ponderosa Pine,Very Dry Hot Colorado PP,Very Dry Hot,"SW, SC, & NC Colorado"
+PPxh_WA,PPxh,PP,Ponderosa Pine,Very Dry Hot Washington PP,Very Dry Hot,"NC & E Washington, NE Oregon, W Idaho"
+PPxk_OR,PPxk,PP,Ponderosa Pine,Very Dry Cool Oregon PP,Very Dry Cool,SC Oregon
+PPxm_OR,PPxm,PP,Ponderosa Pine,Very Dry Mild Oregon PP,Very Dry Mild,"C & S Oregon, NE California"
+PPxw_MT,PPxw,PP,Ponderosa Pine,Very Dry Warm Montana PP,Very Dry Warm,"C & S Montana, NE Wyoming"
+PPxw_WY,PPxw,PP,Ponderosa Pine,Very Dry Warm Wyoming PP,Very Dry Warm,SE Wyoming
+PPxx_OR,PPxx,PP,Ponderosa Pine,Very Dry Very Hot Oregon PP,Very Dry Very Hot,"SC Washington, NC Oregon"
+SBAP,SBAP,SBAP,Sub-boreal Aspen Parkland,,,
+SBAPfp,SBAPfp,SBAP,Sub-boreal Aspen Parkland,Foothills Parkland Sub-boreal Aspen Parkland,,"NW Montana, to AB border"
+SGP,SGP,SGP,Shortgrass Prairie,,,
+SGPdm_CO,SGPdm,SGP,Shortgrass Prairie,Dry Mild Colorado SGP,Dry Mild,"E Colorado, SE Wyoming"
+WJP,WJP,WJP,Western Juniper – Pine,,,
+WJPxm_OR,WJPxm,WJP,Western Juniper – Pine,Very Dry Mild Oregon WJP,Very Dry Mild,"Oregon, NE California, NW Nevada, SW Idaho"
