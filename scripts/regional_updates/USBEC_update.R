@@ -60,3 +60,12 @@ edat<-rbind(edat, Edat_update)
 
 #write out updated table
 write.csv(edat, "tables/versioned/Edatopic_v13_12.csv")
+
+#add missing PPJW units 4/21/26
+edat<-read.csv("tables/versioned/Edatopic_v13_12.csv") 
+edat$X<-NULL
+Edat_update<-read.csv("tables/regional_updates/Edatopic_USBEC_DVM_4Jan2026.csv")
+Edat_update2<-subset(Edat_update, BGC=="PPJWdm_WY"|BGC=="PPJWdw_UT"|BGC=="PPJWwm_CO"|BGC=="PPJWxh_CA"|BGC=="PPJWxw_NV")
+
+edat<-rbind(edat, Edat_update2)
+write.csv(edat, "tables/versioned/Edatopic_v13_13.csv")
