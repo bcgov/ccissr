@@ -1,0 +1,968 @@
+﻿bgc,ss_nospace,sppsplit,suitability,spp,newsuit,mod,outrange,Region,Notes
+BGxh2,BGxh1/Fm01,Act,1,Ac,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm01,At,2,At,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm01,Ep,2,Ep,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm01,Fdi,3,Fd,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm01,Pyi,3,Py,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm06,Act,1,Ac,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm06,At,2,At,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm06,Ep,2,Ep,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm06,Fdi,3,Fd,, ,FALSE,TO, 
+BGxh2,BGxh1/Fm06,Pyi,3,Py,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm01,Act,1,Ac,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm01,At,2,At,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm01,Ep,2,Ep,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm01,Fdi,3,Fd,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm01,Pyi,3,Py,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm06,Act,1,Ac,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm06,At,2,At,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm06,Ep,2,Ep,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm06,Fdi,3,Fd,, ,FALSE,TO, 
+BGxh2,BGxh2/Fm06,Pyi,3,Py,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm01,Act,1,Ac,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm01,At,2,At,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm01,Ep,2,Ep,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm01,Fdi,3,Fd,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm01,Pyi,3,Py,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm05,Act,1,Ac,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm05,At,2,At,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm05,Ep,2,Ep,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm05,Fdi,3,Fd,, ,FALSE,TO, 
+BGxw1,BGxw1/Fm05,Pyi,3,Py,, ,FALSE,TO, 
+CDFmm,CDFmm/105,Tw,3,Tw,,,FALSE,Coast,imputed
+CDFmm,CDFmm/105,Hw,2,Hw,,,FALSE,Coast,imputed
+CDFmm,CDFmm/111,Bg,3,Bg,,,FALSE,Coast,imputed
+CDFmm,CDFmm/112,Ss,3,Ss,,,FALSE,Coast,imputed
+CDFmm,CDFmm/Ws53,Fdc,3,Fd,4,HAK/SCS,FALSE,Coast,imputed
+CMAunp,CMAunp/00,Hw,1,Hw,5,HAK/SCS,FALSE,Coast,imputed
+CMAunp,CMAunp/00,Hm,2,Hm,5,HAK/SCS,FALSE,Coast,imputed
+CMAunp,CMAunp/00,Pa,3,Pa,5,HAK/SCS,FALSE,Coast,imputed
+CWHdm2,CWHdm2/101,Ba,2,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHdm2,CWHdm2/101,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHdm2,CWHdm2/102,Cw,3,Cw,,,FALSE,Coast,imputed
+CWHdm2,CWHdm2/103,Cw,3,Cw,,,FALSE,Coast,imputed
+CWHdm2,CWHdm2/104,Ba,3,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHdm2,CWHdm2/110,Ss,2,Ss,,,FALSE,Coast,imputed
+CWHdm2,CWHdm2/111,Ba,2,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHdm2,CWHdm2/111,Ss,3,Ss,,,FALSE,Coast,imputed
+CWHdm2,CWHdm2/112.1,Ss,3,Ss,,,FALSE,Coast,imputed
+CWHdm2,CWHdm2/112.1,Ba,3,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHdm2,CWHdm2/112.2,Ss,1,Ss,,,FALSE,Coast,imputed
+CWHdm3,CWHdm3/101,Ba,2,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHdm3,CWHdm3/104,Ba,2,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHdm3,CWHdm3/110,Ba,3,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHdm3,CWHdm3/110,Ss,3,Ss,,,FALSE,Coast,imputed
+CWHdm3,CWHdm3/112,Ba,2,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHds1,CWHds1/101,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHds1,CWHds1/101,Bl,2,Bl,5,HAK/SCS,FALSE,Coast,imputed
+CWHds1,CWHds1/101,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHds1,CWHds1/101,Ba,2,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHds1,CWHds1/101,Yc,2,Yc,5,HAK/SCS,FALSE,Coast,imputed
+CWHds1,CWHds1/101,Ss,3,Ss,,,FALSE,Coast,imputed
+CWHds1,CWHds1/101a,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHds1,CWHds1/101a,Bl,2,Bl,5,HAK/SCS,FALSE,Coast,imputed
+CWHds1,CWHds1/101a,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHds1,CWHds1/101a,Ba,2,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHds1,CWHds1/101a,Yc,2,Yc,5,HAK/SCS,FALSE,Coast,imputed
+CWHds1,CWHds1/101a,Ss,3,Ss,,,FALSE,Coast,imputed
+CWHds1,CWHds1/101b,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHds1,CWHds1/104,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHds1,CWHds1/104,Mv,1,Mv,,,FALSE,Coast,imputed
+CWHds1,CWHds1/110,Mv,2,Mv,,,FALSE,Coast,imputed
+CWHds1,CWHds1/110,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHds2,CWHds2/101,Ba,2,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHmm1,CWHmm1/101,Yc,3,Yc,,,FALSE,Coast,imputed
+CWHmm1,CWHmm1/103,Yc,3,Yc,,,FALSE,Coast,imputed
+CWHmm1,CWHmm1/103,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHmm1,CWHmm1/110,Bg,3,Bg,,,FALSE,Coast,imputed
+CWHms3,CWHms3/101,Bl,2,Bl,,,FALSE,Coast,imputed
+CWHms3,CWHms3/101,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHms3,CWHms3/103,Bl,2,Bl,,,FALSE,Coast,imputed
+CWHms3,CWHms3/103,Yc,3,Yc,,,FALSE,Coast,imputed
+CWHms3,CWHms3/103,Mv,4,Mv,,,FALSE,Coast,imputed
+CWHms3,CWHms3/104,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHms3,CWHms3/104,Sx,4,Sx,,,FALSE,Coast,imputed
+CWHms3,CWHms3/104,Bl,4,Bl,,,FALSE,Coast,imputed
+CWHms3,CWHms3/104,Hm,4,Hm,5,HAK/SCS,FALSE,Coast,imputed
+CWHms3,CWHms3/112,Hm,3,Hm,5,HAK/SCS,FALSE,Coast,imputed
+CWHms4,CWHms4/101,Mv,2,Mv,,,FALSE,Coast,imputed
+CWHms4,CWHms4/103,Mv,4,Mv,,,FALSE,Coast,imputed
+CWHms4,CWHms4/104,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHms4,CWHms4/104,Ba,3,Ba,,,FALSE,Coast,imputed
+CWHms4,CWHms4/104,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHms4,CWHms4/104,Plc,2,Pl,,,FALSE,Coast,imputed
+CWHms4,CWHms4/105,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHms4,CWHms4/105,Bl,3,Bl,,,FALSE,Coast,imputed
+CWHms4,CWHms4/110,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHms4,CWHms4/110,Mv,2,Mv,,,FALSE,Coast,imputed
+CWHms4,CWHms4/112,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHms5,CWHms5/101,Mv,1,Mv,,,FALSE,Coast,imputed
+CWHms5,CWHms5/101.1,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHms5,CWHms5/101.2,Yc,2,Yc,5,HAK/SCS,FALSE,Coast,imputed
+CWHms5,CWHms5/101.2,Plc,3,Pl,,,FALSE,Coast,imputed
+CWHms5,CWHms5/101.2,Ss,3,Ss,,,FALSE,Coast,imputed
+CWHms5,CWHms5/101.2,Mv,1,Mv,,,FALSE,Coast,imputed
+CWHms5,CWHms5/102,Sx,4,Sx,,,FALSE,Coast,imputed
+CWHms5,CWHms5/103,Yc,3,Yc,5,HAK/SCS,FALSE,Coast,imputed
+CWHms5,CWHms5/103.1,Yc,3,Yc,5,HAK/SCS,FALSE,Coast,imputed
+CWHms5,CWHms5/103.1,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHms5,CWHms5/103.1,Mv,2,Mv,,,FALSE,Coast,imputed
+CWHms5,CWHms5/103.1,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHms5,CWHms5/103.1,Bg,2,Bg,,,FALSE,Coast,imputed
+CWHms5,CWHms5/103.2,Yc,3,Yc,5,HAK/SCS,FALSE,Coast,imputed
+CWHms5,CWHms5/103.2,Bg,3,Bg,5,HAK/SCS,FALSE,Coast,imputed
+CWHms5,CWHms5/103.2,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHms5,CWHms5/110,Bl,2,Bl,,,FALSE,Coast,imputed
+CWHms5,CWHms5/110,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHms5,CWHms5/112,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvh1,CWHvh1/101,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvh1,CWHvh1/102,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvh1,CWHvh1/103,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvh1,CWHvh1/103,Fdc,3,Fd,,,FALSE,Coast,imputed
+CWHvh1,CWHvh1/112,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvh1,CWHvh1/Ws54,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvh1,CWHvh1/Ws56,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/101,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/102,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/103,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/104,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/105,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/110,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/110,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/112,Yc,1,Yc,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/112,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/113,Ba,3,Ba,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/113,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvh2,CWHvh2/Wb53,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/101,Ba,2,Ba,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/101a,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/103.1,Hw,1,Hw,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/103.1,Ss,2,Ss,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/103.2,Ss,1,Ss,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/103.2,Dr,3,Dr,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/105,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/105,Ba,2,Ba,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/106,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/110,Ba,1,Ba,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/110,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/112,Yc,1,Yc,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/112,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/114,Ba,2,Ba,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/115,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/115,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/117,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/Wb53,Hw,3,Hw,,,FALSE,Coast,imputed
+CWHvh3,CWHvh3/Wb53,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/101,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/101,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/101,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/101,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/102,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/102,Ba,3,Ba,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/102,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/103,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/103,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/103,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/104,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/105,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/105,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/110,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/110,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/110,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/110,Ep,2,Ep,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/111,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/111,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/111.1,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/111.2,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/111.2,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/112,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/112.1,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/112.2,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/112.2,Fdc,3,Fd,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/113,Ba,3,Ba,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/113,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/113,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/114,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/114,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Fl51,Yc,1,Yc,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Fl51,Hw,1,Hw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Fl51,Cw,2,Cw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Fl51,Hm,2,Hm,5,HAK/SCS,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Fl51,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Fl51,Plc,2,Pl,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Wb51,Ba,2,Ba,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Wb55,Ba,2,Ba,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Ws54,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm1,CWHvm1/Ws56,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/101,Bl,3,Bl,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/101,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/102,Ba,3,Ba,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/102,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/105,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/110,Bl,1,Bl,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/110,Dr,4,Dr,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/111.1,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/111.1,Pw,2,Pw,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/112,Dr,2,Dr,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/112.1,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/112.2,Dr,2,Dr,,,FALSE,Coast,imputed
+CWHvm2,CWHvm2/115,Ss,1,Ss,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/101,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/101,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/101,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/102,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/103,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/103,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/104,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/104,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/110,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/110,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/110,Ep,2,Ep,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/111,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/111,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/111.1,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/111.2,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/111.2,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/112,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/112.1,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/112.2,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/113,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/113,Ba,3,Ba,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/114,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/114,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Fl51,Yc,1,Yc,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Fl51,Hw,1,Hw,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Fl51,Cw,2,Cw,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Fl51,Hm,2,Hm,5,HAK/SCS,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Fl51,Tw,3,Tw,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Fl51,Plc,2,Pl,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Wb51,Ba,2,Ba,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Wb53,Ba,2,Ba,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Ws54,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Ws56,Ba,2,Ba,,,FALSE,Coast,imputed
+CWHvm3,CWHvm3/Ws56,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHvm4,CWHvm4/102,Ba,3,Ba,,,FALSE,Coast,imputed
+CWHvm4,CWHvm4/111,Pw,2,Pw,,,FALSE,Coast,imputed
+CWHvm4,CWHvm4/111,Plc,3,Pl,,,FALSE,Coast,imputed
+CWHvm4,CWHvm4/112,Dr,2,Dr,5,HAK/SCS,FALSE,Coast,imputed
+CWHvm4,CWHvm4/113,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHvm4,CWHvm4/113,Pw,3,Pw,,,FALSE,Coast,imputed
+CWHwh1,CWHwh1/101,Dr,2,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101,Cw,,Cw,1,HAK/SCS,,,
+CWHwh1,CWHwh1/101,Yc,3,Yc,3,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/101,Plc,3,Pl,4,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/101,Tw,,Tw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/101a,Dr,2,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101a,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101a,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101a,Cw,,Cw,1,HAK/SCS,,,
+CWHwh1,CWHwh1/101a,Hm,2,Hm,5,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/101a,Yc,,Yc,3,HAK/SCS,,,
+CWHwh1,CWHwh1/101a,Plc,,Pl,4,HAK/SCS,,,
+CWHwh1,CWHwh1/101a,Tw,,Tw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/101b,Dr,2,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101b,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101b,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/101b,Cw,,Cw,1,HAK/SCS,,,
+CWHwh1,CWHwh1/101b,Yc,,Yc,3,HAK/SCS,,,
+CWHwh1,CWHwh1/101b,Plc,,Pl,4,HAK/SCS,,,
+CWHwh1,CWHwh1/101b,Tw,,Tw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/102,Dr,3,Dr,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/102,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/102,Plc,3,Pl,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/102,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/102,Cw,,Cw,1,HAK/SCS,,,
+CWHwh1,CWHwh1/102,Yc,3,Yc,3,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/102,Tw,3,Tw,3,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/103,Cw,3,Cw,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/103,Dr,3,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/103,Hw,3,Hw,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/103,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/104,Dr,3,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/104,Hw,3,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/104,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105,Dr,2,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/105a,Dr,2,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105a,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105a,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105a,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/105b,Dr,2,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105b,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105b,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/105b,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/110,Dr,3,Dr,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110,Plc,3,Pl,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110,Ss,3,Ss,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110,Cw,,,1,HAK/SCS,,,
+CWHwh1,CWHwh1/110,Tw,,Tw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/110,Yc,,,4,HAK/SCS,,,
+CWHwh1,CWHwh1/110a,Dr,3,Dr,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110a,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110a,Plc,3,Pl,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110a,Ss,3,Ss,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110a,Cw,,,1,HAK/SCS,,,
+CWHwh1,CWHwh1/110a,Yc,2,Yc,4,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/110a,Tw,3,Tw,3,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/110b,Dr,3,Dr,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110b,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110b,Plc,3,Pl,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110b,Ss,3,Ss,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/110b,Cw,,,1,HAK/SCS,,,
+CWHwh1,CWHwh1/110b,Tw,,Tw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/110b,Yc,2,Yc,4,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/110b,Hm,2,Hm,5,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/111,Dr,2,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/111,Tw,,Tw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/111a,Dr,2,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111a,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111a,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111a,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/111b,Dr,2,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111b,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111b,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111b,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/111b,Tw,,Tw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/111c,Dr,2,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111c,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111c,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/111c,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/111c,Tw,,Tw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/112,Dr,1,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/112,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/112,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/112,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/112,Tw,,Tw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/113,Dr,1,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/113,Hw,3,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/113,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/113,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/114,Dr,1,Dr,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/114,Ss,3,Ss,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/114,Hw,,Hw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/114,Cw,,Cw,4,HAK/SCS,,,
+CWHwh1,CWHwh1/115,Dr,3,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/115,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/115,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/115,Plc,3,Pl,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/115,Yc,2,Yc,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/115,Cw,,Cw,1,HAK/SCS,,,
+CWHwh1,CWHwh1/115,Tw,3,Tw,4,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/116,Dr,2,Dr,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/116,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/116,Ss,1,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/116,Cw,,Cw,1,HAK/SCS,,,
+CWHwh1,CWHwh1/116,Hm,2,Hm,5,HAK/SCS,FALSE,Coast,imputed
+CWHwh1,CWHwh1/117,Dr,3,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/117,Hw,3,Hw,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/117,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/117,Cw,,Cw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/117,Yc,,Yc,3,HAK/SCS,,,
+CWHwh1,CWHwh1/118,Dr,3,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118,Hw,3,Hw,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118,Plc,3,Pl,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118,Yc,3,Yc,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/118a,Dr,3,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118a,Hw,3,Hw,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118a,Plc,3,Pl,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118a,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118a,Yc,5,Yc,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118a,Cw,,Cw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/118b,Dr,3,Dr,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118b,Hw,3,Hw,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118b,Plc,3,Pl,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118b,Ss,3,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118b,Yc,3,Yc,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/118b,Cw,,Cw,2,HAK/SCS,,,
+CWHwh1,CWHwh1/Wb51,Plc,2,Pl,3,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/Wb51,Yc,3,Yc,4,HAK/SCS,FALSE,Coast, 
+CWHwh1,CWHwh1/Wb51,Cw,,Cw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/Wb51,Hw,,Hw,3,HAK/SCS,,,
+CWHwh1,CWHwh1/Wb51,Hm,2,Hm,4,HAK/SCS,FALSE,Coast,imputed
+CWHwh2,CWHwh2/101,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101,Yc,1,Yc,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101,Cw,,Cw,2,HAK/SCS,,,
+CWHwh2,CWHwh2/101a,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101a,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101a,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101a,Yc,1,Yc,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101a,Cw,,Cw,2,HAK/SCS,,,
+CWHwh2,CWHwh2/101b,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101b,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101b,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101b,Yc,1,Yc,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101b,Cw,,Cw,2,HAK/SCS,,,
+CWHwh2,CWHwh2/101c,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101c,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101c,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101c,Yc,1,Yc,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/101c,Cw,,Cw,2,HAK/SCS,,,
+CWHwh2,CWHwh2/110,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/110,Hw,1,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/110,Ss,2,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/110,Yc,1,Yc,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/110,Cw,,Cw,1,HAK/SCS,,,
+CWHwh2,CWHwh2/111,Hm,2,Hm,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/111,Hw,2,Hw,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/111,Ss,3,Ss,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/111,Plc,2,Pl,4,HAK/SCS,FALSE,Coast,imputed
+CWHwh2,CWHwh2/111,Cw,,Cw,2,HAK/SCS,,,
+CWHwh2,CWHwh2/111,Yc,,Yc,2,HAK/SCS,,,
+CWHwh2,CWHwh2/112,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112,Hw,2,Hw,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112,Yc,1,Yc,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112,Cw,,Cw,3,HAK/SCS,,,
+CWHwh2,CWHwh2/112a,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112a,Hw,2,Hw,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112a,Ss,2,Ss,1,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112a,Yc,1,Yc,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112a,Cw,,Cw,3,HAK/SCS,,,
+CWHwh2,CWHwh2/112b,Hm,3,Hm,3,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112b,Hw,2,Hw,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112b,Ss,2,Ss,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112b,Yc,1,Yc,2,HAK/SCS,FALSE,Coast, 
+CWHwh2,CWHwh2/112b,Cw,,Cw,3,HAK/SCS,,,
+CWHwh2,CWHwh2/Wb53.1,Plc,,Plc,3,HAK/SCS,,,
+CWHwh2,CWHwh2/Wb53.1,Yc,,Yc,3,HAK/SCS,,,
+CWHwm,CWHwm/101b,Yc,1,Yc,,,FALSE,Coast,imputed
+CWHwm,CWHwm/Fm50,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHws2,CWHws2/101,Fdc,2,Fd,,,FALSE,Coast,imputed
+CWHws2,CWHws2/101,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHws2,CWHws2/101,At,3,At,,,FALSE,Coast,imputed
+CWHws2,CWHws2/102,Ac,4,Ac,,,FALSE,Coast,imputed
+CWHws2,CWHws2/102,Sx,3,Sx,,,FALSE,Coast,imputed
+CWHws2,CWHws2/102,Yc,1,Yc,,,FALSE,Coast,imputed
+CWHws2,CWHws2/110,Fdc,2,Fd,,,FALSE,Coast,imputed
+CWHws2,CWHws2/110,Plc,4,Pl,,,FALSE,Coast,imputed
+CWHws2,CWHws2/110,Tw,4,Tw,,,FALSE,Coast,imputed
+CWHws3,CWHws3/101,Ss,2,Ss,,,FALSE,Coast,imputed
+CWHws3,CWHws3/101,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHws3,CWHws3/101,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHws3,CWHws3/102,Hm,3,Hm,,,FALSE,Coast,imputed
+CWHws3,CWHws3/103,Hm,2,Hm,,,FALSE,Coast,imputed
+CWHws3,CWHws3/103,Yc,2,Yc,,,FALSE,Coast,imputed
+CWHws3,CWHws3/Fm50,Hw,1,Hw,,,FALSE,Coast,imputed
+CWHxs,CWHxs/101,Bl,3,Bl,5,HAK/SCS,FALSE,Coast,imputed
+CWHxs,CWHxs/101,Plc,3,Pl,,,FALSE,Coast,imputed
+CWHxs,CWHxs/101,Mb,3,Mb,,,FALSE,Coast,imputed
+CWHxs,CWHxs/101,Mv,2,Mv,,,FALSE,Coast,imputed
+CWHxs,CWHxs/101.1,Bl,4,Bl,5,HAK/SCS,FALSE,Coast,imputed
+CWHxs,CWHxs/101.1,Ba,4,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHxs,CWHxs/101.1,Plc,2,Pl,,,FALSE,Coast,imputed
+CWHxs,CWHxs/101.2,Ba,4,Ba,5,HAK/SCS,FALSE,Coast,imputed
+CWHxs,CWHxs/101.2,Mv,3,Mv,,,FALSE,Coast,imputed
+CWHxs,CWHxs/103,Ep,3,Ep,,,FALSE,Coast,imputed
+CWHxs,CWHxs/103.1,Ep,3,Ep,,,FALSE,Coast,imputed
+CWHxs,CWHxs/110,Mv,1,Mv,,,FALSE,Coast,imputed
+CWHxs,CWHxs/111,Mv,3,Mv,,,FALSE,Coast,imputed
+ESSFdc2,ESSFdc2/101,At,3,At,,,FALSE,TO,imputed
+ESSFdc2,ESSFdc2/101,Fdi,3,Fd,,,FALSE,TO,imputed
+ESSFdc2,ESSFdc2/101,Ba,2,Ba,,,FALSE,TO,imputed
+ESSFdc2,ESSFdc2/112,Pli,2,Pl,, ,FALSE,TO, 
+ESSFdc3,ESSFdc3/02,Fdi,3,Fd,,,FALSE,TO,imputed
+ESSFdc3,ESSFdc3/05,Fdi,3,Fd,,,FALSE,TO,imputed
+ESSFdh1,ESSFdh1/101,Pw,3,Pw,,,FALSE,TO,imputed
+ESSFdh1,ESSFdh1/104,Pw,3,Pw,,,FALSE,TO,imputed
+ESSFdh1,ESSFdh1/104,Hw,3,Hw,,,FALSE,TO,imputed
+ESSFdvp,ESSFdvp/00,Bl,3,Bl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/01,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/01,Pa,2,Pa,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/01,Pli,3,Pl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/01,Se,2,Sx,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/02,At,3,At,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/02,Bl,3,Bl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/02,Hm,2,Hm,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/02,Pa,2,Pa,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/02,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/02,Se,3,Sx,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/03,Bl,3,Bl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/03,Pa,2,Pa,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/03,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/03,Se,3,Sx,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/04,Bl,3,Bl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/04,Fdi,5,Fd,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/04,Pa,2,Pa,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/04,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/04,Se,2,Sx,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/05,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/05,Se,2,Sx,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/06,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/06,Pa,3,Pa,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/06,Pli,1,Pl,, ,FALSE,CAR, 
+ESSFdvw,ESSFdvw/06,Se,2,Sx,, ,FALSE,CAR, 
+ESSFmkw,ESSFmkw/101,Ba,3,Ba,,,FALSE,CAR,imputed
+ESSFmkw,ESSFmkw/102,Ba,2,Ba,,,FALSE,CAR,imputed
+ESSFmm1,ESSFmm1/01,Hw,3,Hw,,,FALSE,OM,imputed
+ESSFmw1,ESSFmw1/103,Ba,3,Ba,,,FALSE,TO,imputed
+ESSFmw1,ESSFmw1/103,Pa,3,Pa,,,FALSE,TO,imputed
+ESSFmw1,ESSFmw1/105,Pw,3,Pw,,,FALSE,TO,imputed
+ESSFmw1,ESSFmw1/110,Ba,2,Ba,,,FALSE,TO,imputed
+ESSFmw2,ESSFmw2/06,Pli,3,Pl,, ,FALSE,TO, 
+ESSFmw2,ESSFmw2/07,Pli,3,Pl,, ,FALSE,TO, 
+ESSFmwp,ESSFmwp/00,Bl,3,Bl,, ,FALSE,TO, 
+ESSFmwp,ESSFmwp/00,La,2,La,,,FALSE,TO,imputed
+ESSFmww,ESSFmww/103,Pa,3,Pa,,,FALSE,TO,imputed
+ESSFun,ESSFun/h,Bl,2,Bl,2,HAK/SCS,FALSE,Coast, 
+ESSFun,ESSFun/h,Ss,2,Ss,,,FALSE,Coast,imputed
+ESSFun,ESSFun/h,Sx,3,Sx,,,FALSE,Coast,imputed
+ESSFun,ESSFun/m,Bl,1,Bl,1,HAK/SCS,FALSE,Coast, 
+ESSFun,ESSFun/m,Plc,3,Pl,,,FALSE,Coast,imputed
+ESSFun,ESSFun/m,Sx,3,Sx,,,FALSE,Coast,imputed
+ESSFun,ESSFun/x,Bl,1,Bl,1,HAK/SCS,FALSE,Coast, 
+ESSFun,ESSFun/x,Hm,3,Hm,,,FALSE,Coast,imputed
+ESSFun,ESSFun/x,Plc,3,Pl,,,FALSE,Coast,imputed
+ESSFunp,ESSFunp/00,Bl,3,Bl,, ,FALSE,Coast, 
+ESSFwc3,ESSFwc3/02,Ac,4,Ac,,,FALSE,OM/CAR,imputed
+ESSFwc3,ESSFwc3/03,Ac,3,Ac,,,FALSE,OM/CAR,imputed
+ESSFwc3,ESSFwc3/03,Pli,3,Pl,,,FALSE,OM/CAR,imputed
+ESSFxc1,ESSFxc1/102,Fdi,3,Fd,, ,FALSE,SHE, 
+ESSFxc1,ESSFxc1/Ws08,Sx, ,Sx,, ,FALSE,SHE, 
+ESSFxc1,ESSFxc1/Ws08,Bl, ,Bl,, ,FALSE,SHE, 
+ESSFxc1,ESSFxc1/Ws12,Sx, ,Sx,, ,FALSE,SHE, 
+ESSFxc1,ESSFxc1/Ws12,Bl, ,Bl,, ,FALSE,SHE, 
+ESSFxc2,ESSFxc2/111,Pli,3,Pl,,,FALSE,SKE,imputed
+ESSFxc2,ESSFxc2/Ws08,Sx, ,Sx,, ,FALSE,SKE, 
+ESSFxc2,ESSFxc2/Ws08,Bl, ,Bl,, ,FALSE,SKE, 
+ESSFxc3,ESSFxc3/03,Bl,3,Bl,,,FALSE,SKE,imputed
+ESSFxc3,ESSFxc3/03,Pa,2,Pa,,,FALSE,SKE,imputed
+ESSFxc3,ESSFxc3/03,Pli,2,Pl,,,FALSE,SKE,imputed
+ESSFxc3,ESSFxc3/04,Pli,1,Pl,,,FALSE,SKE,imputed
+ESSFxc3,ESSFxc3/04,Sx,3,Sx,,,FALSE,SKE,imputed
+ESSFxc3,ESSFxc3/10,Bl, ,Bl,, ,FALSE,SKE, 
+ESSFxc3,ESSFxc3/10,Se, ,Sx,, ,FALSE,SKE, 
+ESSFxcp,ESSFxcp/00,Bl,3,Bl,, ,FALSE,SKE, 
+ESSFxcp,ESSFxcp/00,Pa,3,Pa,,,FALSE,SKE,imputed
+ESSFxcp,ESSFxcp/00,Sx,4,Sx,,,FALSE,SKE,imputed
+ESSFxv2,ESSFxv2/02,Sx,3,Sx,4,KI,FALSE,CAR,imputed
+ESSFxv2,ESSFxv2/03,At,3,At,4,KI,FALSE,CAR,imputed
+ESSFxvp,ESSFxvp/00,Bl,3,Bl,,,FALSE,CAR, 
+ESSFxvw,ESSFxvw/01,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/01,Pa,3,Pa,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/01,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/01,Sx,3,Sx,,,FALSE,CAR,imputed
+ESSFxvw,ESSFxvw/02,Bl,3,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/02,Pa,2,Pa,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/02,Pli,3,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/03,Pa,2,Pa,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/03,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/04,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/04,Pa,3,Pa,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/04,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/05,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/05,Pa,3,Pa,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/05,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/06,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/06,Pa,3,Pa,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/06,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/07,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/07,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/08,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/08,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/09,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/09,Pli,2,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/10,Bl,2,Bl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/10,Pli,3,Pl,, ,FALSE,CAR, 
+ESSFxvw,ESSFxvw/10,Sxw,2,Sx,, ,FALSE,CAR, 
+ICHdk,ICHdk/01,Lw,3,Lw,3,KI,TRUE,CAR, 
+ICHdk,ICHdk/04,Lw,3,Lw,2,KI,TRUE,CAR, 
+ICHdk,ICHdk/04,Ac,4,Ac,4,KI,FALSE,CAR,imputed
+ICHdk,ICHdk/05,Lw,3,Lw,3,KI,TRUE,CAR, 
+ICHdw3,ICHdw3/02,Lw,3,Lw,, ,TRUE,TO, 
+ICHdw3,ICHdw3/08,At,3,At,, ,FALSE,TO, 
+ICHdw3,ICHdw3/08,Ep,3,Ep,, ,FALSE,TO, 
+ICHmc2,ICHmc2/01,Ba,5,Ba,, ,FALSE,SKE, 
+ICHmc2,ICHmc2/01,Ep,2,Ep,, ,FALSE,SKE, 
+ICHmc2,ICHmc2/02,At,3,At,, ,FALSE,SKE, 
+ICHmc2,ICHmc2/02,Ba,5,Ba,, ,FALSE,SKE, 
+ICHmc2,ICHmc2/02,Ep,3,Ep,, ,FALSE,SKE, 
+ICHmc2,ICHmc2/02,Ss,3,Ss,,,FALSE,SKE,imputed
+ICHmc2,ICHmc2/04,Ss,3,Ss,,,FALSE,SKE,imputed
+ICHmc2,ICHmc2/05,At,2,At,, ,FALSE,SKE, 
+ICHmc2,ICHmc2/05,Ep,1,Ep,, ,FALSE,SKE, 
+ICHmc2,ICHmc2/05,Ss,2,Ss,,,FALSE,SKE,imputed
+ICHmk2,ICHmk2/06,Fdi,2,Fd,,,FALSE,TO,imputed
+ICHmk3,ICHmk3/01,Lw,3,Lw,3,KI,TRUE,CAR, 
+ICHmk3,ICHmk3/03,Lw,3,Lw,2,KI,TRUE,CAR, 
+ICHmk3,ICHmk3/04,Lw,3,Lw,3,KI,TRUE,CAR, 
+ICHvc,ICHvc/01,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/01,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/01.1,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/01.1,Ep,2,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/01.2,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/01.2,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/02,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/02,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/02,Ac,4,Ac,,,FALSE,SKE,imputed
+ICHvc,ICHvc/02.1,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/02.1,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/02.2,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/02.2,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/03,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/03,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/03a,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/03a,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/03b,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/03b,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/04,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/04,Ep,3,Ep,, ,FALSE,SKE, 
+ICHvc,ICHvc/05,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/06,At,3,At,, ,FALSE,SKE, 
+ICHvc,ICHvc/06,Ep,3,Ep,, ,FALSE,SKE, 
+ICHwc,ICHwc/01,Act,3,Ac,, ,FALSE,SKE, 
+ICHwc,ICHwc/01,At,2,At,, ,FALSE,SKE, 
+ICHwc,ICHwc/01,Bl,1,Bl,, ,FALSE,SKE, 
+ICHwc,ICHwc/01,Ep,2,Ep,, ,FALSE,SKE, 
+ICHwc,ICHwc/01,Hw,1,Hw,, ,FALSE,SKE, 
+ICHwc,ICHwc/01,Pli,2,Pl,, ,FALSE,SKE, 
+ICHwc,ICHwc/01,Sxw,1,Sx,, ,FALSE,SKE, 
+ICHwc,ICHwc/02,At,3,At,, ,FALSE,SKE, 
+ICHwc,ICHwc/02,Bl,3,Bl,, ,FALSE,SKE, 
+ICHwc,ICHwc/02,Hw,3,Hw,, ,FALSE,SKE, 
+ICHwc,ICHwc/02,Pli,2,Pl,, ,FALSE,SKE, 
+ICHwc,ICHwc/03,At,2,At,, ,FALSE,SKE, 
+ICHwc,ICHwc/03,Bl,1,Bl,, ,FALSE,SKE, 
+ICHwc,ICHwc/03,Ep,2,Ep,, ,FALSE,SKE, 
+ICHwc,ICHwc/03,Hw,1,Hw,, ,FALSE,SKE, 
+ICHwc,ICHwc/03,Pli,1,Pl,, ,FALSE,SKE, 
+ICHwc,ICHwc/03,Sxw,1,Sx,, ,FALSE,SKE, 
+ICHwc,ICHwc/04,Act,3,Ac,, ,FALSE,SKE, 
+ICHwc,ICHwc/04,At,3,At,, ,FALSE,SKE, 
+ICHwc,ICHwc/04,Bl,1,Bl,, ,FALSE,SKE, 
+ICHwc,ICHwc/04,Ep,3,Ep,, ,FALSE,SKE, 
+ICHwc,ICHwc/04,Hw,2,Hw,, ,FALSE,SKE, 
+ICHwc,ICHwc/04,Pli,3,Pl,, ,FALSE,SKE, 
+ICHwc,ICHwc/04,Sxw,1,Sx,, ,FALSE,SKE, 
+ICHwc,ICHwc/05,Act,3,Ac,, ,FALSE,SKE, 
+ICHwc,ICHwc/05,At,3,At,, ,FALSE,SKE, 
+ICHwc,ICHwc/05,Bl,1,Bl,, ,FALSE,SKE, 
+ICHwc,ICHwc/05,Ep,3,Ep,, ,FALSE,SKE, 
+ICHwc,ICHwc/05,Hw,2,Hw,, ,FALSE,SKE, 
+ICHwc,ICHwc/05,Pli,3,Pl,, ,FALSE,SKE, 
+ICHwc,ICHwc/05,Sxw,1,Sx,, ,FALSE,SKE, 
+ICHwc,ICHwc/06,Act,1,Ac,, ,FALSE,SKE, 
+ICHwc,ICHwc/06,At,3,At,, ,FALSE,SKE, 
+ICHwc,ICHwc/06,Bl,1,Bl,, ,FALSE,SKE, 
+ICHwc,ICHwc/06,Ep,3,Ep,, ,FALSE,SKE, 
+ICHwc,ICHwc/06,Hw,3,Hw,, ,FALSE,SKE, 
+ICHwc,ICHwc/06,Pli,3,Pl,, ,FALSE,SKE, 
+ICHwc,ICHwc/06,Sxw,1,Sx,, ,FALSE,SKE, 
+ICHwc,ICHwc/07,Bl,2,Bl,, ,FALSE,SKE, 
+ICHwc,ICHwc/07,Hw,3,Hw,, ,FALSE,SKE, 
+ICHwc,ICHwc/07,Pli,3,Pl,, ,FALSE,SKE, 
+ICHwc,ICHwc/07,Sxw,1,Sx,, ,FALSE,SKE, 
+ICHwc,ICHwc/08,Act,3,Ac,, ,FALSE,SKE, 
+ICHwc,ICHwc/08,At,3,At,, ,FALSE,SKE, 
+ICHwc,ICHwc/08,Bl,1,Bl,, ,FALSE,SKE, 
+ICHwc,ICHwc/08,Ep,3,Ep,, ,FALSE,SKE, 
+ICHwc,ICHwc/08,Hw,3,Hw,, ,FALSE,SKE, 
+ICHwc,ICHwc/08,Sxw,1,Sx,, ,FALSE,SKE, 
+ICHwk2,ICHwk2/01,Lw,3,Lw,3,KI,TRUE,CAR, 
+ICHwk2,ICHwk2/01a,Lw,3,Lw,3,KI,TRUE,CAR, 
+ICHwk2,ICHwk2/01b,Lw,3,Lw,3,KI,TRUE,CAR, 
+ICHwk2,ICHwk2/02,Ep,3,Ep,3,KI,FALSE,CAR,imputed
+ICHwk2,ICHwk2/04,Lw,3,Lw,3,KI,TRUE,CAR, 
+ICHwk2,ICHwk2/04,Tw,3,Tw,,,FALSE,CAR,imputed
+ICHwk2,ICHwk2/05,Lw,3,Lw,4,KI,TRUE,CAR, 
+ICHxm1,ICHxm1/101,Sx,3,Sx,,,FALSE,TO,imputed
+ICHxm1,ICHxm1/104.1,Cw,3,Cw,,,FALSE,TO,imputed
+IDFdc,IDFdc/02,Pli,3,Pl,,,FALSE,TO,imputed
+IDFdc,IDFdc/03,At,3,At,,,FALSE,TO,imputed
+IDFdc,IDFdc/04,Sx,2,Sx,,,FALSE,TO,imputed
+IDFdk1,IDFdk1/103,At,3,At,,,FALSE,TO,imputed
+IDFdk1,IDFdk1/104,Sx,3,Sx,,,FALSE,TO,imputed
+IDFdk1,IDFdk1/105,Sx,3,Sx,,,FALSE,TO,imputed
+IDFdk1,IDFdk1/111,Fdi,2,Fd,,,FALSE,TO,imputed
+IDFdk1,IDFdk1/Fm02,Act,1,Ac,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm02,At,2,At,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm02,Ep,2,Ep,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm02,Fdi,3,Fd,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm02,Pli,3,Pl,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm02,Sxw,2,Sx,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm05,Act,1,Ac,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm05,At,2,At,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm05,Ep,2,Ep,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm05,Fdi,2,Fd,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm05,Pli,3,Pl,, ,FALSE,TO, 
+IDFdk1,IDFdk1/Fm05,Sxw,2,Sx,, ,FALSE,TO, 
+IDFdk2,IDFdk2/101,Ac,4,Ac,,,FALSE,TO,imputed
+IDFdk2,IDFdk2/110,Pli,3,Pl,,,FALSE,TO,imputed
+IDFdk2,IDFdk2/110,Ac,3,Ac,,,FALSE,TO,imputed
+IDFdk2,IDFdk2/Fm02,Act,1,Ac,, ,FALSE,TO, 
+IDFdk2,IDFdk2/Fm02,At,2,At,, ,FALSE,TO, 
+IDFdk2,IDFdk2/Fm02,Ep,2,Ep,, ,FALSE,TO, 
+IDFdk2,IDFdk2/Fm02,Fdi,3,Fd,, ,FALSE,TO, 
+IDFdk2,IDFdk2/Fm02,Pli,3,Pl,, ,FALSE,TO, 
+IDFdk2,IDFdk2/Fm02,Sxw,2,Sx,, ,FALSE,TO, 
+IDFdk3,IDFdk3/01,Lw,3,Lw,3,KI,TRUE,CAR, 
+IDFdk3,IDFdk3/06,Sx,4,Sx,4,KI,FALSE,CAR,imputed
+IDFdk4,IDFdk4/01,Lw,3,Lw,3,KI,TRUE,CAR, 
+IDFdk4,IDFdk4/01,Sxw,5,Sx,4,KI,FALSE,CAR, 
+IDFmw2,IDFmw2/05,At,3,At,, ,FALSE,TO, 
+IDFmw2,IDFmw2/05,Bl,3,Bl,, ,FALSE,TO, 
+IDFmw2,IDFmw2/05,Sxw,2,Sx,, ,FALSE,TO, 
+IDFww,IDFww/101,Bl,3,Bl,,,FALSE,Coast,imputed
+IDFww,IDFww/101,Bg,3,Bg,,,FALSE,Coast,imputed
+IDFww,IDFww/101,Mv,2,Mv,,,FALSE,Coast,imputed
+IDFww,IDFww/101.1,Bl,3,Bl,,,FALSE,Coast,imputed
+IDFww,IDFww/101.2,Bl,3,Bl,,,FALSE,Coast,imputed
+IDFxh1,IDFxh1/110,Ep,3,Ep,,,FALSE,TO,imputed
+IDFxh1,IDFxh1/111,Cw,2,Cw,, ,FALSE,TO, 
+IDFxh1,IDFxh1/111,Fdi,1,Fd,, ,FALSE,TO, 
+IDFxh1,IDFxh1/111,Sxw,2,Sx,, ,FALSE,TO, 
+IDFxh1,IDFxh1/111,At,1,At,,,FALSE,TO,imputed
+IDFxh1,IDFxh1/Fm01,Act,1,Ac,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm01,At,2,At,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm01,Cw,3,Cw,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm01,Ep,2,Ep,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm01,Fdi,3,Fd,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm01,Pyi,3,Py,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm01,Sxw,3,Sx,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm05,Act,1,Ac,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm05,At,2,At,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm05,Cw,3,Cw,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm05,Ep,2,Ep,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm05,Fdi,3,Fd,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm05,Pyi,3,Py,, ,FALSE,TO, 
+IDFxh1,IDFxh1/Fm05,Sxw,3,Sx,, ,FALSE,TO, 
+IDFxh2,IDFxh2/110,Pyi,2,Py,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm01,Act,1,Ac,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm01,At,2,At,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm01,Ep,2,Ep,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm01,Fdi,3,Fd,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm01,Sxw,2,Sx,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm02,Act,1,Ac,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm02,At,2,At,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm02,Ep,2,Ep,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm02,Fdi,3,Fd,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm02,Sxw,2,Sx,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm05,Act,1,Ac,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm05,At,2,At,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm05,Cw,3,Cw,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm05,Ep,2,Ep,, ,FALSE,TO, 
+IDFxh2,IDFxh2/Fm05,Fdi,2,Fd,, ,FALSE,TO, 
+IDFxm,IDFxm/03,At,3,At,3,KI,FALSE,CAR,imputed
+IDFxx1,IDFxx1/101,Fdi,2,Fd,, ,FALSE,TO, 
+IDFxx1,IDFxx1/101,Pyi,1,Py,, ,FALSE,TO, 
+IDFxx1,IDFxx1/102,Fdi,5,Fd,, ,FALSE,TO, 
+IDFxx1,IDFxx1/102,Pyi,2,Py,, ,FALSE,TO, 
+IDFxx1,IDFxx1/103,Fdi,5,Fd,, ,FALSE,TO, 
+IDFxx1,IDFxx1/103,Pyi,2,Py,, ,FALSE,TO, 
+IDFxx1,IDFxx1/104,Fdi,3,Fd,, ,FALSE,TO, 
+IDFxx1,IDFxx1/104,Pyi,1,Py,, ,FALSE,TO, 
+IDFxx1,IDFxx1/110,Fdi,1,Fd,, ,FALSE,TO, 
+IDFxx1,IDFxx1/110,Pyi,2,Py,, ,FALSE,TO, 
+IDFxx1,IDFxx1/111,At,2,At,, ,FALSE,TO, 
+IDFxx1,IDFxx1/111,Ep,2,Ep,, ,FALSE,TO, 
+IDFxx1,IDFxx1/111,Fdi,5,Fd,, ,FALSE,TO, 
+IDFxx1,IDFxx1/111,Lw,2,Lw,, ,FALSE,TO, 
+IDFxx1,IDFxx1/111,Pyi,2,Py,, ,FALSE,TO, 
+IMAunp,IMAunp/00,Bl,2,Bl,,,FALSE,SKE,imputed
+IMAunp,IMAunp/00,Pa,3,Pa,,,FALSE,SKE,imputed
+MHmm1,MHmm1/101,Pw,3,Pw,,,FALSE,Coast,imputed
+MHmm1,MHmm1/101a,Pw,3,Pw,,,FALSE,Coast,imputed
+MHmm1,MHmm1/101b,Pw,3,Pw,,,FALSE,Coast,imputed
+MHmm1,MHmm1/102,Plc,2,Pl,,,FALSE,Coast,imputed
+MHmm1,MHmm1/103,Bl,2,Bl,,,FALSE,Coast,imputed
+MHmm1,MHmm1/104,Cw,3,Cw,,,FALSE,Coast,imputed
+MHmm1,MHmm1/110,Cw,3,Cw,,,FALSE,Coast,imputed
+MHmm1,MHmm1/111,Cw,2,Cw,,,FALSE,Coast,imputed
+MHmm1,MHmm1/111,Plc,3,Pl,,,FALSE,Coast,imputed
+MHmm2,MHmm2/101,Pa,3,Pa,,,FALSE,Coast,imputed
+MHmm2,MHmm2/101a,Pw,4,Pw,,,FALSE,Coast,imputed
+MHmm2,MHmm2/101a,Tw,4,Tw,,,FALSE,Coast,imputed
+MHmm2,MHmm2/101a,Pa,3,Pa,,,FALSE,Coast,imputed
+MHmm2,MHmm2/101b,Pa,3,Pa,,,FALSE,Coast,imputed
+MHmm2,MHmm2/102,Pa,3,Pa,,,FALSE,Coast,imputed
+MHmm2,MHmm2/103,Pa,3,Pa,,,FALSE,Coast,imputed
+MHmm2,MHmm2/112,Fdc,2,Fd,,,FALSE,Coast,imputed
+MHmm2,MHmm2/112,Ac,3,Ac,,,FALSE,Coast,imputed
+MHmm2,MHmm2/113,Bl,1,Bl,,,FALSE,Coast,imputed
+MHmmp,MHmmp/h,Ba,2,Ba,,,FALSE,Coast,imputed
+MHmmp,MHmmp/h,Bl,1,Bl,,,FALSE,Coast,imputed
+MHmmp,MHmmp/m,Ba,2,Ba,,,FALSE,Coast,imputed
+MHms,MHms/101,Sx,2,Sx,,,FALSE,Coast,imputed
+MHvh,MHvh/102,Hw,3,Hw,,,FALSE,Coast,imputed
+MHvh,MHvh/111,Bl,3,Bl,,,FALSE,Coast,imputed
+MHwh,MHwh/101a,Hm,1,Hm,,,FALSE,Coast,imputed
+MHwh,MHwh/101a,Ss,2,Ss,,,FALSE,Coast,imputed
+MHwh,MHwh/101a,Yc,2,Yc,,,FALSE,Coast,imputed
+MHwh,MHwh/101b,Hw,1,Hw,,,FALSE,Coast,imputed
+MHwh,MHwh/101b,Ss,2,Ss,,,FALSE,Coast,imputed
+MHwh,MHwh/101b,Yc,1,Yc,,,FALSE,Coast,imputed
+MHwh,MHwh/101b,Hm,1,Hm,,,FALSE,Coast,imputed
+MHwh,MHwh/102,Hw,3,Hw,,,FALSE,Coast,imputed
+MSdc1,MSdc1/05,Fdi,2,Fd,,,FALSE,TO,imputed
+MSdc1,MSdc1/05,Pli,1,Pl,,,FALSE,TO,imputed
+MSdc2,MSdc2/01,Bl,2,Bl,2,KI,FALSE,CAR, 
+MSdc2,MSdc2/01,Fdi,2,Fd,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/01,Pa,3,Pa,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/01,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/01,Sxw,1,Sx,2,KI,FALSE,CAR, 
+MSdc2,MSdc2/02,Bl,3,Bl,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/02,Fdi,2,Fd,2,KI,FALSE,CAR, 
+MSdc2,MSdc2/02,Pa,3,Pa,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/02,Pli,2,Pl,2,KI,FALSE,CAR, 
+MSdc2,MSdc2/03,Bl,2,Bl,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/03,Fdi,1,Fd,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/03,Pa,3,Pa,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/03,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/04,Bl,2,Bl,2,KI,FALSE,CAR, 
+MSdc2,MSdc2/04,Pa,3,Pa,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/04,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/04,Sxw,2,Sx,2,KI,FALSE,CAR, 
+MSdc2,MSdc2/05,Bl,1,Bl,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/05,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/05,Sxw,1,Sx,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/06,Bl,1,Bl,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/06,Pli,1,Pl,2,KI,FALSE,CAR, 
+MSdc2,MSdc2/06,Sxw,1,Sx,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/07,Bl,1,Bl,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/07,Pli,2,Pl,2,KI,FALSE,CAR, 
+MSdc2,MSdc2/07,Sxw,1,Sx,1,KI,FALSE,CAR, 
+MSdc2,MSdc2/08,Bl,2,Bl,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/08,Pli,2,Pl,3,KI,FALSE,CAR, 
+MSdc2,MSdc2/08,Sxw,1,Sx,1,KI,FALSE,CAR, 
+MSdc3,MSdc3/02,Bl,3,Bl,,,FALSE,TO,imputed
+MSdc3,MSdc3/03,Bl,3,Bl,, ,FALSE,TO, 
+MSdc3,MSdc3/03,Sxw,3,Sx,, ,FALSE,TO, 
+MSdc3,MSdc3/04,Fdi,2,Fd,,,FALSE,TO,imputed
+MSdm2,MSdm2/101,Ac,3,Ac,,,FALSE,TO,imputed
+MSdm2,MSdm2/101,At,4,At,,,FALSE,TO,imputed
+MSdm2,MSdm2/101,Cw,3,Cw,,,FALSE,TO,imputed
+MSdm2,MSdm2/102,Pyi,3,Py,, ,FALSE,TO, 
+MSdm2,MSdm2/104,At,3,At,,,FALSE,TO,imputed
+MSdm2,MSdm2/105,Fdi,3,Fd,,,FALSE,TO,imputed
+MSdm3,MSdm3/01,Ac,3,Ac,,,FALSE,TO,imputed
+MSdm3,MSdm3/01,At,2,At,,,FALSE,TO,imputed
+MSdm3,MSdm3/03,Bl,3,Bl,, ,FALSE,TO, 
+MSdm3,MSdm3/05,At,3,At,,,FALSE,TO,imputed
+MSdv,MSdv/01,Bl,2,Bl,1,KI,FALSE,CAR, 
+MSdv,MSdv/01,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdv,MSdv/01,Sxw,1,Sx,1,KI,FALSE,CAR, 
+MSdv,MSdv/02,Pli,2,Pl,2,KI,FALSE,CAR, 
+MSdv,MSdv/03,Bl,3,Bl,3,KI,FALSE,CAR, 
+MSdv,MSdv/03,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdv,MSdv/03,Sxw,3,Sx,3,KI,FALSE,CAR, 
+MSdv,MSdv/04,Bl,3,Bl,3,KI,FALSE,CAR, 
+MSdv,MSdv/04,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdv,MSdv/04,Sxw,3,Sx,3,KI,FALSE,CAR, 
+MSdv,MSdv/05,Bl,3,Bl,3,KI,FALSE,CAR, 
+MSdv,MSdv/05,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdv,MSdv/05,Sxw,3,Sx,3,KI,FALSE,CAR, 
+MSdv,MSdv/06,Bl,2,Bl,2,KI,FALSE,CAR, 
+MSdv,MSdv/06,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdv,MSdv/06,Sxw,2,Sx,1,KI,FALSE,CAR, 
+MSdv,MSdv/07,Bl,2,Bl,2,KI,FALSE,CAR, 
+MSdv,MSdv/07,Pli,1,Pl,1,KI,FALSE,CAR, 
+MSdv,MSdv/07,Sxw,1,Sx,1,KI,FALSE,CAR, 
+MSdv,MSdv/08,Bl,2,Bl,2,KI,FALSE,CAR, 
+MSdv,MSdv/08,Pli,2,Pl,2,KI,FALSE,CAR, 
+MSdv,MSdv/08,Sxw,1,Sx,1,KI,FALSE,CAR, 
+MSdv,MSdv/09,Bl,2,Bl,3,KI,FALSE,CAR, 
+MSdv,MSdv/09,Pli,2,Pl,2,KI,FALSE,CAR, 
+MSdv,MSdv/09,Sxw,1,Sx,1,KI,FALSE,CAR, 
+MSxk1,MSxk1/101a,Fdi,3,Fd,, ,FALSE,TO, 
+MSxk1,MSxk1/101a,Lw,3,Lw,, ,TRUE,TO, 
+MSxk1,MSxk1/101a,Pli,1,Pl,, ,FALSE,TO, 
+MSxk1,MSxk1/101b,Bl,3,Bl,, ,FALSE,TO, 
+MSxk1,MSxk1/101b,Pli,1,Pl,, ,FALSE,TO, 
+MSxk1,MSxk1/103,Sx,3,Sx,,,FALSE,TO,imputed
+MSxk2,MSxk2/104,Sx,3,Sx,,,FALSE,TO,imputed
+MSxk3,MSxk3/03,Pli,1,Pl,,,FALSE,CAR,imputed
+MSxk3,MSxk3/03,Pa,3,Pa,,,FALSE,CAR,imputed
+MSxv,MSxv/01,Lw,5,Lw,5,KI,TRUE,CAR, 
+PPxh1,PPxh1/Fm01,Act,1,Ac,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm01,At,2,At,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm01,Ep,2,Ep,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm01,Fdi,3,Fd,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm01,Pyi,3,Py,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm05,Act,1,Ac,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm05,At,2,At,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm05,Ep,2,Ep,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm05,Fdi,3,Fd,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm05,Pyi,3,Py,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm06,Act,1,Ac,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm06,At,2,At,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm06,Ep,2,Ep,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm06,Fdi,3,Fd,, ,FALSE,TO, 
+PPxh1,PPxh1/Fm06,Pyi,3,Py,, ,FALSE,TO, 
+PPxh2,BGxh2/Fm05,Act,1,Ac,, ,FALSE,TO, 
+PPxh2,BGxh2/Fm05,At,2,At,, ,FALSE,TO, 
+PPxh2,BGxh2/Fm05,Ep,2,Ep,, ,FALSE,TO, 
+PPxh2,BGxh2/Fm05,Fdi,3,Fd,, ,FALSE,TO, 
+PPxh2,BGxh2/Fm05,Pyi,3,Py,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm01,Act,1,Ac,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm01,At,2,At,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm01,Ep,2,Ep,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm01,Fdi,3,Fd,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm01,Pyi,3,Py,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm01,Sxw,3,Sx,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm05,Act,1,Ac,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm05,At,2,At,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm05,Cw,3,Cw,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm05,Ep,2,Ep,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm05,Fdi,2,Fd,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm05,Pyi,3,Py,, ,FALSE,TO, 
+PPxh2,PPxh2/Fm05,Sxw,3,Sx,, ,FALSE,TO, 
+SBPSmk,SBPSmk/01,Lw,3,Lw,2,KI,TRUE,CAR, 
+SBPSxc,SBPSxc/02,Fdi,5,Fd,4,KI,FALSE,CAR, 
+SBPSxc,SBPSxc/02a,Fdi,5,Fd,4,KI,FALSE,CAR, 
+SBPSxc,SBPSxc/02b,Fdi,5,Fd,5,KI,FALSE,CAR, 
+SBPSxc,SBPSxc/02c,Fdi,5,Fd,4,KI,FALSE,CAR, 
+SBPSxc,SBPSxc/05,Hw,1,Hw,5,KI,FALSE,CAR,imputed
+SBSdh2,SBSdh2/01,At,3,At,, ,FALSE,OM, 
+SBSdh2,SBSdh2/01,Bl,2,Bl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/01,Ep,3,Ep,, ,FALSE,OM, 
+SBSdh2,SBSdh2/01,Fdi,3,Fd,, ,FALSE,OM, 
+SBSdh2,SBSdh2/01,Pli,1,Pl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/01,Sxw,1,Sx,, ,FALSE,OM, 
+SBSdh2,SBSdh2/01,Sb,2,Sb,,,FALSE,OM,imputed
+SBSdh2,SBSdh2/02,Pli,2,Pl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/02,Sxw,3,Sx,, ,FALSE,OM, 
+SBSdh2,SBSdh2/03,Fdi,3,Fd,, ,FALSE,OM, 
+SBSdh2,SBSdh2/03,Pli,1,Pl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/03,Pw,3,Pw,, ,FALSE,OM, 
+SBSdh2,SBSdh2/04,Fdi,3,Fd,, ,FALSE,OM, 
+SBSdh2,SBSdh2/04,Pli,1,Pl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/04,Sxw,2,Sx,, ,FALSE,OM, 
+SBSdh2,SBSdh2/05,At,3,At,, ,FALSE,OM, 
+SBSdh2,SBSdh2/05,Pli,1,Pl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/05,Sb,3,Sb,, ,FALSE,OM, 
+SBSdh2,SBSdh2/05,Sxw,3,Sx,, ,FALSE,OM, 
+SBSdh2,SBSdh2/06,At,2,At,, ,FALSE,OM, 
+SBSdh2,SBSdh2/06,Bl,2,Bl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/06,Ep,3,Ep,, ,FALSE,OM, 
+SBSdh2,SBSdh2/06,Fdi,3,Fd,, ,FALSE,OM, 
+SBSdh2,SBSdh2/06,Pli,1,Pl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/06,Sxw,1,Sx,, ,FALSE,OM, 
+SBSdh2,SBSdh2/06,Sb,2,Sb,,,FALSE,OM,imputed
+SBSdh2,SBSdh2/07,Act,2,Ac,, ,FALSE,OM, 
+SBSdh2,SBSdh2/07,At,2,At,, ,FALSE,OM, 
+SBSdh2,SBSdh2/07,Bl,2,Bl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/07,Ep,3,Ep,, ,FALSE,OM, 
+SBSdh2,SBSdh2/07,Fdi,5,Fd,, ,FALSE,OM, 
+SBSdh2,SBSdh2/07,Pli,3,Pl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/07,Sxw,1,Sx,, ,FALSE,OM, 
+SBSdh2,SBSdh2/08,Pli,3,Pl,, ,FALSE,OM, 
+SBSdh2,SBSdh2/08,Sb,1,Sb,, ,FALSE,OM, 
+SBSdh2,SBSdh2/08,Sxw,1,Sx,, ,FALSE,OM, 
+SBSmm,SBSmm/08,Bl,2,Bl,, ,FALSE,TO, 
+SBSun,SBSun/h,Bl,1,Bl,, ,FALSE,SKE, 
+SBSun,SBSun/m,Bl,1,Bl,, ,FALSE,SKE, 
+SBSun,SBSun/x,Bl,1,Bl,, ,FALSE,SKE, 
+SWBvk,SWBvk/h,Sw,3,Sx,, ,FALSE,SKE, 
+SWBvk,SWBvk/m,Sw,2,Sx,, ,FALSE,SKE, 
+SWBvk,SWBvk/x,Sw,2,Sx,, ,FALSE,SKE, 

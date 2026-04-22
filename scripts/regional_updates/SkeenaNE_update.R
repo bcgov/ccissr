@@ -67,3 +67,11 @@ suit <- suit %>%
   mutate(ss_nospace = str_replace_all(ss_nospace, "SBSvz", "SBSvc"))
 
 write.csv(suit, "tables/versioned/suitability_v13_27.csv")
+
+#bring in edatopic info for these units 
+edat<-read.csv("tables/versioned/Edatopic_v13_14.csv") 
+edat$X<-NULL
+
+edat2<-read.csv("tables/regional_updates/edat_SBSvc_mz_ESSFwc7.csv") 
+edat<-rbind(edat, edat2)               
+write.csv(edat, "tables/versioned/Edatopic_v13_15.csv") 
