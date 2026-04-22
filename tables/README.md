@@ -1,7 +1,7 @@
 # Current table versions 
 Suitability v13_17 
 
-Edatopic v13_15 
+Edatopic v13_16 
 
 WNA BGCs v13_2 
 
