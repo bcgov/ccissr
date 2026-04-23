@@ -99,7 +99,7 @@ write.csv(edat, "tables/versioned/Edatopic_v13_14.csv")
 library(dplyr)
 library(stringr)
 #load WNA BGCs list
-WNA_BGC_list<-read.csv("tables/WNA_BGCs.csv")
+WNA_BGC_list<-read.csv("tables/WNA_BGCs_Info.csv")
 WNA_BGC_list$X<-NULL
 
 #read in US 2026 info  
