@@ -39,6 +39,20 @@ suit<-rbind(suit, USBEC_update2)
 #write out new version
 write.csv(suit, "tables/versioned/Suitability_v13_26.csv")
 
+#fix missing "PPJWxh_CA" ratings 
+suit<-read.csv("tables/versioned/Suitability_v13_28.csv")
+suit$X<-NULL
+names(suit)
+
+USBEC_update<-read.csv("tables/regional_updates/Feasibility_USBEC_DVM_4Jan2026.csv") 
+USBEC_update<-subset(USBEC_update, bgc=="PPJWxh_CA")%>%select(-Notes..Jan.Mar.2026, -X, -X.1, -X.2) 
+names(USBEC_update)
+USBEC_update<-rename(USBEC_update, suitability=feasible, newsuit=newfeas)
+
+suit<-rbind(suit, USBEC_update)
+
+#write out new version
+write.csv(suit, "tables/versioned/Suitability_v13_29.csv")
 
 #Edatopic----
 edat<-read.csv("tables/versioned/Edatopic_v13_11.csv") 
