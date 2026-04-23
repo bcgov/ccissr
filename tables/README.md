@@ -1,7 +1,7 @@
 # Current table versions 
-Suitability v13_28 
+Suitability v13_29
 
-Edatopic v13_16 
+Edatopic v13_11 
 
 WNA BGCs v13_2 
 
