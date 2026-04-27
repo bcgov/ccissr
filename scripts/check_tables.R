@@ -76,10 +76,7 @@ sort(setdiff(check00, BGC_list))#in edat but not CCISS list-> can leave as is (a
 #cross-check BGC list & suit
 check<-subset(suit_tab, bgc %in%BGC_list)
 check<-unique(check$bgc)
-sort(setdiff(BGC_list, check)) 
-# "BAFAun"    "CMAun"     "CMAwh"   "IMAab"     "IMAun"   -missing alpine -Will?      
-#"MGPdm"     "MGPmg"   "FGnf"    - AB units missing from suit table -Will? 
-#"SWBmks"    "SWBuns"    "SWBvks"   - missing- Will? Erica?
+sort(setdiff(BGC_list, check)) # all of these alpine, grassland, scrub so ok to ignore 
 
 
 #cross-check BGC list & ss - PAUSED- waiting for new ss CSV from Will 
@@ -97,5 +94,4 @@ check4<-unique(ss_tab$BGC_NoSpace)
 xx<-sort(setdiff(BGC_list_sub, check4)) 
 xxedat<-subset(edat, BGC%in%xx)
 sort(setdiff(check4, BGC_list_sub)) #remove/rename
-
 
