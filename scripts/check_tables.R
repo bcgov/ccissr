@@ -96,9 +96,10 @@ xxedat<-subset(edatopic_tab, BGC%in%xx)
 sort(setdiff(check4, BGC_list_sub)) #remove/rename
 
 #tree spp codes
-treespp<-read.csv("tables/Tree_species_codes.csv")
+treespp<-read.csv("tables/metadata/Tree_species_codes.csv")
 treespp<-unique(treespp$TreeCode)
 treespp2<-unique(suit_tab$sppsplit)
 sort(setdiff(treespp2, treespp))
 
 intersect(treespp, treespp2)
+

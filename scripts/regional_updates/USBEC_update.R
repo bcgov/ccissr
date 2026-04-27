@@ -156,3 +156,36 @@ WNA_BGC_list<-subset(WNA_BGC_list, BGC!="FGff" & BGC!="SBAPfp") #remove two from
 WNA_BGC_list<-rbind(WNA_BGC_list, US_BGC_list)#add back in
 
 write.csv(WNA_BGC_list, "tables/versioned/WNA_BGCs_v13_4.csv")
+
+#add colors info
+cols<-read.csv("tables/metadata/WNA_SubzoneCols.csv")
+cols$BGC<-cols$classification
+cols$classification<-NULL
+
+cols$BGC[cols$BGC=="ESSFun"] <-  "ESSFun2"
+cols$BGC[cols$BGC=="ICHun"] <-  "ICHun1"
+cols$BGC[cols$BGC=="MHun"] <-  'MHun1'
+cols$BGC[cols$BGC=="MSun"] <-  'MSun1'
+cols$BGC[cols$BGC=="SWBun"] <-  'SWBun1'
+cols$BGC[cols$BGC=="OWdm_OR"] <-  'OWwm_OR'
+cols$BGC[cols$BGC=="OWun_CA"] <-  'OWxm_CA'
+cols$BGC[cols$BGC=="JPWdm_WY"] <-  'PPJWdm_WY'
+cols$BGC[cols$BGC=="JPWxw_NV"] <-  'PPJWxw_NV'
+cols$BGC[cols$BGC=="JPWxh_CA"] <-  'PPJWxh_CA'
+cols$BGC[cols$BGC=="JPWwm_CO"] <-  'PPJWwm_CO'
+cols$BGC[cols$BGC=="JPWdw_UT"] <-  'PPJWdw_UT'
+cols$BGC[cols$BGC=="JPWmk_WY"] <-  'PPJWmw_UT'
+cols$BGC[cols$BGC=="ESSFmw"] <-  'ESSFwc7'
+
+WNA_BGC_list<-left_join(WNA_BGC_list, cols)
+
+#which are missing colors? 
+miss<-subset(WNA_BGC_list, is.na(colour))
+sort(unique(miss2$BGC))
+
+
+cols<-unique(cols$classification)
+sort(setdiff(BGC_list, cols))
+sort(setdiff(cols, BGC_list))
+#write out newest version
+write.csv(WNA_BGC_list, "tables/versioned/WNA_BGCs_v13_6.csv")
