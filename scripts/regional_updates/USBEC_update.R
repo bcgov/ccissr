@@ -187,5 +187,7 @@ sort(unique(miss2$BGC))
 cols<-unique(cols$classification)
 sort(setdiff(BGC_list, cols))
 sort(setdiff(cols, BGC_list))
+
 #write out newest version
 write.csv(WNA_BGC_list, "tables/versioned/WNA_BGCs_v13_6.csv")
+
