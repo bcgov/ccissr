@@ -181,6 +181,68 @@ summarise_preds <- function(dbCon,
   return(invisible(TRUE))
 }
 
+#' Create ensemble subzone or zone winner
+#' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
+#' @param ssp_w Numeric vector. Weights for each ssp in `ssp_use`
+#' @param by_zone Logical. Calculate winner by zone? Default `FALSE`.
+#' @param table_name Name of table to create in database. Table must not already exist.
+#' @return NULL. Table is written to duckdb connection
+#' @import data.table
+#' @importFrom duckdb dbExecute dbWriteTable
+#' @importFrom glue glue
+#' @export
+ensemble_predictions <- function(dbCon,
+                            ssp_use = c("ssp126", "ssp245", "ssp370"),
+                            ssp_w = c(0.8,1,0.8),
+                            by_zone = FALSE,
+                            table_name = "ensemble_preds") {
+  
+  ssp_weights <- data.table(ssp = ssp_use, weight = ssp_w)
+  dbWriteTable(dbCon, "ssp_weights", ssp_weights, temporary = TRUE, overwrite = TRUE)
+  
+  if (by_zone) {
+    true_expr <- "regexp_extract(bgc_pred,'^[A-Z]+')"
+  } else {
+    true_expr <- "bgc_pred"
+  }
+  
+  summarised_qry <- glue("CREATE TABLE {table_name} AS
+                      WITH wt AS (
+                        SELECT cellnum, ssp, period, {true_expr} as bgc, w.weight
+                        FROM bgc_raw r
+                        LEFT JOIN ssp_weights w USING (ssp)
+                      ),
+                      totals AS (
+                        SELECT cellnum, period, SUM(weight) AS tot_wt
+                        FROM wt
+                        GROUP BY cellnum, period
+                      ),
+                      summary AS (
+                        SELECT
+                          w.cellnum,
+                          w.period,
+                          w.bgc,
+                          SUM(w.weight) / t.tot_wt AS bgc_prop
+                        FROM wt w
+                        JOIN totals t
+                          ON w.cellnum = t.cellnum
+                         AND w.period = t.period
+                        GROUP BY w.cellnum, w.period, w.bgc, t.tot_wt
+                      )
+                      
+                      SELECT cellnum, period, bgc, bgc_prop
+                      FROM (
+                        SELECT *,
+                               ROW_NUMBER() OVER (PARTITION BY cellnum, period ORDER BY bgc_prop DESC) as rn
+                              FROM summary
+                        ) t
+                      WHERE rn = 1
+                      ORDER BY cellnum, period;
+                      ")
+  dbExecute(con, summarised_qry)
+  message("✓ Created table ", table_name)
+  return(invisible(TRUE))
+}
 
 #' Create table of BGC subzone/zone persistance/expansion from raw BGC projections
 #' @details
@@ -1555,4 +1617,265 @@ spp_persist_expand_region <- function(con, spp_list, region_table, region_name,
   dbExecute(con, sql)
   return(invisible(TRUE))
 }
+
+
+calc_suit_area_region <- function(
+    con,
+    spp_list,
+    region_table, 
+    region_name, 
+    fractional = TRUE,
+    binary = 1,
+    table_name = "spp_suit_area_region"
+) {
+  
+  stopifnot(DBI::dbIsValid(con))
+  region_name <- SQL(region_name)
+  region_table <- SQL(region_table)
+  # Suit transformation for fractional vs binary
+  new_suit_expr <- if (fractional) {
+    SQL("1.0 - (NewSuit_code - 1) / 4.0")
+  } else {
+    SQL(glue("CASE WHEN NewSuit_code <= {binary} THEN 1 ELSE 0 END"))
+  }
+  
+  mapped_expr <- if (fractional) {
+    SQL("SUM( (1.0 - (Suit_code - 1) / 4.0) * BGC_Tot )")
+  } else {
+    SQL(glue("SUM( (CASE WHEN Suit_code <= {binary} THEN 1 ELSE 0 END) * BGC_Tot )"))
+  }
+  
+  insert <- if(duckdb_table_exists(con, table_name)) {
+    SQL(glue("INSERT INTO {table_name} "))
+  } else {
+    SQL(glue("CREATE TABLE {table_name} AS "))
+  }
+  
+  sql <- glue_sql("
+                  {insert}
+    -----------------------------------------------------------------------------
+    -- 1. Add BGC_TRUE FROM points
+    -----------------------------------------------------------------------------
+    WITH bgc_joined AS (
+      SELECT a.*, {region_name} AS region, p.bgc AS bgc_true
+      FROM bgc_raw a
+      JOIN {region_table} USING (cellnum)
+      LEFT JOIN bgc_points p USING (cellnum)
+      WHERE p.bgc IS NOT NULL
+      AND p.bgc IN (SELECT bgc FROM thlb_bgcs WHERE in_thlb)
+    ),
+
+    -----------------------------------------------------------------------------
+    -- 2. Merge edatopic on bgc_pred (SS_Pred)
+    -----------------------------------------------------------------------------
+    bgc_eda AS (
+      SELECT
+        b.*,
+        e1.Edatopic,
+        e1.SS_NoSpace AS SS_Pred
+      FROM bgc_joined b
+      LEFT JOIN edatopic e1
+        ON b.bgc_pred = e1.BGC
+    ),
+
+    -----------------------------------------------------------------------------
+    -- 3. Compute mapped historic suitability per species × edatopic
+    -----------------------------------------------------------------------------
+    bgc_sum AS (
+      SELECT bgc_points.bgc, {region_name} AS region, COUNT(*) AS BGC_Tot
+      FROM bgc_points
+      JOIN {region_table} USING (cellnum)
+      WHERE bgc_points.bgc IN (SELECT bgc FROM thlb_bgcs WHERE in_thlb)
+      GROUP BY bgc_points.bgc, region
+    ),
+
+    mapped_raw AS (
+      SELECT
+        bs.bgc,
+        bs.region,
+        bs.BGC_Tot,
+        e.Edatopic,
+        e.SS_NoSpace,
+        s.spp,
+        s.newfeas
+      FROM bgc_sum bs
+      FULL JOIN edatopic e ON bs.bgc = e.bgc
+      FULL JOIN suitability s ON e.ss_nospace = s.ss_nospace
+      WHERE s.spp IN ({spp_list*})
+    ),
+
+    mapped_clean AS (
+      SELECT
+        spp,
+        bgc,
+        region,
+        BGC_Tot,
+        Edatopic,
+        CASE WHEN newfeas IS NULL OR newfeas = 4 THEN 5 ELSE newfeas END AS Suit_code
+      FROM mapped_raw
+    ),
+
+    mapped_min AS (
+      SELECT
+        spp, bgc,  region, BGC_Tot, Edatopic,
+        MIN(Suit_code) AS Suit_code
+      FROM mapped_clean
+      GROUP BY spp, bgc, region, BGC_Tot, Edatopic
+    ),
+
+    mapped_suit AS (
+      SELECT
+        region,
+        spp,
+        Edatopic,
+        {mapped_expr} AS MappedSuit --using fractional or binary
+      FROM mapped_min
+      GROUP BY region, spp, Edatopic
+    ),
+
+    -----------------------------------------------------------------------------
+    -- 4. Compute projected suitability for each species
+    -----------------------------------------------------------------------------
+    bgc_spp_suit AS (
+      SELECT
+        st.spp,
+        e.cellnum,
+        e.ssp,
+        e.gcm,
+        e.run,
+        e.period,
+        e.Edatopic,
+        --
+        -- Assign suitability from suit table
+        --
+        CASE
+          WHEN st.newfeas IS NULL OR st.newfeas = 4 THEN 5
+          ELSE st.newfeas
+        END AS NewSuit_code
+      FROM bgc_eda e
+      LEFT JOIN suitability st
+        ON e.SS_Pred = st.ss_nospace
+      WHERE st.spp IN ({spp_list*})
+    ),
+
+    bgc_spp_val AS (
+      SELECT
+        spp,
+        cellnum,
+        ssp,
+        gcm,
+        run,
+        period,
+        Edatopic,
+        {new_suit_expr} AS NewSuit_val --fractional or binary
+      FROM bgc_spp_suit
+    ),
+
+    -----------------------------------------------------------------------------
+    -- 5. Best suitability per location
+    -----------------------------------------------------------------------------
+    bgc_best AS (
+      SELECT
+        spp, cellnum, ssp, gcm, run, period, Edatopic,
+        MIN(NewSuit_val) AS NewSuit
+      FROM bgc_spp_val
+      GROUP BY spp, cellnum, ssp, gcm, run, period, Edatopic
+    ),
+
+    -----------------------------------------------------------------------------
+    -- 6. Area per species × edatopic × scenario
+    -----------------------------------------------------------------------------
+    suit_area_raw AS (
+      SELECT
+        {region_name} AS region, 
+        spp, Edatopic, ssp, gcm, run, period,
+        SUM(NewSuit) AS Proj_Area
+      FROM bgc_best
+      JOIN {region_table} USING(cellnum)
+      GROUP BY {region_name}, spp, Edatopic, ssp, gcm, run, period
+    )
+
+    -----------------------------------------------------------------------------
+    -- 7. Join with mapped suit & compute Suit_Prop
+    -----------------------------------------------------------------------------
+    SELECT
+      s.region,
+      s.spp,
+      s.Edatopic,
+      s.ssp,
+      s.gcm,
+      s.run,
+      s.period,
+      s.Proj_Area,
+      m.MappedSuit,
+      s.Proj_Area / m.MappedSuit AS Suit_Prop
+    FROM suit_area_raw s
+    JOIN mapped_suit m
+      ON s.spp = m.spp AND s.Edatopic = m.Edatopic AND s.region = m.region;
+  ", .con = con)
+  
+  dbExecute(con, sql)
+  return(invisible(TRUE))
+}
+
+
+bgc_area_region <- function(con, region_table, region_name, by_zone = TRUE) {
+  if (by_zone) {
+    pred_expr <- DBI::SQL("regexp_extract(a.bgc_pred, '^[A-Z]+')")
+    true_expr <- DBI::SQL("regexp_extract(p.bgc,      '^[A-Z]+')")
+    tot_group <- DBI::SQL("regexp_extract(bgc, '^[A-Z]+')")
+  } else {
+    pred_expr <- DBI::SQL("a.bgc_pred")
+    true_expr <- DBI::SQL("p.bgc")
+    tot_group <- DBI::SQL("bgc")
+  }
+  region_name <- DBI::SQL(region_name)
+  region_table <- DBI::SQL(region_table)
+  ## Construct SQL dynamically
+  sql <- glue_sql("
+    WITH
+    joined AS (
+      SELECT
+        a.cellnum,
+        {region_name},
+        a.ssp,
+        a.gcm,
+        a.run,
+        a.period,
+        {pred_expr} AS bgc_pred,
+        {true_expr} AS bgc
+      FROM bgc_raw a
+      LEFT JOIN bgc_points p USING (cellnum)
+      JOIN {region_table} USING (cellnum)
+      WHERE p.bgc IS NOT NULL          -- removes NA join
+    ),
+    agg AS (
+      SELECT
+        {region_name} AS region, ssp, gcm, run, period, bgc_pred,
+        COUNT(*) AS bgc_area
+      FROM joined
+      GROUP BY {region_name}, ssp, gcm, run, period, bgc_pred
+    ),
+    bgc_tot AS (
+      SELECT
+        {region_name} AS region,
+        {tot_group} AS bgc_true,
+        COUNT(*) AS bgc_mapped
+      FROM bgc_points
+      JOIN {region_table} USING (cellnum)
+      GROUP BY {region_name}, bgc_true
+    )
+    SELECT
+      a.*,
+      t.bgc_mapped
+    FROM agg a
+    LEFT JOIN bgc_tot t
+      ON a.bgc_pred = t.bgc_true
+      AND a.region = t.region;
+      ", .con = con)
+  
+  dat <- dbGetQuery(con, sql) |> as.data.table()
+  dat
+}
+
 
