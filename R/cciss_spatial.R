@@ -106,7 +106,6 @@ predict_bgc <- function(dbCon,
     mat_dat <- clim_dat[,.(cellnum = id, ssp = SSP, gcm = GCM, run = RUN, period = PERIOD, MAT)]
     dbWriteTable(dbCon, "clim_raw", mat_dat, row.names = FALSE, append = TRUE)
     
-    setnames(clim_dat, old = c("PAS_an","Tmin_an","CMI_an"), new = c("PAS","Tmin","CMI"))
     temp <- predict(BGCmodel, data = clim_dat, num.threads = 8)
     dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, run = clim_dat$RUN,
                       period = clim_dat$PERIOD, bgc_pred = temp$predictions)
