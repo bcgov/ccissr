@@ -188,7 +188,7 @@ summarise_preds <- function(dbCon,
 #' @param table_name Name of table to create in database. Table must not already exist.
 #' @return NULL. Table is written to duckdb connection
 #' @import data.table
-#' @importFrom duckdb dbExecute dbWriteTable
+#' @importFrom DBI dbExecute dbWriteTable
 #' @importFrom glue glue
 #' @export
 ensemble_predictions <- function(dbCon,
