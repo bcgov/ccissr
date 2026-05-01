@@ -191,3 +191,12 @@ sort(setdiff(cols, BGC_list))
 #write out newest version
 write.csv(WNA_BGC_list, "tables/versioned/WNA_BGCs_v13_6.csv")
 
+#zone colours 
+cols2<-read.csv("tables/metadata/WNA_ZoneCols.csv")
+WNA_BGC_list<-read.csv("tables/versioned/WNA_BGCs_v13_7.csv")
+cols2<-rename(cols2, ZoneColour=colour, Zone=classification)
+cols2$Zone[cols2$Zone=="JPW"] <-  'PPJW'
+
+WNA_BGC_list<-left_join(WNA_BGC_list, cols2)%>%relocate(ZoneColour, .after = colour)
+
+write.csv(WNA_BGC_list, "tables/versioned/WNA_BGCs_v13_8.csv")
