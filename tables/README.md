@@ -3,6 +3,6 @@ Suitability v13_30
 
 Edatopic v13_17 
 
-WNA BGCs v13_6 
+WNA BGCs v13_7 
 
 Site series v13_2

@@ -10,7 +10,7 @@ BGC_list$X<-NULL
 #BGC_list$BGC_Label<-NULL
 
 #read in updated table
-BGC_update<-read.csv("tables/versioned/WNA_BGCs_v13_6.csv")
+BGC_update<-read.csv("tables/versioned/WNA_BGCs_v13_7.csv")
 BGC_update$X<-NULL
 
 #run diff and write out report 
@@ -18,7 +18,7 @@ diff <- compareDF::compare_df(BGC_update, BGC_list, group_col = c("BGC", "BGCNam
 diff$change_summary
 diffrept<-diff$comparison_df
 
-write.csv(diffrept, "tables/versioned/tracked_changes/BGCs/diff_report_v13_6.csv") #rename with version to match update 
+write.csv(diffrept, "tables/versioned/tracked_changes/BGCs/diff_report_v13_7.csv") #rename with version to match update 
 
 #overwrite current table with updated table 
 #indicate in git commit 
@@ -30,7 +30,7 @@ path <- "tables/README.md"
 updated_readme<- c("# Current table versions ",  
                    "Suitability v13_30",        ""               ,
                    "Edatopic v13_17 ",    ""               ,
-                   "WNA BGCs v13_6 ",     ""               ,
+                   "WNA BGCs v13_7 ",     ""               ,
                    "Site series v13_2")     #update version #s 
 # Write the updated content back to the README
 writeLines(updated_readme, path)
