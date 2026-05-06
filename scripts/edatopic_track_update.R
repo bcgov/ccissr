@@ -7,7 +7,7 @@ edat$X<-NULL
 names(edat)
 
 #read in updated table
-edat_update<-read.csv("tables/versioned/Edatopic_v13_17.csv") 
+edat_update<-read.csv("tables/versioned/Edatopic_v13_18.csv") 
 edat_update$X<-NULL
 
 #run diff and write out report 
@@ -15,7 +15,7 @@ diff <- compareDF::compare_df(edat_update, edat, group_col = c("SS_NoSpace", "Ed
 diff$change_summary
 diffrept<-diff$comparison_df
 
-write.csv(diffrept, "tables/versioned/tracked_changes/edatopic/diff_report_v13_17.csv") #rename with version to match update 
+write.csv(diffrept, "tables/versioned/tracked_changes/edatopic/diff_report_v13_18.csv") #rename with version to match update 
 
 #overwrite current table with updated table 
 #indicate in git commit 
@@ -26,7 +26,7 @@ path <- "tables/README.md"
 
 updated_readme<- c("# Current table versions ",  
                    "Suitability v13_30 ",        ""               ,
-                   "Edatopic v13_17 ",    ""               ,
+                   "Edatopic v13_18 ",    ""               ,
                    "WNA BGCs v13_5 ",     ""               ,
                    "Site series v13_2")     #update version #s 
 # Write the updated content back to the README
