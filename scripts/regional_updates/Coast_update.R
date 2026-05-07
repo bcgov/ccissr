@@ -127,4 +127,56 @@ suit<-filter(suit, bgc!="CMAunp")
 #write out version
 write.csv(suit, "tables/versioned/Suitability_v13_24.csv")
 
+#more bec 13 updates ----
+#update naming to MHun1
+suit<-read.csv("tables/versioned/Suitability_v13_29.csv")
+suit$X<-NULL
+names(suit)
 
+unp<-subset(suit,bgc=="MHunp")
+suit<-subset(suit,bgc!="MHunp")#pull these out so not str replaced 
+
+suit <- suit %>%
+  mutate(bgc = str_replace_all(bgc, "MHun", "MHun1"))%>%
+  mutate(ss_nospace = str_replace_all(ss_nospace, "MHun", "MHun1"))
+
+suit<-rbind(suit, unp)
+
+edat<-read.csv("tables/versioned/Edatopic_v13_16.csv") 
+edat$X<-NULL
+names(edat)
+
+unp<-subset(edat,BGC=="MHunp")
+edat<-subset(edat,BGC!="MHunp")#pull these out so not str replaced 
+
+edat <- edat %>%
+  mutate(BGC = str_replace_all(BGC, "MHun", "MHun1"))%>%
+  mutate(SS_NoSpace = str_replace_all(SS_NoSpace, "MHun", "MHun1"))
+edat<-rbind(edat, unp) #add back in 
+
+#update other units - from Heather K 4/23/26
+#add ESSFun1, ESSFun2, ICHun1, and MSun1 ratings. 
+#These will replace the ESSFun and ESSFmw ratings; the IDFww stays [and the ESSFmw1 and 2 are good to stay too].
+
+suituns<-read.csv("tables/regional_updates/suit_v13coast_uns.csv")
+edatuns<-read.csv("tables/regional_updates/edat_v13coast_uns.csv")
+
+suit<-subset(suit, bgc!="ESSFun"& bgc!="ESSFmw")
+edat<-subset(edat, BGC!="ESSFun"& BGC!="ESSFmw")
+
+suit<-rbind(suit, suituns)
+edat<-rbind(edat, edatuns)
+
+#write out new versions
+suit<-write.csv(suit, "tables/versioned/Suitability_v13_30.csv")
+edat<-write.csv(edat, "tables/versioned/Edatopic_v13_17.csv")
+
+#BGCs info 
+BGCsv13<-read.csv("tables/regional_updates/BECv13_updates.csv")
+
+BGCs<-read.csv("tables/versioned/WNA_BGCs_v13_4.csv")
+BGCs<-subset(BGCs, BGC!="ESSFun"& BGC!="ESSFmw"& BGC!="MHun" & BGC!="SWBun" & BGC!="ICHun")
+BGCs$X<-NULL
+BGCs<-rbind(BGCs, BGCsv13)
+
+write.csv(BGCs, "tables/versioned/WNA_BGCs_v13_5.csv")

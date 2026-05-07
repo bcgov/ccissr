@@ -47,12 +47,10 @@
 "46","BGCv11","IDF","IDF_cool","IDFdk","IDFdk4","Chilcotin Dry Cool IDF","Interior Douglas-fir","Dry Cool","Chilcotin","","","BC","BC",""
 "47","BGCv11","IDF","IDF_cool","IDFdk","IDFdk5","Columbia Dry Cool IDF","Interior Douglas-fir","Dry Cool","Columbia","","","BC","BC",""
 "48","BGCv11","ESSF","ESSF_meso","ESSFmvp","ESSFmvp","Moist Very Cold Parkland ESSF","Engelmann Spruce  –  Subalpine Fir","Moist Very Cold Parkland","","","","BC","BC",""
-"49","BGCv11","ESSF","ESSF_meso","ESSFmw","ESSFmw","Moist Warm ESSF","Engelmann Spruce  –  Subalpine Fir","Moist Warm","","","","BC","BC",""
 "50","BGCv11","ESSF","ESSF_meso","ESSFmw","ESSFmw1","Cascade Moist Warm ESSF","Engelmann Spruce  –  Subalpine Fir","Moist Warm","Cascade","","","BC","BC",""
 "51","BGCv11","ESSF","ESSF_meso","ESSFmw","ESSFmw2","Stein Moist Warm ESSF","Engelmann Spruce  –  Subalpine Fir","Moist Warm","Stein","","","BC","BC",""
 "52","BGCv11","ESSF","ESSF_meso","ESSFmwp","ESSFmwp","Moist Warm Parkland ESSF","Engelmann Spruce  –  Subalpine Fir","Moist Warm Parkland","","","","BC","BC",""
 "53","BGCv11","ESSF","ESSF_meso","ESSFmww","ESSFmww","Moist Warm Woodland ESSF","Engelmann Spruce  –  Subalpine Fir","Moist Warm Woodland","","","","BC","BC",""
-"54","BGCv11","ESSF","ESSF_meso","ESSFun","ESSFun","Undifferentiated ESSF","Engelmann Spruce  –  Subalpine Fir","Undifferentiated","","","","BC","BC",""
 "55","BGCv11","ESSF","ESSF_meso","ESSFunp","ESSFunp","Undifferentiated Parkland ESSF","Engelmann Spruce  –  Subalpine Fir","Undifferentiated Parkland","","","","BC","BC",""
 "56","BGCv11","ESSF","ESSF_wet","ESSFvc","ESSFvc","Very Wet Cold ESSF","Engelmann Spruce  –  Subalpine Fir","Very Wet Cold","","","","BC","BC",""
 "57","BGCv11","ESSF","ESSF_wet","ESSFvcp","ESSFvcp","Very Wet Cold Parkland ESSF","Engelmann Spruce  –  Subalpine Fir","Very Wet Cold Parkland","","","","BC","BC",""
@@ -118,7 +116,6 @@
 "117","BGCv11","MH","MH_maritime","MHmm","MHmm1","Windward Moist Maritime MH","Mountain Hemlock","Moist Maritime","Windward","","","BC","BC",""
 "118","BGCv11","MH","MH_submaritme","MHmm","MHmm2","Leeward Moist Maritime MH","Mountain Hemlock","Moist Maritime","Leeward","","","BC","BC",""
 "119","BGCv11","MH","MH_maritime","MHmmp","MHmmp","Moist Maritime Parkland MH","Mountain Hemlock","Moist Maritime Parkland","","","","BC","BC",""
-"120","BGCv11","MH","MH_submaritme","MHun","MHun","Undifferentiated MH","Mountain Hemlock","Undifferentiated","","","","BC","BC",""
 "121","BGCv11","MH","MH_submaritme","MHunp","MHunp","Undifferentiated Parkland MH","Mountain Hemlock","Undifferentiated Parkland","","","","BC","BC",""
 "122","BGCv11","MH","MH_maritime","MHwh","MHwh","Wet Hypermaritime MH","Mountain Hemlock","Wet Hypermaritime","","","","BC","BC",""
 "123","BGCv11","MH","MH_maritime","MHwhp","MHwhp","Wet Hypermaritime Parkland MH","Mountain Hemlock","Wet Hypermaritime Parkland","","","","BC","BC",""
@@ -211,7 +208,6 @@
 "210","BGCv11","SBS","SBS_wet","SBSwka","SBSwk3a","Takla Wet Cool SBS","Sub-Boreal Spruce","Wet Cool","Takla","","","BC","BC",""
 "211","BGCv11","SWB","SWB","SWBmk","SWBmk","Moist Cool SWB","Spruce –  Willow  –  Birch","Moist Cool","","","","BC","BC",""
 "212","BGCv11","SWB","SWB","SWBmks","SWBmks","Moist Cool Scrub SWB","Spruce –  Willow  –  Birch","Moist Cool Scrub","","","","BC","BC",""
-"213","BGCv11","SWB","SWB","SWBun","SWBun","Undifferentiated SWB","Spruce –  Willow  –  Birch","Undifferentiated","","","","BC","BC",""
 "214","BGCv11","SWB","SWB","SWBuns","SWBuns","Undifferentiated Scrub SWB","Spruce –  Willow  –  Birch","Undifferentiated Scrub","","","","BC","BC",""
 "215","BGCv11","SWB","SWB","SWBvk","SWBvk","Very Wet Cool SWB","Spruce –  Willow  –  Birch","Very Wet Cool","","","","BC","BC",""
 "216","BGCv11","SWB","SWB","SWBvks","SWBvks","Very Wet Cool Scrub SWB","Spruce –  Willow  –  Birch","Very Wet Cool Scrub","","","","BC","BC",""
@@ -244,7 +240,6 @@
 "243","BGCv13","CWH","CWH_dry/continental","CWHws","CWHws2","Montane Wet Submaritime CWH","Coastal Western Hemlock","Wet Submaritime","Montane","","","BC","BC",""
 "244","BGCv13","CWH","CWH_dry/continental","CWHws","CWHws3","Central Submontane Wet Submaritime CWH","Coastal Western Hemlock","Wet Submaritime","Central Submontane","","","BC","BC",""
 "245","BGCv13","CWH","CWH_dry/continental","CWHxs","CWHxs","Very Dry SubMaritime CWH","Coastal Western Hemlock","Very Dry SubMaritime","","","","BC","BC",""
-"246","BGCv13","ICH","ICH_dry","ICHun","ICHun","Undifferentiated ICH","Interior Cedar  –  Hemlock","Undifferentiated","","","","BC","BC",""
 "247","BGCv13","MH","MH_submaritme","MHms","MHms","Moist Submaritime MH","Mountain Hemlock","Moist Submaritime","","","","BC","BC",""
 "248","BGCv13","MH","MH_submaritme","MHmsp","MHmsp","Moist Submaritime Parkland MH","Mountain Hemlock","Moist Submaritime Parkland","","","","BC","BC",""
 "249","BGCv13","MH","MH_maritime","MHvh","MHvh","Very Wet Hypermaritime MH","Mountain Hemlock","Very Wet Hypermaritime","","","","BC","BC",""
@@ -412,3 +407,12 @@
 "411","USA_2026","PPJW","PPJW","PPJWwm","PPJWwm_CO","Wet Mild Colorado PPJW","Pinyon Pine – Juniper Woodland","Wet Mild","CO","EC & SE Colorado","","USA","CO",""
 "412","USA_2026","PPJW","PPJW","PPJWxh","PPJWxh_CA","Very Dry Hot California PPJW","Pinyon Pine – Juniper Woodland","Very Dry Hot","CA","S California","","USA","CA",""
 "413","USA_2026","PPJW","PPJW","PPJWxw","PPJWxw_NV","Very Dry Warm Nevada PPJW","Pinyon Pine – Juniper Woodland","Very Dry Warm","NV","Nevada, E California, W Utah, S Idaho","","USA","NV",""
+"120","BGCv13","ESSF","","ESSFun","ESSFun1","Undifferentiated Central Coast ESSF","Engelmann Spruce  –  Subalpine Fir","Undifferentiated"," Central Coast",NA,"ESSFmw portion","BC","BC",NA
+"213","BGCv13","ESSF","","ESSFun","ESSFun2","Undifferentiated Stikine EESF","Engelmann Spruce  –  Subalpine Fir","Undifferentiated","Stikine ",NA,"ESSFun","BC","BC",NA
+"3100","BGCv13","ICH","","ICHun","ICHun1","Undifferentiated Central Coast ICH","Interior Cedar  –  Hemlock","Undifferentiated"," Central Coast",NA,"IDFww portion","BC","BC",NA
+"49","BGCv13","MH","","MHun","MHun1","Undifferentiated Stikine MH","Mountain Hemlock","Undifferentiated","Stikine ",NA,"Mhun","BC","BC",NA
+"54","BGCv13","MS","","MSun","MSun1","Undifferentiated Central Coast MS","Montane Spruce","Undifferentiated"," Central Coast",NA,"MSun","BC","BC",NA
+"610","BGCv13","SBS","SBS_meso","SBSmz","SBSmz","Moist and Extremely Cold SBS"," Sub-boreal Spruce","Moist and Extremely Cold ","",NA,"","BC","BC",NA
+"710","BGCv13","SBS","SBS_wet","SBSvc","SBSvc","Very Wet and Cold SBS"," Sub-boreal Spruce","Very Wet and Cold ","",NA,"SBSvz","BC","BC",NA
+"810","BGCv13","SWB","","SWBun","SWBun1","Undifferentiated SWB","Spruce –  Willow  –  Birch","Undifferentiated","",NA,"SWBun","BC","BC",NA
+"910","BGCv13","ESSF","ESSF_wet","ESSFwc","ESSFwc7","Wet cold Bowron ESSF","Engelmann Spruce  –  Subalpine Fir","Wet Cold","Bowron",NA,"ESSFwc3","BC","BC",NA

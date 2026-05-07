@@ -55,3 +55,23 @@ new<-rbind(new, new2)
 suit<-rbind(suit, new)
 #writenew#write asnew#writenew#write as new version
 write.csv(suit, "tables/versioned/suitability_v13_18.csv")
+
+
+#update naming of SBSvc
+suit<-read.csv("tables/versioned/Suitability_v13_26.csv")
+suit$X<-NULL
+names(suit)
+
+suit <- suit %>%
+  mutate(bgc = str_replace_all(bgc, "SBSvz", "SBSvc"))%>%
+  mutate(ss_nospace = str_replace_all(ss_nospace, "SBSvz", "SBSvc"))
+
+write.csv(suit, "tables/versioned/suitability_v13_27.csv")
+
+#bring in edatopic info for these units 
+edat<-read.csv("tables/versioned/Edatopic_v13_14.csv") 
+edat$X<-NULL
+
+edat2<-read.csv("tables/regional_updates/edat_SBSvc_mz_ESSFwc7.csv") 
+edat<-rbind(edat, edat2)               
+write.csv(edat, "tables/versioned/Edatopic_v13_15.csv") 

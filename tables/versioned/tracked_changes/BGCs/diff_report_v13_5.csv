@@ -1,0 +1,15 @@
+"","grp","chng_type","Source","Zone","SubzoneGroup","Subzone","BGC","BGCName","ZoneName","SubzoneName","VariantName","General.Location","OldSubzoneLabel","DataSet","State","Notes"
+"1",147,"-","BGCv11","ESSF","ESSF_meso","ESSFmw","ESSFmw","Moist Warm ESSF","Engelmann Spruce  –  Subalpine Fir","Moist Warm","","","","BC","BC",""
+"2",154,"-","BGCv11","ESSF","ESSF_meso","ESSFun","ESSFun","Undifferentiated ESSF","Engelmann Spruce  –  Subalpine Fir","Undifferentiated","","","","BC","BC",""
+"3",155,"+","BGCv13","ESSF","","ESSFun","ESSFun1","Undifferentiated Central Coast ESSF","Engelmann Spruce  –  Subalpine Fir","Undifferentiated"," Central Coast",NA,"ESSFmw portion","BC","BC",NA
+"4",156,"+","BGCv13","ESSF","","ESSFun","ESSFun2","Undifferentiated Stikine EESF","Engelmann Spruce  –  Subalpine Fir","Undifferentiated","Stikine ",NA,"ESSFun","BC","BC",NA
+"5",164,"+","BGCv13","ESSF","ESSF_wet","ESSFwc","ESSFwc7","Wet cold Bowron ESSF","Engelmann Spruce  –  Subalpine Fir","Wet Cold","Bowron",NA,"ESSFwc3","BC","BC",NA
+"6",236,"-","BGCv13","ICH","ICH_dry","ICHun","ICHun","Undifferentiated ICH","Interior Cedar  –  Hemlock","Undifferentiated","","","","BC","BC",""
+"7",237,"+","BGCv13","ICH","","ICHun","ICHun1","Undifferentiated Central Coast ICH","Interior Cedar  –  Hemlock","Undifferentiated"," Central Coast",NA,"IDFww portion","BC","BC",NA
+"8",329,"-","BGCv11","MH","MH_submaritme","MHun","MHun","Undifferentiated MH","Mountain Hemlock","Undifferentiated","","","","BC","BC",""
+"9",330,"+","BGCv13","MH","","MHun","MHun1","Undifferentiated Stikine MH","Mountain Hemlock","Undifferentiated","Stikine ",NA,"Mhun","BC","BC",NA
+"10",356,"+","BGCv13","MS","","MSun","MSun1","Undifferentiated Central Coast MS","Montane Spruce","Undifferentiated"," Central Coast",NA,"MSun","BC","BC",NA
+"11",406,"+","BGCv13","SBS","SBS_meso","SBSmz","SBSmz","Moist and Extremely Cold SBS"," Sub-boreal Spruce","Moist and Extremely Cold ","",NA,"","BC","BC",NA
+"12",408,"+","BGCv13","SBS","SBS_wet","SBSvc","SBSvc","Very Wet and Cold SBS"," Sub-boreal Spruce","Very Wet and Cold ","",NA,"SBSvz","BC","BC",NA
+"13",417,"-","BGCv11","SWB","SWB","SWBun","SWBun","Undifferentiated SWB","Spruce –  Willow  –  Birch","Undifferentiated","","","","BC","BC",""
+"14",418,"+","BGCv13","SWB","","SWBun","SWBun1","Undifferentiated SWB","Spruce –  Willow  –  Birch","Undifferentiated","",NA,"SWBun","BC","BC",NA

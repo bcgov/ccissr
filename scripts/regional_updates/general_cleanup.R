@@ -185,7 +185,7 @@ suit_add<-mutate(suit_add, Zone= case_when(grepl('ICH', bgc)~"ICH",grepl('SWB', 
 notrevBC<-rbind(notrevBC, suit_add)
 notrevBC<-mutate(notrevBC, Note=if_else(mod=="inputed", 'imputed', 'NA'))
 notrevBC$mod<-NA
-write.csv(notrevBC, "needsreview.csv")
+write.csv(notrevBC, "tables/regional_updates/needsreview.csv")
 
 
 #Sep 2025- 
@@ -201,7 +201,7 @@ all_new<-rbind(coast_new, NE_update, SE_update)
 all_new$AugSep2025<-"Y"
 all_new<-select(all_new, bgc, ss_nospace, sppsplit, spp, AugSep2025)
 
-notrevBC<-read.csv("needsreview.csv")
+notrevBC<-read.csv("tables/regional_updates/needsreview.csv")
 
 notrevBC<-left_join(notrevBC, all_new)
 notrevBC<-subset(notrevBC, is.na(AugSep2025))#remove all reviewed by Craig or Coast in Aug/Sep 2025
@@ -244,17 +244,17 @@ x<-read.csv("regions_tab.csv")
 x<-distinct(x)
 notrevBCy<-left_join(notrevBCy, x)
 
-write.csv(notrevBCy, "needsreview_sub.csv")
+write.csv(notrevBCy, "tables/regional_updates/needsreview_sub.csv")
 
 #combine 
-notrevBC<-read.csv("needsreview_sub.csv")
+notrevBC<-read.csv("tables/regional_updates/needsreview_sub.csv")
 notrevBC2<-read.csv("tables/regional_updates/needsreview_misc.csv")
 x<-read.csv("regions_tab.csv")
 notrevBC2<-left_join(notrevBC2, x)
 notrevBC<-rbind(notrevBC, notrevBC2)
 notrevBC$X<-NULL
 
-write.csv(notrevBC, "needsreview_sub.csv")
+write.csv(notrevBC, "tables/regional_updates/needsreview_sub.csv")
 
 #Nov 2025- 
 suit<-read.csv("tables/versioned/suitability_v13_23.csv") 
@@ -266,9 +266,9 @@ suit<-filter(suit, !grepl('_OC|_WC|_CA|_OR|_WA|_ID|_MT|_CA|_WY|_CO|_NV|UT|BSJP|a
 
 needs_rev<-subset(suit, is.na(mod)|mod=="inputed")
 
-x<-read.csv("regions_tab.csv")
+x<-read.csv("tables/regional_updates/regions_tab.csv")
 needs_rev<-left_join(needs_rev, x)
 needs_rev<-mutate(needs_rev, Region= if_else(is.na(Region), "Coast", Region))
 
-write.csv(needs_rev, "needs_review_Nov2025.csv")
+write.csv(needs_rev, "tables/regional_updates/needs_review_Nov2025.csv")
 
