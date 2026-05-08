@@ -36,6 +36,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cmd_sum
+NumericVector cmd_sum(NumericVector vals, double cutoff);
+RcppExport SEXP _ccissr_cmd_sum(SEXP valsSEXP, SEXP cutoffSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type vals(valsSEXP);
+    Rcpp::traits::input_parameter< double >::type cutoff(cutoffSEXP);
+    rcpp_result_gen = Rcpp::wrap(cmd_sum(vals, cutoff));
+    return rcpp_result_gen;
+END_RCPP
+}
 // SimGrowth
 NumericVector SimGrowth(DataFrame DF, double cmdMin, double cmdMax, double tempMin, double tempMax, double climLoss);
 RcppExport SEXP _ccissr_SimGrowth(SEXP DFSEXP, SEXP cmdMinSEXP, SEXP cmdMaxSEXP, SEXP tempMinSEXP, SEXP tempMaxSEXP, SEXP climLossSEXP) {
@@ -103,6 +115,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_ccissr_ModelDir", (DL_FUNC) &_ccissr_ModelDir, 3},
     {"_ccissr_gs2gw", (DL_FUNC) &_ccissr_gs2gw, 3},
+    {"_ccissr_cmd_sum", (DL_FUNC) &_ccissr_cmd_sum, 2},
     {"_ccissr_SimGrowth", (DL_FUNC) &_ccissr_SimGrowth, 6},
     {"_ccissr_combCurr", (DL_FUNC) &_ccissr_combCurr, 2},
     {"_ccissr_NewSuitNoCurr", (DL_FUNC) &_ccissr_NewSuitNoCurr, 2},

@@ -6,13 +6,15 @@ library(analogsea)
 Sys.setenv(DO_PAT="eae4166ed2fac0e3c41660fe26a009bb0176ab8bceeaf753faf5189f58a06520")
 library(ccissr)
 library(data.table)
+library(rmapshaper)
 
 out_dir <- "./data-raw/shp"
 shp_name <- "BEC_MAP.shp"
 layer <- "BECMap"
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 library(sf)
-dat <- st_read("~/CommonTables/BC_BGCv12.gpkg")
+dat <- st_read("../Common_Files/BGCv13_2_clip_dissolved.gpkg")
+bgc_simplify <- ms_simplify(dat, keep = 0.35, sys = TRUE)
 dat <- st_transform(dat,4326)
 dat <- dat["BGC"]
 dat <- st_cast(dat,"MULTIPOLYGON")
@@ -29,7 +31,7 @@ st_write(dat2,dsn = out_dir,layer = layer,driver = "ESRI Shapefile",overwrite = 
 tileserver <- droplets()[["tileserver-wna"]]
 # About 5-6h
 remote_shp_tiles(tileserver,
-                 "-z18 --simplification=10 --force --coalesce-densest-as-needed --extend-zooms-if-still-dropping --detect-shared-borders",
+                 "-z16 --simplification=10 --force --coalesce-densest-as-needed --extend-zooms-if-still-dropping --detect-shared-borders",
                  source_dir = out_dir, skip_upload = FALSE)
 launch_tileserver(tileserver, config = "./data-raw/config/tileserver/config.json", styles = "./data-raw/config/tileserver/becstyle.json")
 

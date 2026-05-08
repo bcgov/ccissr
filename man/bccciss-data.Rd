@@ -4,18 +4,21 @@
 \name{bccciss-data}
 \alias{bccciss-data}
 \alias{BGCRegions}
+\alias{cfrg_rules}
+\alias{covMat}
 \alias{E1}
+\alias{E1_Phase}
 \alias{F1}
 \alias{footnotes}
 \alias{models_info}
 \alias{N1}
 \alias{R1}
-\alias{S1}
 \alias{SIBEC}
 \alias{silvics_mature}
 \alias{silvics_regen}
 \alias{silvics_resist}
 \alias{silvics_tol}
+\alias{SS}
 \alias{stocking_height}
 \alias{stocking_info}
 \alias{stocking_standards}
@@ -24,10 +27,8 @@
 \alias{TreeCols}
 \alias{V1}
 \alias{zones_colours_ref}
-\alias{E1_Phase}
-\alias{covMat}
-\title{Data to be included in bccciss package}
+\title{Data to be included in ccissr package}
 \description{
-Data to be included in bccciss package
+Data to be included in ccissr package
 }
 \keyword{data}

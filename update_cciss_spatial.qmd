@@ -1,0 +1,62 @@
+---
+title: "CCISS Spatial Workflow"
+author: "Kiri Daust"
+format: html
+editor: visual
+---
+
+# Create Database
+
+```{r}
+library(ccissr)
+library(duckdb)
+library(terra)
+library(data.table)
+library(climr)
+
+con <- dbCon_cciss("cciss_4_2.duckdb")
+bgcs <- vect("../Common_Files/WNA_BGCv13/BGC_BC_v13_Jan21.gdb/")
+bgcs <- bgcs["MAP_LABEL"]
+names(bgcs) <- "BGC"
+
+##load dem
+dem <- rast("dem_BC2kmGrid.tif")
+dem_table <- climr::dem_to_table(dem)
+bgc_rast <- make_bgc_template(dem, bgcs)
+
+dbPopulate(con, bgc_rast)
+```
+
+# Make BGC Predictions
+
+```{r}
+vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT", 
+                 "MWMT", "NFFD_sm", "NFFD_sp", "PAS_an", "PAS_sp", "SHM", "Tave_sm", "Tave_sp", "Tmax_sm", "Tmax_sp", "Tmin_an", "Tmin_at", "Tmin_sm", 
+                 "Tmin_sp", "Tmin_wt","CMI_an", "PPT_05","PPT_06","PPT_07","PPT_08","PPT_09","PPT_at","PPT_wt","CMD_07","CMD_an"
+)
+
+vars_expert <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT", 
+"MWMT", "NFFD_sm", "NFFD_sp", "PAS_an", "PAS_sp", "SHM", "Tave_sm", 
+"Tave_sp", "Tmax_sm", "Tmax_sp", "Tmin_an", "Tmin_at", "Tmin_sm", 
+"Tmin_sp", "Tmin_wt", "CMI_an", "PPT_MJ", "PPT_JAS", "CMD.total"
+)
+
+BGCmodel <- readRDS("../Common_Files/WNA_BGCv13/BGCmodel_WNA_V4.2gini.rds")
+
+gcms_cciss <- c("ACCESS-ESM1-5", "CNRM-ESM2-1", "EC-Earth3", "GFDL-ESM4",
+                "GISS-E2-1-G", "MIROC6", "MPI-ESM1-2-HR", "MRI-ESM2-0")
+predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = list_gcm_periods(), max_runs_use = 3L, obs_2001_2020 = TRUE)
+```
+
+```{r}
+dbGetQuery(con, "select * from bgc_raw limit 5;")
+```
+
+# Novelty
+
+```{r}
+pts <- fread("../Common_Files/points_WNA_simple200_v13_26.csv")
+cciss_novelty(con, dem_table, pts)
+ensemble_novelty(con)
+plot_novelty(con, dem, period = "2081_2100")
+```

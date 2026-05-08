@@ -1,3 +1,9 @@
+# `ccissr` 1.0.3
+## Enhancements
+* added new function 'bgc_trainingSample' for selecting a training sample for biogeoclimatic projections
+* added new function 'removeOutlier' for removing mahalanobian outliers from a sample
+* added new function 'subsample_asymptotic'
+
 # `ccissr` 1.0.2
 ## Enhancements
 * code updated to work with new `climr` naming convention

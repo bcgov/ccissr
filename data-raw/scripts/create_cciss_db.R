@@ -12,12 +12,16 @@ setwd("/sapho/kdaust/FFEC/")
 readRenviron("./ccissr/.Renviron")
 conn <- dbPool(
   drv = RPostgres::Postgres(),
-  dbname = Sys.getenv("BCGOV_DB"),
+  dbname = "cciss",
   host = Sys.getenv("BCGOV_HOST"),
   port = 5432, 
   user = Sys.getenv("BCGOV_USR"),
   password = Sys.getenv("BCGOV_PWD")
 )
+
+
+t1 <- dbGetQuery(conn, "select * from cciss_future_array limit 5")
+t1 <- dbGetQuery(conn, "select * from cciss_novelty_array limit 5")
 
 # qry <- "create table preselected_points13 as (select * from (
 # select *, row_number() over (partition by bgc order by random()) as u 

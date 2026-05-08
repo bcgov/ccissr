@@ -14,6 +14,7 @@ using namespace std;
 //' @param dir Improve or Decline
 //' @return NumericVector
 // [[Rcpp::export]]
+
 NumericVector ModelDir(NumericMatrix x, NumericVector Curr, std::string dir){
  int n = x.nrow();
  NumericVector res(n);
@@ -58,6 +59,27 @@ NumericVector gs2gw(NumericVector x, double a, double b){
   return(out);
 }
 
+
+// [[Rcpp::export]]
+NumericVector cmd_sum(NumericVector vals, double cutoff){
+  NumericVector res = NumericVector(vals.size());
+  res[0] = vals[0];
+  double prev, tmp;
+  for(int i = 1; i < vals.size(); i++){
+    prev = vals[i-1];
+    if(vals[i] < 0){
+      if(prev > cutoff){
+        prev = cutoff;
+      }
+    }
+    tmp = prev + vals[i];
+    if(tmp < 0){
+      tmp = 0;
+    }
+    res[i] = tmp;
+  }
+  return(res);
+}
 
 // [[Rcpp::export]]
 NumericVector SimGrowth(DataFrame DF, double cmdMin, 
