@@ -4,7 +4,7 @@
 \alias{cciss_novelty}
 \title{Calculate novelty for all gcm/ssp/run/period combinations from bgc_raw}
 \usage{
-cciss_novelty(con, target_pts, analog_pts)
+cciss_novelty(con, target_pts, analog_pts, ssps = "ssp245", append = FALSE)
 }
 \arguments{
 \item{con}{duckdb connection}
@@ -12,6 +12,10 @@ cciss_novelty(con, target_pts, analog_pts)
 \item{target_pts}{data.table of points to calculate novelty for (should be same table used to calculate bgc_raw)}
 
 \item{analog_pts}{data.table of WNA analog points}
+
+\item{ssps}{Character vector of ssps to calculate novelty for. Default is "ssp245"}
+
+\item{append}{Logical. Append to existing table? Default FALSE throws error if table already exists.}
 }
 \description{
 Create a table in the duckdb, novelty_raw, which contains novelty values for each cell

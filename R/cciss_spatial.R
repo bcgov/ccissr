@@ -97,6 +97,7 @@ predict_bgc <- function(dbCon,
                           max_run = max_runs_use,
                           vars = c(vars_needed, "MAT"),
                           nthread = 6,
+                          ensemble_mean = max_runs_use < 1,
                           return_refperiod = FALSE)
     addVars(clim_dat)
     clim_dat <- na.omit(clim_dat)

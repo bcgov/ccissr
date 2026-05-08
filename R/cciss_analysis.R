@@ -930,12 +930,15 @@ bgc_map <- function(X,
 #' @param con duckdb connection
 #' @param target_pts data.table of points to calculate novelty for (should be same table used to calculate bgc_raw)
 #' @param analog_pts data.table of WNA analog points 
+#' @param ssps Character vector of ssps to calculate novelty for. Default is "ssp245"
+#' @param append Logical. Append to existing table? Default FALSE throws error if table already exists.
 #' @import data.table
 #' @import climr
 #' @importFrom glue glue glue_sql
 #' @importFrom DBI dbGetQuery dbWriteTable
 #' @export
-cciss_novelty <- function(con, target_pts, analog_pts) {
+cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append = FALSE) {
+  if(duckdb_table_exists(con, "novelty_raw") & !append) stop("Table novelty_raw already exists. Please drop table or set append = TRUE")
   clim.pts <- downscale(xyz = analog_pts, which_refmap = "refmap_climr",
                         vars = list_vars())
   addVars(clim.pts)
@@ -956,10 +959,10 @@ cciss_novelty <- function(con, target_pts, analog_pts) {
                             vars = list_vars())
   addVars(clim.icv.pts)
   gcms_use <- dbGetQuery(con, "select distinct gcm from bgc_raw")[,1]
-  ssps_use <- dbGetQuery(con, "select distinct ssp from bgc_raw")[,1]
+  #ssps_use <- dbGetQuery(con, "select distinct ssp from bgc_raw")[,1]
   
   for(gcm in gcms_use){
-    for(ssp in ssps_use){
+    for(ssp in ssps){
       message(glue("Processing novelty for gcm = {gcm} and ssp = {ssp}"))
       runs <- dbGetQuery(con, glue_sql("select distinct run from bgc_raw where ssp = {ssp} and gcm = {gcm}", .con = con))
       res <- downscale(target_pts, 
@@ -996,4 +999,56 @@ cciss_novelty <- function(con, target_pts, analog_pts) {
     }
   }
   message("Written table novelty_raw to database!")
+}
+
+#' Calculate mean novelty across runs
+#' @param con duckdb database connection
+#' @param table_name name of table to create with mean novelty values
+#' @importFrom glue glue
+#' @importFrom DBI dbExecute
+#' @export
+ensemble_novelty <- function(con, table_name = "ensemble_novelty") {
+  if(duckdb_table_exists(con, table_name)) stop(glue("Table {table_name} already exists in database. Please drop table and rerun."))
+  qry <- glue("create table {table_name} as
+              SELECT cellnum, period, AVG(novelty) as novelty
+              FROM novelty_raw
+              GROUP BY cellnum, period")
+  dbExecute(con, qry)
+}
+
+#' Plot novelty map with values from database
+#' @param con duckdb database connection
+#' @param raster_template SpatRaster template to use for plotting
+#' @param period Character. Which period to plot for?
+#' @param ensemble Logical. Plot ensemble novelty (default) or raw novelty for a specified run?
+#' @import terra
+#' @importFrom glue glue
+#' @importFrom DBI dbGetQuery
+#' @importFrom data.table data.table
+#' @importFrom grDevices  colorRampPalette
+#' @export
+plot_novelty <- function(con, raster_template, period, ensemble = TRUE, gcm = NULL, ssp = NULL, run = NULL) {
+  breakseq <- c(0,4,8)
+  bs2 <- breakseq * 100
+  breakpoints <- seq.int(bs2[1], bs2[3], 1)
+  ColScheme <- colorRampPalette(c("gray90", "gray50", "#FFF200", "#CD0000", "#000000"))(length(breakpoints))
+  coltab <- data.table(
+    values = as.integer(breakpoints),
+    color = ColScheme               # Corresponding colors
+  )
+  rt <- copy(raster_template)
+  values(rt) <- NA
+  if(ensemble){
+    nov_curr <- dbGetQuery(con, glue("select cellnum, novelty
+                                     from ensemble_novelty where period = '{period}'"))
+  } else {
+    nov_curr <- dbGetQuery(con, glue("select cellnum, novelty
+                                     from novelty_raw where period = '{period}' and gcm = '{gcm}' and ssp = '{ssp}' and run = '{run}'"))
+  }
+  rt[nov_curr$cellnum] <- nov_curr$novelty
+  rt <- round(rt, digits = 2)
+  rt <- as.int(rt*100)
+  rt[rt > 800] <- 800
+  rgbnov <- subst(rt, coltab$values, t(col2rgb(coltab$color,alpha = TRUE)),names = c("red","green", "blue","alpha"))
+  plotRGB(rgbnov)
 }
