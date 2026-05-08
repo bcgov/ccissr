@@ -923,3 +923,77 @@ bgc_map <- function(X,
     }
   }
 }
+
+#' Calculate novelty for all gcm/ssp/run/period combinations from bgc_raw
+#' @description
+#' Create a table in the duckdb, novelty_raw, which contains novelty values for each cell
+#' @param con duckdb connection
+#' @param target_pts data.table of points to calculate novelty for (should be same table used to calculate bgc_raw)
+#' @param analog_pts data.table of WNA analog points 
+#' @import data.table
+#' @import climr
+#' @importFrom glue glue glue_sql
+#' @importFrom DBI dbGetQuery dbWriteTable
+#' @export
+cciss_novelty <- function(con, target_pts, analog_pts) {
+  clim.pts <- downscale(xyz = analog_pts, which_refmap = "refmap_climr",
+                        vars = list_vars())
+  addVars(clim.pts)
+  nov_vars <- as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_"))
+  
+  
+  # Calculate the centroid climate for the training points
+  clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = pts$BGC, .SDcols = -c(1,2)]
+  
+  # historical interannual climatic variability at the geographic centroids of the training points
+  pts.mean <- pts[, lapply(.SD, mean), by = BGC]
+  pts.mean$id <- 1:dim(pts.mean)[1]
+  clim.icv.pts <- downscale(xyz = pts.mean,
+                            which_refmap = "refmap_climr",
+                            obs_years = 1961:1990,
+                            obs_ts_dataset = "cru.gpcc",
+                            return_refperiod = FALSE,
+                            vars = list_vars())
+  addVars(clim.icv.pts)
+  gcms_use <- dbGetQuery(con, "select distinct gcm from bgc_raw")[,1]
+  ssps_use <- dbGetQuery(con, "select distinct ssp from bgc_raw")[,1]
+  
+  for(gcm in gcms_use){
+    for(ssp in ssps_use){
+      message(glue("Processing novelty for gcm = {gcm} and ssp = {ssp}"))
+      runs <- dbGetQuery(con, glue_sql("select distinct run from bgc_raw where ssp = {ssp} and gcm = {gcm}", .con = con))
+      res <- downscale(target_pts, 
+                       which_refmap = "refmap_climr", 
+                       gcms = gcm, 
+                       ssps = ssp, 
+                       gcm_periods = list_gcm_periods(), 
+                       run_nm = runs,
+                       return_refperiod = FALSE,
+                       vars = nov_vars)
+      res <- res[!is.na(Tmin_sm),]
+      res[is.na(res)] <- 0
+      
+      vars_temp <- c("id","GCM","SSP","RUN","PERIOD",nov_vars)
+      ##novelty
+      clim_nov <- res[,..vars_temp]
+      bgc <- dbGetQuery(con, glue_sql("select * from bgc_raw where ssp = {ssp} and gcm = {gcm}", .con = con))
+      setDT(bgc)
+      setnames(clim_nov, old = c("id","GCM","SSP","RUN","PERIOD"), new = c("cellnum","gcm","ssp","run","period"))
+      clim_nov[bgc, bgc_pred := i.bgc_pred, on = c("cellnum","gcm","ssp","run","period")]
+      clim_nov <- na.omit(clim_nov)
+      clim_nov[,novelty := analog_novelty_core(clim.targets = .SD, 
+                                                    clim.analogs = clim.pts, 
+                                                    label.targets = bgc_pred, 
+                                                    label.analogs = pts$BGC, 
+                                                    vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
+                                                    clim.icvs = clim.icv.pts,
+                                                    label.icvs = pts.mean$BGC[clim.icv.pts$id],
+                                                    weight.icv = 0.5,
+                                                    threshold = 0.95,
+                                                    pcs = NULL), by = .(gcm,ssp,run,period)]
+      clim_nov <- clim_nov[,.(cellnum, gcm, ssp, run, period, novelty)]
+      dbWriteTable(con, "novelty_raw", clim_nov, row.names = F, append = T)
+    }
+  }
+  message("Written table novelty_raw to database!")
+}

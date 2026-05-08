@@ -420,3 +420,223 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
   return(novelty)
 }
 
+#' Fast basic novelty function. 
+#' @description
+#' This function uses the same algorithm as `analog_novelty`, but has been paired down to remove plotting options
+#' and is approx 15 times faster `analog_novelty`. We recommend using `analog_novelty` for most cases, unless the 
+#' data you're calculating novelty for are very large.
+#' 
+#' @param clim.targets data.table. Climate values for which the analogs were 
+#' identified. Must include variables specified in `vars`. 
+#' @param clim.analogs data.table. Climate values of at least 50 locations 
+#' representing the spatial variation in the reference period (historical) climate
+#' of each analog in the analog pool. Must include variables specified in `vars`. 
+#' @param label.targets character. Vector of the analog IDs identified for the 
+#' climatic conditions listed in `clim.targets`. Length equals number of records 
+#' in `clim.targets`.  
+#' @param label.analogs character. Vector of the analog IDs for the climatic 
+#' conditions listed in `clim.analogs`. Length equals number of records in
+#' `clim.analogs`.  
+#' @param vars character. Climate variables to use in the novelty measurement. 
+#' @param clim.point data.table. Climate values of a single location of interest. 
+#' Must include variables specified in `vars`. 
+#' @param clim.icvs data.table. Time series of climate variables at the geographic
+#' centroids of each analog in the analog pool. If not null, this interannual climatic
+#' variability will be pooled with the spatial variation of the analog to calculate 
+#' the covariance matrix used in the Mahalanobis distance measurement. 
+#' @param label.icvs character. Vector of the analog IDs for the climatic 
+#' conditions listed in `clim.icvs`. Length equals number of records in `clim.icvs`.  
+#' @param analog.focal character. Optionally specify a single analog for visualization. 
+#' @param threshold numeric. The cumulative variance explained to use as a threshold
+#' for truncation of principal components to use in the mahalanobis distance measurement. 
+#' @param pcs integer. The fixed number of PCs to use in the mahalanobis distance 
+#' measurement. Non-null values of this parameter override the `threshold` parameter.
+#' 
+#' @return `vector` of sigma dissimilarity (if sigma==TRUE) or Mahalanobis distances 
+#' (if sigma==FALSE) corresponding to each element of the 'analogs.target' vector. 
+#'
+#' @importFrom stats prcomp mahalanobis cov cor sd  
+#' @examples
+#' if (FALSE) {
+#'   
+#' }
+#' #'
+#' @export
+
+analog_novelty_core <- function(clim.targets, clim.analogs, label.targets, label.analogs, vars,
+                                clim.icvs = NULL, label.icvs = NULL, weight.icv = 0.5,
+                                sigma = TRUE, threshold = 0.95,
+                                pcs = NULL) {
+  
+  # clim.targets <- clim_nov[period == "2041_2060",]
+  # clim.analogs <- clim.pts
+  # label.targets <- clim.targets$bgc_pred
+  # label.analogs = pts$BGC
+  # vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_"))
+  # clim.icvs = clim.icv.pts
+  # label.icvs = pts.mean$BGC[clim.icv.pts$id]
+  # weight.icv = 0.5
+  # sigma = TRUE
+  # threshold = 0.95
+  # pcs = NULL
+  # 
+  
+  stopifnot(weight.icv >= 0, weight.icv <= 1)
+  
+  use_icv <- !is.null(clim.icvs)
+  if (use_icv && is.null(label.icvs)) {
+    stop("If clim.icvs is supplied, label.icvs must also be supplied.")
+  }
+  
+  analogs <- unique(label.targets)
+  novelty <- rep(NA_real_, length(label.targets))
+  
+  # Precompute indices once
+  target_idx <- split(seq_along(label.targets), as.character(label.targets))
+  analog_idx <- split(seq_along(label.analogs), as.character(label.analogs))
+  if (use_icv) {
+    icv_idx <- split(seq_along(label.icvs), as.character(label.icvs))
+  }
+  
+  weight.analog <- 1 - weight.icv
+  
+  ## log vars
+  
+  for (analog in analogs) {
+    analog_key <- as.character(analog)
+    
+    idx_a <- analog_idx[[analog_key]]
+    idx_t <- target_idx[[analog_key]]
+    
+    if (is.null(idx_a) || is.null(idx_t)) next
+    if (length(idx_a) < 2L || length(idx_t) < 1L) next
+    
+    # Pull data as matrices
+    tmpA <- logVars(clim.analogs[idx_a, ..vars], zero_adjust = TRUE)
+    tmpT <- logVars(clim.targets[idx_t, ..vars], zero_adjust = TRUE)
+    
+    A0 <- as.matrix(tmpA)
+    T0 <- as.matrix(tmpT)
+    
+    # Clean analogs
+    A0 <- A0[complete.cases(A0), , drop = FALSE]
+    if (nrow(A0) < 2L) next
+    
+    # Remove zero-variance / invalid columns based on analog climate
+    mu_A <- colMeans(A0, na.rm = TRUE)
+    sd_A <- apply(A0, 2, sd, na.rm = TRUE)
+    
+    keep <- is.finite(sd_A) & sd_A > 0
+    if (sum(keep) < 3L) next
+    
+    A0 <- A0[, keep, drop = FALSE]
+    T0 <- T0[, keep, drop = FALSE]
+    mu_A <- mu_A[keep]
+    sd_A <- sd_A[keep]
+    
+    # Scale analog and target to analog mean/sd
+    A <- sweep(sweep(A0, 2, mu_A, "-"), 2, sd_A, "/")
+    T1 <- sweep(sweep(T0, 2, mu_A, "-"), 2, sd_A, "/")
+    
+    # ICV data: scale using ICV mean but analog sd, matching original logic
+    if (use_icv) {
+      idx_i <- icv_idx[[analog_key]]
+      if (is.null(idx_i) || length(idx_i) < 2L) next
+      
+      tmpICV <- logVars(clim.icvs[idx_i, ..vars], zero_adjust = TRUE)
+      I0 <- as.matrix(tmpICV)
+      I0 <- I0[complete.cases(I0), keep, drop = FALSE]
+      if (nrow(I0) < 2L) next
+      
+      mu_I <- colMeans(I0, na.rm = TRUE)
+      I <- sweep(sweep(I0, 2, mu_I, "-"), 2, sd_A, "/")
+    }
+    
+    # prcomp cannot handle NA rows; use complete target rows only for PCA sampling
+    T_complete <- T1[complete.cases(T1), , drop = FALSE]
+    if (nrow(T_complete) < 1L) next
+    
+    s <- sample.int(
+      n = nrow(T_complete),
+      size = nrow(A),
+      replace = nrow(T_complete) < nrow(A)
+    )
+    
+    T_sample <- T_complete[s, , drop = FALSE]
+    
+    # PCA on pooled analog + sampled target
+    pca <- prcomp(
+      rbind(A, T_sample),
+      scale = FALSE
+    )
+    
+    pcs_use <- pcs
+    if (is.null(pcs_use)) {
+      cumvar <- cumsum(pca$sdev^2 / sum(pca$sdev^2))
+      pcs_use <- which(cumvar >= threshold)[1]
+      pcs_use <- max(3L, pcs_use)
+    }
+    
+    pcs_use <- min(pcs_use, ncol(pca$rotation))
+    if (pcs_use < 1L) next
+    
+    rot <- pca$rotation[, seq_len(pcs_use), drop = FALSE]
+    
+    # PC scores via matrix multiplication rather than predict()
+    PA <- A %*% rot
+    PT <- T1 %*% rot
+    if (use_icv) PI <- I %*% rot
+    
+    # Standardize PCs to analog mean and pooled analog/ICV sd
+    pc_mu_A <- colMeans(PA, na.rm = TRUE)
+    pc_sd_A <- apply(PA, 2, sd, na.rm = TRUE)
+    
+    if (use_icv) {
+      pc_sd_I <- apply(PI, 2, sd, na.rm = TRUE)
+      pc_sd_use <- weight.analog * pc_sd_A + weight.icv * pc_sd_I
+    } else {
+      pc_sd_use <- pc_sd_A
+    }
+    
+    PA <- sweep(sweep(PA, 2, pc_mu_A, "-"), 2, pc_sd_use, "/")
+    PT <- sweep(sweep(PT, 2, pc_mu_A, "-"), 2, pc_sd_use, "/")
+    
+    if (use_icv) {
+      pc_mu_I <- colMeans(PI, na.rm = TRUE)
+      PI <- sweep(sweep(PI, 2, pc_mu_I, "-"), 2, pc_sd_use, "/")
+    }
+    
+    pcs_final <- ncol(PA)
+    
+    # Combine spatial covariance and ICV covariance
+    cov_A <- var(PA)
+    
+    if (use_icv) {
+      cov_I <- var(PI)
+      cov_use <- weight.analog * cov_A + weight.icv * cov_I
+    } else {
+      cov_use <- cov_A
+    }
+    
+    # Mahalanobis distance
+    md2 <- tryCatch(
+      mahalanobis(PT, center = rep(0, pcs_final), cov = cov_use),
+      error = function(e) rep(NA_real_, nrow(PT))
+    )
+    
+    md <- sqrt(md2)
+    
+    if (sigma) {
+      p <- pchisq(md2, df = pcs_final)
+      q <- sqrt(qchisq(p, df = 1))
+      q[!is.finite(q)] <- 8 # set infinite values to 8 sigma (outside the decimal precision of pchi) 
+      q[is.na(p)] <- NA # reset NA values as NA
+      novelty[idx_t] <- q
+    } else {
+      novelty[idx_t] <- md
+    }
+  }
+  
+  novelty
+}
+

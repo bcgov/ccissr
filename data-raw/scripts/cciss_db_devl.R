@@ -33,7 +33,7 @@ dat <- parse_qml("../../../Downloads/WNAv13_v6_Subzones.qml")
 
 source("./data-raw/scripts/functions.R")
 
-conn <- DBI::dbConnect(
+con <- DBI::dbConnect(
   drv = RPostgres::Postgres(),
   dbname = "cciss",
   host = Sys.getenv("BCGOV_HOST"),
@@ -218,6 +218,36 @@ t2 <- test[,.(bgc_prop = sum(weight), nov_mean = mean(novelty), nov_sd = sd(nove
   FROM cciss_curr
   WHERE siteno IN (", paste(unique(siteno), collapse = ","), ")"
 
+
+
+qry <- "SELECT cciss_future_array.siteno,
+         labels.gcm,
+         labels.scenario,
+         labels.futureperiod,
+         labels.run,
+         bgc_attribution13_1.bgc,
+         bgcv13_1.bgc bgc_pred
+  FROM cciss_future_array
+  JOIN bgc_attribution13_1
+    ON (cciss_future_array.siteno = bgc_attribution13_1.siteno),
+       unnest(bgc_id) WITH ordinality as source(bgc_id, row_idx)
+  JOIN (SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
+               gcm,
+               scenario,
+               futureperiod,
+               run
+        FROM gcm 
+        CROSS JOIN scenario
+        CROSS JOIN futureperiod
+        CROSS JOIN run) labels
+    ON labels.row_idx = source.row_idx
+  JOIN bgcv13_1
+    ON bgcv13_1.bgc_id = source.bgc_id
+  WHERE cciss_future_array.siteno IN (1963369)"
+
+dat <- dbGetQuery(con, qry)
+
+nruns <- dat[,.(Num = .N), by = .(futureperiod)]
 
 dbGetCCISS_v13 <- function(con, siteno, avg, modWeights){
   

@@ -6,10 +6,11 @@ library(terra)
 library(climr)
 library(ranger)
 library(ccissr)
+library(pool)
 
 source("./data-raw/scripts/functions.R")
 
-conn <- DBI::dbConnect(
+conn <- dbPool(
   drv = RPostgres::Postgres(),
   dbname = "cciss",
   host = Sys.getenv("BCGOV_HOST"),
@@ -36,6 +37,33 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
                  "Tmin_sp", "Tmin_wt","CMI", "PPT_05","PPT_06","PPT_07","PPT_08",
                  "PPT_09","PPT_at","PPT_wt","CMD_07","CMD"
 )
+
+##Create BGC analog points
+
+
+library(ccissr)
+library(terra)
+library(data.table)
+
+# import DEM
+dem <- rast("../Common_Files/NA_DEM_150v2.tif")
+
+# import BGCs
+bgcs <- vect("../Common_Files/WNA_BGCv13/WNA_v13_April13_2026.gpkg")
+bgcsll <- project(bgcs, "epsg:4326")
+bgcsll$BGC <- as.factor(bgcsll$BGC)
+
+dem2 <- crop(dem, bgcsll)
+bgc_rast <- rasterize(bgcsll, dem2, field = "BGC")
+
+points_novelty <- bgc_trainingSample(dem2, bgc_rast,
+                                     scheme = "asymptotic", asymptote = 200, shape=1,
+                                     plotDiagnostics = FALSE
+)
+dim(points_novelty)
+table(points_novelty$BGC)
+fwrite(points_novelty, "../Common_Files/WNA_BGCv13/points_WNA_simple200_v13_26.csv")
+
 
 nov_vars <- as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_"))
 
