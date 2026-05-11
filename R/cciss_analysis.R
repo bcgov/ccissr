@@ -946,10 +946,10 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
   
   
   # Calculate the centroid climate for the training points
-  clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = pts$BGC, .SDcols = -c(1,2)]
+  clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = analog_pts$BGC, .SDcols = -c(1,2)]
   
   # historical interannual climatic variability at the geographic centroids of the training points
-  pts.mean <- pts[, lapply(.SD, mean), by = BGC]
+  pts.mean <- analog_pts[, lapply(.SD, mean), by = BGC]
   pts.mean$id <- 1:dim(pts.mean)[1]
   clim.icv.pts <- downscale(xyz = pts.mean,
                             which_refmap = "refmap_climr",
@@ -987,7 +987,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
       clim_nov[,novelty := analog_novelty_core(clim.targets = .SD, 
                                                     clim.analogs = clim.pts, 
                                                     label.targets = bgc_pred, 
-                                                    label.analogs = pts$BGC, 
+                                                    label.analogs = analog_pts$BGC, 
                                                     vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
                                                     clim.icvs = clim.icv.pts,
                                                     label.icvs = pts.mean$BGC[clim.icv.pts$id],
