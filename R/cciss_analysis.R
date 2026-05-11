@@ -964,7 +964,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
   for(gcm in gcms_use){
     for(ssp in ssps){
       message(glue("Processing novelty for gcm = {gcm} and ssp = {ssp}"))
-      runs <- dbGetQuery(con, glue_sql("select distinct run from bgc_raw where ssp = {ssp} and gcm = {gcm}", .con = con))
+      runs <- dbGetQuery(con, glue_sql("select distinct run from bgc_raw where ssp = {ssp} and gcm = {gcm}", .con = con))[,1]
       res <- downscale(target_pts, 
                        which_refmap = "refmap_climr", 
                        gcms = gcm, 
