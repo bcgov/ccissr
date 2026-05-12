@@ -258,7 +258,11 @@ bgc_bubbleplot <- function(persist_expand,
 ) {
   
   persist_expand <- na.omit(persist_expand, col = c("Persistance","Expansion"))
-  ColScheme <- rbind(copy(subzones_colours_ref),copy(zones_colours_ref))
+  
+  # colour scheme
+  zone_colours <- unique(WNA_BGCs[, .(Zone, ZoneColour)])
+  colScheme <- rbind(unique(WNA_BGCs[, .(BGC, SubzoneColour)]),unique(WNA_BGCs[, .(Zone, ZoneColour)]), use.names=FALSE )
+  colScheme <- setNames(colScheme, c("classification", "colour"))
   
   units <- unique(persist_expand$bgc)
   period_sel <- period
@@ -280,7 +284,7 @@ bgc_bubbleplot <- function(persist_expand,
   persist_expand[, Expansion := log2(Expansion)]
   
   for(unit in units){
-    col.focal <- if(is.null(unit.focal) || unit == unit.focal) ColScheme$colour[which(ColScheme$classification==unit)] else "lightgray"
+    col.focal <- if(is.null(unit.focal) || unit == unit.focal) colScheme$colour[which(colScheme$classification==unit)] else "lightgray"
     col.focal2 <- if(is.null(unit.focal) || unit == unit.focal) "black" else "darkgray"
     x <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & bgc_pred == unit, Persistance]
     y <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & bgc_pred == unit, Expansion]
@@ -416,20 +420,10 @@ plot_spparea <- function(dbCon,
     ymax = Inf
   )
   
-  if(by_zone) {
-    colScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8", 
-                   CWH = "#488612", BWBS = "#4f54cf", CWF = "#7577e7", IGF = "#77a2eb", 
-                   CMX = "#71d29e", BG = "#dd1320", IDF = "#e5d521", MS = "#e44ebc", 
-                   SWB = "#a1dbde", CRF = "#af3a13", WJP = "#73330e", ICH = "#1fec26", 
-                   CDF = "#edf418", JPW = "#96b3a5", CMA = "#eae1ee", SBPS = "#6edde9", 
-                   IMA = "#e3f1fa", GBD = "#4d433f", OW = "#582511", BAFA = "#eee4f1", 
-                   MMM = "#FF00FF", MHRF = "#2612dc", MGP = "#f0aeab", FG = "#92696c", 
-                   SGP = "#cca261", GO = "#f0a325", SBAP = "#51d5a7", IWF = "#d44273", 
-                   BSJP = "#424160", MSSD = "#dac370", MDCH = "#2d0cd4", CVG = "#c9edd3", 
-                   SAS = "#92b1b6", CCH = "#7e22ca")
-  } else {
-    colScheme <- setNames(subzones_colours_ref$colour, subzones_colours_ref$classification)
-  }
+  # colour scheme
+  zone_colours <- unique(WNA_BGCs[, .(Zone, ZoneColour)])
+  colScheme <- rbind(unique(WNA_BGCs[, .(BGC, SubzoneColour)]),unique(WNA_BGCs[, .(Zone, ZoneColour)]), use.names=FALSE )
+  colScheme <- setNames(colScheme, c("classification", "colour"))
   
   spat_res <- dbGetQuery(dbCon, "select * from spatial_res") |> as.data.table()
   if(spat_res$projected[1]){
@@ -535,11 +529,10 @@ plot_alluvial <- function(dat, spp, edatope, by_zone = T, cellarea = 4) {
     ymax = Inf
   )
   
-  if(by_zone) {
-    colScheme <- setNames(zones_colours_ref$colour, zones_colours_ref$classification)
-  } else {
-    colScheme <- setNames(subzones_colours_ref$colour, subzones_colours_ref$classification)
-  }
+  # colour scheme
+  zone_colours <- unique(WNA_BGCs[, .(Zone, ZoneColour)])
+  colScheme <- rbind(unique(WNA_BGCs[, .(BGC, SubzoneColour)]),unique(WNA_BGCs[, .(Zone, ZoneColour)]), use.names=FALSE )
+  colScheme <- setNames(colScheme, c("classification", "colour"))
   colScheme <- colScheme[names(colScheme) %in% unique(dat[SppArea > 0,bgc])]
   
   dat[, SppArea := SppArea * cellarea]
@@ -690,7 +683,7 @@ plot_SuitabilityChangeMap <- function(dbCon,
   
   X[dat_spp$SiteRef] <- dat_spp$Curr
   breakseq <- c(0.5,1.5,2.5,3.5,5)
-  ColScheme <- c("darkgreen", "dodgerblue1", "gold2", "white")
+  colScheme <- c("darkgreen", "dodgerblue1", "gold2", "white")
   
   if(three_panel){
     par(plt = c(0, 0.3, 0, 0.6),new = TRUE, xpd = TRUE)
@@ -699,10 +692,10 @@ plot_SuitabilityChangeMap <- function(dbCon,
   }
   
   image(X,xlab = NA,ylab = NA,bty = "n",  xaxt="n", yaxt="n",
-        col=ColScheme, breaks=breakseq,asp = 1)
+        col=colScheme, breaks=breakseq,asp = 1)
   terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
   par(xpd = NA)
-  legend("topleft", legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"), fill=ColScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
+  legend("topleft", legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"), fill=colScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
   
   if(panel_labels) mtext(paste("(", letters[1],")", sep=""), side=3, line=-8, adj=0.05, cex=0.8, font=2)
   
@@ -719,9 +712,9 @@ plot_SuitabilityChangeMap <- function(dbCon,
   
   breakpoints <- seq(-3,3,0.5); length(breakpoints)
   labels <- c("-3","-2", "-1", "0", "+1","+2","+3")
-  ColScheme <- c("black", brewer.pal(11,"RdBu")[c(1,2,3,4)], "grey90", "grey90", brewer.pal(11,"RdBu")[c(7,8,9,10,11)]);
-  ColScheme2 <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,4)], "grey90", colorRampPalette(c("white", "khaki1", "gold"))(6));
-  ColScheme3 <- 1
+  colScheme <- c("black", brewer.pal(11,"RdBu")[c(1,2,3,4)], "grey90", "grey90", brewer.pal(11,"RdBu")[c(7,8,9,10,11)]);
+  colScheme2 <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,4)], "grey90", colorRampPalette(c("white", "khaki1", "gold"))(6));
+  colScheme3 <- 1
   
   if(three_panel){
     par(plt = c(0.25,0.75,0,1), xpd = TRUE, new = TRUE)
@@ -729,9 +722,9 @@ plot_SuitabilityChangeMap <- function(dbCon,
     par(plt = c(0.25, 0.95, 0.175, 1), xpd = TRUE, new = TRUE)
   }
   
-  image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme, breaks=breakpoints, asp = 1)
-  image(X2, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme2, breaks=breakpoints, asp = 1)
-  image(X3, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme3, asp = 1)
+  image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=colScheme, breaks=breakpoints, asp = 1)
+  image(X2, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=colScheme2, breaks=breakpoints, asp = 1)
+  image(X3, add=T, xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=colScheme3, asp = 1)
   terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
   
   xl <- 1600000; yb <- 1000000; xr <- 1700000; yt <- 1700000; xadj <- 10000
@@ -739,9 +732,9 @@ plot_SuitabilityChangeMap <- function(dbCon,
     xl <- 325000; yb <- 900000; xr <- 400000; yt <- 1525000; xadj <- 10000
   }
   par(xpd = NA)
-  y.int <- (yt-yb)/length(ColScheme)
-  rect(xl+xadj,  head(seq(yb,yt,y.int),-1),  xr,  tail(seq(yb,yt,y.int),-1),  col=ColScheme)
-  rect(xl-diff(c(xl+xadj, xr)),  head(seq(yb,yt,y.int),-1),  xl-xadj,  tail(seq(yb,yt,y.int),-1),  col=ColScheme2)
+  y.int <- (yt-yb)/length(colScheme)
+  rect(xl+xadj,  head(seq(yb,yt,y.int),-1),  xr,  tail(seq(yb,yt,y.int),-1),  col=colScheme)
+  rect(xl-diff(c(xl+xadj, xr)),  head(seq(yb,yt,y.int),-1),  xl-xadj,  tail(seq(yb,yt,y.int),-1),  col=colScheme2)
   rect(xl-diff(c(xl+xadj, xr)),  yb,  xl-xadj,  (yb+yt)/2,  col="white")
   text(xl-diff(c(xl+xadj, xr))/2, yb+(yt-yb)/4, "Expansion", srt=90, cex=0.85, font=1)
   text(rep(xr-10000,length(labels)),seq(yb,yt,(yt-yb)/(length(labels)-1)),labels,pos=4,cex=0.8,font=1)
@@ -798,14 +791,14 @@ plot_SuitabilityChangeMap <- function(dbCon,
     
     breakpoints <- c(seq(-100, -50,10), seq(60, 100,10));length(breakpoints)
     labels <- c("Decline", "Improve")
-    ColScheme <- c(brewer.pal(11,"RdBu")[c(1:4)], "grey90", "grey90", brewer.pal(11,"RdBu")[c(8:11)]); length(ColScheme)
+    colScheme <- c(brewer.pal(11,"RdBu")[c(1:4)], "grey90", "grey90", brewer.pal(11,"RdBu")[c(8:11)]); length(colScheme)
     
     par(plt = c(0.6, 0.95, 0.25, 1), xpd = TRUE, new = TRUE)
-    image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=ColScheme, breaks=breakpoints, asp = 1)
+    image(X,xlab = NA,ylab = NA,bty = "n", xaxt="n", yaxt="n", col=colScheme, breaks=breakpoints, asp = 1)
     terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
     
     xl <- 1600000; yb <- 1000000; xr <- 1700000; yt <- 1700000
-    rect(xl,  head(seq(yb,yt,(yt-yb)/length(ColScheme)),-1),  xr,  tail(seq(yb,yt,(yt-yb)/length(ColScheme)),-1),  col=ColScheme)
+    rect(xl,  head(seq(yb,yt,(yt-yb)/length(colScheme)),-1),  xr,  tail(seq(yb,yt,(yt-yb)/length(colScheme)),-1),  col=colScheme)
     text(rep(xr+10000,length(labels)),seq(yb,yt,(yt-yb)/(15-1))[c(3,9)],labels,pos=4,cex=0.7,font=0.7, srt=90)
     text(rep(xr-20000,length(labels)),seq(yb,yt,(yt-yb)/(15-1))[c(1,8,15)],c("100%", "50%", "100%"),pos=4,cex=0.7,font=1)
     text(xl-30000, mean(c(yb,yt))-30000, paste("Ensemble agreement\n(% of GCMs)", sep=""), srt=90, pos=3, cex=0.75, font=2)
@@ -869,6 +862,14 @@ bgc_map <- function(X,
     zones.bc <- c("BG", "BWBS", "CDF", "CWH", "ESSF", "ICH", "IDF", "MH", "MS", "PP", "SBPS", "SBS", "SWB", "BAFA", "CMA", "IMA")
   }
   
+  # colour scheme
+  colScheme <- if(zone){
+    zone_colours <- unique(WNA_BGCs[, .(Zone, ZoneColour)])
+    zone_colours$ZoneColour
+  } else {
+    WNA_BGCs$SubzoneColour
+  }
+  
   #extract a vector of bgc labels for each cell
   bgc <- dat[,2]
   
@@ -877,9 +878,9 @@ bgc_map <- function(X,
   #convert to zone and factorize
   if(zone){
     bgc <- sub("^([A-Z]+).*", "\\1", bgc)
-    bgc <- factor(bgc, levels = zones_colours_ref$classification)
+    bgc <- factor(bgc, levels = zone_colours$Zone)
   } else {
-    bgc <- factor(bgc, levels = subzones_colours_ref$classification)
+    bgc <- factor(bgc, levels = WNA_BGCs$BGC)
   }
   
   values(X) <- NA
@@ -887,9 +888,7 @@ bgc_map <- function(X,
   if(!is.null(boundary)){if(mask) X <- terra::mask(X, boundary)}
   X[1:length(levels(bgc))] <- 1:length(levels(bgc))
   
-  ColScheme <- if(zone) zones_colours_ref$colour else subzones_colours_ref$colour
-  
-  image(X, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
+  image(X, axes=F, col=colScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
 
   X.mask <- X
   values(X.mask)[-(1:length(levels(bgc)))] <- NA # cover up the color bar
@@ -899,9 +898,9 @@ bgc_map <- function(X,
   
   if(legend){
     if(mask_alpine){
-      legend("bottomleft", legend=c(zones.bc, "Alpine"), pch = 22, pt.cex = 1.5, cex = 0.9, pt.bg=c(zones_colours_ref[match(zones.bc, zones_colours_ref$classification), colour], "white"), bty="n", y.intersp = 1.75, x.intersp = 1.25)
+      legend("bottomleft", legend=c(zones.bc, "Alpine"), pch = 22, pt.cex = 1.5, cex = 0.9, pt.bg=c(zone_colours[match(zones.bc, zone_colours$Zone), ZoneColour], "white"), bty="n", y.intersp = 1.75, x.intersp = 1.25)
     } else {
-      legend("bottomleft", legend=zones.bc, pch = 22, pt.cex = 1.5, cex = 0.9, pt.bg=zones_colours_ref[match(zones.bc, zones_colours_ref$classification), colour], bty="n", y.intersp = 1.75, x.intersp = 1.25)
+      legend("bottomleft", legend=zones.bc, pch = 22, pt.cex = 1.5, cex = 0.9, pt.bg=zone_colours[match(zones.bc, zone_colours$Zone), ZoneColour], bty="n", y.intersp = 1.75, x.intersp = 1.25)
     }
   }
   
@@ -917,7 +916,7 @@ bgc_map <- function(X,
       pts <- which(levels(bgc)[values(X)]==bgc.exotic)
       q <- q_exotic
       pt <- xyFromCell(X, pts[min(which(pts >= quantile(pts, q)))])
-      points(pt, pch=21, bg=as.character(ColScheme[which(levels(bgc)==bgc.exotic)]), cex=1, lwd=0.8)
+      points(pt, pch=21, bg=as.character(colScheme[which(levels(bgc)==bgc.exotic)]), cex=1, lwd=0.8)
       text(pt-c(0, 0), bgc.exotic, pos=4, cex=0.7, font=2, offset=0.3)
       # print(q)
     }
@@ -1031,10 +1030,10 @@ plot_novelty <- function(con, raster_template, period, ensemble = TRUE, gcm = NU
   breakseq <- c(0,4,8)
   bs2 <- breakseq * 100
   breakpoints <- seq.int(bs2[1], bs2[3], 1)
-  ColScheme <- colorRampPalette(c("gray90", "gray50", "#FFF200", "#CD0000", "#000000"))(length(breakpoints))
+  colScheme <- colorRampPalette(c("gray90", "gray50", "#FFF200", "#CD0000", "#000000"))(length(breakpoints))
   coltab <- data.table(
     values = as.integer(breakpoints),
-    color = ColScheme               # Corresponding colors
+    color = colScheme               # Corresponding colors
   )
   rt <- copy(raster_template)
   values(rt) <- NA

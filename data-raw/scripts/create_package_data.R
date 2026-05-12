@@ -35,7 +35,6 @@ edatopic <- fread("../../../Downloads/edatopic.csv")
 suit <- fread("../../../Downloads/suitability.csv")
 ss <- fread("tables/versioned/SpecialSites_v13_2.csv")
 
-#subzones_colours_ref <- parse_qml("../../../Downloads/WNAv13_v5_Subzones.qml")
 sz_wna <- fread("../Common_Files/WNAv13_SubzoneCols.csv")
 sz_bc <- fread("../CCISS_ShinyApp/app/BC_SubzoneColours_v13_6.csv")
 sz_wna <- sz_wna[!classification %in% sz_bc$classification,]
@@ -118,8 +117,6 @@ F1 <- fread("./data-raw/data_tables/FeasibilityLabels.csv", key = "SuitDiff")
 T1 <- fread("./data-raw/data_tables/Tree speciesand codes_2.0_25Aug2021.csv", key = "TreeCode")
 
 V1 <- fread("./data-raw/data_tables/Variables_ClimateBC.csv", key = "Code")
-zones_colours_ref <- fread("./data-raw/data_tables/WNAv11_Zone_Colours.csv", key = "classification")
-subzones_colours_ref <- fread("./data-raw/data_tables/WNAv12_3_SubzoneCols.csv", key = "classification")
 
 # StockingStds
 stocking_standards_v12 <- fread("./data-raw/data_tables/StockingStds/StockStands_v13_1.csv", key = c("Region", "ZoneSubzone","SiteSeries", "Species"), colClasses = c("Standard" = "numeric"))
@@ -251,13 +248,11 @@ stocking_info <- stocking_info[!is.na(StockingTarget),]
 # models informations
 models_info <- fread("./data-raw/data_tables/CCISS_DataTable_Versions.csv")
 models_info[, Date := as.character(Date, format = "%Y/%m/%d")]
-subzones_colours_ref <- fread("../Common_Files/WNAv13_v6_SubzoneCols.csv")
 
 use_data(stocking_standards,stocking_info,stocking_height, overwrite = TRUE)
 
 use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
          cfrg_rules, SIBEC, covMat,
-         zones_colours_ref, subzones_colours_ref,
          stocking_standards, stocking_info, stocking_height, footnotes,
          silvics_tol, silvics_regen, silvics_mature, silvics_resist,
          models_info, TreeCols,
@@ -267,7 +262,7 @@ use_data(E1, E1_Phase, S1, SS, N1, R1, F1, T1, V1,
 use_data(N1, overwrite = T)
 use_data(E1, E1_Phase, S1, overwrite = TRUE)
 # see version in ?usethis::use_data, if you all use R 3.5 and up. You should bump to version 3
-# use_data(E1, S1, R1, F1, zones_colours_ref, subzones_colours_ref, overwrite = TRUE, version = 3)
+# use_data(E1, S1, R1, F1, overwrite = TRUE, version = 3)
 
 # This will document your dataset in R/_data.R. See https://roxygen2.r-lib.org/articles/rd.html#datasets
 # if you want to document them individually

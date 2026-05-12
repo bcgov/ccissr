@@ -355,13 +355,15 @@ analog_novelty <- function(clim.targets, clim.analogs, label.targets, label.anal
     }
     # Add candidate analogs
     if(plot3d.candidates){
-      data("zones_colours_ref")
+      zones_colours_all <- unique(WNA_BGCs[, .(Zone, ZoneColour)])
+      zones_colours_all <- setNames(zones_colours_all, c("classification", "colour"))
+      
       zone <- rep(NA, length(label.analogs.mean))
-      for(i in zones_colours_ref$classification){ zone[grep(i,label.analogs.mean)] <- i }
-      # zone <- factor(zone, zones_colours_ref$classification)
-      zone_colours <- as.character(zones_colours_ref$colour[match(zone, zones_colours_ref$classification)]) 
+      for(i in zones_colours_all$classification){ zone[grep(i,label.analogs.mean)] <- i }
+      # zone <- factor(zone, zones_colours_all$classification)
+      zone_colours <- as.character(zones_colours_all$colour[match(zone, zones_colours_all$classification)]) 
       zone_colours[is.na(zone_colours)] <- "#808080"
-      # zone_colours <- factor(zone_colours, zones_colours_ref$colour)
+      # zone_colours <- factor(zone_colours, zones_colours_all$colour)
       
       plot <- plot %>%
         add_trace(
