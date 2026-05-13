@@ -14,6 +14,11 @@ SS <- SS[,.(SS_NoSpace,SpecialCode,SiteSeriesLongName)]
 SS <- unique(SS)
 E1[SS, SpecialCode := i.SpecialCode, on = "SS_NoSpace"]
 
+WNA_BGCs <- fread("https://raw.githubusercontent.com/bcgov/ccissr/refs/heads/feas_tables/tables/WNA_BGCs_Info.csv", header = TRUE, encoding = "Latin-1")
+WNA_BGCs <- WNA_BGCs[,.(BGC, Zone, SubzoneGroup, SubzoneColour = colour, ZoneColour, notinTHLB,ZoneName, SubzoneName, VariantName,DataSet, State)]
+use_data(WNA_BGCs, overwrite = TRUE)
+
+
 setcolorder(E1,c("Source","BGC","SS_NoSpace","Edatopic","SpecialCode"))
 phases <- E1[grepl("BEC",Source) & grepl("[0-9]a$|[0-9]b$|[0-9]c$",SS_NoSpace),]
 E1 <- E1[!(grepl("BEC",Source) & grepl("[0-9]a$|[0-9]b$|[0-9]c$",SS_NoSpace)),]

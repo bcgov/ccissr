@@ -879,7 +879,7 @@ bgc_map <- function(X,
     bgc <- sub("^([A-Z]+).*", "\\1", bgc)
     bgc <- factor(bgc, levels = zones_colours_ref$classification)
   } else {
-    bgc <- factor(bgc, levels = subzones_colours_ref$classification)
+    bgc <- factor(bgc, levels = WNA_BGCs$BGC)
   }
   
   values(X) <- NA
@@ -887,7 +887,7 @@ bgc_map <- function(X,
   if(!is.null(boundary)){if(mask) X <- terra::mask(X, boundary)}
   X[1:length(levels(bgc))] <- 1:length(levels(bgc))
   
-  ColScheme <- if(zone) zones_colours_ref$colour else subzones_colours_ref$colour
+  ColScheme <- if(zone) zones_colours_ref$colour else WNA_BGCs$SubzoneColour
   
   image(X, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
 
@@ -938,15 +938,12 @@ bgc_map <- function(X,
 #' @importFrom DBI dbGetQuery dbWriteTable
 #' @export
 cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append = FALSE) {
+  message("Yes")
   if(duckdb_table_exists(con, "novelty_raw") & !append) stop("Table novelty_raw already exists. Please drop table or set append = TRUE")
-  clim.pts <- downscale(xyz = analog_pts, which_refmap = "refmap_climr",
-                        vars = list_vars())
-  addVars(clim.pts)
   nov_vars <- as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_"))
-  
-  
-  # Calculate the centroid climate for the training points
-  clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = analog_pts$BGC, .SDcols = -c(1,2)]
+  clim.pts <- downscale(xyz = analog_pts, which_refmap = "refmap_climr", return_refperiod = TRUE,
+                        vars = nov_vars)
+  clim.pts[analog_pts, BGC := i.BGC, on = "id"]
   
   # historical interannual climatic variability at the geographic centroids of the training points
   pts.mean <- analog_pts[, lapply(.SD, mean), by = BGC]
@@ -956,8 +953,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
                             obs_years = 1961:1990,
                             obs_ts_dataset = "cru.gpcc",
                             return_refperiod = FALSE,
-                            vars = list_vars())
-  addVars(clim.icv.pts)
+                            vars = nov_vars)
   gcms_use <- dbGetQuery(con, "select distinct gcm from bgc_raw")[,1]
   #ssps_use <- dbGetQuery(con, "select distinct ssp from bgc_raw")[,1]
   
@@ -987,7 +983,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
       clim_nov[,novelty := analog_novelty_core(clim.targets = .SD, 
                                                     clim.analogs = clim.pts, 
                                                     label.targets = bgc_pred, 
-                                                    label.analogs = analog_pts$BGC, 
+                                                    label.analogs = clim.pts$BGC, 
                                                     vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
                                                     clim.icvs = clim.icv.pts,
                                                     label.icvs = pts.mean$BGC[clim.icv.pts$id],
