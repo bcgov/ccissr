@@ -48,6 +48,7 @@ clim.grid <- downscale(xyz = grid,
 )
 addVars(clim.grid)
 clim.grid <- clim.grid[is.finite(CMD.total)] #remove NA rows to have complete cases for RF model
+setnames(clim.grid,  new = c("PAS", "Tmin", "CMI"),  old = c("PAS_an", "Tmin_an", "CMI_an"))
 
 #historical climate for training points
 pts <- fread("//objectstore2.nrs.bcgov/ffec/BGC_models/points_WNA_simple200.csv")
@@ -55,6 +56,7 @@ clim.pts <- downscale(xyz = pts,
                       vars = list_vars())
 addVars(clim.pts)
 clim.pts <- pts[clim.pts, on = "id"]
+setnames(clim.pts,  new = c("PAS", "Tmin", "CMI"),  old = c("PAS_an", "Tmin_an", "CMI_an"))
 
 # Calculate the centroid climate for the training points
 clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = BGC, .SDcols = -c("id", "PERIOD")]
@@ -69,6 +71,7 @@ clim.icv.pts <- downscale(xyz = pts.mean,
                           vars = list_vars())
 addVars(clim.icv.pts)
 clim.icv.pts <- pts.mean[clim.icv.pts, on = "id"]
+setnames(clim.icv.pts,  new = c("PAS", "Tmin", "CMI"),  old = c("PAS_an", "Tmin_an", "CMI_an"))
 
 #---------------------------
 # EDA with Scree and 3D plots
