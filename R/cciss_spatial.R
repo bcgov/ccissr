@@ -43,6 +43,7 @@ make_bgc_template <- function(xyz, bgcs, res = 0.0008){
 #' @param periods_use Character. List of time periods to create predictions for
 #' @param ssp_use Character. List of ssps to use. Default `c("ssp126", "ssp245", "ssp370")`
 #' @param obs_2001_2020 Logical. Also predict for 2001 - 2020 observed climate? Default `FALSE`
+#' @param refperiod Logical. Also predict for reference period (1961_1990)? Default `FALSE`
 #' @param max_runs_use Integer. Number of individual runs for each GCM. Default `0` (only use ensembleMean)
 #' @return NULL. Results are written to csv files in base_folder/bgc_data
 #' @import climr data.table ranger duckdb
@@ -55,9 +56,11 @@ predict_bgc <- function(dbCon,
                         periods_use, 
                         ssp_use = c("ssp126", "ssp245", "ssp370"),
                         obs_2001_2020 = FALSE,
+                        refperiod = FALSE,
                         max_runs_use = 0L,
                         start_tile = 1) {
   periods_needed <- if(obs_2001_2020) c(periods_use,"2001_2020_obs") else periods_use
+  periods_needed <- if(refperiod) c(periods_needed,"1961_1990") else periods_needed
   if(duckdb_table_exists(dbCon, "bgc_raw")) {
     periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
     if(all(periods_needed %in% periods_cached)){
@@ -82,7 +85,9 @@ predict_bgc <- function(dbCon,
   splits <- c(seq(1, nrow(points_dat), by = 10000), nrow(points_dat) + 1)
   message("There are ", length(splits), " tiles")
   if("2001_2020_obs" %in% periods_needed) obs <- "2001_2020" else obs <- NULL
-  periods_needed <- periods_needed[periods_needed != "2001_2020_obs"]
+  if("1961_1990" %in% periods_needed) refperiod <- TRUE else FALSE
+  
+  periods_needed <- periods_needed[!periods_needed %in% c("2001_2020_obs", "1961_1990")]
   if(length(periods_needed) < 1) periods_needed <- gcms_use <- ssp_use <- NULL
   tmp_names <- data.table(id = numeric(), GCM = character(), SSP = character(), RUN = character())
   
@@ -91,14 +96,14 @@ predict_bgc <- function(dbCon,
     clim_dat <- climr::downscale(points_dat[splits[i]:(splits[i+1]-1),], 
                           which_refmap = "refmap_climr",
                           gcms = gcms_use,
-                          gcm_periods = periods_needed[periods_needed != "2001_2020_obs"],
+                          gcm_periods = periods_needed,
                           obs_periods = obs,
                           ssps = ssp_use,
                           max_run = max_runs_use,
                           vars = c(vars_needed, "MAT"),
                           nthread = 6,
                           ensemble_mean = max_runs_use < 1,
-                          return_refperiod = FALSE)
+                          return_refperiod = refperiod)
     addVars(clim_dat)
     clim_dat <- na.omit(clim_dat)
     clim_dat <- rbind(clim_dat, tmp_names, use.names = TRUE, fill = TRUE)
