@@ -51,6 +51,9 @@ dbPopulate(con, bgc_template)
 # Run Raw BGC Predictions
 predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = list_gcm_periods(), max_runs_use = 3L, obs_2001_2020 = TRUE)
 
+# Calculate ensemble vote winner
+ensemble_predictions(con)
+
 # Run novelty detection
 analog_pts <- fread("//objectstore2.nrs.bcgov/ffec/BGC_models/points_WNA_simple200_v13_26.csv")
 target_pts <- fread("//objectstore2.nrs.bcgov/ffec/BGC_models/points_WNA_v4a.csv")
