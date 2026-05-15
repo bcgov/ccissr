@@ -208,7 +208,7 @@ ensemble_predictions <- function(dbCon,
   
   summarised_qry <- glue("CREATE TABLE {table_name} AS
                       WITH wt AS (
-                        SELECT cellnum, ssp, period, {true_expr} as bgc, w.weight
+                        SELECT cellnum, ssp, period, {true_expr} as bgc_pred, w.weight
                         FROM bgc_raw r
                         LEFT JOIN ssp_weights w USING (ssp)
                       ),
@@ -221,16 +221,16 @@ ensemble_predictions <- function(dbCon,
                         SELECT
                           w.cellnum,
                           w.period,
-                          w.bgc,
+                          w.bgc_pred,
                           SUM(w.weight) / t.tot_wt AS bgc_prop
                         FROM wt w
                         JOIN totals t
                           ON w.cellnum = t.cellnum
                          AND w.period = t.period
-                        GROUP BY w.cellnum, w.period, w.bgc, t.tot_wt
+                        GROUP BY w.cellnum, w.period, w.bgc_pred, t.tot_wt
                       )
                       
-                      SELECT cellnum, period, bgc, bgc_prop
+                      SELECT cellnum, period, bgc_pred, bgc_prop
                       FROM (
                         SELECT *,
                                ROW_NUMBER() OVER (PARTITION BY cellnum, period ORDER BY bgc_prop DESC) as rn

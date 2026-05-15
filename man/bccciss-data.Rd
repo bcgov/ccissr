@@ -22,11 +22,10 @@
 \alias{stocking_height}
 \alias{stocking_info}
 \alias{stocking_standards}
-\alias{subzones_colours_ref}
 \alias{T1}
 \alias{TreeCols}
 \alias{V1}
-\alias{zones_colours_ref}
+\alias{WNA_BGCs}
 \title{Data to be included in ccissr package}
 \description{
 Data to be included in ccissr package

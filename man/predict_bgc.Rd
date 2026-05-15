@@ -13,6 +13,7 @@ predict_bgc(
   periods_use,
   ssp_use = c("ssp126", "ssp245", "ssp370"),
   obs_2001_2020 = FALSE,
+  refperiod = FALSE,
   max_runs_use = 0L,
   start_tile = 1
 )
@@ -33,6 +34,8 @@ predict_bgc(
 \item{ssp_use}{Character. List of ssps to use. Default \code{c("ssp126", "ssp245", "ssp370")}}
 
 \item{obs_2001_2020}{Logical. Also predict for 2001 - 2020 observed climate? Default \code{FALSE}}
+
+\item{refperiod}{Logical. Also predict for reference period (1961_1990)? Default \code{FALSE}}
 
 \item{max_runs_use}{Integer. Number of individual runs for each GCM. Default \code{0} (only use ensembleMean)}
 }

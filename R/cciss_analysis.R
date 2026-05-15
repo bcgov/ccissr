@@ -813,6 +813,173 @@ plot_SuitabilityChangeMap <- function(dbCon,
   }
 } 
 
+#' Save raster of predicted suitability for use in e.g. CCISS Spatial
+#' @param con duckdb connection
+#' @param spp Species to plot
+#' @param period Character. Period to plot for.
+#' @param edatope Character. Edatope position (e.g. C4)
+#' @param raster_template SpatRaster to use as template for plotting. 
+#' @param save_location Character. Path to save raster in. Will be created if it doesn't exist. 
+#' @param raw Logical. Save raw values, or colourised rgb rasters? Default `FALSE`
+#' @param plot Logical. Create plot as well as saving raster? Default `FALSE`
+#' @import data.table
+#' @importFrom glue glue_sql
+#' @importFrom DBI dbGetQuery
+#' @importFrom terra  colorize plotRGB writeRaster as.int
+#' @export
+plot_predicted_suitability <- function(con, spp, period, edatope, raster_template, save_location = "suit_rasters", raw = FALSE, plot = FALSE) {
+  if(!dir.exists(save_location)) dir.create(save_location)
+  dat_spp <- dbGetQuery(con, glue_sql("select * from cciss_res where Spp = {spp} AND FuturePeriod = {period} AND Edatope = {edatope}", .con = con)) |> as.data.table()
+  
+  breakpoints.suit <- c(1,2,3,999)
+  palette.suit <-   c("#006400", "#1E90FF", "#EEC900", "#FFFFFF")
+  suit_cols <- data.table(value = breakpoints.suit,Colour = palette.suit)
+  dat_spp[,FeasRound := round(Newsuit)]
+  dat_spp[FeasRound > 3, FeasRound := 999]
+  
+  final_dem <- copy(raster_template)
+  values(final_dem) <- NA
+  
+  if(!raw) {
+    final_dem[!is.na(raster_template)] <- 999
+    final_dem[dat_spp$SiteRef] <- dat_spp$FeasRound
+    coltab(final_dem) <- suit_cols
+    final_rgb <- colorize(final_dem, to = "rgb", alpha = TRUE)
+    if(plot) plotRGB(final_rgb)
+    writeRaster(final_rgb, paste0(save_location,"/NewFeas_",period,"_",edatope,"_",spp,".tif"), overwrite = T)
+  } else {
+    final_dem[dat_spp$SiteRef] <- dat_spp$FeasRound
+    final_dem[final_dem == 999] <- NA
+    final_dem <- as.int(final_dem * 10)
+    writeRaster(final_dem, paste0(save_location,"/FeasibilityRaw_",period,"_",edatope,"_",spp,".tif"),overwrite = T, datatype = "INT2U")
+  }
+  
+}
+
+#' Save raster of predicted suitability change for use in e.g. CCISS Spatial
+#' @param con duckdb connection
+#' @param spp Species to plot
+#' @param period Character. Period to plot for.
+#' @param edatope Character. Edatope position (e.g. C4)
+#' @param raster_template SpatRaster to use as template for plotting. 
+#' @param save_location Character. Path to save raster in. Will be created if it doesn't exist. 
+#' @param raw Logical. Save raw values, or colourised rgb rasters? Default `FALSE`
+#' @param plot Logical. Create plot as well as saving raster? Default `FALSE`
+#' @import data.table
+#' @importFrom glue glue_sql
+#' @importFrom DBI dbGetQuery
+#' @importFrom terra  colorize plotRGB writeRaster as.int
+#' @export
+plot_suitability_change <- function(con, spp, period, edatope, raster_template, save_location = "suit_rasters", raw = FALSE, plot = FALSE) {
+  if(!dir.exists(save_location)) dir.create(save_location)
+  dat_spp <- dbGetQuery(con, glue_sql("select * from cciss_res where Spp = {spp} AND FuturePeriod = {period} AND Edatope = {edatope}", .con = con)) |> as.data.table()
+  
+  breakpoints.change <- c(c(seq(-2.5,2.5,0.5),-10,10,20,30) + 15, 999)
+  palette.change <- c(brewer.pal(11,"RdBu")[c(1,2,3,4,5,6)], brewer.pal(11,"RdBu")[c(7,8,9,10,11)],"#000000", brewer.pal(9,"YlOrRd")[1:3],"#FFFFFF") # nolint
+  change_cols <- data.table(value = breakpoints.change, Colour = palette.change)
+  change_cols[value == 15, Colour := "#DFDFDF"]
+  
+  dat_spp <- dat_spp[Curr < 3.5 | Newsuit < 3.5,]
+  dat_spp[,FeasChange := Curr - Newsuit]
+  dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
+  dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
+  dat_spp[,FeasChange := round(FeasChange/0.5)*0.5]
+  dat_spp[,FeasRound := round(Newsuit)]
+  dat_spp[,CurrRound := round(Curr)]
+  dat_spp[CurrRound > 3, CurrRound := 999]
+  dat_spp[FeasRound > 3, FeasRound := 999]
+
+  final_dem <- copy(raster_template)
+  values(final_dem) <- NA
+  
+  if(!raw) {
+    values(final_dem) <- NA
+    final_dem[!is.na(raster_template)] <- 999
+    final_dem[dat_spp$SiteRef] <- dat_spp$FeasChange + 15
+    final_rgb <- subst(final_dem, change_cols$value, t(col2rgb(change_cols$Colour,alpha = TRUE)),names = c("red","green", "blue","alpha"))
+    if(plot) plotRGB(final_rgb)
+    writeRaster(final_rgb, paste0(save_location,"/MeanChange_",period,"_",edatope,"_",spp,".tif"), overwrite = T)
+  } else {
+    final_dem[dat_spp$SiteRef] <- dat_spp$FeasChange
+    final_dem[final_dem == 999] <- NA
+    final_dem <- as.int(final_dem * 10)
+    writeRaster(final_dem, paste0(save_location,"/MeanChangeRaw_",period,"_",edatope,"_",spp,".tif"),overwrite = T, datatype = "INT4S")  
+  }
+}
+
+
+#' Save raster of predicted BGC map
+#' @param con duckdb connection
+#' @param period Character. Period to plot for.
+#' @param plot_ensemble Logical. Plot vote winner over ensemble of runs?
+#' @param gcm,ssp,run Character. Only used if `plot_ensemble = FALSE`
+#' @param raster_template SpatRaster to use as template for plotting. 
+#' @param by_zone Logical. Plot by zone or subzone variant? Default `FALSE`
+#' @param save_location Character. Path to save raster in. Will be created if it doesn't exist. 
+#' @param raw Logical. Save raw values, or colourised rgb rasters? Default `FALSE`
+#' @param plot Logical. Create plot as well as saving raster? Default `FALSE`
+#' @import data.table
+#' @importFrom glue glue_sql
+#' @importFrom DBI dbGetQuery
+#' @importFrom terra  colorize plotRGB writeRaster as.int
+#' @export
+plot_bgc <- function(con, period, plot_ensemble, gcm, ssp, run, 
+                     raster_template, by_zone = FALSE, 
+                     save_location = "bgc_rasters", raw = FALSE, plot = FALSE) {
+  if(!dir.exists(save_location)) dir.create(save_location)
+  
+  if(plot_ensemble){
+    if(by_zone) table_name <- DBI::SQL("ensemble_preds_zone")
+    else table_name <- DBI::SQL("ensemble_preds")
+    dat <- dbGetQuery(con, glue_sql("select cellnum, bgc_pred 
+                                    from {table_name} 
+                                    where period = {period}", .con = con)) |> as.data.table()
+  } else {
+    if(by_zone) sel_bgc <- DBI::SQL("regexp_extract(bgc_pred, '^[A-Z]+')")
+    else sel_bgc <- DBI::SQL("bgc_pred")
+    dat <- dbGetQuery(con, glue_sql("select cellnum, {sel_bgc} AS bgc_pred 
+                                    from bgc_raw 
+                                    where ssp = {ssp} and 
+                                    gcm = {gcm} and 
+                                    run = {run} and 
+                                    period = {period}")) |> as.data.table()
+  }
+  if(by_zone) {
+    col_use <- WNA_BGCs[,.(Zone, ZoneColour)]
+  } else {
+    col_use <- WNA_BGCs[,.(BGC, SubzoneColour)]
+  }
+  col_use <- unique(col_use)
+  setnames(col_use, c("classification", "colour"))
+  
+  final_dem <- copy(raster_template)
+  values(final_dem) <- NA
+  if(plot_ensemble) gcm_ids <- "Ensemble"
+  else gcm_ids <- paste(gcm, ssp, run, sep = "_")
+  zonesz <- "Subzone"
+  if(by_zone) zonesz <- "Zone"
+  
+  if(!raw) {
+    dat[,bgc_id := as.numeric(as.factor(bgc_pred))]
+    final_dem[dat$cellnum] <- dat$bgc_id
+    bgc_id <- unique(dat[,.(bgc_pred,bgc_id)])
+    bgc_id[col_use, colour := i.colour, on = c(bgc_pred = "classification")]
+    coltab(final_dem) <- bgc_id[,.(bgc_id,colour)]
+    rgbbgc <- colorize(final_dem, to = "rgb", alpha = T)
+    if(plot) plotRGB(rgbbgc)
+    writeRaster(rgbbgc, paste0(save_location,"/bgc_",gcm_ids,"_",period,"_",zonesz, ".tif"), overwrite=TRUE)  
+  } else {
+    if(by_zone) bgc_id <- data.table(bgc_pred = sort(WNA_BGCs$Zone)) |> unique()
+    else bgc_id <- data.table(bgc_pred = sort(WNA_BGCs$BGC)) |> unique()
+    bgc_id[,bgc_id := seq_along(bgc_pred)]
+    dat[bgc_id, bgc_id := i.bgc_id, on = "bgc_pred"]
+    final_dem[dat$cellnum] <- dat$bgc_id
+    writeRaster(final_dem, paste0(save_location,"/bgcRaw_",gcm_ids,"_",period,"_",zonesz, ".tif"), overwrite=TRUE, datatype = "INT2U")  
+  }
+}
+
+
+
 
 # dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
 # dat_spp[Curr > 3.5, FeasChange := round(FeasChange) * 10]
@@ -888,7 +1055,9 @@ bgc_map <- function(X,
   if(!is.null(boundary)){if(mask) X <- terra::mask(X, boundary)}
   X[1:length(levels(bgc))] <- 1:length(levels(bgc))
   
-  image(X, axes=F, col=colScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
+  ColScheme <- if(zone) zone_colours$ZoneColour else WNA_BGCs$SubzoneColour #(KIRI) I think this is redundant?
+  
+  image(X, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
 
   X.mask <- X
   values(X.mask)[-(1:length(levels(bgc)))] <- NA # cover up the color bar
@@ -937,15 +1106,12 @@ bgc_map <- function(X,
 #' @importFrom DBI dbGetQuery dbWriteTable
 #' @export
 cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append = FALSE) {
+  message("Yes")
   if(duckdb_table_exists(con, "novelty_raw") & !append) stop("Table novelty_raw already exists. Please drop table or set append = TRUE")
-  clim.pts <- downscale(xyz = analog_pts, which_refmap = "refmap_climr",
-                        vars = list_vars())
-  addVars(clim.pts)
   nov_vars <- as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_"))
-  
-  
-  # Calculate the centroid climate for the training points
-  clim.pts.mean <- clim.pts[, lapply(.SD, mean), by = analog_pts$BGC, .SDcols = -c(1,2)]
+  clim.pts <- downscale(xyz = analog_pts, which_refmap = "refmap_climr", return_refperiod = TRUE,
+                        vars = nov_vars)
+  clim.pts[analog_pts, BGC := i.BGC, on = "id"]
   
   # historical interannual climatic variability at the geographic centroids of the training points
   pts.mean <- analog_pts[, lapply(.SD, mean), by = BGC]
@@ -955,8 +1121,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
                             obs_years = 1961:1990,
                             obs_ts_dataset = "cru.gpcc",
                             return_refperiod = FALSE,
-                            vars = list_vars())
-  addVars(clim.icv.pts)
+                            vars = nov_vars)
   gcms_use <- dbGetQuery(con, "select distinct gcm from bgc_raw")[,1]
   #ssps_use <- dbGetQuery(con, "select distinct ssp from bgc_raw")[,1]
   
@@ -986,7 +1151,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
       clim_nov[,novelty := analog_novelty_core(clim.targets = .SD, 
                                                     clim.analogs = clim.pts, 
                                                     label.targets = bgc_pred, 
-                                                    label.analogs = analog_pts$BGC, 
+                                                    label.analogs = clim.pts$BGC, 
                                                     vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
                                                     clim.icvs = clim.icv.pts,
                                                     label.icvs = pts.mean$BGC[clim.icv.pts$id],
