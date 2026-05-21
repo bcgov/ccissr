@@ -942,7 +942,7 @@ plot_bgc <- function(con, period, plot_ensemble, gcm, ssp, run,
                                     where ssp = {ssp} and 
                                     gcm = {gcm} and 
                                     run = {run} and 
-                                    period = {period}")) |> as.data.table()
+                                    period = {period}", .con = con)) |> as.data.table()
   }
   if(by_zone) {
     col_use <- WNA_BGCs[,.(Zone, ZoneColour)]
@@ -1100,13 +1100,14 @@ bgc_map <- function(X,
 #' @param analog_pts data.table of WNA analog points 
 #' @param ssps Character vector of ssps to calculate novelty for. Default is "ssp245"
 #' @param append Logical. Append to existing table? Default FALSE throws error if table already exists.
+#' @param table_name Character. Name of table to pull BGC predictions from. Default "bgc_raw".
 #' @import data.table
 #' @import climr
 #' @importFrom glue glue glue_sql
 #' @importFrom DBI dbGetQuery dbWriteTable
 #' @export
-cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append = FALSE) {
-  message("Yes")
+cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append = FALSE, table_name = "bgc_raw") {
+  table_name <- DBI::SQL(table_name)
   if(duckdb_table_exists(con, "novelty_raw") & !append) stop("Table novelty_raw already exists. Please drop table or set append = TRUE")
   nov_vars <- as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_"))
   clim.pts <- downscale(xyz = analog_pts, which_refmap = "refmap_climr", return_refperiod = TRUE,
@@ -1122,13 +1123,13 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
                             obs_ts_dataset = "cru.gpcc",
                             return_refperiod = FALSE,
                             vars = nov_vars)
-  gcms_use <- dbGetQuery(con, "select distinct gcm from bgc_raw")[,1]
+  gcms_use <- dbGetQuery(con, glue_sql("select distinct gcm from {table_name}", .con = con))[,1]
   #ssps_use <- dbGetQuery(con, "select distinct ssp from bgc_raw")[,1]
   
   for(gcm in gcms_use){
     for(ssp in ssps){
       message(glue("Processing novelty for gcm = {gcm} and ssp = {ssp}"))
-      runs <- dbGetQuery(con, glue_sql("select distinct run from bgc_raw where ssp = {ssp} and gcm = {gcm}", .con = con))[,1]
+      runs <- dbGetQuery(con, glue_sql("select distinct run from {table_name} where ssp = {ssp} and gcm = {gcm}", .con = con))[,1]
       res <- downscale(target_pts, 
                        which_refmap = "refmap_climr", 
                        gcms = gcm, 
@@ -1143,7 +1144,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
       vars_temp <- c("id","GCM","SSP","RUN","PERIOD",nov_vars)
       ##novelty
       clim_nov <- res[,..vars_temp]
-      bgc <- dbGetQuery(con, glue_sql("select * from bgc_raw where ssp = {ssp} and gcm = {gcm}", .con = con))
+      bgc <- dbGetQuery(con, glue_sql("select * from {table_name} where ssp = {ssp} and gcm = {gcm}", .con = con))
       setDT(bgc)
       setnames(clim_nov, old = c("id","GCM","SSP","RUN","PERIOD"), new = c("cellnum","gcm","ssp","run","period"))
       clim_nov[bgc, bgc_pred := i.bgc_pred, on = c("cellnum","gcm","ssp","run","period")]
