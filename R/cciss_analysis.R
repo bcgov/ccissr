@@ -923,8 +923,8 @@ plot_suitability_change <- function(con, spp, period, edatope, raster_template, 
 #' @importFrom DBI dbGetQuery
 #' @importFrom terra  colorize plotRGB writeRaster as.int
 #' @export
-plot_bgc <- function(con, period, plot_ensemble, gcm, ssp, run, 
-                     raster_template, by_zone = FALSE, 
+plot_bgc <- function(con, period, plot_ensemble,raster_template, gcm = NULL, ssp = NULL, run = NULL,
+                      by_zone = FALSE, 
                      save_location = "bgc_rasters", raw = FALSE, plot = FALSE) {
   if(!dir.exists(save_location)) dir.create(save_location)
   
@@ -1106,7 +1106,7 @@ bgc_map <- function(X,
 #' @importFrom glue glue glue_sql
 #' @importFrom DBI dbGetQuery dbWriteTable
 #' @export
-cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append = FALSE, table_name = "bgc_raw") {
+cciss_novelty <- function(con, target_pts, analog_pts, observed = FALSE, ssps = "ssp245", append = FALSE, table_name = "bgc_raw") {
   table_name <- DBI::SQL(table_name)
   if(duckdb_table_exists(con, "novelty_raw") & !append) stop("Table novelty_raw already exists. Please drop table or set append = TRUE")
   nov_vars <- as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_"))
@@ -1122,49 +1122,103 @@ cciss_novelty <- function(con, target_pts, analog_pts, ssps = "ssp245", append =
                             obs_years = 1961:1990,
                             obs_ts_dataset = "cru.gpcc",
                             return_refperiod = FALSE,
-                            vars = nov_vars)
+                            vars = nov_vars,
+                            db_option = "local")
   gcms_use <- dbGetQuery(con, glue_sql("select distinct gcm from {table_name}", .con = con))[,1]
   #ssps_use <- dbGetQuery(con, "select distinct ssp from bgc_raw")[,1]
-  
-  for(gcm in gcms_use){
-    for(ssp in ssps){
-      message(glue("Processing novelty for gcm = {gcm} and ssp = {ssp}"))
-      runs <- dbGetQuery(con, glue_sql("select distinct run from {table_name} where ssp = {ssp} and gcm = {gcm}", .con = con))[,1]
-      res <- downscale(target_pts, 
-                       which_refmap = "refmap_climr", 
-                       gcms = gcm, 
-                       ssps = ssp, 
-                       gcm_periods = list_gcm_periods(), 
-                       run_nm = runs,
-                       return_refperiod = FALSE,
-                       vars = nov_vars)
-      res <- res[!is.na(Tmin_sm),]
-      res[is.na(res)] <- 0
-      
-      vars_temp <- c("id","GCM","SSP","RUN","PERIOD",nov_vars)
-      ##novelty
-      clim_nov <- res[,..vars_temp]
-      bgc <- dbGetQuery(con, glue_sql("select * from {table_name} where ssp = {ssp} and gcm = {gcm}", .con = con))
-      setDT(bgc)
-      setnames(clim_nov, old = c("id","GCM","SSP","RUN","PERIOD"), new = c("cellnum","gcm","ssp","run","period"))
-      clim_nov[bgc, bgc_pred := i.bgc_pred, on = c("cellnum","gcm","ssp","run","period")]
-      clim_nov <- na.omit(clim_nov)
-      clim_nov[,novelty := analog_novelty_core(clim.targets = .SD, 
-                                                    clim.analogs = clim.pts, 
-                                                    label.targets = bgc_pred, 
-                                                    label.analogs = clim.pts$BGC, 
-                                                    vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
-                                                    clim.icvs = clim.icv.pts,
-                                                    label.icvs = pts.mean$BGC[clim.icv.pts$id],
-                                                    weight.icv = 0.5,
-                                                    threshold = 0.95,
-                                                    pcs = NULL), by = .(gcm,ssp,run,period)]
-      clim_nov <- clim_nov[,.(cellnum, gcm, ssp, run, period, novelty)]
-      dbWriteTable(con, "novelty_raw", clim_nov, row.names = F, append = T)
+
+  if(observed){
+    splits <- c(seq(1, nrow(target_pts), by = 1000000), nrow(target_pts) + 1)
+    tmp_ls <- list()
+    for(i in 1:(length(splits)-1)){
+      message(glue("Downscaling chunk {i} of {length(splits)-1}"))
+      tmp_ls[[i]] <- downscale(target_pts[splits[i]:(splits[i+1]-1)], 
+                                which_refmap = "refmap_climr", 
+                                obs_periods = "2001_2020",
+                                return_refperiod = FALSE,
+                                vars = nov_vars)
     }
+    res <- rbindlist(tmp_ls)
+    res <- res[!is.na(Tmin_sm),]
+    res[is.na(res)] <- 0
+    
+    vars_temp <- c("id","PERIOD",nov_vars)
+    ##novelty
+    clim_nov <- res[,..vars_temp]
+    bgc <- dbGetQuery(con, glue_sql("select * from {table_name} where period = '2001_2020_obs'", .con = con))
+    setDT(bgc)
+    setnames(clim_nov, old = c("id","PERIOD"), new = c("cellnum","period"))
+    clim_nov[bgc, bgc_pred := i.bgc_pred, on = c("cellnum","period")]
+    clim_nov <- na.omit(clim_nov)
+    message("Calculating observed novelty...")
+    clim_nov[,novelty := analog_novelty_core(clim.targets = .SD, 
+                                                      clim.analogs = clim.pts, 
+                                                      label.targets = bgc_pred, 
+                                                      label.analogs = clim.pts$BGC, 
+                                                      vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
+                                                      clim.icvs = clim.icv.pts,
+                                                      label.icvs = pts.mean$BGC[clim.icv.pts$id],
+                                                      weight.icv = 0.5,
+                                                      threshold = 0.95,
+                                                      pcs = NULL), by = .(period)]
+    novelty_obs <- data.table(cellnum = target_pts$id, gcm = "Observed", ssp = "Observed", run = "Observed", period = "2001_2020_obs", novelty = clim_nov$novelty)
+    dbWriteTable(con, "novelty_raw", novelty_obs, row.names = F, append = T)
+  } else {
+    for(gcm in gcms_use){
+    for(ssp in ssps){
+      periods_use <- dbGetQuery(con, glue_sql("select distinct period from {table_name} where ssp = {ssp} and gcm = {gcm}", .con = con))[,1]
+      periods_use <- periods_use[!grepl("2001_2020_obs", periods_use)] # remove historical period if it exists in table
+      for(period in periods_use){
+        message(glue("Processing novelty for gcm = {gcm} and ssp = {ssp} and period = {period}"))
+        runs <- dbGetQuery(con, glue_sql("select distinct run from {table_name} where ssp = {ssp} and gcm = {gcm} and period = {period}", .con = con))[,1]
+
+        ## Need to save memory when downscaling - split into chunks and recombine
+        splits <- c(seq(1, nrow(target_pts), by = 1000000), nrow(target_pts) + 1)
+        tmp_ls <- list()
+        for(i in 1:(length(splits)-1)){
+          message(glue("Downscaling chunk {i} of {length(splits)-1}"))
+          tmp_ls[[i]] <- downscale(target_pts[splits[i]:(splits[i+1]-1)], 
+                                   which_refmap = "refmap_climr", 
+                                   gcms = gcm, 
+                                   ssps = ssp, 
+                                   gcm_periods = period, 
+                                   run_nm = runs,
+                                   return_refperiod = FALSE,
+                                   vars = nov_vars)
+        }
+        res <- rbindlist(tmp_ls)
+        res <- res[!is.na(Tmin_sm),]
+        res[is.na(res)] <- 0
+        
+        vars_temp <- c("id","GCM","SSP","RUN","PERIOD",nov_vars)
+        ##novelty
+        clim_nov <- res[,..vars_temp]
+        bgc <- dbGetQuery(con, glue_sql("select * from {table_name} where ssp = {ssp} and gcm = {gcm} and period = {period}", .con = con))
+        setDT(bgc)
+        setnames(clim_nov, old = c("id","GCM","SSP","RUN","PERIOD"), new = c("cellnum","gcm","ssp","run","period"))
+        clim_nov[bgc, bgc_pred := i.bgc_pred, on = c("cellnum","gcm","ssp","run","period")]
+        clim_nov <- na.omit(clim_nov)
+        message("Calculating novelty...")
+        clim_nov[,novelty := analog_novelty_core(clim.targets = .SD, 
+                                                      clim.analogs = clim.pts, 
+                                                      label.targets = bgc_pred, 
+                                                      label.analogs = clim.pts$BGC, 
+                                                      vars = as.vector(outer(c("Tmin", "Tmax", "PPT"), c("wt", "sp", "sm", "at"), paste, sep = "_")),
+                                                      clim.icvs = clim.icv.pts,
+                                                      label.icvs = pts.mean$BGC[clim.icv.pts$id],
+                                                      weight.icv = 0.5,
+                                                      threshold = 0.95,
+                                                      pcs = NULL), by = .(gcm,ssp,run,period)]
+        clim_nov <- clim_nov[,.(cellnum, gcm, ssp, run, period, novelty)]
+        dbWriteTable(con, "novelty_raw", clim_nov, row.names = F, append = T)
+      }
+    }
+  }
   }
   message("Written table novelty_raw to database!")
 }
+
+
 
 #' Calculate mean novelty across runs
 #' @param con duckdb database connection
@@ -1192,7 +1246,8 @@ ensemble_novelty <- function(con, table_name = "ensemble_novelty") {
 #' @importFrom data.table data.table
 #' @importFrom grDevices  colorRampPalette
 #' @export
-plot_novelty <- function(con, raster_template, period, ensemble = TRUE, gcm = NULL, ssp = NULL, run = NULL) {
+plot_novelty <- function(con, raster_template, period, ensemble = TRUE, gcm = NULL, 
+ssp = NULL, run = NULL, save_location = "novelty_rasters") {
   breakseq <- c(0,4,8)
   bs2 <- breakseq * 100
   breakpoints <- seq.int(bs2[1], bs2[3], 1)
@@ -1215,5 +1270,7 @@ plot_novelty <- function(con, raster_template, period, ensemble = TRUE, gcm = NU
   rt <- as.int(rt*100)
   rt[rt > 800] <- 800
   rgbnov <- subst(rt, coltab$values, t(col2rgb(coltab$color,alpha = TRUE)),names = c("red","green", "blue","alpha"))
-  plotRGB(rgbnov)
+  #plotRGB(rgbnov)
+  if(!dir.exists(save_location)) dir.create(save_location)
+  writeRaster(rgbnov, paste0(save_location,"/novelty_",ifelse(ensemble, "ensemble", paste(gcm, ssp, run, sep = "_")), "_",period, ".tif"), overwrite = TRUE)
 }
