@@ -8,6 +8,7 @@ cciss_novelty(
   con,
   target_pts,
   analog_pts,
+  observed = FALSE,
   ssps = "ssp245",
   append = FALSE,
   table_name = "bgc_raw"

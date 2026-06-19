@@ -17,7 +17,7 @@ devtools::load_all()
 
 # dir <- "//objectstore2.nrs.bcgov/ffec/BGC_models/" #permanent location
 dir <- "C:/Users/CMAHONY/Data/BGC_models/" #local copy, for speed
-dir <- "../Common_Files/WNA_BGCv13/"
+# dir <- "../Common_Files/WNA_BGCv13/"
 BGCmodel <- readRDS(paste0(dir, "BGCmodel_WNA_V4.2gini.rds"))
 
 # dem2 <- rast("//objectstore2.nrs.bcgov/ffec/DEM/dem_BC2kmGrid.tif") #permanent location
@@ -45,18 +45,17 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 # -------------------------------------------
 # Setup database
 
-con <- dbCon_cciss("./bc_2km_colin.duckdb", threads = 8)
+con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
 dbPopulate(con, bgc_template)
 
 # Run Raw BGC Predictions
 predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = list_gcm_periods(), max_runs_use = 3L, obs_2001_2020 = TRUE)
-ensemble_predictions(con)
 
 # Calculate ensemble vote winner
 ensemble_predictions(con)
 
 # Run novelty detection
-analog_pts <- fread("../Common_Files/WNA_BGCv13/points_WNA_simple200_v13_26.csv")
+# analog_pts <- fread("../Common_Files/WNA_BGCv13/points_WNA_simple200_v13_26.csv")
 analog_pts <- fread("//objectstore2.nrs.bcgov/ffec/BGC_models/points_WNA_simple200_v13_26.csv")
 target_pts <- dem_table
 
@@ -83,3 +82,21 @@ perexp <- spp_persist_expand(con, spp_list = c("Pl", "Fd", "Cw", "Sx", "At", "Py
 ## Calculate Relative Feasible Area
 sa <- spp_suit_area(con, spp_list = spps)
 
+
+##=================================
+# examples of how to query the database
+##=================================
+dbListTables(con)
+dbGetQuery(con, "select*from bgc_raw limit 10")
+dbGetQuery(con, "select*from bgc_points limit 10")
+dbGetQuery(con, "select*from spatial_res limit 10")
+dbGetQuery(con, "select*from clim_summary limit 10")
+dbGetQuery(con, "select*from clim_refperiod limit 10")
+
+dat <- dbGetQuery(con, "select * from bgc_raw where ssp = 'ssp245' and gcm = 'ACCESS-ESM1-5' and run = 'ensembleMean' and period = '2041_2060'")
+dat <- dbGetQuery(con, "select * from bgc_raw where ssp = 'ssp245' and gcm = 'GISS-E2-1-G' and period = '2041_2060'")
+
+
+dat <- dbGetQuery(con, "select * from ensemble_preds where period = '2041_2060'")
+
+dbGetQuery(con, "SELECT DISTINCT period FROM bgc_raw ORDER BY period")

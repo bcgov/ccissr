@@ -11,7 +11,8 @@ plot_novelty(
   ensemble = TRUE,
   gcm = NULL,
   ssp = NULL,
-  run = NULL
+  run = NULL,
+  save_location = "novelty_rasters"
 )
 }
 \arguments{
