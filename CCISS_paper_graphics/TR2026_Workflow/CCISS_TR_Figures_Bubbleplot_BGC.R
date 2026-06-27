@@ -18,6 +18,8 @@ bgc_template <- make_bgc_template(dem2, bgcs)
 dbPopulate(con, bgc_template)
 
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
+land <- rasterize(bc_ol, dem2, field = 1)
+ocean_mask <- ifel(is.na(land), 1, NA)
 
 zones.bc <- c("BG", "BWBS", "CDF", "CWH", "ESSF", "ICH", "IDF", "MH", "MS", "PP", "SBPS", "SBS", "SWB")
 
@@ -56,7 +58,7 @@ par(plt = as.vector(rbind(x1, x2, y1, y2)[,1]), new=TRUE)
 dat <- dbGetQuery(con, "select * from bgc_points")
 
 bgc_map(X, dat, 
-        boundary = NULL,
+        mask = bc_ol,
         legend = TRUE, 
         title = paste("(", letters[1], ") BGC zone map (1961-1990)", sep=""),
         add=TRUE 
@@ -121,7 +123,12 @@ for(i in 1:3){
 # bubble plot
 bgc_perexp <- bgc_persist_expand(con, by_zone = TRUE)
 
-bgc_bubbleplot(bgc_perexp, period = period, plt = as.vector(rbind(x1, x2, y1, y2)[,6]), mar = c(6,10,0.1,0.1))
+bgc_bubbleplot(bgc_perexp, 
+               period = period, 
+               xlab = "Climate analog within historical range",
+               ylab = "Climate analog beyond historical range",
+               plt = as.vector(rbind(x1, x2, y1, y2)[,6]), 
+               mar = c(6,10,0.1,0.1))
 
 mtext("(f)", side=3, line=-1.5, adj = 0.025)
 

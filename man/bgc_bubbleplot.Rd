@@ -8,8 +8,8 @@ bgc_bubbleplot(
   persist_expand,
   period = "2041_2060",
   scenario = "ssp245",
-  xlab = "Persistence within historical range",
-  ylab = "Expansion beyond historical range",
+  xlab = "Climate analog within historical range",
+  ylab = "Climate analog beyond historical range",
   unit.focal = NULL,
   focal.color = "lightskyblue2",
   xlim = c(0, 1.1),
@@ -35,7 +35,9 @@ bgc_bubbleplot(
 
 \item{ylabels}{logical. y axis labels.}
 
-\item{mar}{numeric. par(plt) parameters for overlaying into an existing plot window.}
+\item{mar}{numeric. plot margins.}
+
+\item{plt}{numeric. par(plt) parameters for overlaying into an existing plot window.}
 }
 \value{
 NULL. Creates plot

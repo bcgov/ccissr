@@ -70,6 +70,7 @@ for(i in 1:5) {
     
   plot(0, xlim=xlim, ylim=ylim, col="white", xaxt="n", yaxt="n", xlab= if(i == 5) xlab else "", ylab="", xaxs="i")
   
+  iso <- seq(0.0001,1, 0.001)
   lines(log2(1-iso), log2(iso), lty=2, lwd=2, col="darkgray")
   
   if(i == 1) axis(2,at=seq(ylim[1], ylim[2], 2), labels=paste(round(2^(seq(ylim[1], ylim[2],2))*100),"%", sep=""), las=2, tck=0)

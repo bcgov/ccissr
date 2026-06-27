@@ -9,9 +9,10 @@ bgc_map(
   dat,
   zone = TRUE,
   boundary = NULL,
-  mask = TRUE,
+  mask = NULL,
   legend = FALSE,
   mask_alpine = TRUE,
+  mask_ocean = TRUE,
   label_exotic = NULL,
   q_exotic = 0.5,
   title = "",
@@ -27,7 +28,7 @@ bgc_map(
 
 \item{boundary}{SpatVector. Optional study area boundary.}
 
-\item{mask}{logical. Remove values outside the study area boundary.}
+\item{mask}{SpatVector. Optional spatial mask}
 
 \item{legend}{logical. Plot a legend.}
 
