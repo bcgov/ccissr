@@ -58,7 +58,8 @@ predict_bgc <- function(dbCon,
                         obs_2001_2020 = FALSE,
                         refperiod = FALSE,
                         max_runs_use = 0L,
-                        start_tile = 1) {
+                        start_tile = 1,
+                        tile_size = 10000) {
   periods_needed <- if(obs_2001_2020) c(periods_use,"2001_2020_obs") else periods_use
   periods_needed <- if(refperiod) c(periods_needed,"1961_1990") else periods_needed
   if(duckdb_table_exists(dbCon, "bgc_raw")) {
@@ -82,7 +83,7 @@ predict_bgc <- function(dbCon,
     points_dat <- copy(xyz)
   }
   
-  splits <- c(seq(1, nrow(points_dat), by = 10000), nrow(points_dat) + 1)
+  splits <- c(seq(1, nrow(points_dat), by = tile_size), nrow(points_dat) + 1)
   message("There are ", length(splits), " tiles")
   if("2001_2020_obs" %in% periods_needed) obs <- "2001_2020" else obs <- NULL
   if("1961_1990" %in% periods_needed) refperiod <- TRUE else FALSE

@@ -1,0 +1,57 @@
+---
+title: "CCISS Loss/Gain Stats"
+author: "Kiri Daust"
+format: html
+editor: visual
+---
+
+# Community Stats
+
+Connect to full duckdb database:
+
+```{r}
+devtools::load_all()
+library(data.table)
+library(terra)
+library(ggplot2)
+library(duckdb)
+
+con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
+```
+
+## Portfolio Persistence
+
+Here, we define persistence at a given location as the proportion of species that have maintained persistence, from the reference period to the "future". We consider both the **establishment** future, and the **maturity** future, using the same weighted average calculations as in CCISS. We calculate persistence by cell, and can then map persistence, as well as average over the province (or by district).
+
+```{r}
+estab_wt <- c(0.25,0.25,0.5,0,0,0)
+maturity_wt <- c(0,0,0.1,0.3,0.3,0.3)
+
+dat <- spp_persistance(con, fut_wt = maturity_wt, curr_wt = c(1,0,0,0,0,0))
+dat <- dat[TotalSpp > 0,]
+dat[,Persistence := StableSpp/TotalSpp]
+```
+
+Let's plot it. We're seeing low persistence in the southern valleys, and in the Northeast.
+
+```{r}
+dem2 <- rast("dem_BC2kmGrid.tif")
+X <- copy(dem2)
+values(X) <- NA
+X[dat$SiteRef] <- dat$Persistence
+terra::plot(X)
+```
+
+Now let's average by district:
+
+```{r}
+districts <- dbGetQuery(con, "select * from dist_points") |> as.data.table()
+dat[districts, district := i.district, on = c(SiteRef = "cellnum")]
+temp <- dat[,.(Persistence = mean(Persistence)), by = district]
+setorder(temp, Persistence)
+temp
+```
+
+Then, we can say something like "Average maturity portfolio persistence province wide is `r mean(dat$Persistence) * 100` %, although some districts have a `r min(temp$Persistence) * 100`% average".
+
+## Species Richness
