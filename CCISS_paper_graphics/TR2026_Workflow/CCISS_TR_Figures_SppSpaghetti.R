@@ -111,16 +111,16 @@ for(edatope_sel in edatopes){
   spplist <- spps[which(spps%in%spps.native)][order(suit.native.initial)]
   
   # #Color scheme for species groups
-  data("zones_colours_ref")
+  data("WNA_BGCs")
   boreal <- c("Pl", "Sx", "Sb", "At", "Ep", "Pj", "Acb", "Sw")
   temperate <- c("Fd", "Lw", "Pw", "Py", "Bg", "Act", "Ac")
   mesothermal <- c("Hw", "Cw", "Ba", "Ss", "Dr", "Mb")
   subalpine <- c("Hm", "Yc", "Bl", "Ba")
   ColScheme <- rep(NA, length(spplist))
-  ColScheme[which(spplist%in%boreal)] <- as.character(zones_colours_ref$colour[which(zones_colours_ref$classification=="SBS")])
-  ColScheme[which(spplist%in%temperate)] <- as.character(zones_colours_ref$colour[which(zones_colours_ref$classification=="IDF")])
-  ColScheme[which(spplist%in%mesothermal)] <- as.character(zones_colours_ref$colour[which(zones_colours_ref$classification=="CWH")])
-  ColScheme[which(spplist%in%subalpine)] <- as.character(zones_colours_ref$colour[which(zones_colours_ref$classification=="MS")])
+  ColScheme[which(spplist%in%boreal)] <- as.character(unique(WNA_BGCs$ZoneColour[which(WNA_BGCs$Zone =="SBS")]))
+  ColScheme[which(spplist%in%temperate)] <- as.character(unique(WNA_BGCs$ZoneColour[which(WNA_BGCs$Zone =="IDF")]))
+  ColScheme[which(spplist%in%mesothermal)] <- as.character(unique(WNA_BGCs$ZoneColour[which(WNA_BGCs$Zone =="CWH")]))
+  ColScheme[which(spplist%in%subalpine)] <- as.character(unique(WNA_BGCs$ZoneColour[which(WNA_BGCs$Zone =="MS")]))
   
   if(edatope_sel==edatopes[2]){
     text(-3.2, ylim[1]+0.02, "Boreal species", cex=1.1, srt=90, font=2, pos=4, col=unique(ColScheme[which(spplist%in%boreal)]))

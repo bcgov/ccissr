@@ -8,10 +8,10 @@ plot_bgc(
   con,
   period,
   plot_ensemble,
-  gcm,
-  ssp,
-  run,
   raster_template,
+  gcm = NULL,
+  ssp = NULL,
+  run = NULL,
   by_zone = FALSE,
   save_location = "bgc_rasters",
   raw = FALSE,
@@ -25,9 +25,9 @@ plot_bgc(
 
 \item{plot_ensemble}{Logical. Plot vote winner over ensemble of runs?}
 
-\item{gcm, ssp, run}{Character. Only used if \code{plot_ensemble = FALSE}}
-
 \item{raster_template}{SpatRaster to use as template for plotting.}
+
+\item{gcm, ssp, run}{Character. Only used if \code{plot_ensemble = FALSE}}
 
 \item{by_zone}{Logical. Plot by zone or subzone variant? Default \code{FALSE}}
 

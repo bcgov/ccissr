@@ -237,7 +237,7 @@ spp_bubbleplot <- function(persist_expand,
 #' @param xlabels  logical. x axis labels.
 #' @param ylabels  logical. y axis labels.
 #' @param mar numeric. plot margins.
-#' @param mar numeric. par(plt) parameters for overlaying into an existing plot window. 
+#' @param plt numeric. par(plt) parameters for overlaying into an existing plot window. 
 #' @return NULL. Creates plot
 #' @import data.table
 #' @importFrom car dataEllipse
@@ -245,8 +245,8 @@ spp_bubbleplot <- function(persist_expand,
 bgc_bubbleplot <- function(persist_expand, 
                            period = "2041_2060", 
                            scenario = "ssp245", 
-                           xlab = "Persistence within historical range",
-                           ylab = "Expansion beyond historical range", 
+                           xlab = "Climate analog within historical range",
+                           ylab = "Climate analog beyond historical range", 
                            unit.focal = NULL,
                            focal.color = "lightskyblue2",
                            xlim = c(0, 1.1),
@@ -1091,7 +1091,7 @@ plot_bgc_mapped <- function(raster_template, by_zone = FALSE,
 #' @param dat data.table with first column indicating template raster cell ID and second column the BGC subzone/variant. 
 #' @param zone logical. Plot with BGC zone colours. 
 #' @param boundary SpatVector. Optional study area boundary.
-#' @param mask logical. Remove values outside the study area boundary.
+#' @param mask SpatVector. Optional spatial mask
 #' @param legend logical. Plot a legend. 
 #' @param mask_alpine logical. Plot alpine BGC units as white.
 #' @param label_exotic numeric. Minimum number of grid cells required to plot a label for exotic (non-BC) BGC units. 
@@ -1105,9 +1105,10 @@ bgc_map <- function(X,
                     dat, 
                     zone = TRUE, 
                     boundary = NULL, 
-                    mask = TRUE, 
+                    mask = NULL, 
                     legend = FALSE, 
                     mask_alpine = TRUE, 
+                    mask_ocean = TRUE, 
                     label_exotic = NULL, 
                     q_exotic = 0.5, 
                     title = "",
@@ -1143,7 +1144,7 @@ bgc_map <- function(X,
   
   values(X) <- NA
   X[dat[,1]] <- bgc
-  if(!is.null(boundary)){if(mask) X <- terra::mask(X, boundary)}
+  if(!is.null(mask)) X <- terra::mask(X, mask)
   X[1:length(levels(bgc))] <- 1:length(levels(bgc))
   
   ColScheme <- if(zone) zone_colours$ZoneColour else WNA_BGCs$SubzoneColour #(KIRI) I think this is redundant?
@@ -1151,7 +1152,8 @@ bgc_map <- function(X,
   image(X, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
 
   X.mask <- X
-  values(X.mask)[-(1:length(levels(bgc)))] <- NA # cover up the color bar
+  values(X.mask) <- NA
+  values(X.mask)[1:length(levels(bgc))] <- 1 # cover up the color bar
   terra::plot(X.mask, add=T, col="white", legend=FALSE) # cover up the color bar
   
   if(!is.null(boundary)) terra::plot(boundary, add=T, border=1, lwd=0.4)

@@ -7,8 +7,6 @@ library(duckdb)
 library(data.table)
 library(climr)
 
-data("zones_colours_ref")
-
 con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
 
 setwd("C:/Users/CMAHONY/GitHub/CCISS_repos/ccissr") 
@@ -20,13 +18,16 @@ bgc_template <- make_bgc_template(dem2, bgcs)
 dbPopulate(con, bgc_template)
 
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
-
+land <- rasterize(bc_ol, dem2, field = 1)
+ocean_mask <- ifel(is.na(land), 1, NA)
 
 zones.bc <- c("BG", "BWBS", "CDF", "CWH", "ESSF", "ICH", "IDF", "MH", "MS", "PP", "SBPS", "SBS", "SWB")
 
 ssp <- "ssp245"
 period <- "2041_2060"
 
+for(period in list_gcm_periods()){
+  
 ssp.names <- c("SSP1-2.6", "SSP2-4.5", "SSP3-7.0", "SSP5-8.5")
 period.names <- c("2010", "2030", "2050", "2070", "2090")
 
@@ -57,7 +58,7 @@ par(plt = as.vector(rbind(x1, x2, y1, y2)[,1]), new=TRUE)
 dat <- dbGetQuery(con, "select * from bgc_points")
 
 bgc_map(X, dat, 
-        boundary = bc_ol,
+        mask = bc_ol,
         legend = TRUE, 
         title = paste("(", letters[1], ") BGC zone map (1961-1990)", sep=""),
         add=TRUE 
@@ -75,7 +76,7 @@ par(plt = as.vector(rbind(x1, x2, y1, y2)[,2]), new=TRUE)
 dat <- dbGetQuery(con, "select * from bgc_raw where period = '2001_2020_obs'") # TODO dummy query until we create obs period bgc preds. 
 
 bgc_map(X, dat[, c("cellnum", "bgc_pred")], 
-        boundary = bc_ol,
+        boundary = NULL,
         add=TRUE,
         title = paste("(", letters[2], ") Observed climate (2001-2020)", sep="")
 )
@@ -108,7 +109,7 @@ for(i in 1:3){
   
   par(plt = as.vector(rbind(x1, x2, y1, y2)[,i+2]), new = TRUE)
   bgc_map(X, dat[, c("cellnum", "bgc_pred")], 
-          boundary = bc_ol,
+          boundary = NULL,
           label_exotic = 400,
           q_exotic = 0.7,
           add=TRUE,
@@ -122,22 +123,36 @@ for(i in 1:3){
 # bubble plot
 bgc_perexp <- bgc_persist_expand(con, by_zone = TRUE)
 
-bgc_bubbleplot(bgc_perexp, period = period, plt = as.vector(rbind(x1, x2, y1, y2)[,6]), mar = c(6,10,0.1,0.1))
+bgc_bubbleplot(bgc_perexp, 
+               period = period, 
+               xlab = "Climate analog within historical range",
+               ylab = "Climate analog beyond historical range",
+               plt = as.vector(rbind(x1, x2, y1, y2)[,6]), 
+               mar = c(6,10,0.1,0.1))
 
 mtext("(f)", side=3, line=-1.5, adj = 0.025)
 
 dev.off()
 
+print(period)
+}
 
 
 
-# ##=================================
-# ###
-# 
-# # examples of how to query the database
-# dbListTables(con)
-# dbGetQuery(con, "select*from bgc_raw limit 10")
-# dbGetQuery(con, "select*from bgc_points limit 10")
-# 
-# dat <- dbGetQuery(con, "select * from bgc_raw where ssp = 'ssp245' and gcm = 'ACCESS-ESM1-5' and run = 'ensembleMean' and period = '2041_2060'")
-# dat <- dbGetQuery(con, "select * from bgc_raw where ssp = 'ssp245' and gcm = 'GISS-E2-1-G' and period = '2041_2060'")
+##=================================
+# examples of how to query the database
+##=================================
+dbListTables(con)
+dbGetQuery(con, "select*from bgc_raw limit 10")
+dbGetQuery(con, "select*from bgc_points limit 10")
+dbGetQuery(con, "select*from spatial_res limit 10")
+dbGetQuery(con, "select*from clim_summary limit 10")
+dbGetQuery(con, "select*from clim_refperiod limit 10")
+
+dat <- dbGetQuery(con, "select * from bgc_raw where ssp = 'ssp245' and gcm = 'ACCESS-ESM1-5' and run = 'ensembleMean' and period = '2041_2060'")
+dat <- dbGetQuery(con, "select * from bgc_raw where ssp = 'ssp245' and gcm = 'GISS-E2-1-G' and period = '2041_2060'")
+
+
+dat <- dbGetQuery(con, "select * from ensemble_preds where period = '2041_2060'")
+
+dbGetQuery(con, "SELECT DISTINCT period FROM bgc_raw ORDER BY period")
