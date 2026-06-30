@@ -13,12 +13,17 @@ dem_table <- climr::dem_to_table(dem2)
 
 BGCmodel <- readRDS("../Common_Files/WNA_BGCv13/BGCmodel_WNA_V4.2gini.rds")
 
+##spatial file of BGCs
 bgcs <- vect("../Common_Files/WNA_BGCv13/BGC_BC_v13_Jan21.gdb/")
 bgcs <- bgcs["MAP_LABEL"]
 names(bgcs) <- "BGC"
 bgc_template <- make_bgc_template(dem2, bgcs)
 
-con <- dbCon_cciss("./bc_2km_v13_26.duckdb", threads = 8)
+## create/open duckdb file
+con <- dbCon_cciss("./bc_2km_v13_26.duckdb", threads = 8) ##name this whatever you want
+dbExecute(con, "SET memory_limit = '16GB'") ##adjust this if you run out of memory
+dbExecute(con, "SET threads = 8")
+
 dbPopulate(con, bgc_template)
 
 vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT", 
@@ -29,23 +34,27 @@ vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT",
 gcms_cciss <- c("ACCESS-ESM1-5", "CNRM-ESM2-1", "EC-Earth3", "GFDL-ESM4",
                 "GISS-E2-1-G", "MIROC6", "MPI-ESM1-2-HR", "MRI-ESM2-0")
 
+##this will take a couple of hours
 predict_bgc(con, dem_table, BGCmodel, vars_needed, gcms_cciss, periods_use = list_gcm_periods(), 
             max_runs_use = 3L, obs_2001_2020 = TRUE)
+
 summarise_preds(con)
 
+##siteseries predictions (edatopic overlap)
 siteseries_preds(con)
 
-spp_list <- c("Pl","Sx","Fd") #
+## create cciss species predictions in database
+spp_list <- c("Pl","Sx","Fd","Cw","Hw","Py", "Bl","At", "Ac", "Ep", "Yc", "Pw", "Ss", "Bg", "Lw", "Mb", "Ba")
 for(spp in spp_list){
   message("Processing ", spp)
   cciss_full_species(con, spp)
 }
 
 ##species bubbleplots
-perexp <- spp_persist_expand(con, spp_list = c("Pl","Sx","Fd"), fractional = FALSE)
+perexp <- spp_persist_expand(con, spp_list = spp_list, fractional = FALSE)
 spp_bubbleplot(perexp, period = "2081_2100", scenario = "ssp245", species.focal = "Fd", edatope = c("C4"))
 
-##alluvial plots
+##alluvial plots - can set save_png to true when you're ready
 plot_spparea(con, spp = "Fd", edatope = "C4", fractional = FALSE, save_png = FALSE)
 
 ## 2 panel maps
