@@ -59,17 +59,20 @@ predict_bgc <- function(dbCon,
                         refperiod = FALSE,
                         max_runs_use = 0L,
                         start_tile = 1,
-                        tile_size = 10000) {
+                        tile_size = 10000,
+                        fill_miss_periods = FALSE) {
   periods_needed <- if(obs_2001_2020) c(periods_use,"2001_2020_obs") else periods_use
   periods_needed <- if(refperiod) c(periods_needed,"1961_1990") else periods_needed
   if(duckdb_table_exists(dbCon, "bgc_raw")) {
-    periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
-    if(all(periods_needed %in% periods_cached)){
-      message("Use cached table bgc_raw :)")
-      return(invisible(TRUE))
-    } else {
-      periods_needed <- setdiff(periods_needed, periods_cached)
-      message("Will predict missing period ", periods_needed)
+    if(fill_miss_periods){
+      periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+      if(all(periods_needed %in% periods_cached)){
+        message("Use cached table bgc_raw :)")
+        return(invisible(TRUE))
+      } else {
+        periods_needed <- setdiff(periods_needed, periods_cached)
+        message("Will predict missing period ", periods_needed)
+      }
     }
   }
   
