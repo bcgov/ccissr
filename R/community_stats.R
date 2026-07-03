@@ -260,6 +260,23 @@ spp_loss_gain_temporal <- function(
       FROM cciss_res
       WHERE Edatope = {edatope}
     ),
+    
+    curr_rows AS (
+      SELECT
+        SiteRef,
+        '1961_1990'::VARCHAR as FuturePeriod,
+        Spp,
+        Curr,
+        Curr AS Newsuit
+      FROM base
+      WHERE FuturePeriod = '2001_2020'
+    ),
+    
+    long AS (
+      SELECT * FROM curr_rows
+      UNION ALL
+      SELECT * FROM base
+    ),
 
     flags AS (
       SELECT
@@ -267,11 +284,11 @@ spp_loss_gain_temporal <- function(
         (CASE WHEN s.Curr <= 3 AND s.Newsuit > 3.5 THEN 1 ELSE 0 END) AS Loss,
         (CASE WHEN s.Curr > 3.5 AND s.Newsuit <= 3 THEN 1 ELSE 0 END) AS Gain,
         (CASE WHEN s.Curr <= 3 AND s.Newsuit <= 3 THEN 1 ELSE 0 END) AS Stable
-      FROM base s
+      FROM long s
     )
 
     SELECT
-      Spp, FuturePeriod, SUM(Loss), SUM(Gain), SUM(Stable)
+      Spp, FuturePeriod, SUM(Loss) AS Loss, SUM(Gain) AS Gain, SUM(Stable) AS Stable
     FROM flags
     GROUP BY Spp, FuturePeriod;
   ", .con = con)
