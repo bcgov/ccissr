@@ -28,7 +28,7 @@ estab_wt <- c(0.25,0.25,0.5,0,0,0)
 maturity_wt <- c(0,0,0.1,0.3,0.3,0.3)
 
 dat <- spp_persistance(con, fut_wt = maturity_wt, curr_wt = c(1,0,0,0,0,0))
-dat <- dat[TotalSpp > 0,]
+dat <- dat[TotalSpp > 1,]
 dat[,Persistence := StableSpp/TotalSpp]
 ```
 
@@ -55,3 +55,52 @@ temp
 Then, we can say something like "Average maturity portfolio persistence province wide is `r mean(dat$Persistence) * 100` %, although some districts have a `r min(temp$Persistence) * 100`% average".
 
 ## Species Richness
+
+We define the change in species richness as the number of suitable species in the future period divided by the suitable species in the reference period. For example, if a given location currently has 6 suitable species, and in the future period it has 9 suitable species, that corresponds to a change in richness of 150%. Again, we can map this statistic:
+
+```{r}
+dat[,Richness := (FutureSpp/TotalSpp)*100]
+
+X <- copy(dem2)
+values(X) <- NA
+X[dat$SiteRef] <- dat$Richness
+
+brks <- c(seq(0, 100, by = 10),
+          seq(125, 400, by = 25))
+
+# Colours: losses -> blue/purple, neutral -> white, gains -> orange/red
+cols_loss <- hcl.colors(sum(brks < 100), "BluYl", rev = TRUE)
+cols_gain <- hcl.colors(sum(brks > 100) - 1, "YlOrRd")
+
+cols <- c(cols_loss, "grey", cols_gain)
+
+terra::plot(
+  X,
+  breaks = brks,
+  col = cols,
+  range = c(0, 400),
+  plg = list(title = "% of current richness"),
+  fill_range = TRUE
+)
+```
+
+# Per Species Stats
+
+```{r}
+spp_lg <- spp_loss_gain_temporal(con)
+ref_area <- spp_lg[FuturePeriod == "1961_1990", .(Spp, RefArea = Stable)]
+spp_lg[ref_area, RefArea := i.RefArea, on = "Spp"]
+spp_lg[,`:=`(Loss = Loss/RefArea, Gain = Gain/RefArea, Stable = Stable/RefArea)]
+spp_lg[,RefArea := NULL]
+spp_lg[,Period := as.numeric(substr(FuturePeriod, 1,4)) + 9]
+
+lg <- melt(spp_lg, id.vars = c("Spp", "FuturePeriod", "Period"), variable.name = "Stat")
+
+ggplot(lg, aes(x = Period, y = value, col = Stat, group = Stat)) +
+  geom_line() +
+  facet_wrap(~Spp) +
+  ylab("Proportion of Reference Area") +
+  xlab("Period")
+
+#ggsave("Loss_Gain_Figs.png", width = 10, height = 8, dpi = 400)
+```

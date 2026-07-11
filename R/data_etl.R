@@ -174,7 +174,7 @@ dbBbox <- function(con, points, buffer) {
 #' @return a vector of sitenumbers
 #' @importFrom RPostgres dbGetQuery
 #' @export
-dbGetBGC <- function(con,bgc,district = NULL,maxPoints = 200){
+dbGetBGC <- function(con,bgc,district = NULL,maxPoints = 150){
   if(is.null(district)){
     query <- paste0("select siteno from preselected_points14 where bgc IN ('",paste(bgc,collapse = "','"),"') limit ", maxPoints)
   }else{
@@ -497,65 +497,94 @@ dbGetCCISS_novelty <- function(con, siteno, avg, modWeights, nov_cutoff = 5,
   nc <- round(nov_cutoff * 10, 2)
   
   cciss_sql <- glue::glue_sql("
-    WITH cciss_nov AS (
-      SELECT {novelty_table}.siteno,
-             source.novelty,
-             source.row_idx
-      FROM {novelty_table},
-           unnest(novelty) WITH ordinality AS source(novelty, row_idx)
-      WHERE {novelty_table}.siteno IN ({siteno_sql*})
-    ),
-    
-    cciss_bgc AS (
-      SELECT {cciss_table}.siteno,
-             source.row_idx,
-             labels.gcm,
-             labels.scenario,
-             labels.futureperiod,
-             labels.run,
-             {bgc_table}.bgc,
-             {bgc_lookup}.bgc bgc_pred,
-             w.weight
-      FROM {cciss_table}
-      JOIN {bgc_table}
-        ON {cciss_table}.siteno = {bgc_table}.siteno,
-           unnest(bgc_id) WITH ordinality AS source(bgc_id, row_idx)
-      JOIN (
-        SELECT ROW_NUMBER() OVER(ORDER BY gcm_id, scenario_id, futureperiod_id, run_id) row_idx,
-               gcm,
-               scenario,
-               futureperiod,
-               run
-        FROM gcm 
-        CROSS JOIN scenario
-        CROSS JOIN futureperiod
-        CROSS JOIN run
-      ) labels
-        ON labels.row_idx = source.row_idx
-      JOIN (VALUES {weights}) AS w(gcm, scenario, weight)
-        ON labels.gcm = w.gcm 
-       AND labels.scenario = w.scenario
-      JOIN {bgc_lookup}
-        ON {bgc_lookup}.bgc_id = source.bgc_id
-      WHERE {cciss_table}.siteno IN ({siteno_sql*})
-    ),
-    
-    cciss AS (
-      SELECT cciss_bgc.siteno,
-             gcm,
-             scenario, 
-             futureperiod,
-             run,
-             bgc,
-             CASE 
-               WHEN cciss_nov.novelty > {nc} THEN 'novel' 
-               ELSE bgc_pred 
-             END AS bgc_pred,
-             cciss_nov.novelty,
-             weight
-      FROM cciss_bgc
-      JOIN cciss_nov USING (siteno, row_idx)
-    ),
+    WITH labels AS MATERIALIZED (
+  SELECT
+    ROW_NUMBER() OVER (
+      ORDER BY gcm_id, scenario_id, futureperiod_id, run_id
+    ) AS row_idx,
+    gcm,
+    scenario,
+    futureperiod,
+    run
+  FROM gcm
+  CROSS JOIN scenario
+  CROSS JOIN futureperiod
+  CROSS JOIN run
+),
+
+weights AS MATERIALIZED (
+  SELECT *
+  FROM (VALUES {weights}) AS v(gcm, scenario, weight)
+),
+
+weighted_labels AS MATERIALIZED (
+  SELECT
+    l.row_idx,
+    l.gcm,
+    l.scenario,
+    l.futureperiod,
+    l.run,
+    w.weight
+  FROM labels AS l
+  JOIN weights AS w
+    ON w.gcm = l.gcm
+   AND w.scenario = l.scenario
+),
+
+selected_bgc AS MATERIALIZED (
+  SELECT
+    c.siteno,
+    x.bgc_id,
+    x.row_idx
+  FROM {cciss_table} AS c
+  CROSS JOIN LATERAL unnest(c.bgc_id)
+    WITH ORDINALITY AS x(bgc_id, row_idx)
+  JOIN weighted_labels AS wl
+    ON wl.row_idx = x.row_idx
+  WHERE c.siteno IN ({siteno_sql*})
+),
+
+selected_novelty AS MATERIALIZED (
+  SELECT
+    n.siteno,
+    x.novelty,
+    x.row_idx
+  FROM {novelty_table} AS n
+  CROSS JOIN LATERAL unnest(n.novelty)
+    WITH ORDINALITY AS x(novelty, row_idx)
+  JOIN weighted_labels AS wl
+    ON wl.row_idx = x.row_idx
+  WHERE n.siteno IN ({siteno_sql*})
+),
+
+cciss AS MATERIALIZED (
+  SELECT
+    b.siteno,
+    wl.gcm,
+    wl.scenario,
+    wl.futureperiod,
+    wl.run,
+    ba.bgc,
+    CASE
+      WHEN n.novelty > {nc} THEN 'novel'
+      ELSE bl.bgc
+    END AS bgc_pred,
+    n.novelty,
+    wl.weight
+  FROM selected_bgc AS b
+
+  JOIN selected_novelty AS n
+    USING (siteno, row_idx)
+
+  JOIN weighted_labels AS wl
+    USING (row_idx)
+
+  JOIN {bgc_table} AS ba
+    USING (siteno)
+
+  JOIN {bgc_lookup} AS bl
+    ON bl.bgc_id = b.bgc_id
+),
     
     cciss_count_den AS (
       SELECT {groupby_sql} siteref,
@@ -633,6 +662,7 @@ dbGetCCISS_novelty <- function(con, siteno, avg, modWeights, nov_cutoff = 5,
            CAST(0 AS numeric) novelty
     FROM cciss_curr
   ", .con = con)
+  
   
   dat <- data.table::setDT(RPostgres::dbGetQuery(con, cciss_sql))
   
