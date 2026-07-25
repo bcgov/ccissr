@@ -102,7 +102,7 @@ colScheme <- c(PP = "#ea7200", MH = "#6f2997", SBS = "#2f7bd2", ESSF = "#ae38b8"
 # Use function to make dataframe for each species
 cciss_sum <- make_cciss_sum(
   con = con,
-  spp = "Fd", #CHANGE SPP HERE
+  spp = "Ba", #CHANGE SPP HERE
   edatope = c("C4", "B2", "D6"),
   fractional = TRUE,
   by_zone = TRUE
@@ -124,14 +124,15 @@ pie <- ggplot(cciss_sum, aes(x="", y=SppArea, fill=zone)) +
   scale_fill_manual(values = colScheme,
                     guide = guide_legend(reverse = TRUE)) +
   labs(fill = "BGC zone", 
-       title = "Historical (1961-1990) range of Fd in British Columbia"); pie #CHANGE SPP HERE
+       title = "Historical (1961-1990) range of Ba in British Columbia"); pie #CHANGE SPP HERE
 
-ggsave("Fd_histpie.png", # CHANGE SPP HERE
-plot = pie, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300, bg = "white")
+#CHANGE SPP HERE (folder and file name)
+ggsave("Ba_histpie.png", plot = pie, path = "C:/Vanessa/GitHub/SpeciesSummariesFork/Draft_Species_Summaries/Figures/Ba/",
+        width = 6, height = 4, dpi = 300, bg = "white")
 
 
-
-
+#ggsave("Fd_histpie.png", # CHANGE SPP HERE
+#plot = pie, path = here("tree_summaries_code", "Figures"),width = 6, height = 4, dpi = 300, bg = "white")
 
 
 
@@ -209,12 +210,15 @@ plot_historical_suit_map <- function(dbCon, spp, edatope, bgc_template, outline,
 
 ## Plots: --------------
 bc_ol <- vect("data-raw/data_tables/bc_outline.gpkg")
-plot_historical_suit_map(dbCon = con, spp = "Fd", edatope = "D6", bgc_template = bgc_template, outline = bc_ol)
+
+## Change spp code
+plot_historical_suit_map(dbCon = con, spp = "Ac", edatope = "B2", bgc_template = bgc_template, outline = bc_ol)
+plot_historical_suit_map(dbCon = con, spp = "Ac", edatope = "C4", bgc_template = bgc_template, outline = bc_ol)
+plot_historical_suit_map(dbCon = con, spp = "Ac", edatope = "D6", bgc_template = bgc_template, outline = bc_ol)
 
 
 
-
-
+#### spp_list "Pl","Sx","Fd","Cw","Hw","Py", "Bl","At", "Ac", "Ep", "Yc", "Pw", "Ss", "Bg", "Lw", "Mb", "Ba"
 
 
 
