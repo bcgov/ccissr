@@ -237,7 +237,7 @@ spp_bubbleplot <- function(persist_expand,
 #' @param xlabels  logical. x axis labels.
 #' @param ylabels  logical. y axis labels.
 #' @param mar numeric. plot margins.
-#' @param mar numeric. par(plt) parameters for overlaying into an existing plot window. 
+#' @param plt numeric. par(plt) parameters for overlaying into an existing plot window. 
 #' @return NULL. Creates plot
 #' @import data.table
 #' @importFrom car dataEllipse
@@ -245,8 +245,8 @@ spp_bubbleplot <- function(persist_expand,
 bgc_bubbleplot <- function(persist_expand, 
                            period = "2041_2060", 
                            scenario = "ssp245", 
-                           xlab = "Persistence within historical range",
-                           ylab = "Expansion beyond historical range", 
+                           xlab = "Climate analog within historical range",
+                           ylab = "Climate analog beyond historical range", 
                            unit.focal = NULL,
                            focal.color = "lightskyblue2",
                            xlim = c(0, 1.1),
@@ -424,6 +424,8 @@ plot_spparea <- function(dbCon,
   zone_colours <- unique(WNA_BGCs[, .(Zone, ZoneColour)])
   colScheme <- rbind(unique(WNA_BGCs[, .(BGC, SubzoneColour)]),unique(WNA_BGCs[, .(Zone, ZoneColour)]), use.names=FALSE )
   colScheme <- setNames(colScheme, c("classification", "colour"))
+  col_final <- colScheme$colour
+  names(col_final) <- colScheme$classification
   
   spat_res <- dbGetQuery(dbCon, "select * from spatial_res") |> as.data.table()
   if(spat_res$projected[1]){
@@ -459,8 +461,6 @@ plot_spparea <- function(dbCon,
   cciss_sum_full <- cciss_sum[grid, on = .(zone, Year)]
   cciss_sum_full[is.na(SppArea), SppArea := 0]
   
-  
-  
   # Plot
   ggplot(cciss_sum_full, aes(x = Year, y = SppArea, fill = zone)) +
     geom_alluvium(aes(alluvium = zone), alpha= 1, color = "black") +
@@ -490,7 +490,7 @@ plot_spparea <- function(dbCon,
     
     #legend matches stack order + drop unplotted zones
     scale_fill_manual(
-      values = colScheme,
+      values = col_final,
       breaks = zone_order,
       limits = zone_order,
       drop = TRUE
@@ -603,6 +603,53 @@ plot_alluvial <- function(dat, spp, edatope, by_zone = T, cellarea = 4) {
     labs(y=expression("Environmentally suitable area (km"^2*")"), x="Time period", fill = "BGC zone") +
     theme(axis.ticks.x = element_blank())
   
+}
+
+#' Plot map of reference suitability for given species and edatope
+#' @description
+#' Note that currently, this function only works correctly if the preceeding analysis has been done using an Albers grid.
+#' @param con duckdb database connection
+#' @param raster_template SpatRaster to use as template for plotting.
+#' @param outline SpatVector of aoi boundary.
+#' @param spp Character. Species code to create plot for
+#' @param edatope Character. Edatope code to create plot for (e.g., "C4")
+#' @param save_png Logical. Save plot to png? Default `FALSE`. If `FALSE`, creates plot on default plotting device.
+#' @return NULL. Creates plot
+#' @import data.table duckdb terra
+#' @export
+plot_reference_suitability <- function(con,
+                                       raster_template,
+                                       outline,
+                                       spp, 
+                                       edatope = "C4",
+                                       save_png = FALSE) {
+  if(save_png){
+    png(file=paste("./ReferenceSuitability",spp,edatope,"png",sep = "."), type="cairo", units="in", width=4, height=5, pointsize=12, res=300)
+  }
+
+  ##=================================
+  ###historic suitability
+  dat_spp <- dbGetQuery(con, sprintf("select * from cciss_res where Spp = '%s' AND FuturePeriod = '2041_2060' AND Edatope = '%s'", spp, edatope)) |> as.data.table()
+  dat_spp[,Curr := as.integer(round(Curr))]
+  dat_spp[is.na(Curr) | Curr > 3.5, Curr := 4]
+  dat_spp[is.na(Newsuit) | Newsuit > 3.5, Newsuit := 4]
+  dat_spp[,FeasChange := Curr - Newsuit]
+  X <- copy(raster_template)
+  values(X) <- NA
+  
+  X[dat_spp$SiteRef] <- dat_spp$Curr
+  breakseq <- c(0.5,1.5,2.5,3.5,5)
+  colScheme <- c("darkgreen", "dodgerblue1", "gold2", "white")
+  
+  image(X,xlab = NA,ylab = NA,bty = "n",  xaxt="n", yaxt="n",
+        col=colScheme, breaks=breakseq,asp = 1)
+  terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
+  par(xpd = NA)
+  legend("topleft", legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"), fill=colScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
+  
+  if(save_png){
+    dev.off()
+  }
 }
 
 #' Create C.R. Mahony's two-panel map plot of historic suitability, suitability change, and a boxplot of change by zone
@@ -943,6 +990,10 @@ plot_bgc <- function(con, period, plot_ensemble, raster_template, gcm = NULL, ss
                                     where period = {period}", .con = con)) |> as.data.table()
     } else {
       dat <- dbGetQuery(con, glue_sql("select cellnum, {sel_bgc} AS bgc_pred 
+                                    from bgc_raw 
+                                    where period = {period}", .con = con)) |> as.data.table()
+    } else {
+      dat <- dbGetQuery(con, glue_sql("select cellnum, {sel_bgc} AS bgc_pred 
                                     from bgc_raw_runs 
                                     where ssp = {ssp} and 
                                     gcm = {gcm} and 
@@ -950,6 +1001,7 @@ plot_bgc <- function(con, period, plot_ensemble, raster_template, gcm = NULL, ss
                                     period = {period}", .con = con)) |> as.data.table()
     }
     
+    }
   }
   if(by_zone) {
     col_use <- WNA_BGCs[,.(Zone, ZoneColour)]
@@ -997,7 +1049,7 @@ plot_bgc <- function(con, period, plot_ensemble, raster_template, gcm = NULL, ss
 #' @importFrom terra  colorize plotRGB writeRaster as.int
 #' @export
 plot_bgc_mapped <- function(raster_template, by_zone = FALSE, 
-                     save_location = "bgc_rasters", plot = FALSE) {
+                            save_location = "bgc_rasters", plot = FALSE) {
   if(!dir.exists(save_location)) dir.create(save_location)
   
   bgc_ids <- raster_template$ids
@@ -1010,7 +1062,7 @@ plot_bgc_mapped <- function(raster_template, by_zone = FALSE,
   col_use <- unique(col_use)
   setnames(col_use, c("bgc", "colour"))
   bgc_ids[col_use, colour := i.colour, on = "bgc"]
-
+  
   final_dem <- copy(raster_template$bgc_rast)
   
   zonesz <- "Subzone"
@@ -1021,6 +1073,9 @@ plot_bgc_mapped <- function(raster_template, by_zone = FALSE,
   if(plot) plotRGB(rgbbgc)
   writeRaster(rgbbgc, paste0(save_location,"/bgc_mapped_", zonesz, ".tif"), overwrite=TRUE)  
 }
+
+
+
 
 
 # dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
@@ -1042,7 +1097,7 @@ plot_bgc_mapped <- function(raster_template, by_zone = FALSE,
 #' @param dat data.table with first column indicating template raster cell ID and second column the BGC subzone/variant. 
 #' @param zone logical. Plot with BGC zone colours. 
 #' @param boundary SpatVector. Optional study area boundary.
-#' @param mask logical. Remove values outside the study area boundary.
+#' @param mask SpatVector. Optional spatial mask
 #' @param legend logical. Plot a legend. 
 #' @param mask_alpine logical. Plot alpine BGC units as white.
 #' @param label_exotic numeric. Minimum number of grid cells required to plot a label for exotic (non-BC) BGC units. 
@@ -1056,9 +1111,10 @@ bgc_map <- function(X,
                     dat, 
                     zone = TRUE, 
                     boundary = NULL, 
-                    mask = TRUE, 
+                    mask = NULL, 
                     legend = FALSE, 
                     mask_alpine = TRUE, 
+                    mask_ocean = TRUE, 
                     label_exotic = NULL, 
                     q_exotic = 0.5, 
                     title = "",
@@ -1094,7 +1150,7 @@ bgc_map <- function(X,
   
   values(X) <- NA
   X[dat[,1]] <- bgc
-  if(!is.null(boundary)){if(mask) X <- terra::mask(X, boundary)}
+  if(!is.null(mask)) X <- terra::mask(X, mask)
   X[1:length(levels(bgc))] <- 1:length(levels(bgc))
   
   ColScheme <- if(zone) zone_colours$ZoneColour else WNA_BGCs$SubzoneColour #(KIRI) I think this is redundant?
@@ -1102,7 +1158,8 @@ bgc_map <- function(X,
   image(X, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
 
   X.mask <- X
-  values(X.mask)[-(1:length(levels(bgc)))] <- NA # cover up the color bar
+  values(X.mask) <- NA
+  values(X.mask)[1:length(levels(bgc))] <- 1 # cover up the color bar
   terra::plot(X.mask, add=T, col="white", legend=FALSE) # cover up the color bar
   
   if(!is.null(boundary)) terra::plot(boundary, add=T, border=1, lwd=0.4)

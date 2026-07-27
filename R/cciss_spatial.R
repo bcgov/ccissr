@@ -58,19 +58,23 @@ predict_bgc <- function(dbCon,
                         obs_2001_2020 = FALSE,
                         refperiod = FALSE,
                         max_runs_use = 0L,
-                        start_tile = 1) {
+                        start_tile = 1,
+                        tile_size = 10000,
+                        fill_miss_periods = FALSE) {
   periods_needed <- if(obs_2001_2020) c(periods_use,"2001_2020_obs") else periods_use
   periods_needed <- if(refperiod) c(periods_needed,"1961_1990") else periods_needed
-  # if(duckdb_table_exists(dbCon, "bgc_raw")) {
-  #   periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
-  #   if(all(periods_needed %in% periods_cached)){
-  #     message("Use cached table bgc_raw :)")
-  #     return(invisible(TRUE))
-  #   } else {
-  #     periods_needed <- setdiff(periods_needed, periods_cached)
-  #     message("Will predict missing period ", periods_needed)
-  #   }
-  # }
+  if(duckdb_table_exists(dbCon, "bgc_raw")) {
+    if(fill_miss_periods){
+      periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+      if(all(periods_needed %in% periods_cached)){
+        message("Use cached table bgc_raw :)")
+        return(invisible(TRUE))
+      } else {
+        periods_needed <- setdiff(periods_needed, periods_cached)
+        message("Will predict missing period ", periods_needed)
+      }
+    }
+  }
   
   if(inherits(xyz, "SpatRaster")){
     points_dat <- as.data.frame(xyz, cells=T, xy=T)
@@ -82,7 +86,7 @@ predict_bgc <- function(dbCon,
     points_dat <- copy(xyz)
   }
   
-  splits <- c(seq(1, nrow(points_dat), by = 50000), nrow(points_dat) + 1)
+  splits <- c(seq(1, nrow(points_dat), by = tile_size), nrow(points_dat) + 1)
   message("There are ", length(splits), " tiles")
   if("2001_2020_obs" %in% periods_needed) obs <- "2001_2020" else obs <- NULL
   if("1961_1990" %in% periods_needed) refperiod <- TRUE else FALSE
@@ -112,7 +116,7 @@ predict_bgc <- function(dbCon,
     mat_dat <- clim_dat[,.(cellnum = id, ssp = SSP, gcm = GCM, run = RUN, period = PERIOD, MAT)]
     dbWriteTable(dbCon, "clim_raw", mat_dat, row.names = FALSE, append = TRUE)
     
-    temp <- predict(BGCmodel, data = clim_dat, num.threads = 8)
+    temp <- predict(BGCmodel, data = clim_dat, num.threads = 4)
     dat <- data.table(cellnum = clim_dat$id, ssp = clim_dat$SSP, gcm = clim_dat$GCM, run = clim_dat$RUN,
                       period = clim_dat$PERIOD, bgc_pred = temp$predictions)
     dbWriteTable(dbCon, "bgc_raw", dat, row.names = FALSE, append = TRUE)

@@ -7,12 +7,13 @@ library(duckdb)
 library(data.table)
 library(climr)
 library(ccissr)
+library(glue)
 
-data("zones_colours_ref")
+data("WNA_BGCs")
 
 con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
 
-setwd("C:/Users/CMAHONY/GitHub/CCISS_repos/ccissr") 
+# setwd("C:/Users/CMAHONY/GitHub/CCISS_repos/ccissr") 
 
 dir <- "" # local copy
 dem2 <- rast("dem_BC2kmGrid.tif")
@@ -49,6 +50,7 @@ y1 <- c(0.36, 0.36, 0.00, 0.00, 0.00, 0.00)
 y2 <- c(0.96, 0.96, 0.30, 0.30, 0.30, 0.30)
 
 X <- copy(bgc_template$bgc_rast)
+values(X) <- NA
 
 #=============================
 ## Base plot
@@ -64,9 +66,9 @@ par(mar=c(0.1,0.1,1.5,0.1), mgp=c(2,0.25,0))
 # par(fig=c(x1[1], x2[1], y1[1], y2[1]), mar=c(0.1,0.1,3,0.1), mgp=c(2,0.25,0), new=TRUE)
 par(plt = as.vector(rbind(x1, x2, y1, y2)[,1]), new=TRUE)
 
-dat <- dbGetQuery(con, "select * from bgc_raw where ssp = 'ssp245' and gcm = 'EC-Earth3' and run = 'ensembleMean' and period = '2041_2060'")
+dat <- dbGetQuery(con, "select * from ensemble_preds where period = '2041_2060'")
 
-bgc_map(X, dat[, c("cellnum", "bgc_pred")], 
+bgc_map(X, dat[, c("cellnum", "bgc")], 
         # boundary = bc_ol,
         label_exotic = 400,
         q_exotic = 0.7,
@@ -85,11 +87,15 @@ bgc_map(X, dat[, c("cellnum", "bgc_pred")],
 # Novelty for selected Period
 par(plt = as.vector(rbind(x1, x2, y1, y2)[,2]), new=TRUE)
 title <- paste("(", letters[2], ") Ensemble climatic novelty, ", period.names[which(list_gcm_periods()==period)], sep="")
-novelty <- rast(paste0("C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/CCISS_Manual/Data/ClimaticNovelty_Provincial_SZ_Ensemble_", period, ".tif"))  
-novelty <- project(novelty, X)
-image(novelty, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
+
+dat <- dbGetQuery(con, glue("select cellnum, novelty from ensemble_novelty where period = '{period}'"))
+values(X) <- NA
+X[dat$cellnum] <- dat$novelty
+
+image(X, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
 # plot(novelty, legend=F, axes=F, col=ColScheme, add=T)
 # plot(bc_ol, add=T, lwd=0.4)
+
 
 legend_ramp(
   r = X,
@@ -109,12 +115,15 @@ legend_ramp(
 
 index <- 3 #plot counter
 for(i in c(1:5)[-which(list_gcm_periods() == period)]){
-  novelty <- rast(paste0("C:/Users/CMAHONY/Government of BC/Future Forest Ecosystems Centre - CCISS - CCISS/CCISS_Manual/Data/ClimaticNovelty_Provincial_SZ_Ensemble_", list_gcm_periods()[i], ".tif"))  
-  novelty <- project(novelty, X)
 
+  period.i <- list_gcm_periods()[i]
+  dat <- dbGetQuery(con, glue("select cellnum, novelty from ensemble_novelty where period = '{period.i}'"))
+  values(X) <- NA
+  X[dat$cellnum] <- dat$novelty
+  
   par(plt = as.vector(rbind(x1, x2, y1, y2)[,index]), new = TRUE)
   title <- paste("(", letters[index], ") ", period.names[i], sep="")
-  image(novelty, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
+  image(X, axes=F, col=ColScheme, main = title , adj = 0.05, cex.main = 0.85, font.main = 1)
   # plot(bc_ol, add=T, lwd=0.4)
 
   index <- index + 1

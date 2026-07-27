@@ -19,49 +19,69 @@ conn <- dbPool(
   password = Sys.getenv("BCGOV_PWD")
 )
 
-# qry <- "create table preselected_points13 as (select * from (
-# select *, row_number() over (partition by bgc order by random()) as u 
-# from bgc_attribution13) as a 
-# where u <= 200);"
 
-# qry <- "create table preselected_dist13 as (select * from (
-# select *, row_number() over (partition by bgc, dist_code order by random()) as u 
-# from bgc_dist_ids) as a 
-# where u <= 200);"
+qry <- "create table preselected_points14 as (select * from (
+select *, row_number() over (partition by bgc order by random()) as u
+from bgc_attribution14) as a
+where u <= 200);"
+
+qry <- "create table preselected_dist14 as (select * from (
+select *, row_number() over (partition by bgc, dist_code order by random()) as u
+from bgc_dist_ids) as a
+where u <= 200);"
 
 
-# dbExecute(conn, qry)
+dbExecute(conn, qry)
 
-# hex_grid <- st_read(conn, query = "select * from hex_points")
-# bgc <- st_read("~/FFEC/BGC_v13_Fixed.gpkg")
+hex_grid <- st_read(conn, query = "select * from hex_points")
+bgc <- st_read("../Common_Files/WNA_BGCv13/BGC_BC_v13_Jan21.gdb")
+bgc <- bgc["MAP_LABEL"]
+bgc_att <- st_join(hex_grid,bgc)
+bgc2 <- st_drop_geometry(bgc_att)
+setDT(bgc2)
+setnames(bgc2, c("siteno","bgc"))
+bgc2 <- bgc2[!is.na(bgc),]
+dbExecute(conn, "drop table bgc_attribution13")
+dbWriteTable(conn, "bgc_attribution14", bgc2, row.names = FALSE)
+dbExecute(conn, "create index on bgc_attribution14(siteno)")
 
-# bgc_att <- st_join(hex_grid,bgc)
-# bgc2 <- st_drop_geometry(bgc_att)
-# setDT(bgc2)
-# bgc <- bgc2[,.(siteno,BGC)]
-# setnames(bgc, c("siteno","bgc"))
-# bgc <- bgc[!is.na(bgc),]
-# dbExecute(conn, "drop table bgc_attribution13")
-# dbWriteTable(conn, "bgc_attribution13", bgc, row.names = FALSE)
-# dbExecute(conn, "create index on bgc_attribution13(siteno)")
-# fwrite(bgc, "bgc_attribution13.csv")
-# addVars <- function(dat) {
-#   dat[, PPT_MJ := PPT_05 + PPT_06]
-#   dat[, PPT_JAS := PPT_07 + PPT_08 + PPT_09]
-#   dat[, PPT.dormant := PPT_at + PPT_wt]
-#   dat[, CMD.def := pmax(0, 500 - PPT.dormant)]
-#   dat[, CMDMax := CMD_07]   ## TODO: THIS IS NOT NECESSARILY CMD MAX
-#   dat[, CMD.total := CMD.def + CMD]
+###########Current period prob model #######################
+# pnts <- fread("~/FFEC/Common_Files/Hex_Points_Elev.csv")
+# pnts <- pnts[!is.na(elev),]
+
+# splits <- c(seq(1,nrow(pnts), by = 10000),nrow(pnts)+1)
+
+# # qry <- "CREATE TABLE cciss_prob13 (
+# #  siteno INTEGER REFERENCES hex_points,
+# #  bgc_pred VARCHAR(12),
+# #  prob FLOAT8)"
+
+# # dbExecute(conn, qry)
+
+# for(i in 2:(length(splits) - 1)){
+#   #tic()
+#   message("Processing",i)
+#   res <- downscale(pnts[splits[i]:(splits[i+1]-1),], 
+#                    which_refmap = "refmap_climr", 
+#                    obs_periods = "2001_2020",
+#                    return_refperiod = FALSE,
+#                    vars = vars_needed)
+  
+#   addVars(res)
+#   res <- res[!is.na(Tave_sm),]
+#   res[is.na(res)] <- 0
+  
+#   ##predict
+#   temp <- predict(BGCmodel_prob, data = res, num.threads = 32)
+#   #t2 <- as.data.table(temp$predictions)
+  
+#   dat <- cbind(res[,.(id,PERIOD)],temp$predictions)
+#   dat2 <- melt(dat, id.vars = c("id","PERIOD"))
+#   setnames(dat2, c("id","PERIOD","bgc_pred","bgc_prop"))
+#   dat2 <- dat2[bgc_prop > 0.005,]
+#   dbWriteTable(conn, "cciss_prob13", dat2[,.(siteno = id, bgc_pred, prob = bgc_prop)], row.names = F, append = T)
 # }
-# vars_needed <- c("CMD_sm", "DDsub0_sp", "DD5_sp", "Eref_sm", "Eref_sp", "EXT", 
-#                  "MWMT", "NFFD_sm", "NFFD_sp", "PAS", "PAS_sp", "SHM", "Tave_sm", 
-#                  "Tave_sp", "Tmax_sm", "Tmax_sp", "Tmin", "Tmin_at", "Tmin_sm", 
-#                  "Tmin_sp", "Tmin_wt","CMI", "PPT_05","PPT_06","PPT_07","PPT_08","PPT_09","PPT_at","PPT_wt","CMD_07","CMD"
-# )
-
-
-
-
+# message("done!")
 ################Future model ########################################################
 BGC_RFresp <- readRDS("./Common_Files/BGCmodel_WNA_V4.2gini.rds")  
 # all_bgcs <- BGC_RFresp$predictions
@@ -329,4 +349,37 @@ library(glue)
 #   )
 #   dbExecute(conn, query_novelty)
   
-# }
+}
+
+## testing
+sites <- 6305115:6305125
+gcm_weight <- data.table(gcm = c("ACCESS-ESM1-5", "BCC-CSM2-MR", "CanESM5", "CNRM-ESM2-1", "EC-Earth3", 
+                                 "GFDL-ESM4", "GISS-E2-1-G", "INM-CM5-0", "IPSL-CM6A-LR", "MIROC6", 
+                                 "MPI-ESM1-2-HR", "MRI-ESM2-0", "UKESM1-0-LL"),
+                         weight = c(1,0,0,1,1,1,1,0,0,1,1,1,0))
+
+rcp_weight <- data.table(rcp = c("ssp126","ssp245","ssp370","ssp585"), 
+                         weight = c(0.8,1,0.8,0))
+
+all_weight <- as.data.table(expand.grid(gcm = gcm_weight$gcm,rcp = rcp_weight$rcp))
+all_weight[gcm_weight,wgcm := i.weight, on = "gcm"]
+all_weight[rcp_weight,wrcp := i.weight, on = "rcp"]
+all_weight[,weight := wgcm*wrcp]
+
+
+all_weight[, comb := glue::glue_sql(
+  "({gcm}, {rcp}, {weight})",
+  .con = conn
+)]
+
+test <- dbGetCCISS_v13(conn, sites, avg = FALSE, modWeights = all_weight,  
+                       cciss_table = "cciss_future14_array", 
+                       cciss_observed = "cciss_current14",
+                       bgc_table = "bgc_attribution14", 
+                       bgc_lookup = "bgc14")
+test2 <- dbGetCCISS_novelty(conn, sites, avg = FALSE, modWeights = all_weight,  
+                       cciss_table = "cciss_future14_array", 
+                       novelty_table = "cciss_novelty14_array",
+                       cciss_observed = "cciss_current14",
+                       bgc_table = "bgc_attribution14", 
+                       bgc_lookup = "bgc14", nov_cutoff = 5)
