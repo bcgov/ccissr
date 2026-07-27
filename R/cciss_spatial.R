@@ -61,16 +61,16 @@ predict_bgc <- function(dbCon,
                         start_tile = 1) {
   periods_needed <- if(obs_2001_2020) c(periods_use,"2001_2020_obs") else periods_use
   periods_needed <- if(refperiod) c(periods_needed,"1961_1990") else periods_needed
-  if(duckdb_table_exists(dbCon, "bgc_raw")) {
-    periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
-    if(all(periods_needed %in% periods_cached)){
-      message("Use cached table bgc_raw :)")
-      return(invisible(TRUE))
-    } else {
-      periods_needed <- setdiff(periods_needed, periods_cached)
-      message("Will predict missing period ", periods_needed)
-    }
-  }
+  # if(duckdb_table_exists(dbCon, "bgc_raw")) {
+  #   periods_cached <- dbGetQuery(dbCon, "select distinct period from bgc_raw")$period
+  #   if(all(periods_needed %in% periods_cached)){
+  #     message("Use cached table bgc_raw :)")
+  #     return(invisible(TRUE))
+  #   } else {
+  #     periods_needed <- setdiff(periods_needed, periods_cached)
+  #     message("Will predict missing period ", periods_needed)
+  #   }
+  # }
   
   if(inherits(xyz, "SpatRaster")){
     points_dat <- as.data.frame(xyz, cells=T, xy=T)
@@ -82,7 +82,7 @@ predict_bgc <- function(dbCon,
     points_dat <- copy(xyz)
   }
   
-  splits <- c(seq(1, nrow(points_dat), by = 10000), nrow(points_dat) + 1)
+  splits <- c(seq(1, nrow(points_dat), by = 50000), nrow(points_dat) + 1)
   message("There are ", length(splits), " tiles")
   if("2001_2020_obs" %in% periods_needed) obs <- "2001_2020" else obs <- NULL
   if("1961_1990" %in% periods_needed) refperiod <- TRUE else FALSE
@@ -105,7 +105,7 @@ predict_bgc <- function(dbCon,
                           ensemble_mean = max_runs_use < 1,
                           return_refperiod = refperiod)
     addVars(clim_dat)
-    clim_dat <- na.omit(clim_dat)
+    clim_dat <- na.omit(clim_dat, cols = vars_needed)
     clim_dat <- rbind(clim_dat, tmp_names, use.names = TRUE, fill = TRUE)
     clim_dat[PERIOD == "2001_2020" & is.na(GCM), PERIOD := "2001_2020_obs"]
     
@@ -206,7 +206,7 @@ predict_bgc_runs <- function(dbCon,
                         period = clim_dat$PERIOD, bgc_pred = temp$predictions)
       dbWriteTable(dbCon, "bgc_raw_runs", dat, row.names = FALSE, append = TRUE)
       
-      rm(clim_dat, dat, mat_dat)
+      rm(clim_dat, dat)
       gc()
     }
   }
@@ -299,8 +299,6 @@ siteseries_preds <- function(dbCon,
       }
     }
   }
-  
-  dbExecute(dbCon, "update siteseries_preds set SSProb = 1 where FuturePeriod = '2001_2020_obs'")
   message("✓ Created table siteseries_preds !")
 }
 

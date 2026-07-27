@@ -923,7 +923,7 @@ plot_suitability_change <- function(con, spp, period, edatope, raster_template, 
 #' @importFrom DBI dbGetQuery
 #' @importFrom terra  colorize plotRGB writeRaster as.int
 #' @export
-plot_bgc <- function(con, period, plot_ensemble,raster_template, gcm = NULL, ssp = NULL, run = NULL,
+plot_bgc <- function(con, period, plot_ensemble, raster_template, gcm = NULL, ssp = NULL, run = NULL,
                       by_zone = FALSE, 
                      save_location = "bgc_rasters", raw = FALSE, plot = FALSE) {
   if(!dir.exists(save_location)) dir.create(save_location)
@@ -937,12 +937,19 @@ plot_bgc <- function(con, period, plot_ensemble,raster_template, gcm = NULL, ssp
   } else {
     if(by_zone) sel_bgc <- DBI::SQL("regexp_extract(bgc_pred, '^[A-Z]+')")
     else sel_bgc <- DBI::SQL("bgc_pred")
-    dat <- dbGetQuery(con, glue_sql("select cellnum, {sel_bgc} AS bgc_pred 
+    if(period == "1961_1990") {
+      dat <- dbGetQuery(con, glue_sql("select cellnum, {sel_bgc} AS bgc_pred 
                                     from bgc_raw 
+                                    where period = {period}", .con = con)) |> as.data.table()
+    } else {
+      dat <- dbGetQuery(con, glue_sql("select cellnum, {sel_bgc} AS bgc_pred 
+                                    from bgc_raw_runs 
                                     where ssp = {ssp} and 
                                     gcm = {gcm} and 
                                     run = {run} and 
                                     period = {period}", .con = con)) |> as.data.table()
+    }
+    
   }
   if(by_zone) {
     col_use <- WNA_BGCs[,.(Zone, ZoneColour)]
@@ -979,6 +986,41 @@ plot_bgc <- function(con, period, plot_ensemble,raster_template, gcm = NULL, ssp
 }
 
 
+#' Save raster of actual BGC map
+#' @param raster_template List returned from `create_bgc_template()`
+#' @param by_zone Logical. Plot by zone or subzone variant? Default `FALSE`
+#' @param save_location Character. Path to save raster in. Will be created if it doesn't exist. 
+#' @param plot Logical. Create plot as well as saving raster? Default `FALSE`
+#' @import data.table
+#' @importFrom glue glue_sql
+#' @importFrom DBI dbGetQuery
+#' @importFrom terra  colorize plotRGB writeRaster as.int
+#' @export
+plot_bgc_mapped <- function(raster_template, by_zone = FALSE, 
+                     save_location = "bgc_rasters", plot = FALSE) {
+  if(!dir.exists(save_location)) dir.create(save_location)
+  
+  bgc_ids <- raster_template$ids
+  if(by_zone) {
+    col_use <- WNA_BGCs[,.(Zone, ZoneColour)]
+    bgc_ids[,bgc := sub("^([A-Z]+).*", "\\1", bgc)]
+  } else {
+    col_use <- WNA_BGCs[,.(BGC, SubzoneColour)]
+  }
+  col_use <- unique(col_use)
+  setnames(col_use, c("bgc", "colour"))
+  bgc_ids[col_use, colour := i.colour, on = "bgc"]
+
+  final_dem <- copy(raster_template$bgc_rast)
+  
+  zonesz <- "Subzone"
+  if(by_zone) zonesz <- "Zone"
+  
+  coltab(final_dem) <- bgc_ids[,.(bgc_id,colour)]
+  rgbbgc <- colorize(final_dem, to = "rgb", alpha = T)
+  if(plot) plotRGB(rgbbgc)
+  writeRaster(rgbbgc, paste0(save_location,"/bgc_mapped_", zonesz, ".tif"), overwrite=TRUE)  
+}
 
 
 # dat_spp[Newsuit > 3.5 & Curr <= 3, FeasChange := -10]
@@ -1128,7 +1170,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, observed = FALSE, ssps = 
   #ssps_use <- dbGetQuery(con, "select distinct ssp from bgc_raw")[,1]
 
   if(observed){
-    splits <- c(seq(1, nrow(target_pts), by = 1000000), nrow(target_pts) + 1)
+    splits <- c(seq(1, nrow(target_pts), by = 500000), nrow(target_pts) + 1)
     tmp_ls <- list()
     for(i in 1:(length(splits)-1)){
       message(glue("Downscaling chunk {i} of {length(splits)-1}"))
@@ -1148,7 +1190,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, observed = FALSE, ssps = 
     bgc <- dbGetQuery(con, glue_sql("select * from {table_name} where period = '2001_2020_obs'", .con = con))
     setDT(bgc)
     setnames(clim_nov, old = c("id","PERIOD"), new = c("cellnum","period"))
-    clim_nov[bgc, bgc_pred := i.bgc_pred, on = c("cellnum","period")]
+    clim_nov[bgc, bgc_pred := i.bgc_pred, on = c("cellnum")]
     clim_nov <- na.omit(clim_nov)
     message("Calculating observed novelty...")
     clim_nov[,novelty := analog_novelty_core(clim.targets = .SD, 
@@ -1161,7 +1203,9 @@ cciss_novelty <- function(con, target_pts, analog_pts, observed = FALSE, ssps = 
                                                       weight.icv = 0.5,
                                                       threshold = 0.95,
                                                       pcs = NULL), by = .(period)]
-    novelty_obs <- data.table(cellnum = target_pts$id, gcm = "Observed", ssp = "Observed", run = "Observed", period = "2001_2020_obs", novelty = clim_nov$novelty)
+
+    novelty_obs <- clim_nov[,.(cellnum, gcm = "Observed", ssp = "Observed", run = "Observed", period = "2001_2020_obs", novelty)]
+    print(head(novelty_obs))
     dbWriteTable(con, "novelty_raw", novelty_obs, row.names = F, append = T)
   } else {
     for(gcm in gcms_use){
@@ -1173,7 +1217,7 @@ cciss_novelty <- function(con, target_pts, analog_pts, observed = FALSE, ssps = 
         runs <- dbGetQuery(con, glue_sql("select distinct run from {table_name} where ssp = {ssp} and gcm = {gcm} and period = {period}", .con = con))[,1]
 
         ## Need to save memory when downscaling - split into chunks and recombine
-        splits <- c(seq(1, nrow(target_pts), by = 1000000), nrow(target_pts) + 1)
+        splits <- c(seq(1, nrow(target_pts), by = 500000), nrow(target_pts) + 1)
         tmp_ls <- list()
         for(i in 1:(length(splits)-1)){
           message(glue("Downscaling chunk {i} of {length(splits)-1}"))
@@ -1247,7 +1291,7 @@ ensemble_novelty <- function(con, table_name = "ensemble_novelty") {
 #' @importFrom grDevices  colorRampPalette
 #' @export
 plot_novelty <- function(con, raster_template, period, ensemble = TRUE, gcm = NULL, 
-ssp = NULL, run = NULL, save_location = "novelty_rasters") {
+ssp = NULL, run = NULL, raw = FALSE, save_location = "novelty_rasters") {
   breakseq <- c(0,4,8)
   bs2 <- breakseq * 100
   breakpoints <- seq.int(bs2[1], bs2[3], 1)
@@ -1269,8 +1313,14 @@ ssp = NULL, run = NULL, save_location = "novelty_rasters") {
   rt <- round(rt, digits = 2)
   rt <- as.int(rt*100)
   rt[rt > 800] <- 800
-  rgbnov <- subst(rt, coltab$values, t(col2rgb(coltab$color,alpha = TRUE)),names = c("red","green", "blue","alpha"))
-  #plotRGB(rgbnov)
-  if(!dir.exists(save_location)) dir.create(save_location)
-  writeRaster(rgbnov, paste0(save_location,"/novelty_",ifelse(ensemble, "ensemble", paste(gcm, ssp, run, sep = "_")), "_",period, ".tif"), overwrite = TRUE)
+  if(raw) {
+    if(!dir.exists(save_location)) dir.create(save_location)
+    writeRaster(rt, datatype = "INT2U", filename = paste0(save_location,"/noveltyRaw_",ifelse(ensemble, "ensemble", paste(gcm, ssp, run, sep = "_")), "_",period, ".tif"), overwrite = TRUE)
+  } else {
+    rgbnov <- subst(rt, coltab$values, t(col2rgb(coltab$color,alpha = TRUE)),names = c("red","green", "blue","alpha"))
+    #plotRGB(rgbnov)
+    if(!dir.exists(save_location)) dir.create(save_location)
+    writeRaster(rgbnov, paste0(save_location,"/novelty_",ifelse(ensemble, "ensemble", paste(gcm, ssp, run, sep = "_")), "_",period, ".tif"), overwrite = TRUE)
+  }
+  
 }
