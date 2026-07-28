@@ -994,10 +994,6 @@ plot_bgc <- function(con, period, plot_ensemble, raster_template, gcm = NULL, ss
                                     where period = {period}", .con = con)) |> as.data.table()
     } else {
       dat <- dbGetQuery(con, glue_sql("select cellnum, {sel_bgc} AS bgc_pred 
-                                    from bgc_raw 
-                                    where period = {period}", .con = con)) |> as.data.table()
-    } else {
-      dat <- dbGetQuery(con, glue_sql("select cellnum, {sel_bgc} AS bgc_pred 
                                     from bgc_raw_runs 
                                     where ssp = {ssp} and 
                                     gcm = {gcm} and 
@@ -1006,7 +1002,7 @@ plot_bgc <- function(con, period, plot_ensemble, raster_template, gcm = NULL, ss
     }
     
     }
-  }
+  
   if(by_zone) {
     col_use <- WNA_BGCs[,.(Zone, ZoneColour)]
   } else {
