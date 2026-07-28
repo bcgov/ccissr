@@ -7,6 +7,20 @@ library(climr)
 setwd("/sapho/kdaust/FFEC")
 con <- dbCon_cciss("Common_Files/cciss_spatial_4_2.duckdb")
 
+flp <- vect("flp_2026.geojson")
+extent_dt <- rbindlist(lapply(seq_len(nrow(flp)), function(i) {
+  e <- ext(flp[i, ])
+  
+  data.table(
+    ORG_UNIT = flp$ORG_UNIT[i],
+    xmin = e$xmin,
+    xmax = e$xmax,
+    ymin = e$ymin,
+    ymax = e$ymax
+  )
+}))
+
+fwrite(extent_dt, "../CCISS_ShinyApp/app/cciss_spatial/flp_bounds.csv")
 # edatopes <- c("B2","C4","D6")
 # eda_table <- copy(E1) ##Edatopic table
 # eda_table <- eda_table[is.na(SpecialCode),]
