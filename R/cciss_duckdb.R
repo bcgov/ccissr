@@ -1016,9 +1016,13 @@ spp_suit_area <- function(dbCon, spp_list, fractional = TRUE) {
 #' @importFrom glue glue_sql
 #' @importFrom DBI dbExecute
 #' @export
-cciss_full_species <- function(con, spp, table_name = "cciss_res", suitability_name = "suitability") {
+cciss_full_species <- function(con, spp, periods = NULL, table_name = "cciss_res", suitability_name = "suitability") {
   
-  
+  if(!is.null(periods)){
+    period_filter <- glue_sql("AND FuturePeriod IN ({periods*})", .con = con)
+  } else {
+    period_filter <- DBI::SQL("")  # no filter
+  }
   query_body <- glue_sql(
     "WITH
 -- 1) Filter suit to species and clean
@@ -1050,6 +1054,7 @@ pred_filtered AS (
     AND SSprob IS NOT NULL
     AND NOT regexp_matches(SS_NoSpace, '[0-9][abc]$')
     AND NOT regexp_matches(SS_NoSpace, '\\\\.(1|2|3)$')
+    {period_filter}
 ),
 
 -- 3) Join suitability on predicted SS to get feasibility

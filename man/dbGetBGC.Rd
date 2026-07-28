@@ -4,7 +4,7 @@
 \alias{dbGetBGC}
 \title{Get sitenos for preselected points in BGC/district}
 \usage{
-dbGetBGC(con, bgc, district = NULL, maxPoints)
+dbGetBGC(con, bgc, district = NULL, maxPoints = 150)
 }
 \arguments{
 \item{con}{postgres DBI connection}

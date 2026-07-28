@@ -4,7 +4,16 @@
 \alias{dbGetCCISS_v13}
 \title{Pull CCISS version 13 from a vector of SiteNo}
 \usage{
-dbGetCCISS_v13(con, siteno, avg, modWeights)
+dbGetCCISS_v13(
+  con,
+  siteno,
+  avg,
+  modWeights,
+  cciss_table = "cciss_novelty_array",
+  cciss_observed = "cciss_current",
+  bgc_table = "bgc_attribution",
+  bgc_lookup = "bgc_v13"
+)
 }
 \arguments{
 \item{con}{An active postgres DBI connection.}

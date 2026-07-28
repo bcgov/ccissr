@@ -1,6 +1,9 @@
 ### CCISS Dashboard Plots
 ### Kiri Daust
 
+library(terra)
+rt <- rast("../../../Dow")
+
 devtools::load_all()
 library(terra)
 library(data.table)
@@ -49,6 +52,9 @@ for(spp in spp_list){
   message("Processing ", spp)
   cciss_full_species(con, spp)
 }
+
+spp <- c("Pl","Sx","Fd","Cw")
+
 
 ##species bubbleplots
 perexp <- spp_persist_expand(con, spp_list = spp_list, fractional = FALSE)

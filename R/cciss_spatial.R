@@ -109,7 +109,7 @@ predict_bgc <- function(dbCon,
                           ensemble_mean = max_runs_use < 1,
                           return_refperiod = refperiod)
     addVars(clim_dat)
-    clim_dat <- na.omit(clim_dat)
+    clim_dat <- na.omit(clim_dat, cols = vars_needed)
     clim_dat <- rbind(clim_dat, tmp_names, use.names = TRUE, fill = TRUE)
     clim_dat[PERIOD == "2001_2020" & is.na(GCM), PERIOD := "2001_2020_obs"]
     
@@ -210,7 +210,7 @@ predict_bgc_runs <- function(dbCon,
                         period = clim_dat$PERIOD, bgc_pred = temp$predictions)
       dbWriteTable(dbCon, "bgc_raw_runs", dat, row.names = FALSE, append = TRUE)
       
-      rm(clim_dat, dat, mat_dat)
+      rm(clim_dat, dat)
       gc()
     }
   }
@@ -303,8 +303,6 @@ siteseries_preds <- function(dbCon,
       }
     }
   }
-  
-  dbExecute(dbCon, "update siteseries_preds set SSProb = 1 where FuturePeriod = '2001_2020_obs'")
   message("✓ Created table siteseries_preds !")
 }
 

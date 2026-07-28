@@ -15,7 +15,9 @@ predict_bgc(
   obs_2001_2020 = FALSE,
   refperiod = FALSE,
   max_runs_use = 0L,
-  start_tile = 1
+  start_tile = 1,
+  tile_size = 10000,
+  fill_miss_periods = FALSE
 )
 }
 \arguments{
