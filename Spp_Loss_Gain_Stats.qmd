@@ -15,8 +15,9 @@ library(data.table)
 library(terra)
 library(ggplot2)
 library(duckdb)
+library(ccissr)
 
-con <- dbCon_cciss("./bc_2km.duckdb", threads = 8)
+con <- dbCon_cciss("./bc_2km_July7.duckdb", threads = 8)
 ```
 
 ## Portfolio Persistence
@@ -39,13 +40,14 @@ dem2 <- rast("dem_BC2kmGrid.tif")
 X <- copy(dem2)
 values(X) <- NA
 X[dat$SiteRef] <- dat$Persistence
-terra::plot(X)
+terra::plot(X, col = hcl.colors(100, "Inferno"))
 ```
 
 Now let's average by district:
 
 ```{r}
 districts <- dbGetQuery(con, "select * from dist_points") |> as.data.table()
+setnames(districts, c("cellnum", "district"))
 dat[districts, district := i.district, on = c(SiteRef = "cellnum")]
 temp <- dat[,.(Persistence = mean(Persistence)), by = district]
 setorder(temp, Persistence)
@@ -69,8 +71,8 @@ brks <- c(seq(0, 100, by = 10),
           seq(125, 400, by = 25))
 
 # Colours: losses -> blue/purple, neutral -> white, gains -> orange/red
-cols_loss <- hcl.colors(sum(brks < 100), "BluYl", rev = TRUE)
-cols_gain <- hcl.colors(sum(brks > 100) - 1, "YlOrRd")
+cols_loss <- hcl.colors(sum(brks < 100), "RedOr", rev = FALSE)
+cols_gain <- hcl.colors(sum(brks > 100) - 1 + 10, "BuGn", rev = T)[-(1:10)]
 
 cols <- c(cols_loss, "grey", cols_gain)
 
@@ -78,13 +80,102 @@ terra::plot(
   X,
   breaks = brks,
   col = cols,
-  range = c(0, 400),
+  range = c(0, 300),
   plg = list(title = "% of current richness"),
   fill_range = TRUE
 )
 ```
 
+## Risk of Status Quo
+
+```{r}
+estab_wt <- c(0.25,0.25,0.5,0,0,0)
+maturity_wt <- c(0,0,0.1,0.3,0.3,0.3)
+
+dat <- spp_risk(con, edatope = c("B2","C4","D6"), fut_wt = maturity_wt, curr_wt = c(1,0,0,0,0,0))
+
+dat2 <- dat[,lapply(.SD, sum), by = .(region, bgc), .SDcols = -c("SiteRef")]
+dat2[,`:=`(HighRisk = HighRisk/TotalP, ModRisk = ModRisk/TotalP, LowRisk = LowRisk/TotalP)]
+dat2[TotalP == 0, HighRisk := 0]
+
+
+risk_cols <- colorRamp(c(
+  "#FFFFFF",
+  "#FEE2E2",
+  "#FCA5A5",
+  "#EF4444",
+  "#FF0000"
+))
+
+dat2[, fill_colour := rgb(
+  risk_cols(pmax(0, pmin(0.85, HighRisk))),
+  maxColorValue = 255
+)]
+
+dat2[,classification := paste0(bgc, " - ", region)]
+
+temp_cols <- unique(dat2[,.(classification, fill_colour)])
+fwrite(temp_cols, "risk_cols.csv")
+
+temp <- dat2[,.(classification, HighRisk, ModRisk, LowRisk)]
+t2 <- melt(temp, id.vars = "classification", variable.name = "risk", value.name = "proportion")
+
+dbCon <- dbPool(
+  drv = RPostgres::Postgres(),
+  dbname = "cciss_spatial",
+  host = Sys.getenv("BCGOV_HOST"),
+  port = 5432, 
+  user = Sys.getenv("BCGOV_USR"),
+  password = Sys.getenv("BCGOV_PWD")
+)
+
+
+dbWriteTable(dbCon, "cciss_risk", t2, row.names = F, overwrite = T)
+dbExecute(dbCon, "create index cidx on cciss_risk (classification)")
+
+bgcs <- vect("../Common_Files/WNA_BGCv13/BC_v13_clipped.gpkg")
+bgc3857 <- project(bgcs, "epsg:3857")
+bgc3857 <- bgc3857[,'BGC']
+writeVector(bgc3857,"BGC_3857.gpkg")
+
+dist <- vect("../CCISS_ShinyApp/app/cciss_spatial/district_bnds.gpkg")
+
+bgc_dist <- terra::intersect(bgcs, dist)
+bgc_dist$fID <- paste0(bgc_dist$BGC," - ", bgc_dist$ORG_UNIT)
+terra::plot(bgc_dist)
+```
+
+```{r}
+library(leaflet)
+
+map <- leaflet() |>
+  leaflet::setView(lng = -122.77222, lat = 54.2665, zoom = 6) |>
+    leaflet::addProviderTiles(leaflet::providers$CartoDB.PositronNoLabels, group = "Positron",
+                              options = leaflet::pathOptions(pane = "mapPane")) |>
+  addBgcDistrict(temp_cols)
+
+map
+```
+
+## Area with no suitable species
+
+```{r}
+dat <- no_suit(con, edatope = "C4", fut_wt = estab_wt, curr_wt = c(1,0,0,0,0,0))
+
+d2 <- dat[CurrSuit > 1,]
+d3 <- d2[,.(num = .N), by = NumSuit]
+```
+
 # Per Species Stats
+
+## Alluvial Plots
+
+```{r}
+spp_list <- c("Pl","Sx","Fd","Cw","Hw", "Lw", "Ba","Bl")
+plot_spparea(con, spp_list, "C4", fractional = FALSE, save_png = FALSE)
+```
+
+## Split by loss/gain/stable
 
 ```{r}
 spp_lg <- spp_loss_gain_temporal(con)

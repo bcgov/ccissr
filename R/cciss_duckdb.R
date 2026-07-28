@@ -1745,4 +1745,70 @@ bgc_area_region <- function(con, region_table, region_name, by_zone = TRUE) {
   dat
 }
 
-
+alluvial_region <- function(con, by_zone = TRUE, region_table = "dist_points", region_name = "region") {
+  if (by_zone) {
+    true_expr <- DBI::SQL("regexp_extract(p.bgc,      '^[A-Z]+')")
+  } else {
+    true_expr <- DBI::SQL("p.bgc")
+  }
+  
+  region_table <- DBI::SQL(region_table)
+  region_name <- DBI::SQL(region_name)
+  sql <- glue_sql("
+    WITH joined AS (
+      SELECT
+        {region_name} as region,
+        SiteRef AS cellnum,
+        FuturePeriod,
+        Edatope,
+        Spp,
+        CASE
+          WHEN Newsuit IS NULL OR Newsuit > 3.5 THEN 5
+          ELSE Newsuit
+        END AS Newsuit,
+        CASE
+          WHEN Curr IS NULL OR Curr > 3.5 THEN 5
+          ELSE Curr
+        END AS Histsuit,
+        {true_expr} AS bgc
+      FROM cciss_res c
+      JOIN bgc_points p ON c.SiteRef = p.cellnum
+      JOIN {region_table} r on c.SiteRef = r.cellnum
+    ),
+    flags AS (
+      SELECT
+        *,
+        1.0 - (Newsuit - 1) / 4.0 AS NewSuit_val,
+        1.0 - (Histsuit - 1) / 4.0 AS HistSuit_val
+      FROM joined
+    ),
+    agg AS (
+      SELECT
+        region, 
+        bgc,
+        Edatope, 
+        Spp,
+        FuturePeriod,
+        SUM(NewSuit_val) AS SppArea
+      FROM flags
+      GROUP BY region, Edatope, Spp, bgc, FuturePeriod
+    ),
+    agg_hist AS (
+      SELECT
+        region, 
+        bgc,
+        Edatope, 
+        Spp,
+        '1961' AS FuturePeriod,
+        SUM(HistSuit_val) AS SppArea
+      FROM flags
+      WHERE FuturePeriod = '2021_2040'
+      GROUP BY region, Edatope, Spp, bgc, FuturePeriod 
+    )
+    SELECT * FROM agg
+    UNION ALL
+    SELECT * FROM agg_hist;", .con = con)
+  
+  dat <- dbGetQuery(con, sql) |> as.data.table()
+  return(dat)
+}

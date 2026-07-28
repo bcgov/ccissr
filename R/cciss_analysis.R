@@ -370,7 +370,7 @@ plot_spparea <- function(dbCon,
                          width = 7, 
                          height = 5.5, 
                          res = 300) {
-  cciss_spp <- dbGetQuery(dbCon, sprintf("select * from cciss_res where Spp = '%s' AND Edatope = '%s'", spp, edatope)) |> as.data.table()
+  cciss_spp <- dbGetQuery(dbCon, glue_sql("select * from cciss_res where Spp IN ({spp*}) AND Edatope = {edatope}", .con = dbCon)) |> as.data.table()
   bgc_mapped <- dbGetQuery(dbCon, "select * from bgc_points") |> as.data.table()
   
   if (save_png) {
@@ -403,8 +403,8 @@ plot_spparea <- function(dbCon,
     cciss_spp[Curr <= 3, HistSuit := 1]
   }
   
-  cciss_sum <- cciss_spp[,.(SppArea = sum(SppSuit)), by = .(zone, FuturePeriod)]
-  cciss_hist <- cciss_spp[,.(SppArea = sum(HistSuit)), by = .(zone, FuturePeriod)][FuturePeriod == "2021_2040",][,FuturePeriod := "1961"]
+  cciss_sum <- cciss_spp[,.(SppArea = sum(SppSuit)), by = .(Spp, zone, FuturePeriod)]
+  cciss_hist <- cciss_spp[,.(SppArea = sum(HistSuit)), by = .(Spp, zone, FuturePeriod)][FuturePeriod == "2021_2040",][,FuturePeriod := "1961"]
   cciss_sum <- rbind(cciss_sum, cciss_hist)
   cciss_sum[, Year := as.factor(substr(FuturePeriod,1,4))]
   
@@ -452,13 +452,14 @@ plot_spparea <- function(dbCon,
   
   ## fill in with zeros
   grid <- CJ(
+    Spp = sort(unique(cciss_sum$Spp)),
     zone   = sort(unique(cciss_sum$zone)),
     Year = sort(unique(cciss_sum$Year)),
     unique = TRUE
   )
   
   # left join onto grid, then fill missing with 0
-  cciss_sum_full <- cciss_sum[grid, on = .(zone, Year)]
+  cciss_sum_full <- cciss_sum[grid, on = .(Spp, zone, Year)]
   cciss_sum_full[is.na(SppArea), SppArea := 0]
   
   # Plot
@@ -475,7 +476,7 @@ plot_spparea <- function(dbCon,
     #add lines bordering each column
     geom_col(
       data = cciss_sum_full |>
-        dplyr::group_by(Year) |>
+        dplyr::group_by(Spp, Year) |>
         dplyr::summarise(total = sum(SppArea), .groups = "drop"),
       aes(x = Year, y = total),
       position = "stack",
@@ -496,6 +497,7 @@ plot_spparea <- function(dbCon,
       drop = TRUE
     ) +
     
+    facet_wrap(~Spp) +
     scale_x_discrete(labels=c("1961" = "1961-90", "2001" = "2001-20", "2021" = "2021-40",
                               "2041" = "2041-60", "2061" = "2061-80", "2081" = "2081-2100")) +
     scale_y_continuous(labels = scales::comma, expand=c(0,0)) +
