@@ -33,7 +33,6 @@ Rt,talus
 Rl,lava flow
 Rd,dune
 Ro,rocky outcrop
-Rt,talus
 Sc,subalpine
 Sk,subalpine krummholz
 Vs,avalanche shrub
@@ -42,13 +41,4 @@ Vt,avalanche treed
 Xv,vegetation disclimax
 Xz,zoogenic disclimax
 Xa,anthropogenic disclimax
-Wb,wetland bog 
-Wm,wetland marsh
-Ws,wetland swamp
-Wf,wetland fen
-Wa,wetland alpine
 Ww,shallow-water wetland
-Ag,alpine grassland
-Ah,alpine heath
-Bb,beachland
-Br,headland
