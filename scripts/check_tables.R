@@ -78,13 +78,67 @@ check<-subset(suit_tab, bgc %in%BGC_list)
 check<-unique(check$bgc)
 sort(setdiff(BGC_list, check)) # all of these alpine, grassland, scrub so ok to ignore 
 
+#tree spp codes
+treespp<-read.csv("tables/metadata/Tree_species_codes.csv")
+treespp<-unique(treespp$TreeCode)
+treespp2<-unique(suit_tab$sppsplit)
+sort(setdiff(treespp2, treespp))
 
-#cross-check BGC list & ss - PAUSED- waiting for new ss CSV from Will 
+intersect(treespp, treespp2)
+
+
+#update newest ss list from Will - Aug 2026
+site_series_new<-read.csv("tables/versioned/SiteSeries_v13_4.5.csv") 
+site_series<-read.csv("tables/site_series.csv")
+
+site_series_new<-left_join(site_series_new, both, by="SS_NoSpace")%>%distinct(.)
+
+site_series_new<-mutate(site_series_new, SpecialCode2=case_when(grepl('/Wb', SS_NoSpace) ~"Wb", 
+                                                               grepl('/Wm', SS_NoSpace) ~"Wm", 
+                                                               grepl('/Ws', SS_NoSpace) ~"Ws", 
+                                                               grepl('/Wf', SS_NoSpace) ~"Wf", 
+                                                               grepl('/Wa', SS_NoSpace) ~"Wa", 
+                                                               grepl('/Wb', SS_NoSpace) ~"Wb", 
+                                                               grepl('/Fl', SS_NoSpace) ~"Fl", 
+                                                               grepl('/Fm', SS_NoSpace) ~"Fm", 
+                                                               grepl('/Ff', SS_NoSpace) ~"Ff", 
+                                                               grepl('/Gg', SS_NoSpace) ~"Gg", 
+                                                               grepl('/Gb', SS_NoSpace) ~"Gb", 
+                                                               grepl('/Ga', SS_NoSpace) ~"Ga", 
+                                                               grepl('/Gs', SS_NoSpace) ~"Gs", 
+                                                               grepl('/Ro', SS_NoSpace) ~"Ro",
+                                                               grepl('/Rt', SS_NoSpace) ~"Rt",
+                                                               grepl('/Sc', SS_NoSpace) ~"Sc",
+                                                               grepl('/Sk', SS_NoSpace) ~"Sk",
+                                                               grepl('/Vs', SS_NoSpace) ~"Vs",
+                                                               grepl('/Vh', SS_NoSpace) ~"Vh",
+                                                               grepl('/Ag', SS_NoSpace) ~"Ag",
+                                                               grepl('/Ah', SS_NoSpace) ~"Ah",
+                                                               grepl('/Bb', SS_NoSpace) ~"Bb",TRUE~NA))
+site_series_new<-mutate(site_series_new, SpecialCode= if_else(SpecialCode=="", NA, SpecialCode))
+site_series_new<-mutate(site_series_new, Special= if_else(Special=="", NA, Special))
+site_series_new<-mutate(site_series_new, SpecialCode= if_else(is.na(SpecialCode), SpecialCode2, SpecialCode))
+site_series_new$SpecialCode2<-NULL
+
+special<-read.csv("tables/metadata/Tr68_special_codes.csv")
+site_series_new<-left_join(site_series_new, special)
+site_series_new<-mutate(site_series_new, Special= if_else(is.na(Special), Special2, Special))
+site_series_new$Special2<-NULL
+
+site_series_new$SpecialCode[site_series_new$SS_NoSpace=="CWHvh2/120"] <- "SS"
+site_series_new$SpecialCode[site_series_new$SS_NoSpace=="CWHvh2/120.1"] <- "SS"
+site_series_new$SpecialCode[site_series_new$SS_NoSpace=="CWHvh2/120.2"] <- "SS"
+site_series_new$Special[site_series_new$SpecialCode=="SS"] <- "salt spray"
+site_series_new<-distinct(site_series_new)
+
+write.csv(site_series_new, "tables/versioned/SiteSeries_v13_5.csv") 
+
+#cross-check BGC list & ss 
 BGC_list<-as.data.frame(BGC_list)
 #remove non BC units- don't have ss names
 BGC_list_sub<-filter(BGC_list, !grepl('_|abE|abN|abS|abC|SBAP|SASbo', BGC_list))#US units
 AB_units<-c("BWBScmC",  "BWBScmE",  "BWBScmNW" ,"BWBScmW",  "BWBSdmN" , "BWBSdmS" , "BWBSlbE" , "BWBSlbN",  "BWBSlbW", "BSJPap", "BSJPku","BSJPpa",
-                      "IMAab", "BWBSlf",   "BWBSnm",   "BWBSpp",   "BWBSub",   "BWBSuf",  "FGff", "FGnf",  "MGPdm","MGPmg")  
+            "IMAab", "BWBSlf",   "BWBSnm",   "BWBSpp",   "BWBSub",   "BWBSuf",  "FGff", "FGnf",  "MGPdm","MGPmg")  
 BGC_list_sub<-filter(BGC_list_sub, !BGC_list%in% AB_units) #AB units
 #turn back into lists
 BGC_list<-BGC_list$BGC_list
@@ -94,12 +148,3 @@ check4<-unique(ss_tab$BGC_NoSpace)
 xx<-sort(setdiff(BGC_list_sub, check4)) 
 xxedat<-subset(edatopic_tab, BGC%in%xx)
 sort(setdiff(check4, BGC_list_sub)) #remove/rename
-
-#tree spp codes
-treespp<-read.csv("tables/metadata/Tree_species_codes.csv")
-treespp<-unique(treespp$TreeCode)
-treespp2<-unique(suit_tab$sppsplit)
-sort(setdiff(treespp2, treespp))
-
-intersect(treespp, treespp2)
-

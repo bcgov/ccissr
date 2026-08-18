@@ -7,8 +7,9 @@ names(site_series)
 site_series$X<-NULL
 
 #read in updated table
-site_series_update<-read.csv("tables/versioned/SiteSeries_v13_4.csv") 
+site_series_update<-read.csv("tables/versioned/SiteSeries_v13_5.csv") 
 names(site_series_update)
+site_series_update$X<-NULL
 cols<-names(site_series_update)
 
 #only keep columns in updated df
@@ -19,7 +20,7 @@ diff <- compareDF::compare_df(site_series_update, site_series, group_col = c("SS
 diff$change_summary
 diffrept<-diff$comparison_df
 
-write.csv(diffrept, "tables/versioned/tracked_changes/SiteSeries/diff_report_v13_4.csv") #rename with version to match update 
+write.csv(diffrept, "tables/versioned/tracked_changes/SiteSeries/diff_report_v13_5.csv") #rename with version to match update 
 
 #overwrite current table with updated table 
 #indicate in git commit 
@@ -32,7 +33,7 @@ updated_readme<- c("# Current table versions ",
                    "Suitability v13_30",        ""               ,
                    "Edatopic v13_18 ",    ""               ,
                    "WNA BGCs v13_9 ",     ""               ,
-                   "Site series v13_4")     #update version #s 
+                   "Site series v13_5")     #update version #s 
 # Write the updated content back to the README
 writeLines(updated_readme, path)
 
