@@ -11,6 +11,11 @@ Br,headland
 Ed,estuarine meadow
 Em,estuarine marsh
 Et,esturaine tidal flat
+Wb,wetland bog 
+Wm,wetland marsh
+Ws,wetland swamp
+Wf,wetland fen
+Wa,wetland alpine
 Fa,active fluvial
 Fl,low fluvial bench
 Fm,mid fluvial bench
@@ -27,6 +32,8 @@ Rc,cliff
 Rt,talus
 Rl,lava flow
 Rd,dune
+Ro,rocky outcrop
+Rt,talus
 Sc,subalpine
 Sk,subalpine krummholz
 Vs,avalanche shrub
@@ -41,3 +48,7 @@ Ws,wetland swamp
 Wf,wetland fen
 Wa,wetland alpine
 Ww,shallow-water wetland
+Ag,alpine grassland
+Ah,alpine heath
+Bb,beachland
+Br,headland
