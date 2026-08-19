@@ -180,8 +180,12 @@ dbGetBGC <- function(con,bgc,district = NULL,maxPoints = 150){
   }else{
     query <- paste0("select siteno from preselected_dist13 where bgc IN ('",paste(bgc,collapse = "','"),"') and dist_code = '",district,"'")
   }
-  dat <- RPostgres::dbGetQuery(con, query)$siteno
-  return(dat)
+  dat <- RPostgres::dbGetQuery(con, query)
+  if(nrow(dat) == 0){ #temporary check until preselected_dist table is updated
+    query <- paste0("select siteno from preselected_points14 where bgc IN ('",paste(bgc,collapse = "','"),"') limit ", maxPoints)
+    dat <- RPostgres::dbGetQuery(con, query)
+  } 
+  return(dat$siteno)
 }
 
 #' Pull CCISS from a vector of SiteNo
