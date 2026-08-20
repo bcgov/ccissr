@@ -1,0 +1,538 @@
+"","SS_NoSpace","chng_type","SiteSeriesLongName","SpecialCode","Special"
+"1","BAFAun/00","+","",NA,NA
+"2","BAFAunp/00","+","",NA,NA
+"3","BGxh1/Gg","+","","Gg","grassland "
+"4","BGxh2/Fm05","+","","Fm","mid fluvial bench"
+"5","BGxh2/Gg","+","","Gg","grassland "
+"6","BGxh2/Gs","+","","Gs","shrub-steppe"
+"7","BGxh3/Fm01","+","","Fm","mid fluvial bench"
+"8","BGxh3/Gg","+","","Gg","grassland "
+"9","BGxh3/Ro","+","","Ro","rock outcrop"
+"10","BGxh3/Ro","+","","Ro","rocky outcrop"
+"11","BGxw1/Gg","+","","Gg","grassland "
+"12","BGxw1/Ro","+","","Ro","rock outcrop"
+"13","BGxw1/Ro","+","","Ro","rocky outcrop"
+"14","BGxw2/Gg","+","","Gg","grassland "
+"15","BGxw2/Ro","+","","Ro","rock outcrop"
+"16","BGxw2/Ro","+","","Ro","rocky outcrop"
+"17","BWBSdk/Gb","+","","Gb","brushland"
+"18","BWBSdk/Gg","+","","Gg","grassland "
+"19","BWBSdk/Ro","+","","Ro","rock outcrop"
+"20","BWBSdk/Ro","+","","Ro","rocky outcrop"
+"21","BWBSmk/Gg","+","","Gg","grassland "
+"22","BWBSmk/Ro","+","","Ro","rock outcrop"
+"23","BWBSmk/Ro","+","","Ro","rocky outcrop"
+"24","BWBSmw/Gg","+","","Gg","grassland "
+"25","BWBSmw/Ro","+","","Ro","rock outcrop"
+"26","BWBSmw/Ro","+","","Ro","rocky outcrop"
+"27","BWBSvk/h","+","",NA,NA
+"28","BWBSvk/m","+","",NA,NA
+"29","BWBSvk/x","+","",NA,NA
+"30","BWBSwk1/Ro","+","","Ro","rock outcrop"
+"31","BWBSwk1/Ro","+","","Ro","rocky outcrop"
+"32","BWBSwk2/Gg","+","","Gg","grassland "
+"33","BWBSwk2/Ro","+","","Ro","rock outcrop"
+"34","BWBSwk2/Ro","+","","Ro","rocky outcrop"
+"35","BWBSwk3/Ro","+","","Ro","rock outcrop"
+"36","BWBSwk3/Ro","+","","Ro","rocky outcrop"
+"37","CDFmm/Fm51","+","","Fm","mid fluvial bench"
+"38","CDFmm/Fm52","+","","Fm","mid fluvial bench"
+"39","CDFmm/Gg","+","","Gg","grassland "
+"40","CDFmm/Ro","+","","Ro","rock outcrop"
+"41","CDFmm/Ro","+","","Ro","rocky outcrop"
+"42","CDFmm/Wf","+","","Wf","wetland fen"
+"43","CDFmm/Wm","+","","Wm","wetland marsh"
+"44","CMAun/00","+","",NA,NA
+"45","CMAunp/00","+","",NA,NA
+"46","CMAwh/00","+","",NA,NA
+"47","CWHdm1/Fm51","+","","Fm","mid fluvial bench"
+"48","CWHdm1/Fm52","+","","Fm","mid fluvial bench"
+"49","CWHdm1/Ro","+","","Ro","rock outcrop"
+"50","CWHdm1/Ro","+","","Ro","rocky outcrop"
+"51","CWHdm1/Wsxx","+","","Ws","wetland swamp"
+"52","CWHdm2/Fm51","+","","Fm","mid fluvial bench"
+"53","CWHdm2/Fm52","+","","Fm","mid fluvial bench"
+"54","CWHdm2/Ro","+","","Ro","rock outcrop"
+"55","CWHdm2/Ro","+","","Ro","rocky outcrop"
+"56","CWHdm2/Ws","+","","Ws","wetland swamp"
+"57","CWHdm3/Fl50","+","","Fl","low fluvial bench"
+"58","CWHdm3/Fm51","+","","Fm","mid fluvial bench"
+"59","CWHdm3/Ro","+","","Ro","rock outcrop"
+"60","CWHdm3/Ro","+","","Ro","rocky outcrop"
+"61","CWHds1/Fm51.1","+","","Fm","mid fluvial bench"
+"62","CWHds1/Ro","+","","Ro","rock outcrop"
+"63","CWHds1/Ro","+","","Ro","rocky outcrop"
+"64","CWHds1/Wb50.2","+","","Wb","wetland bog "
+"65","CWHds1/Wm","+","","Wm","wetland marsh"
+"66","CWHds1/Ws56.2","+","","Ws","wetland swamp"
+"67","CWHds2/Fl","+","","Fl","low fluvial bench"
+"68","CWHds2/Fm","+","","Fm","mid fluvial bench"
+"69","CWHds2/Ro","+","","Ro","rock outcrop"
+"70","CWHds2/Ro","+","","Ro","rocky outcrop"
+"71","CWHmm1/Fl50","+","","Fl","low fluvial bench"
+"72","CWHmm1/Fm51","+","","Fm","mid fluvial bench"
+"73","CWHmm1/Ro","+","","Ro","rock outcrop"
+"74","CWHmm1/Ro","+","","Ro","rocky outcrop"
+"75","CWHmm1/Ws##","+","","Ws","wetland swamp"
+"76","CWHmm2/Ro","+","","Ro","rock outcrop"
+"77","CWHmm2/Ro","+","","Ro","rocky outcrop"
+"78","CWHms3/Fm51.1","+","","Fm","mid fluvial bench"
+"79","CWHms3/Wb50.2","+","","Wb","wetland bog "
+"80","CWHms3/Wf","+","","Wf","wetland fen"
+"81","CWHms3/Wm","+","","Wm","wetland marsh"
+"82","CWHms4/Wb50.2","+","","Wb","wetland bog "
+"83","CWHms4/Ws56.1","+","","Ws","wetland swamp"
+"84","CWHms5/Fm51.1","+","","Fm","mid fluvial bench"
+"85","CWHms5/Wb50.2","+","","Wb","wetland bog "
+"86","CWHms5/Wm","+","","Wm","wetland marsh"
+"87","CWHvh1/Bb","+","","Bb","beachland"
+"88","CWHvh1/Br","+","",NA,NA
+"89","CWHvh1/Em","+","",NA,NA
+"90","CWHvh1/Fm52","+","","Fm","mid fluvial bench"
+"91","CWHvh2/Bb","+","","Bb","beachland"
+"92","CWHvh2/Br","+","",NA,NA
+"93","CWHvh2/Em","+","",NA,NA
+"94","CWHvh2/Fm52","+","","Fm","mid fluvial bench"
+"95","CWHvm1/Fl50","+","","Fl","low fluvial bench"
+"96","CWHvm1/Fm52","+","","Fm","mid fluvial bench"
+"97","CWHvm1/Wf","+","","Wf","wetland fen"
+"98","CWHvm1/Wm","+","","Wm","wetland marsh"
+"99","CWHvm2/Wf","+","","Wf","wetland fen"
+"100","CWHvm2/Wm","+","","Wm","wetland marsh"
+"101","CWHvm3/Fl50","+","","Fl","low fluvial bench"
+"102","CWHvm3/Wf","+","","Wf","wetland fen"
+"103","CWHvm3/Wm","+","","Wm","wetland marsh"
+"104","CWHvm4/Wf","+","","Wf","wetland fen"
+"105","CWHvm4/Wm","+","","Wm","wetland marsh"
+"106","CWHwh2/Ro","+","","Ro","rock outcrop"
+"107","CWHwh2/Ro","+","","Ro","rocky outcrop"
+"108","CWHwm/Fl50","+","","Fl","low fluvial bench"
+"109","CWHwm/Wf","+","","Wf","wetland fen"
+"110","CWHwm/Wm","+","","Wm","wetland marsh"
+"111","CWHws1/Fl50","+","","Fl","low fluvial bench"
+"112","CWHws1/Ro","+","","Ro","rock outcrop"
+"113","CWHws1/Ro","+","","Ro","rocky outcrop"
+"114","CWHws2/Ro","+","","Ro","rock outcrop"
+"115","CWHws2/Ro","+","","Ro","rocky outcrop"
+"116","CWHws3/Fl50","+","","Fl","low fluvial bench"
+"117","CWHxs/Fl50","+","","Fl","low fluvial bench"
+"118","CWHxs/Fm51.2","+","","Fm","mid fluvial bench"
+"119","CWHxs/Ro","+","","Ro","rock outcrop"
+"120","CWHxs/Ro","+","","Ro","rocky outcrop"
+"121","CWHxs/Ws57","+","","Ws","wetland swamp"
+"122","ESSFdc1/Ro","+","","Ro","rock outcrop"
+"123","ESSFdc1/Ro","+","","Ro","rocky outcrop"
+"124","ESSFdc2/Ro","+","","Ro","rock outcrop"
+"125","ESSFdc2/Ro","+","","Ro","rocky outcrop"
+"126","ESSFdcp/00","+","",NA,NA
+"127","ESSFdcw/Ro","+","","Ro","rock outcrop"
+"128","ESSFdcw/Ro","+","","Ro","rocky outcrop"
+"129","ESSFdh2/01","+","",NA,NA
+"130","ESSFdh2/02","+","",NA,NA
+"131","ESSFdh2/03","+","",NA,NA
+"132","ESSFdh2/04","+","",NA,NA
+"133","ESSFdh2/05","+","",NA,NA
+"134","ESSFdh2/06","+","",NA,NA
+"135","ESSFdh2/07","+","",NA,NA
+"136","ESSFdh2/08","+","",NA,NA
+"137","ESSFdk1/Ro","+","","Ro","rock outcrop"
+"138","ESSFdk1/Ro","+","","Ro","rocky outcrop"
+"139","ESSFdk2/Ro","+","","Ro","rock outcrop"
+"140","ESSFdk2/Ro","+","","Ro","rocky outcrop"
+"141","ESSFdkp/00","+","",NA,NA
+"142","ESSFdkw/Ro","+","","Ro","rock outcrop"
+"143","ESSFdkw/Ro","+","","Ro","rocky outcrop"
+"144","ESSFdv1/01","+","",NA,NA
+"145","ESSFdv1/02","+","",NA,NA
+"146","ESSFdv1/03","+","",NA,NA
+"147","ESSFdv1/04","+","",NA,NA
+"148","ESSFdv1/05","+","",NA,NA
+"149","ESSFdv1/06","+","",NA,NA
+"150","ESSFdv2/01","+","",NA,NA
+"151","ESSFdv2/02","+","",NA,NA
+"152","ESSFdv2/03","+","",NA,NA
+"153","ESSFdv2/04","+","",NA,NA
+"154","ESSFdv2/05","+","",NA,NA
+"155","ESSFdv2/06","+","",NA,NA
+"156","ESSFdvp/00","+","",NA,NA
+"157","ESSFdvw/01","+","",NA,NA
+"158","ESSFdvw/02","+","",NA,NA
+"159","ESSFdvw/03","+","",NA,NA
+"160","ESSFdvw/04","+","",NA,NA
+"161","ESSFdvw/05","+","",NA,NA
+"162","ESSFdvw/06","+","",NA,NA
+"163","ESSFmcp/00","+","",NA,NA
+"164","ESSFmcw/Ro","+","","Ro","rock outcrop"
+"165","ESSFmcw/Ro","+","","Ro","rocky outcrop"
+"166","ESSFmh/112.1","+","",NA,NA
+"167","ESSFmh/112.2","+","",NA,NA
+"168","ESSFmh/Ro","+","","Ro","rock outcrop"
+"169","ESSFmh/Ro","+","","Ro","rocky outcrop"
+"170","ESSFmkp/00","+","",NA,NA
+"171","ESSFmkw/Ro","+","","Ro","rock outcrop"
+"172","ESSFmkw/Ro","+","","Ro","rocky outcrop"
+"173","ESSFmm1/Ro","+","","Ro","rock outcrop"
+"174","ESSFmm1/Ro","+","","Ro","rocky outcrop"
+"175","ESSFmm2/01","+","",NA,NA
+"176","ESSFmm2/02","+","",NA,NA
+"177","ESSFmm2/03","+","",NA,NA
+"178","ESSFmm2/04","+","",NA,NA
+"179","ESSFmm2/05","+","",NA,NA
+"180","ESSFmm2/06","+","",NA,NA
+"181","ESSFmm2/07","+","",NA,NA
+"182","ESSFmm2/Ro","+","","Ro","rock outcrop"
+"183","ESSFmm2/Ro","+","","Ro","rocky outcrop"
+"184","ESSFmm3/Ro","+","","Ro","rock outcrop"
+"185","ESSFmm3/Ro","+","","Ro","rocky outcrop"
+"186","ESSFmmp/00","+","",NA,NA
+"187","ESSFmmw/01","+","",NA,NA
+"188","ESSFmmw/02","+","",NA,NA
+"189","ESSFmmw/03","+","",NA,NA
+"190","ESSFmmw/04","+","",NA,NA
+"191","ESSFmmw/05","+","",NA,NA
+"192","ESSFmmw/06","+","",NA,NA
+"193","ESSFmmw/07","+","",NA,NA
+"194","ESSFmmw/Ro","+","","Ro","rock outcrop"
+"195","ESSFmmw/Ro","+","","Ro","rocky outcrop"
+"196","ESSFmv1/Ro","+","","Ro","rock outcrop"
+"197","ESSFmv1/Ro","+","","Ro","rocky outcrop"
+"198","ESSFmv2/Ro","+","","Ro","rock outcrop"
+"199","ESSFmv2/Ro","+","","Ro","rocky outcrop"
+"200","ESSFmv3/Ro","+","","Ro","rock outcrop"
+"201","ESSFmv3/Ro","+","","Ro","rocky outcrop"
+"202","ESSFmv4/Ro","+","","Ro","rock outcrop"
+"203","ESSFmv4/Ro","+","","Ro","rocky outcrop"
+"204","ESSFmvp/00","+","",NA,NA
+"205","ESSFmw2/01","+","",NA,NA
+"206","ESSFmw2/02","+","",NA,NA
+"207","ESSFmw2/03","+","",NA,NA
+"208","ESSFmw2/04","+","",NA,NA
+"209","ESSFmw2/05","+","",NA,NA
+"210","ESSFmw2/06","+","",NA,NA
+"211","ESSFmw2/07","+","",NA,NA
+"212","ESSFmw2/08","+","",NA,NA
+"213","ESSFmwp/00","+","",NA,NA
+"214","ESSFmww/101","+","",NA,NA
+"215","ESSFmww/102","+","",NA,NA
+"216","ESSFmww/103","+","",NA,NA
+"217","ESSFmww/110","+","",NA,NA
+"218","ESSFun1/h","+","",NA,NA
+"219","ESSFun1/m","+","",NA,NA
+"220","ESSFun1/x","+","",NA,NA
+"221","ESSFun2/h","+","",NA,NA
+"222","ESSFun2/m","+","",NA,NA
+"223","ESSFun2/x","+","",NA,NA
+"224","ESSFunp/00","+","",NA,NA
+"225","ESSFvcp/00","+","",NA,NA
+"226","ESSFvcw/01","+","",NA,NA
+"227","ESSFvcw/02","+","",NA,NA
+"228","ESSFvcw/03","+","",NA,NA
+"229","ESSFvcw/04","+","",NA,NA
+"230","ESSFvcw/05","+","",NA,NA
+"231","ESSFvcw/06","+","",NA,NA
+"232","ESSFwc2/Ro","+","","Ro","rock outcrop"
+"233","ESSFwc2/Ro","+","","Ro","rocky outcrop"
+"234","ESSFwc3/01","+","",NA,NA
+"235","ESSFwc3/02","+","",NA,NA
+"236","ESSFwc3/03","+","",NA,NA
+"237","ESSFwc3/101","+","",NA,NA
+"238","ESSFwc3/102","+","",NA,NA
+"239","ESSFwc3/103","+","",NA,NA
+"240","ESSFwc3/110","+","",NA,NA
+"241","ESSFwc3/111","+","",NA,NA
+"242","ESSFwc3/Ro","+","","Ro","rock outcrop"
+"243","ESSFwc3/Ro","+","","Ro","rocky outcrop"
+"244","ESSFwc4/Ro","+","","Ro","rock outcrop"
+"245","ESSFwc4/Ro","+","","Ro","rocky outcrop"
+"246","ESSFwcp/00","+","",NA,NA
+"247","ESSFwcw/Ro","+","","Ro","rock outcrop"
+"248","ESSFwcw/Ro","+","","Ro","rocky outcrop"
+"249","ESSFwh1/Ro","+","","Ro","rock outcrop"
+"250","ESSFwh1/Ro","+","","Ro","rocky outcrop"
+"251","ESSFwh2/Ro","+","","Ro","rock outcrop"
+"252","ESSFwh2/Ro","+","","Ro","rocky outcrop"
+"253","ESSFwh3/Ro","+","","Ro","rock outcrop"
+"254","ESSFwh3/Ro","+","","Ro","rocky outcrop"
+"255","ESSFwk1/Ro","+","","Ro","rock outcrop"
+"256","ESSFwk1/Ro","+","","Ro","rocky outcrop"
+"257","ESSFwk2/Ro","+","","Ro","rock outcrop"
+"258","ESSFwk2/Ro","+","","Ro","rocky outcrop"
+"259","ESSFwm1/Ro","+","","Ro","rock outcrop"
+"260","ESSFwm1/Ro","+","","Ro","rocky outcrop"
+"261","ESSFwm2/Ro","+","","Ro","rock outcrop"
+"262","ESSFwm2/Ro","+","","Ro","rocky outcrop"
+"263","ESSFwm3/Ro","+","","Ro","rock outcrop"
+"264","ESSFwm3/Ro","+","","Ro","rocky outcrop"
+"265","ESSFwm4/Ro","+","","Ro","rock outcrop"
+"266","ESSFwm4/Ro","+","","Ro","rocky outcrop"
+"267","ESSFwmp/00","+","",NA,NA
+"268","ESSFwmw/Ro","+","","Ro","rock outcrop"
+"269","ESSFwmw/Ro","+","","Ro","rocky outcrop"
+"270","ESSFwvp/00","+","",NA,NA
+"271","ESSFwvw/Ro","+","","Ro","rock outcrop"
+"272","ESSFwvw/Ro","+","","Ro","rocky outcrop"
+"273","ESSFxc1/Gg","+","","Gg","grassland "
+"274","ESSFxc2/Gg","+","","Gg","grassland "
+"275","ESSFxcp/00","+","",NA,NA
+"276","ESSFxcw/101","+","",NA,NA
+"277","ESSFxcw/102","+","",NA,NA
+"278","ESSFxcw/103","+","",NA,NA
+"279","ESSFxcw/110","+","",NA,NA
+"280","ESSFxcw/111","+","",NA,NA
+"281","ESSFxcw/112","+","",NA,NA
+"282","ESSFxcw/Gg","+","","Gg","grassland "
+"283","ESSFxv2/Ro","+","","Ro","rock outcrop"
+"284","ESSFxv2/Ro","+","","Ro","rocky outcrop"
+"285","ESSFxvp/00","+","",NA,NA
+"286","ESSFxvw/01","+","",NA,NA
+"287","ESSFxvw/02","+","",NA,NA
+"288","ESSFxvw/03","+","",NA,NA
+"289","ESSFxvw/04","+","",NA,NA
+"290","ESSFxvw/05","+","",NA,NA
+"291","ESSFxvw/06","+","",NA,NA
+"292","ESSFxvw/07","+","",NA,NA
+"293","ESSFxvw/08","+","",NA,NA
+"294","ESSFxvw/09","+","",NA,NA
+"295","ESSFxvw/10","+","",NA,NA
+"296","ICHdk/Ro","+","","Ro","rock outcrop"
+"297","ICHdk/Ro","+","","Ro","rocky outcrop"
+"298","ICHdm/Ro","+","","Ro","rock outcrop"
+"299","ICHdm/Ro","+","","Ro","rocky outcrop"
+"300","ICHdw1/101","+","",NA,NA
+"301","ICHdw1/102","+","",NA,NA
+"302","ICHdw1/103","+","",NA,NA
+"303","ICHdw1/104","+","",NA,NA
+"304","ICHdw1/110","+","",NA,NA
+"305","ICHdw1/111","+","",NA,NA
+"306","ICHdw1/112","+","",NA,NA
+"307","ICHdw1/Ro","+","","Ro","rock outcrop"
+"308","ICHdw1/Ro","+","","Ro","rocky outcrop"
+"309","ICHdw3/01","+","",NA,NA
+"310","ICHdw3/02","+","",NA,NA
+"311","ICHdw3/03","+","",NA,NA
+"312","ICHdw3/04","+","",NA,NA
+"313","ICHdw3/05","+","",NA,NA
+"314","ICHdw3/06","+","",NA,NA
+"315","ICHdw3/07","+","",NA,NA
+"316","ICHdw3/08","+","",NA,NA
+"317","ICHdw3/09","+","",NA,NA
+"318","ICHdw3/Ro","+","","Ro","rock outcrop"
+"319","ICHdw3/Ro","+","","Ro","rocky outcrop"
+"320","ICHdw4/Ro","+","","Ro","rock outcrop"
+"321","ICHdw4/Ro","+","","Ro","rocky outcrop"
+"322","ICHmc1/Ro","+","","Ro","rock outcrop"
+"323","ICHmc1/Ro","+","","Ro","rocky outcrop"
+"324","ICHmc1a/Ro","+","","Ro","rock outcrop"
+"325","ICHmc1a/Ro","+","","Ro","rocky outcrop"
+"326","ICHmc2/Ro","+","","Ro","rock outcrop"
+"327","ICHmc2/Ro","+","","Ro","rocky outcrop"
+"328","ICHmk1/Ro","+","","Ro","rock outcrop"
+"329","ICHmk1/Ro","+","","Ro","rocky outcrop"
+"330","ICHmk3/Ro","+","","Ro","rock outcrop"
+"331","ICHmk3/Ro","+","","Ro","rocky outcrop"
+"332","ICHmk4/Ro","+","","Ro","rock outcrop"
+"333","ICHmk4/Ro","+","","Ro","rocky outcrop"
+"334","ICHmk5/Ro","+","","Ro","rock outcrop"
+"335","ICHmk5/Ro","+","","Ro","rocky outcrop"
+"336","ICHmm/Ro","+","","Ro","rock outcrop"
+"337","ICHmm/Ro","+","","Ro","rocky outcrop"
+"338","ICHmw1/Ro","+","","Ro","rock outcrop"
+"339","ICHmw1/Ro","+","","Ro","rocky outcrop"
+"340","ICHmw2/Ro","+","","Ro","rock outcrop"
+"341","ICHmw2/Ro","+","","Ro","rocky outcrop"
+"342","ICHmw4/Ro","+","","Ro","rock outcrop"
+"343","ICHmw4/Ro","+","","Ro","rocky outcrop"
+"344","ICHmw5/Ro","+","","Ro","rock outcrop"
+"345","ICHmw5/Ro","+","","Ro","rocky outcrop"
+"346","ICHun1/h","+","",NA,NA
+"347","ICHun1/m","+","",NA,NA
+"348","ICHun1/x","+","",NA,NA
+"349","ICHvc/Ro","+","","Ro","rock outcrop"
+"350","ICHvc/Ro","+","","Ro","rocky outcrop"
+"351","ICHvk2/Ro","+","","Ro","rock outcrop"
+"352","ICHvk2/Ro","+","","Ro","rocky outcrop"
+"353","ICHwc/Ro","+","","Ro","rock outcrop"
+"354","ICHwc/Ro","+","","Ro","rocky outcrop"
+"355","ICHwk1/Ro","+","","Ro","rock outcrop"
+"356","ICHwk1/Ro","+","","Ro","rocky outcrop"
+"357","ICHwk2/Ro","+","","Ro","rock outcrop"
+"358","ICHwk2/Ro","+","","Ro","rocky outcrop"
+"359","ICHwk3/Ro","+","","Ro","rock outcrop"
+"360","ICHwk3/Ro","+","","Ro","rocky outcrop"
+"361","ICHwk4/Ro","+","","Ro","rock outcrop"
+"362","ICHwk4/Ro","+","","Ro","rocky outcrop"
+"363","ICHxm1/Ro","+","","Ro","rock outcrop"
+"364","ICHxm1/Ro","+","","Ro","rocky outcrop"
+"365","ICHxw/Ro","+","","Ro","rock outcrop"
+"366","ICHxw/Ro","+","","Ro","rocky outcrop"
+"367","ICHxwa/Ro","+","","Ro","rock outcrop"
+"368","ICHxwa/Ro","+","","Ro","rocky outcrop"
+"369","IDFdc/01","+","",NA,NA
+"370","IDFdc/02","+","",NA,NA
+"371","IDFdc/03","+","",NA,NA
+"372","IDFdc/04","+","",NA,NA
+"373","IDFdc/05","+","",NA,NA
+"374","IDFdc/06","+","",NA,NA
+"375","IDFdc/07","+","",NA,NA
+"376","IDFdc/08","+","",NA,NA
+"377","IDFdc/Gg","+","","Gg","grassland "
+"378","IDFdh/Ro","+","","Ro","rock outcrop"
+"379","IDFdh/Ro","+","","Ro","rocky outcrop"
+"380","IDFdk1/Gg1","+","","Gg","grassland "
+"381","IDFdk1/Gg2","+","","Gg","grassland "
+"382","IDFdk1/Ro","+","","Ro","rock outcrop"
+"383","IDFdk1/Ro","+","","Ro","rocky outcrop"
+"384","IDFdk2/Gg","+","","Gg","grassland "
+"385","IDFdk3/Ro","+","","Ro","rock outcrop"
+"386","IDFdk3/Ro","+","","Ro","rocky outcrop"
+"387","IDFdk4/Ro","+","","Ro","rock outcrop"
+"388","IDFdk4/Ro","+","","Ro","rocky outcrop"
+"389","IDFdk5/Ro","+","","Ro","rock outcrop"
+"390","IDFdk5/Ro","+","","Ro","rocky outcrop"
+"391","IDFdm1/Ro","+","","Ro","rock outcrop"
+"392","IDFdm1/Ro","+","","Ro","rocky outcrop"
+"393","IDFdm2/Ro","+","","Ro","rock outcrop"
+"394","IDFdm2/Ro","+","","Ro","rocky outcrop"
+"395","IDFww/Fl","+","","Fl","low fluvial bench"
+"396","IDFww/Fm01","+","","Fm","mid fluvial bench"
+"397","IDFww/Fm02","+","","Fm","mid fluvial bench"
+"398","IDFww/Ro","+","","Ro","rock outcrop"
+"399","IDFww/Ro","+","","Ro","rocky outcrop"
+"400","IDFww/Wb","+","","Wb","wetland bog "
+"401","IDFww/Ws","+","","Ws","wetland swamp"
+"402","IDFxc/01","+","",NA,NA
+"403","IDFxc/02","+","",NA,NA
+"404","IDFxc/03","+","",NA,NA
+"405","IDFxc/04","+","",NA,NA
+"406","IDFxc/05","+","",NA,NA
+"407","IDFxc/06","+","",NA,NA
+"408","IDFxc/07","+","",NA,NA
+"409","IDFxc/08","+","",NA,NA
+"410","IDFxh1/Gg","+","","Gg","grassland "
+"411","IDFxh2/Fm02","+","","Fm","mid fluvial bench"
+"412","IDFxk/Ro","+","","Ro","rock outcrop"
+"413","IDFxk/Ro","+","","Ro","rocky outcrop"
+"414","IDFxm/Gg","+","","Gg","grassland "
+"415","IDFxm/Ro","+","","Ro","rock outcrop"
+"416","IDFxm/Ro","+","","Ro","rocky outcrop"
+"417","IDFxw/Ro","+","","Ro","rock outcrop"
+"418","IDFxw/Ro","+","","Ro","rocky outcrop"
+"419","IDFxx1/Ro","+","","Ro","rock outcrop"
+"420","IDFxx1/Ro","+","","Ro","rocky outcrop"
+"421","IDFxx2/Ro","+","","Ro","rock outcrop"
+"422","IDFxx2/Ro","+","","Ro","rocky outcrop"
+"423","IMAun/00","+","",NA,NA
+"424","IMAunp/00","+","",NA,NA
+"425","MHmm1/Wb5X","+","","Wb","wetland bog "
+"426","MHmm1/Ws55.1","+","","Ws","wetland swamp"
+"427","MHmm2/Wb5X","+","","Wb","wetland bog "
+"428","MHmm2/Ws55.1","+","","Ws","wetland swamp"
+"429","MHmmp/h","+","",NA,NA
+"430","MHmmp/m","+","",NA,NA
+"431","MHmmp/x","+","",NA,NA
+"432","MHmsp/h","+","",NA,NA
+"433","MHmsp/m","+","",NA,NA
+"434","MHmsp/x","+","",NA,NA
+"435","MHun1/h","+","",NA,NA
+"436","MHun1/m","+","",NA,NA
+"437","MHun1/x","+","",NA,NA
+"438","MHunp/00","+","",NA,NA
+"439","MHvh/Wb","+","","Wb","wetland bog "
+"440","MHvh/Wf","+","","Wf","wetland fen"
+"441","MHvhp/h","+","",NA,NA
+"442","MHvhp/m","+","",NA,NA
+"443","MHvhp/x","+","",NA,NA
+"444","MHwhp/00","+","",NA,NA
+"445","MSdc3/01","+","",NA,NA
+"446","MSdc3/02","+","",NA,NA
+"447","MSdc3/03","+","",NA,NA
+"448","MSdc3/04","+","",NA,NA
+"449","MSdc3/05","+","",NA,NA
+"450","MSdk/Ro","+","","Ro","rock outcrop"
+"451","MSdk/Ro","+","","Ro","rocky outcrop"
+"452","MSdm1/Ro","+","","Ro","rock outcrop"
+"453","MSdm1/Ro","+","","Ro","rocky outcrop"
+"454","MSdm2/Rt08","+","","Rt","talus"
+"455","MSdw/Ro","+","","Ro","rock outcrop"
+"456","MSdw/Ro","+","","Ro","rocky outcrop"
+"457","MSun1/h","+","",NA,NA
+"458","MSun1/m","+","",NA,NA
+"459","MSun1/x","+","",NA,NA
+"460","MSxk1/Gg","+","","Gg","grassland "
+"461","MSxk1/Gs","+","","Gs","shrub-steppe"
+"462","MSxk2/Gg","+","","Gg","grassland "
+"463","MSxk2/Rt08","+","","Rt","talus"
+"464","MSxv/Ro","+","","Ro","rock outcrop"
+"465","MSxv/Ro","+","","Ro","rocky outcrop"
+"466","PPxh1/Gg","+","","Gg","grassland "
+"467","PPxh1/Gs","+","","Gs","shrub-steppe"
+"468","PPxh1/Ro","+","","Ro","rock outcrop"
+"469","PPxh1/Ro","+","","Ro","rocky outcrop"
+"470","PPxh2/Gg","+","","Gg","grassland "
+"471","SBPSdc/Ro","+","","Ro","rock outcrop"
+"472","SBPSdc/Ro","+","","Ro","rocky outcrop"
+"473","SBPSmc/Ro","+","","Ro","rock outcrop"
+"474","SBPSmc/Ro","+","","Ro","rocky outcrop"
+"475","SBPSmk/Ro","+","","Ro","rock outcrop"
+"476","SBPSmk/Ro","+","","Ro","rocky outcrop"
+"477","SBPSxc/Ro","+","","Ro","rock outcrop"
+"478","SBPSxc/Ro","+","","Ro","rocky outcrop"
+"479","SBSdh1/Ro","+","","Ro","rock outcrop"
+"480","SBSdh1/Ro","+","","Ro","rocky outcrop"
+"481","SBSdh2/01","+","",NA,NA
+"482","SBSdh2/02","+","",NA,NA
+"483","SBSdh2/03","+","",NA,NA
+"484","SBSdh2/04","+","",NA,NA
+"485","SBSdh2/05","+","",NA,NA
+"486","SBSdh2/06","+","",NA,NA
+"487","SBSdh2/07","+","",NA,NA
+"488","SBSdh2/08","+","",NA,NA
+"489","SBSdh2/Ro","+","","Ro","rock outcrop"
+"490","SBSdh2/Ro","+","","Ro","rocky outcrop"
+"491","SBSdk/Gg","+","","Gg","grassland "
+"492","SBSdk/Ro","+","","Ro","rock outcrop"
+"493","SBSdk/Ro","+","","Ro","rocky outcrop"
+"494","SBSdw1/Ro","+","","Ro","rock outcrop"
+"495","SBSdw1/Ro","+","","Ro","rocky outcrop"
+"496","SBSdw2/Ro","+","","Ro","rock outcrop"
+"497","SBSdw2/Ro","+","","Ro","rocky outcrop"
+"498","SBSdw3/Ro","+","","Ro","rock outcrop"
+"499","SBSdw3/Ro","+","","Ro","rocky outcrop"
+"500","SBSmc1/Ro","+","","Ro","rock outcrop"
+"501","SBSmc1/Ro","+","","Ro","rocky outcrop"
+"502","SBSmc2/Ro","+","","Ro","rock outcrop"
+"503","SBSmc2/Ro","+","","Ro","rocky outcrop"
+"504","SBSmc3/Ro","+","","Ro","rock outcrop"
+"505","SBSmc3/Ro","+","","Ro","rocky outcrop"
+"506","SBSmh/Ro","+","","Ro","rock outcrop"
+"507","SBSmh/Ro","+","","Ro","rocky outcrop"
+"508","SBSmk1/Ro","+","","Ro","rock outcrop"
+"509","SBSmk1/Ro","+","","Ro","rocky outcrop"
+"510","SBSmk2/Ro","+","","Ro","rock outcrop"
+"511","SBSmk2/Ro","+","","Ro","rocky outcrop"
+"512","SBSmm/Ro","+","","Ro","rock outcrop"
+"513","SBSmm/Ro","+","","Ro","rocky outcrop"
+"514","SBSmw/Ro","+","","Ro","rock outcrop"
+"515","SBSmw/Ro","+","","Ro","rocky outcrop"
+"516","SBSun/h","+","",NA,NA
+"517","SBSun/m","+","",NA,NA
+"518","SBSun/x","+","",NA,NA
+"519","SBSvk/Ro","+","","Ro","rock outcrop"
+"520","SBSvk/Ro","+","","Ro","rocky outcrop"
+"521","SBSwk1/Ro","+","","Ro","rock outcrop"
+"522","SBSwk1/Ro","+","","Ro","rocky outcrop"
+"523","SBSwk2/Ro","+","","Ro","rock outcrop"
+"524","SBSwk2/Ro","+","","Ro","rocky outcrop"
+"525","SBSwk3/Ro","+","","Ro","rock outcrop"
+"526","SBSwk3/Ro","+","","Ro","rocky outcrop"
+"527","SBSwk3a/Ro","+","","Ro","rock outcrop"
+"528","SBSwk3a/Ro","+","","Ro","rocky outcrop"
+"529","SWBmks/00","+","",NA,NA
+"530","SWBun1/h","+","",NA,NA
+"531","SWBun1/m","+","",NA,NA
+"532","SWBun1/x","+","",NA,NA
+"533","SWBuns/00","+","",NA,NA
+"534","SWBvk/h","+","",NA,NA
+"535","SWBvk/m","+","",NA,NA
+"536","SWBvk/x","+","",NA,NA
+"537","SWBvks/00","+","",NA,NA
