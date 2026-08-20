@@ -96,6 +96,38 @@ dbPopulate <- function(dbCon, bgc_template, edatopes = c("B2","C4","D6")) {
   return(invisible(TRUE))
 }
 
+#' Update ccissr tables in database
+#' @param dbCon Database connection
+#' @param edatopes Character vector of edatopes
+#' @import duckdb data.table
+#' @export
+dbUpdateTables <- function(dbCon, edatopes = c("B2","C4","D6")) {
+  eda_table <- copy(E1) ##Edatopic table
+  eda_table <- eda_table[is.na(SpecialCode),]
+  eda_table <- eda_table[Edatopic %in% edatopes,]
+  eda_table <- unique(eda_table[,.(BGC,SS_NoSpace,Edatopic)])
+  dbWriteTable(dbCon, "edatopic", eda_table, row.names = FALSE, overwrite = TRUE)
+  
+  suit <- copy(S1) ##Suitability table
+  suit <- na.omit(suit, cols = "spp")
+  suit <- suit[,.(bgc,spp,ss_nospace,newfeas)]
+  dbWriteTable(dbCon, "suitability", suit, row.names = FALSE, overwrite = TRUE)
+  
+  thlb <- copy(THLB_Exclude)
+  thlb[, in_thlb := TRUE][
+    Exclude == "x",
+    in_thlb := FALSE
+  ]
+  thlb[,Exclude := NULL]
+  setnames(thlb, old = "BGC", new = "bgc")
+  dbWriteTable(dbCon, "thlb_bgcs", thlb, row.names = FALSE, overwrite = TRUE)
+  
+  message("✓ Updated thlb_bgcs, edatopic, and suitability tables in duckdb!")
+  return(invisible(TRUE))
+}
+
+
+
 #' Add region table to duckdb for grouping
 #' @param dbCon duckdb database connection
 #' @param raster_template raster used to populate database
