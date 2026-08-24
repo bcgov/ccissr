@@ -190,9 +190,9 @@ spp_bubbleplot <- function(persist_expand,
     # -----------------------
     # points for ensemble runs
     
-    x <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
-    y <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
-    points(x,y, pch=21, bg=focal.color, cex=1)
+    # x <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Persistance]
+    # y <- persist_expand[(ssp == scenario | is.na(ssp)) & period == period_sel & Edatopic == eda_sel & spp == spp_sel, Expansion]
+    # points(x,y, pch=21, bg=focal.color, cex=1)
     
     # -----------------------
     # line for ensemble mean trajectory
@@ -212,8 +212,9 @@ spp_bubbleplot <- function(persist_expand,
     } else lines(x2, y2, col=1, lwd=1.5, lty=1)
     
     points(x2,y2, pch=21, bg=1, cex=1)
+    text(x2[1],y2[1], "1961-1990", pos=3, cex=0.75, font=2, offset=1.5)
     text(x2[2],y2[2], period.names[1], pos=4, cex=0.75, font=2, offset=0.3)
-    text(x2[6],y2[6], period.names[5], pos=2, cex=0.75, font=2, offset=0.3)
+    text(x2[6],y2[6], period.names[5], pos=2, cex=0.75, font=2, offset=0.6)
     
     # -----------------------
     # label
@@ -677,6 +678,7 @@ plot_SuitabilityChangeMap <- function(dbCon,
                                       edatope = "C4", 
                                       period = "2041_2060", 
                                       three_panel = FALSE, 
+                                      one_panel = FALSE,
                                       save_png = TRUE,
                                       panel_labels = TRUE
 ) 
@@ -704,6 +706,8 @@ plot_SuitabilityChangeMap <- function(dbCon,
   if(save_png){
     if(three_panel){
       png(file=paste("./Three_Panel",spp,edatope,period,"png",sep = "."), type="cairo", units="in", width=6.5, height=2.9, pointsize=9, res=400)
+    } else if(one_panel) {
+      png(file=paste("./One_Panel",spp,edatope,period,"png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=12, res=300)
     } else {
       png(file=paste("./Two_Panel",spp,edatope,period,"png",sep = "."), type="cairo", units="in", width=6.5, height=5, pointsize=12, res=300)
     }
@@ -713,14 +717,23 @@ plot_SuitabilityChangeMap <- function(dbCon,
   plot(0, col="white", xaxt="n", yaxt="n", xlab="", ylab="")
   Common <- as.character(spps.lookup$EnglishName[which(spps.lookup$TreeCode==spp)])
   Latin <- as.character(spps.lookup$ScientificName[which(spps.lookup$TreeCode==spp)])
-  mtext(if(spp%in%spps.lookup$TreeCode) bquote(bold(.(spp))~"-"~.(Common)) else bquote(bold(.(spp))),
-        side=3, line=-2.5, adj=0.01, cex=0.9, font=2)
-  if(edatope %in% edatopes) {
-    mtext(paste("Site type: ", edatope, " (", edatope.names[edatope == edatopes], ")", sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
+  if(one_panel){
+    mtext(if(spp%in%spps.lookup$TreeCode) bquote(bold(.(spp))~"-"~.(Common)) else bquote(bold(.(spp))),
+          side=3, line=-2, adj=0.95, cex=0.9, font=2)
+    mtext(paste("Site type: ", edatope, " (", edatope.names[edatope == edatopes], ")", sep=""), 
+          side=3, line=-3, adj=0.95, cex=0.9, font=1)
+    mtext(paste("Time period: ", period, sep=""), side=3, line=-4, adj=0.95, cex=0.9, font=1)
+    
   } else {
-    mtext(paste("Site type: ", edatope, sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
+    mtext(if(spp%in%spps.lookup$TreeCode) bquote(bold(.(spp))~"-"~.(Common)) else bquote(bold(.(spp))),
+          side=3, line=-2.5, adj=0.01, cex=0.9, font=2)
+    if(edatope %in% edatopes) {
+      mtext(paste("Site type: ", edatope, " (", edatope.names[edatope == edatopes], ")", sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
+    } else {
+      mtext(paste("Site type: ", edatope, sep=""), side=3, line=-3.5, adj=0.01, cex=0.8, font=1)
+    }
+    mtext(paste("Time period: ", period, sep=""), side=3, line=-4.5, adj=0.01, cex=0.8, font=1)
   }
-  mtext(paste("Time period: ", period, sep=""), side=3, line=-4.5, adj=0.01, cex=0.8, font=1)
   
   ##=================================
   ###historic suitability
@@ -732,25 +745,26 @@ plot_SuitabilityChangeMap <- function(dbCon,
   X <- copy(bgc_template$bgc_rast)
   values(X) <- NA
   
-  X[dat_spp$SiteRef] <- dat_spp$Curr
-  breakseq <- c(0.5,1.5,2.5,3.5,5)
-  colScheme <- c("darkgreen", "dodgerblue1", "gold2", "white")
-  
-  if(three_panel){
-    par(plt = c(0, 0.3, 0, 0.6),new = TRUE, xpd = TRUE)
-  } else {
-    par(plt = c(0, 0.5, 0.05, 0.6),new = TRUE, xpd = TRUE)
+  if(!one_panel){
+    X[dat_spp$SiteRef] <- dat_spp$Curr
+    breakseq <- c(0.5,1.5,2.5,3.5,5)
+    colScheme <- c("darkgreen", "dodgerblue1", "gold2", "white")
+    
+    if(three_panel){
+      par(plt = c(0, 0.3, 0, 0.6),new = TRUE, xpd = TRUE)
+    } else {
+      par(plt = c(0, 0.5, 0.05, 0.6),new = TRUE, xpd = TRUE)
+    }
+    
+    image(X,xlab = NA,ylab = NA,bty = "n",  xaxt="n", yaxt="n",
+          col=colScheme, breaks=breakseq,asp = 1)
+    terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
+    par(xpd = NA)
+    legend("topleft", legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"), fill=colScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
+    
+    if(panel_labels) mtext(paste("(", letters[1],")", sep=""), side=3, line=-8, adj=0.05, cex=0.8, font=2)
+    
   }
-  
-  image(X,xlab = NA,ylab = NA,bty = "n",  xaxt="n", yaxt="n",
-        col=colScheme, breaks=breakseq,asp = 1)
-  terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
-  par(xpd = NA)
-  legend("topleft", legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"), fill=colScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
-  
-  if(panel_labels) mtext(paste("(", letters[1],")", sep=""), side=3, line=-8, adj=0.05, cex=0.8, font=2)
-  
-  
   ##=================================
   ##mean feasibility change
   
@@ -769,6 +783,8 @@ plot_SuitabilityChangeMap <- function(dbCon,
   
   if(three_panel){
     par(plt = c(0.25,0.75,0,1), xpd = TRUE, new = TRUE)
+  } else if (one_panel) {
+    par(plt = c(0,0.9,0,1), xpd = TRUE, new = TRUE)
   } else {
     par(plt = c(0.25, 0.95, 0.175, 1), xpd = TRUE, new = TRUE)
   }
@@ -781,6 +797,8 @@ plot_SuitabilityChangeMap <- function(dbCon,
   xl <- 1600000; yb <- 1000000; xr <- 1700000; yt <- 1700000; xadj <- 10000
   if(three_panel) {
     xl <- 325000; yb <- 900000; xr <- 400000; yt <- 1525000; xadj <- 10000
+  } else if(one_panel){
+    xl <- 420000; yb <- 500000; xr <- 480000; yt <- 1300000; xadj <- 10000
   }
   par(xpd = NA)
   y.int <- (yt-yb)/length(colScheme)
@@ -810,10 +828,14 @@ plot_SuitabilityChangeMap <- function(dbCon,
   
   if(three_panel){
     par(xpd=F, mar=c(4.5,2,0.1,0.1), plt = c(0.79, 0.995, 0.1, 0.275), new = TRUE, mgp=c(1.25,0.15,0))
+  } else if(one_panel) {
+    # par(mar=c(0,0,0,0), plt = c(0.005, 0.25, 0.001, 0.41), new = TRUE, mgp=c(1.25,0.15,0))
+    # plot(0, xlim=c(0,1), ylim=c(0,1), col="white", xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
+    
+    par(mar=c(4.5,2,0.1,0.1), plt = c(0.66, 0.98, 0.48, 0.75), new = TRUE, mgp=c(1.25,0.15,0))
   } else {
     par(mar=c(0,0,0,0), plt = c(0.77, 0.995, 0.001, 0.31), new = TRUE, mgp=c(1.25,0.15,0))
     plot(0, xlim=c(0,1), ylim=c(0,1), col="white", xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
-    
     par(mar=c(4.5,2,0.1,0.1), plt = c(0.7, 0.995, 0.08, 0.2), new = TRUE, mgp=c(1.25,0.15,0))
   }
   
@@ -830,7 +852,11 @@ plot_SuitabilityChangeMap <- function(dbCon,
   bxp(z, add=T, boxfill = zoneScheme[match(zones_curr, names(zoneScheme))], xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
   axis(1, at=1:length(zones_curr), zones_curr, tick=F, las=2, cex.axis=0.65)
   axis(2,at=seq(ylim[1], ylim[2], 3), seq(ylim[1], ylim[2], 3), las=2, tck=0)
-  mtext("Mean change in suitability", side=3, line=0.1, adj=.975, cex=0.65, font=2)
+  if(one_panel){
+    mtext("Mean change in suitability", side=3, line=0.1, adj=0.98, cex=0.65, font=2)
+  } else {
+    mtext("Mean change in suitability", side=3, line=0.1, adj=.975, cex=0.65, font=2)
+  }
   
   if(panel_labels) mtext(paste("(", letters[3],")", sep=""), side=3, line=1, adj=0.975, cex=0.8, font=2)
   
