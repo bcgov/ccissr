@@ -672,7 +672,7 @@ plot_reference_suitability <- function(con,
 #' @import data.table duckdb terra
 #' @export
 plot_SuitabilityChangeMap <- function(dbCon, 
-                                      bgc_template, 
+                                      template_rast, 
                                       outline, 
                                       spp = "Fd", 
                                       edatope = "C4", 
@@ -742,7 +742,7 @@ plot_SuitabilityChangeMap <- function(dbCon,
   dat_spp[is.na(Curr) | Curr > 3.5, Curr := 4]
   dat_spp[is.na(Newsuit) | Newsuit > 3.5, Newsuit := 4]
   dat_spp[,FeasChange := Curr - Newsuit]
-  X <- copy(bgc_template$bgc_rast)
+  X <- copy(template_rast)
   values(X) <- NA
   
   if(!one_panel){
@@ -758,7 +758,7 @@ plot_SuitabilityChangeMap <- function(dbCon,
     
     image(X,xlab = NA,ylab = NA,bty = "n",  xaxt="n", yaxt="n",
           col=colScheme, breaks=breakseq,asp = 1)
-    terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
+    #terra::plot(outline, add=T, border="black",col = NA, lwd=0.4)
     par(xpd = NA)
     legend("topleft", legend = c("E1 (high)", "E2 (moderate)", "E3 (low)"), fill=colScheme, bty="n", cex=0.8, title="Historical suitability", inset=c(0,-0.3))
     
@@ -842,12 +842,13 @@ plot_SuitabilityChangeMap <- function(dbCon,
   ylim=c(-3,3)
   zones_curr <- levels(dat_spp$zone)[levels(dat_spp$zone) %in% dat_spp$zone]
   xlim=c(1, length(unique(dat_spp$zone)))
+  dat_spp[,zone := as.character(zone)]
   z <- boxplot(FeasChange~zone, data = dat_spp, ylab="", vertical = TRUE, plot=F)
   for(i in 1:length(zones_curr)){
     temp <- dat_spp[zone == zones_curr[i], FeasChange]
     z$stats[c(1,5), i] <- quantile(temp[!is.na(temp)],c(0.05, 0.95))
   }
-  bxp(z, xlim=xlim, ylim=ylim, xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
+  bxp(z, ylim=ylim, xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
   lines(c(0, length(unique(dat_spp$zone))+1), c(0,0), lwd=2, col="darkgrey")
   bxp(z, add=T, boxfill = zoneScheme[match(zones_curr, names(zoneScheme))], xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
   axis(1, at=1:length(zones_curr), zones_curr, tick=F, las=2, cex.axis=0.65)
