@@ -840,18 +840,18 @@ plot_SuitabilityChangeMap <- function(dbCon,
   }
   
   ylim=c(-3,3)
-  zones_curr <- levels(dat_spp$zone)[levels(dat_spp$zone) %in% dat_spp$zone]
-  xlim=c(1, length(unique(dat_spp$zone)))
+  #zones_curr <- unique(as.character(dat_spp$zone))
   dat_spp[,zone := as.character(zone)]
+  xlim=c(1, length(unique(dat_spp$zone)))
   z <- boxplot(FeasChange~zone, data = dat_spp, ylab="", vertical = TRUE, plot=F)
-  for(i in 1:length(zones_curr)){
-    temp <- dat_spp[zone == zones_curr[i], FeasChange]
+  for(i in 1:length(z$names)){
+    temp <- dat_spp[zone == z$names[i], FeasChange]
     z$stats[c(1,5), i] <- quantile(temp[!is.na(temp)],c(0.05, 0.95))
   }
   bxp(z, ylim=ylim, xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
   lines(c(0, length(unique(dat_spp$zone))+1), c(0,0), lwd=2, col="darkgrey")
-  bxp(z, add=T, boxfill = zoneScheme[match(zones_curr, names(zoneScheme))], xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
-  axis(1, at=1:length(zones_curr), zones_curr, tick=F, las=2, cex.axis=0.65)
+  bxp(z, add=T, boxfill = zoneScheme[match(z$names, names(zoneScheme))], xaxt="n", yaxt="n", xaxs="i", ylab="", pch=0,outline=FALSE)
+  axis(1, at=1:length(z$names), z$names, tick=F, las=2, cex.axis=0.65)
   axis(2,at=seq(ylim[1], ylim[2], 3), seq(ylim[1], ylim[2], 3), las=2, tck=0)
   if(one_panel){
     mtext("Mean change in suitability", side=3, line=0.1, adj=0.98, cex=0.65, font=2)
